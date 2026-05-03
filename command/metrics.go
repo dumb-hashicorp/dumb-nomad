@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -17,9 +17,9 @@ type OperatorMetricsCommand struct {
 
 func (c *OperatorMetricsCommand) Help() string {
 	helpText := `
-Usage: nomad operator metrics [options]
+Usage: dumb-nomad operator metrics [options]
 
-Get Nomad metrics
+Get Dumb Nomad metrics
 
 General Options:
 
@@ -45,7 +45,7 @@ Metrics Specific Options
 }
 
 func (c *OperatorMetricsCommand) Synopsis() string {
-	return "Retrieve Nomad metrics"
+	return "Retrieve Dumb Nomad metrics"
 }
 
 func (c *OperatorMetricsCommand) AutocompleteFlags() complete.Flags {

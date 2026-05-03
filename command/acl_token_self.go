@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 	"github.com/posener/complete"
 )
 
@@ -18,7 +18,7 @@ type ACLTokenSelfCommand struct {
 
 func (c *ACLTokenSelfCommand) Help() string {
 	helpText := `
-Usage: nomad acl token self
+Usage: dumb-nomad acl token self
 
   Self is used to fetch information about the currently set ACL token.
 
@@ -71,7 +71,7 @@ func (c *ACLTokenSelfCommand) Run(args []string) int {
 	//
 	// The environment variable is grabbed first. If this is not set, the
 	// resulting string is empty.
-	authToken := os.Getenv("NOMAD_TOKEN")
+	authToken := os.Getenv("DUMB_NOMAD_TOKEN")
 
 	// If the CLI flag is set, it will override the environment variable.
 	if c.token != "" {
@@ -83,7 +83,7 @@ func (c *ACLTokenSelfCommand) Run(args []string) int {
 		return 1
 	}
 
-	// Does this look like a Nomad ACL token?
+	// Does this look like a Dumb Nomad ACL token?
 	if helper.IsUUID(authToken) {
 		token, _, err := client.ACLTokens().Self(nil)
 		if err != nil {

@@ -4,17 +4,17 @@
 package state
 
 import (
-	arstate "github.com/hashicorp/nomad/client/allocrunner/state"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/state"
-	dmstate "github.com/hashicorp/nomad/client/devicemanager/state"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	driverstate "github.com/hashicorp/nomad/client/pluginmanager/drivermanager/state"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/nomad/structs"
+	arstate "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/state"
+	dmstate "github.com/dumb-hashicorp/dumb-nomad/client/devicemanager/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	driverstate "github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
-// StateDB implementations store and load Nomad client state.
+// StateDB implementations store and load Dumb Nomad client state.
 type StateDB interface {
 	// Name of implementation.
 	Name() string
@@ -153,8 +153,8 @@ type StateDB interface {
 	// of return value.
 	Close() error
 
-	PutAllocConsulACLTokens(allocID string, tokens []*cstructs.ConsulACLToken, opts ...WriteOption) error
-	GetAllocConsulACLTokens(allocID string) ([]*cstructs.ConsulACLToken, error)
+	PutAllocDumb ConsulACLTokens(allocID string, tokens []*cstructs.Dumb ConsulACLToken, opts ...WriteOption) error
+	GetAllocDumb ConsulACLTokens(allocID string) ([]*cstructs.Dumb ConsulACLToken, error)
 }
 
 // WriteOptions adjusts the way the data is persisted by the StateDB above. Default is

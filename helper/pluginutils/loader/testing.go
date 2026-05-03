@@ -7,10 +7,10 @@ import (
 	"net"
 	"sync"
 
-	log "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/plugins/base"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
 )
 
 // MockCatalog provides a mock PluginCatalog to be used for testing

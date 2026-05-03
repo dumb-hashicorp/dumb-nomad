@@ -10,9 +10,9 @@ import (
 	"os"
 	"path/filepath"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/memberlist"
-	"github.com/hashicorp/serf/serf"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/memberlist"
+	"github.com/dumb-hashicorp/serf/serf"
 )
 
 const (

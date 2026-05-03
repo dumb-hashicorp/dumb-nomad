@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 )
 
 // ensure interface satisfaction
@@ -29,7 +29,7 @@ type VolumeClaimDeleteCommand struct {
 
 func (c *VolumeClaimDeleteCommand) Help() string {
 	helpText := `
-Usage: nomad volume claim delete <id>
+Usage: dumb-nomad volume claim delete <id>
 
   volume claim delete is used to delete existing host volume claim by claim ID.
 ` + warning + `

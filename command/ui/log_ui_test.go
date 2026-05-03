@@ -8,7 +8,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/shoenig/test/must"
 )
 

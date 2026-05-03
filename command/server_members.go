@@ -9,8 +9,8 @@ import (
 	"sort"
 	"strings"
 
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/api"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 	"github.com/ryanuber/columnize"
 )
@@ -21,9 +21,9 @@ type ServerMembersCommand struct {
 
 func (c *ServerMembersCommand) Help() string {
 	helpText := `
-Usage: nomad server members [options]
+Usage: dumb-nomad server members [options]
 
-  Display a list of the known servers and their status. Only Nomad servers are
+  Display a list of the known servers and their status. Only Dumb Nomad servers are
   able to service this command.
 
   If ACLs are enabled, this option requires a token with the 'node:read'

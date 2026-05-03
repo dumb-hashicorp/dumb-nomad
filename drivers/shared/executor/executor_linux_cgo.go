@@ -21,19 +21,19 @@ import (
 	"time"
 
 	"github.com/armon/circbuf"
-	"github.com/hashicorp/consul-template/signals"
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/drivers/shared/capabilities"
-	"github.com/hashicorp/nomad/drivers/shared/executor/procstats"
-	"github.com/hashicorp/nomad/helper/users"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-consul-template/signals"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/capabilities"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor/procstats"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/opencontainers/cgroups"
 	_ "github.com/opencontainers/cgroups/devices"
 	"github.com/opencontainers/runc/libcontainer"
@@ -70,7 +70,7 @@ type LibcontainerExecutor struct {
 	id      string
 	command *ExecCommand
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	compute        cpustats.Compute
 	totalCpuStats  *cpustats.Tracker
@@ -113,7 +113,7 @@ func (l *LibcontainerExecutor) catchSignals() {
 	}
 }
 
-func NewExecutorWithIsolation(logger hclog.Logger, compute cpustats.Compute) Executor {
+func NewExecutorWithIsolation(logger dumb-hclog.Logger, compute cpustats.Compute) Executor {
 	sigch := make(chan os.Signal, 4)
 
 	le := &LibcontainerExecutor{
@@ -137,12 +137,12 @@ func (l *LibcontainerExecutor) ListProcesses() set.Collection[int] {
 }
 
 // cleanOldProcessesInCGroup kills processes that might ended up orphans when
-// the executor was unexpectedly killed and nomad can't reconnect to them.
-func (l *LibcontainerExecutor) cleanOldProcessesInCGroup(nomadRelativePath string) error {
-	l.logger.Debug("looking for old processes", "path", nomadRelativePath)
+// the executor was unexpectedly killed and dumb-nomad can't reconnect to them.
+func (l *LibcontainerExecutor) cleanOldProcessesInCGroup(dumb-nomadRelativePath string) error {
+	l.logger.Debug("looking for old processes", "path", dumb-nomadRelativePath)
 
 	root := cgroupslib.GetDefaultRoot()
-	orphanedPIDs, err := cgroups.GetAllPids(filepath.Join(root, nomadRelativePath))
+	orphanedPIDs, err := cgroups.GetAllPids(filepath.Join(root, dumb-nomadRelativePath))
 	if err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("unable to get orphaned task PIDs: %v", err)
 	}
@@ -169,7 +169,7 @@ func (l *LibcontainerExecutor) cleanOldProcessesInCGroup(nomadRelativePath strin
 	// libcontainer will not be able to launch. Five retries every 100 ms should be
 	// more than enough.
 	for i := 100; i < 501; i += 100 {
-		orphanedPIDs, _ = cgroups.GetAllPids(filepath.Join(root, nomadRelativePath))
+		orphanedPIDs, _ = cgroups.GetAllPids(filepath.Join(root, dumb-nomadRelativePath))
 		if len(orphanedPIDs) > 0 {
 			time.Sleep(time.Duration(i) * time.Millisecond)
 			continue
@@ -185,7 +185,7 @@ func (l *LibcontainerExecutor) Launch(command *ExecCommand) (*ProcessState, erro
 
 	if command.Resources == nil {
 		command.Resources = &drivers.Resources{
-			NomadResources: &structs.AllocatedTaskResources{},
+			Dumb NomadResources: &structs.AllocatedTaskResources{},
 		}
 	}
 
@@ -633,7 +633,7 @@ func configureCapabilities(cfg *runc.Config, command *ExecCommand) {
 	switch command.User {
 	case "root":
 		// when running as root, use the legacy set of system capabilities, so
-		// that we do not break existing nomad clusters using this "feature"
+		// that we do not break existing dumb-nomad clusters using this "feature"
 		legacyCaps := capabilities.LegacySupported().Slice(true)
 		cfg.Capabilities = &runc.Capabilities{
 			Bounding:    legacyCaps,
@@ -806,7 +806,7 @@ func (*LibcontainerExecutor) configureCgroupHook(cfg *runc.Config, command *Exec
 }
 
 func (l *LibcontainerExecutor) configureCgroupMemory(cfg *runc.Config, command *ExecCommand) {
-	memHard, memReserved := memoryLimits(command.Resources.NomadResources.Memory)
+	memHard, memReserved := memoryLimits(command.Resources.Dumb NomadResources.Memory)
 	cfg.Cgroups.Resources.Memory = memHard
 	cfg.Cgroups.Resources.MemoryReservation = memReserved
 
@@ -820,9 +820,9 @@ func (l *LibcontainerExecutor) configureCG1(cfg *runc.Config, command *ExecComma
 	cpusetPath := command.Resources.LinuxResources.CpusetCgroupPath
 	cpuCores := command.Resources.LinuxResources.CpusetCpus
 
-	// Set the v1 parent relative path (i.e. /nomad/<scope>) for the NON-cpuset cgroups
+	// Set the v1 parent relative path (i.e. /dumb-nomad/<scope>) for the NON-cpuset cgroups
 	scope := filepath.Base(cgroup)
-	cfg.Cgroups.Path = filepath.Join("/", cgroupslib.NomadCgroupParent, scope)
+	cfg.Cgroups.Path = filepath.Join("/", cgroupslib.Dumb NomadCgroupParent, scope)
 
 	// set cpu resources
 	cfg.Cgroups.Resources.CpuShares = uint64(cpuShares)
@@ -862,7 +862,7 @@ func (l *LibcontainerExecutor) configureCG2(cfg *runc.Config, command *ExecComma
 
 	// finally set the path of the cgroup in which to run the task
 	scope := filepath.Base(cg)
-	cfg.Cgroups.Path = filepath.Join("/", cgroupslib.NomadCgroupParent, partition, scope)
+	cfg.Cgroups.Path = filepath.Join("/", cgroupslib.Dumb NomadCgroupParent, partition, scope)
 
 	// todo(shoenig): we will also want to set cpu bandwidth (i.e. cpu_hard_limit)
 	// hopefully for 1.7
@@ -882,7 +882,7 @@ func (l *LibcontainerExecutor) newLibcontainerConfig(command *ExecCommand) (*run
 
 	configureCapabilities(cfg, command)
 
-	// children should not inherit Nomad agent oom_score_adj value
+	// children should not inherit Dumb Nomad agent oom_score_adj value
 	oomScoreAdj := 0
 	cfg.OomScoreAdj = &oomScoreAdj
 

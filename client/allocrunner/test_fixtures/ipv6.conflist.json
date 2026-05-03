@@ -1,13 +1,13 @@
 {
 	"cniVersion": "0.4.0",
-	"name": "nomad",
+	"name": "dumb-nomad",
 	"plugins": [
 		{
 			"type": "loopback"
 		},
 		{
 			"type": "bridge",
-			"bridge": "nomad",
+			"bridge": "dumb-nomad",
 			"ipMasq": true,
 			"isGateway": true,
 			"forceAddress": true,
@@ -40,7 +40,7 @@
 		{
 			"type": "firewall",
 			"backend": "iptables",
-			"iptablesAdminChainName": "NOMAD-ADMIN"
+			"iptablesAdminChainName": "DUMB_NOMAD-ADMIN"
 		},
 		{
 			"type": "portmap",

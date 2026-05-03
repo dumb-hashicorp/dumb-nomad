@@ -23,22 +23,22 @@ import (
 	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/websocket"
-	"github.com/hashicorp/go-connlimit"
-	log "github.com/hashicorp/go-hclog"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	multierror "github.com/hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/go-connlimit"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	multierror "github.com/dumb-hashicorp/go-multierror"
 	"github.com/rs/cors"
 	"golang.org/x/time/rate"
 
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/client"
-	"github.com/hashicorp/nomad/command/agent/event"
-	"github.com/hashicorp/nomad/helper/noxssrw"
-	"github.com/hashicorp/nomad/helper/tlsutil"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/client"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/event"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/noxssrw"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/tlsutil"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
 )
 
 const (
@@ -47,7 +47,7 @@ const (
 
 	// ErrEntOnly is the error returned if accessing an enterprise only
 	// endpoint
-	ErrEntOnly = "Nomad Enterprise only endpoint"
+	ErrEntOnly = "Dumb Nomad Enterprise only endpoint"
 
 	// ErrServerOnly is the error text returned if accessing a server only
 	// endpoint
@@ -70,7 +70,7 @@ var (
 
 	// Displayed when ui is disabled, but overridden if the ui build
 	// tag isn't enabled
-	stubHTML = "<html><p>Nomad UI is disabled</p></html>"
+	stubHTML = "<html><p>Dumb Nomad UI is disabled</p></html>"
 
 	// allowCORSWithMethods sets permissive CORS headers for a handler, used by
 	// wrapCORS and wrapCORSWithMethods
@@ -89,7 +89,7 @@ type handlerByteFn func(resp http.ResponseWriter, req *http.Request) ([]byte, er
 
 type RPCer interface {
 	RPC(string, any, any) error
-	Server() *nomad.Server
+	Server() *dumb-nomad.Server
 	Client() *client.Client
 	Stats() map[string]map[string]string
 	GetConfig() *Config
@@ -209,7 +209,7 @@ func NewHTTPServers(agent *Agent, config *Config) ([]*HTTPServer, error) {
 			case <-agent.shutdownCh:
 				return
 			case <-ticker.C:
-				metrics.SetGauge([]string{"nomad", "agent", "http", "connections"}, float32(connCount.Load()))
+				metrics.SetGauge([]string{"dumb-nomad", "agent", "http", "connections"}, float32(connCount.Load()))
 			}
 		}
 	}()
@@ -329,7 +329,7 @@ func connLimiter(connLimit int, logger log.Logger) func(conn net.Conn, state htt
 		MaxConnsPerClientIP: connLimit,
 	}).HTTPConnStateFuncWithErrorHandler(func(err error, conn net.Conn) {
 		if err == connlimit.ErrPerClientIPLimitReached {
-			metrics.IncrCounter([]string{"nomad", "agent", "http", "exceeded"}, 1)
+			metrics.IncrCounter([]string{"dumb-nomad", "agent", "http", "exceeded"}, 1)
 			if n := limiter.Reserve(); n.Delay() == 0 {
 				logger.Warn("Too many concurrent connections", "address", conn.RemoteAddr().String(), "limit", connLimit)
 				conn.SetDeadline(time.Now().Add(10 * time.Millisecond))
@@ -578,7 +578,7 @@ func (s *HTTPServer) registerHandlers(enableDebug bool) {
 // requests from task api hooks until the HTTP server is setup and ready to
 // accept from new listeners.
 //
-// bufconndialer provides similar functionality to consul-template except it
+// bufconndialer provides similar functionality to dumb-consul-template except it
 // satisfies the Dialer API as opposed to the Serve(Listener) API.
 type builtinAPI struct {
 	// srvReadyCh is closed when srv is ready
@@ -816,7 +816,7 @@ func (s *HTTPServer) wrap(handler func(resp http.ResponseWriter, req *http.Reque
 
 // wrapNonJSON is used to wrap functions returning non JSON
 // serializeable data to make them more convenient. It is primarily
-// responsible for setting nomad headers and logging.
+// responsible for setting dumb-nomad headers and logging.
 // Handler functions are responsible for setting Content-Type Header
 func (s *HTTPServer) wrapNonJSON(handler func(resp http.ResponseWriter, req *http.Request) ([]byte, error)) func(resp http.ResponseWriter, req *http.Request) {
 	f := func(resp http.ResponseWriter, req *http.Request) {
@@ -868,7 +868,7 @@ func decodeBody(req *http.Request, out interface{}) error {
 
 // setIndex is used to set the index response header
 func setIndex(resp http.ResponseWriter, index uint64) {
-	resp.Header().Set("X-Nomad-Index", strconv.FormatUint(index, 10))
+	resp.Header().Set("X-Dumb Nomad-Index", strconv.FormatUint(index, 10))
 }
 
 // setKnownLeader is used to set the known leader header
@@ -877,19 +877,19 @@ func setKnownLeader(resp http.ResponseWriter, known bool) {
 	if !known {
 		s = "false"
 	}
-	resp.Header().Set("X-Nomad-KnownLeader", s)
+	resp.Header().Set("X-Dumb Nomad-KnownLeader", s)
 }
 
 // setLastContact is used to set the last contact header
 func setLastContact(resp http.ResponseWriter, last time.Duration) {
 	lastMsec := uint64(last / time.Millisecond)
-	resp.Header().Set("X-Nomad-LastContact", strconv.FormatUint(lastMsec, 10))
+	resp.Header().Set("X-Dumb Nomad-LastContact", strconv.FormatUint(lastMsec, 10))
 }
 
 // setNextToken is used to set the next token header for pagination
 func setNextToken(resp http.ResponseWriter, nextToken string) {
 	if nextToken != "" {
-		resp.Header().Set("X-Nomad-NextToken", nextToken)
+		resp.Header().Set("X-Dumb Nomad-NextToken", nextToken)
 	}
 }
 
@@ -1016,9 +1016,9 @@ func parseInt(req *http.Request, field string) (*int, error) {
 	return nil, nil
 }
 
-// parseToken is used to parse the X-Nomad-Token param
+// parseToken is used to parse the X-Dumb Nomad-Token param
 func (s *HTTPServer) parseToken(req *http.Request, token *string) {
-	if other := req.Header.Get("X-Nomad-Token"); other != "" {
+	if other := req.Header.Get("X-Dumb Nomad-Token"); other != "" {
 		*token = strings.TrimSpace(other)
 		return
 	}

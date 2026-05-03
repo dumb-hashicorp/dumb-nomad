@@ -11,15 +11,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
 	"github.com/shoenig/test/must"
 )
 
@@ -29,7 +29,7 @@ func testExecutorCommand(t *testing.T) *testExecCmd {
 	task := alloc.Job.TaskGroups[0].Tasks[0]
 	taskEnv := taskenv.NewBuilder(mock.Node(), alloc, task, "global").Build()
 
-	allocDir := allocdir.NewAllocDir(testlog.HCLogger(t), t.TempDir(), t.TempDir(), alloc.ID)
+	allocDir := allocdir.NewAllocDir(testlog.DUMB_HCLogger(t), t.TempDir(), t.TempDir(), alloc.ID)
 	must.NoError(t, allocDir.Build())
 	t.Cleanup(func() { allocDir.Destroy() })
 
@@ -39,7 +39,7 @@ func testExecutorCommand(t *testing.T) *testExecCmd {
 		Env:     taskEnv.List(),
 		TaskDir: td.Dir,
 		Resources: &drivers.Resources{
-			NomadResources: &structs.AllocatedTaskResources{
+			Dumb NomadResources: &structs.AllocatedTaskResources{
 				Cpu: structs.AllocatedCpuResources{
 					CpuShares: 500,
 				},
@@ -67,7 +67,7 @@ func TestExecutor_ProcessExit(t *testing.T) {
 	cmd := testExecutorCommand(t)
 	cmd.command.Cmd = "Powershell.exe"
 	cmd.command.Args = []string{"sleep", "30"}
-	executor := NewExecutor(testlog.HCLogger(t), compute)
+	executor := NewExecutor(testlog.DUMB_HCLogger(t), compute)
 
 	t.Cleanup(func() { executor.Shutdown("SIGKILL", 0) })
 

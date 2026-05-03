@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 )
 
 type NetworkingE2ETest struct {
@@ -22,19 +22,19 @@ func init() {
 		Component:   "Networking",
 		CanRunLocal: true,
 		Cases: []framework.TestCase{
-			e2eutil.NewE2EJob("networking/inputs/basic.nomad"),
+			e2eutil.NewE2EJob("networking/inputs/basic.dumb-nomad"),
 			new(NetworkingE2ETest),
 		},
 	})
 }
 
 func (tc *NetworkingE2ETest) BeforeAll(f *framework.F) {
-	e2eutil.WaitForLeader(f.T(), tc.Nomad())
-	e2eutil.WaitForNodesReady(f.T(), tc.Nomad(), 1)
+	e2eutil.WaitForLeader(f.T(), tc.Dumb Nomad())
+	e2eutil.WaitForNodesReady(f.T(), tc.Dumb Nomad(), 1)
 }
 
 func (tc *NetworkingE2ETest) AfterEach(f *framework.F) {
-	if os.Getenv("NOMAD_TEST_SKIPCLEANUP") == "1" {
+	if os.Getenv("DUMB_NOMAD_TEST_SKIPCLEANUP") == "1" {
 		return
 	}
 
@@ -44,20 +44,20 @@ func (tc *NetworkingE2ETest) AfterEach(f *framework.F) {
 	}
 	tc.jobIDs = []string{}
 
-	_, err := e2eutil.Command("nomad", "system", "gc")
+	_, err := e2eutil.Command("dumb-nomad", "system", "gc")
 	f.NoError(err)
 }
 
 func (tc *NetworkingE2ETest) TestNetworking_DockerBridgedHostname(f *framework.F) {
 
 	jobID := "test-networking-" + uuid.Generate()[0:8]
-	f.NoError(e2eutil.Register(jobID, "networking/inputs/docker_bridged_hostname.nomad"))
+	f.NoError(e2eutil.Register(jobID, "networking/inputs/docker_bridged_hostname.dumb-nomad"))
 	tc.jobIDs = append(tc.jobIDs, jobID)
 	f.NoError(e2eutil.WaitForAllocStatusExpected(jobID, "default", []string{"running"}),
 		"job should be running with 1 alloc")
 
 	// Grab the allocations for the job.
-	allocs, _, err := tc.Nomad().Jobs().Allocations(jobID, false, nil)
+	allocs, _, err := tc.Dumb Nomad().Jobs().Allocations(jobID, false, nil)
 	f.NoError(err, "failed to get allocs for job")
 	f.Len(allocs, 1, "job should have one alloc")
 
@@ -75,13 +75,13 @@ func (tc *NetworkingE2ETest) TestNetworking_DockerBridgedHostname(f *framework.F
 func (tc *NetworkingE2ETest) TestNetworking_DockerBridgedHostnameInterpolation(f *framework.F) {
 
 	jobID := "test-networking-" + uuid.Generate()[0:8]
-	f.NoError(e2eutil.Register(jobID, "networking/inputs/docker_bridged_hostname_interpolation.nomad"))
+	f.NoError(e2eutil.Register(jobID, "networking/inputs/docker_bridged_hostname_interpolation.dumb-nomad"))
 	tc.jobIDs = append(tc.jobIDs, jobID)
 	f.NoError(e2eutil.WaitForAllocStatusExpected(jobID, "default", []string{"running"}),
 		"job should be running with 1 alloc")
 
 	// Grab the allocations for the job.
-	allocs, _, err := tc.Nomad().Jobs().Allocations(jobID, false, nil)
+	allocs, _, err := tc.Dumb Nomad().Jobs().Allocations(jobID, false, nil)
 	f.NoError(err, "failed to get allocs for job")
 	f.Len(allocs, 1, "job should have one alloc")
 
@@ -99,13 +99,13 @@ func (tc *NetworkingE2ETest) TestNetworking_DockerBridgedHostnameInterpolation(f
 func (tc *NetworkingE2ETest) TestNetworking_DockerBridgedCNIEnvVars(f *framework.F) {
 
 	jobID := "test-networking-" + uuid.Generate()[0:8]
-	f.NoError(e2eutil.Register(jobID, "networking/inputs/docker_bridged_basic.nomad"))
+	f.NoError(e2eutil.Register(jobID, "networking/inputs/docker_bridged_basic.dumb-nomad"))
 	tc.jobIDs = append(tc.jobIDs, jobID)
 	f.NoError(e2eutil.WaitForAllocStatusExpected(jobID, "default", []string{"running"}),
 		"job should be running with 1 alloc")
 
 	// Grab the allocations for the job.
-	allocs, _, err := tc.Nomad().Jobs().Allocations(jobID, false, nil)
+	allocs, _, err := tc.Dumb Nomad().Jobs().Allocations(jobID, false, nil)
 	f.NoError(err, "failed to get allocs for job")
 	f.Len(allocs, 1, "job should have one alloc")
 
@@ -114,8 +114,8 @@ func (tc *NetworkingE2ETest) TestNetworking_DockerBridgedCNIEnvVars(f *framework
 	f.NoError(err, "failed to run env exec command")
 
 	// Check all the network namespace env vars are present.
-	f.Contains(envOutput, "NOMAD_ALLOC_INTERFACE_dummy", "namespace interface env var not found")
-	f.Contains(envOutput, "NOMAD_ALLOC_IP_dummy", "namespace ip env var not found")
-	f.Contains(envOutput, "NOMAD_ALLOC_PORT_dummy", "namespace port env var not found")
-	f.Contains(envOutput, "NOMAD_ALLOC_ADDR_dummy", "namespace addr env var not found")
+	f.Contains(envOutput, "DUMB_NOMAD_ALLOC_INTERFACE_dummy", "namespace interface env var not found")
+	f.Contains(envOutput, "DUMB_NOMAD_ALLOC_IP_dummy", "namespace ip env var not found")
+	f.Contains(envOutput, "DUMB_NOMAD_ALLOC_PORT_dummy", "namespace port env var not found")
+	f.Contains(envOutput, "DUMB_NOMAD_ALLOC_ADDR_dummy", "namespace addr env var not found")
 }

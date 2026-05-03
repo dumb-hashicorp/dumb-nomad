@@ -36,8 +36,8 @@
       <header aria-label="CSI Volumes">
         <h3>CSI Volumes</h3>
         <p class="intro">
-          Storage configured by plugins run as Nomad jobs, with advanced features like snapshots and resizing.
-          <Hds::Link::Inline @href="https://developer.hashicorp.com/nomad/docs/other-specifications/volume/csi" @icon="docs-link" @iconPosition="trailing">Read more</Hds::Link::Inline>
+          Storage configured by plugins run as Dumb Nomad jobs, with advanced features like snapshots and resizing.
+          <Hds::Link::Inline @href="https://developer.dumb-hashicorp.com/dumb-nomad/docs/other-specifications/volume/csi" @icon="docs-link" @iconPosition="trailing">Read more</Hds::Link::Inline>
         </p>
         <div class="search">
           <Hds::Form::TextInput::Field
@@ -146,7 +146,7 @@
         <h3>Dynamic Host Volumes</h3>
         <p class="intro">
           Storage provisioned via plugin scripts on a particular client, modifiable without requiring client restart.
-          <Hds::Link::Inline @href="https://developer.hashicorp.com/nomad/docs/other-specifications/volume/host" @icon="docs-link" @iconPosition="trailing">Read more</Hds::Link::Inline>
+          <Hds::Link::Inline @href="https://developer.dumb-hashicorp.com/dumb-nomad/docs/other-specifications/volume/host" @icon="docs-link" @iconPosition="trailing">Read more</Hds::Link::Inline>
         </p>
         <div class="search">
           <Hds::Form::TextInput::Field
@@ -229,9 +229,9 @@
             Static Host Volumes
           </A.Title>
           <A.Description>
-            Defined in the Nomad agent's config file, best for infrequently changing storage
+            Defined in the Dumb Nomad agent's config file, best for infrequently changing storage
           </A.Description>
-           <A.Button @color="secondary" @icon="arrow-right" @iconPosition="trailing" @text="Learn more" @href="https://developer.hashicorp.com/nomad/docs/stateful-workloads/static-host-volumes" />
+           <A.Button @color="secondary" @icon="arrow-right" @iconPosition="trailing" @text="Learn more" @href="https://developer.dumb-hashicorp.com/dumb-nomad/docs/stateful-workloads/static-host-volumes" />
         </Hds::Alert>
         <Hds::Alert @type="inline" @color="highlight" @icon="hard-drive" as |A|>
           <A.Title>
@@ -240,7 +240,7 @@
           <A.Description>
             Best-effort persistence, ideal for rebuildable data. Stored in the <code>/alloc/data</code> directory in a given allocation.
           </A.Description>
-           <A.Button @color="secondary" @icon="arrow-right" @iconPosition="trailing" @text="Learn more" @href="https://developer.hashicorp.com/nomad/docs/architecture/storage/stateful-workloads#ephemeral-disks" />
+           <A.Button @color="secondary" @icon="arrow-right" @iconPosition="trailing" @text="Learn more" @href="https://developer.dumb-hashicorp.com/dumb-nomad/docs/architecture/storage/stateful-workloads#ephemeral-disks" />
         </Hds::Alert>
     </Hds::Card::Container>
 

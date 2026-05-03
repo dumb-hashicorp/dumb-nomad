@@ -9,11 +9,11 @@ import (
 	"fmt"
 	"os"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	"github.com/hashicorp/nomad/helper/boltdd"
-	"github.com/hashicorp/nomad/nomad/structs"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/boltdd"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"go.etcd.io/bbolt"
 )
 
@@ -93,7 +93,7 @@ func backupDB(bdb *bbolt.DB, dst string) error {
 //	    alloc-dir (166 bytes)
 //	    immutable (15 bytes)
 //	    mutable (1294 bytes)
-func UpgradeAllocs(logger hclog.Logger, tx *boltdd.Tx) error {
+func UpgradeAllocs(logger dumb-hclog.Logger, tx *boltdd.Tx) error {
 	btx := tx.BoltTx()
 	allocationsBucket := btx.Bucket(allocationsBucketName)
 	if allocationsBucket == nil {
@@ -147,7 +147,7 @@ func UpgradeAllocs(logger hclog.Logger, tx *boltdd.Tx) error {
 }
 
 // upgradeAllocBucket upgrades an alloc bucket.
-func upgradeAllocBucket(logger hclog.Logger, tx *boltdd.Tx, bkt *bbolt.Bucket, allocID string) error {
+func upgradeAllocBucket(logger dumb-hclog.Logger, tx *boltdd.Tx, bkt *bbolt.Bucket, allocID string) error {
 	allocFound := false
 	taskBuckets := [][]byte{}
 	cur := bkt.Cursor()
@@ -255,7 +255,7 @@ func upgradeAllocBucket(logger hclog.Logger, tx *boltdd.Tx, bkt *bbolt.Bucket, a
 
 // upgradeTaskBucket iterates over keys in a task bucket, deleting invalid keys
 // and returning the 0.8 version of the state.
-func upgradeTaskBucket(logger hclog.Logger, bkt *bbolt.Bucket) (*taskRunnerState08, error) {
+func upgradeTaskBucket(logger dumb-hclog.Logger, bkt *bbolt.Bucket) (*taskRunnerState08, error) {
 	simpleFound := false
 	var trState taskRunnerState08
 
@@ -299,7 +299,7 @@ func upgradeTaskBucket(logger hclog.Logger, bkt *bbolt.Bucket) (*taskRunnerState
 	return &trState, nil
 }
 
-// upgradeOldAllocMutable upgrades Nomad 0.8 alloc runner state.
+// upgradeOldAllocMutable upgrades Dumb Nomad 0.8 alloc runner state.
 func upgradeOldAllocMutable(tx *boltdd.Tx, allocID string, oldBytes []byte) error {
 	var oldMutable allocRunnerMutableState08
 	err := codec.NewDecoderBytes(oldBytes, structs.MsgpackHandle).Decode(&oldMutable)
@@ -322,7 +322,7 @@ func upgradeOldAllocMutable(tx *boltdd.Tx, allocID string, oldBytes []byte) erro
 	return nil
 }
 
-func UpgradeDynamicPluginRegistry(logger hclog.Logger, tx *boltdd.Tx) error {
+func UpgradeDynamicPluginRegistry(logger dumb-hclog.Logger, tx *boltdd.Tx) error {
 
 	dynamicBkt := tx.Bucket(dynamicPluginBucketName)
 	if dynamicBkt == nil {

@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/posener/complete"
 )
 
@@ -22,7 +22,7 @@ type ACLAuthMethodDeleteCommand struct {
 // Help satisfies the cli.Command Help function.
 func (a *ACLAuthMethodDeleteCommand) Help() string {
 	helpText := `
-Usage: nomad acl auth-method delete <acl_method_name>
+Usage: dumb-nomad acl auth-method delete <acl_method_name>
 
   Delete is used to delete an existing ACL auth method. Use requires a
   management token.

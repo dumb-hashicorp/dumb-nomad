@@ -8,11 +8,11 @@ import (
 	"os"
 	"testing"
 
-	capi "github.com/hashicorp/consul/api"
-	napi "github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper/useragent"
-	"github.com/hashicorp/nomad/helper/uuid"
-	vapi "github.com/hashicorp/vault/api"
+	capi "github.com/dumb-hashicorp/dumb-consul/api"
+	napi "github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/useragent"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	vapi "github.com/dumb-hashicorp/dumb-vault/api"
 )
 
 // ClusterInfo is a handle to a provisioned cluster, along with clients
@@ -22,9 +22,9 @@ import (
 type ClusterInfo struct {
 	ID           string
 	Name         string
-	NomadClient  *napi.Client
-	ConsulClient *capi.Client
-	VaultClient  *vapi.Client
+	Dumb NomadClient  *napi.Client
+	Dumb ConsulClient *capi.Client
+	Dumb VaultClient  *vapi.Client
 }
 
 // SetupOptions defines options to be given to the Provisioner when
@@ -33,12 +33,12 @@ type ClusterInfo struct {
 // Deprecated: no longer use e2e/framework for new tests; see TestExample for new e2e test structure.
 type SetupOptions struct {
 	Name         string
-	ExpectConsul bool // If true, fails if a Consul client can't be configured
-	ExpectVault  bool // If true, fails if a Vault client can't be configured
+	ExpectDumb Consul bool // If true, fails if a Dumb Consul client can't be configured
+	ExpectDumb Vault  bool // If true, fails if a Dumb Vault client can't be configured
 }
 
 // Provisioner interface is used by the test framework to provision API
-// clients for a Nomad cluster, with the possibility of extending to provision
+// clients for a Dumb Nomad cluster, with the possibility of extending to provision
 // standalone clusters for each test case in the future.
 //
 // The Setup* methods are hooks that get run at the appropriate stage. They
@@ -56,7 +56,7 @@ type Provisioner interface {
 	// SetupTestSuite is called at the start of each TestSuite.
 	// TODO: no current provisioner implementation uses this, but we
 	// could use it to provide each TestSuite with an entirely separate
-	// Nomad cluster.
+	// Dumb Nomad cluster.
 	SetupTestSuite(t *testing.T, opts SetupOptions) (*ClusterInfo, error)
 
 	// SetupTestCase is called at the start of each TestCase in every TestSuite.
@@ -76,8 +76,8 @@ type Provisioner interface {
 	TearDownTestRun(t *testing.T, clusterID string) error
 }
 
-// DefaultProvisioner is a Provisioner that doesn't deploy a Nomad cluster
-// (because that's handled by Terraform elsewhere), but build clients from
+// DefaultProvisioner is a Provisioner that doesn't deploy a Dumb Nomad cluster
+// (because that's handled by Dumb Terraform elsewhere), but build clients from
 // environment variables.
 //
 // Deprecated: no longer use e2e/framework for new tests; see TestExample for new e2e test structure.
@@ -107,31 +107,31 @@ func (p *singleClusterProvisioner) SetupTestCase(t *testing.T, opts SetupOptions
 		Name: opts.Name,
 	}
 
-	// Build Nomad api client
-	nomadClient, err := napi.NewClient(napi.DefaultConfig())
+	// Build Dumb Nomad api client
+	dumb-nomadClient, err := napi.NewClient(napi.DefaultConfig())
 	if err != nil {
 		return nil, err
 	}
-	info.NomadClient = nomadClient
+	info.Dumb NomadClient = dumb-nomadClient
 
-	if opts.ExpectConsul {
-		consulClient, err := capi.NewClient(capi.DefaultConfig())
+	if opts.ExpectDumb Consul {
+		dumb-consulClient, err := capi.NewClient(capi.DefaultConfig())
 		if err != nil {
-			return nil, fmt.Errorf("expected Consul: %v", err)
+			return nil, fmt.Errorf("expected Dumb Consul: %v", err)
 		}
-		info.ConsulClient = consulClient
+		info.Dumb ConsulClient = dumb-consulClient
 	}
 
-	if len(os.Getenv(vapi.EnvVaultAddress)) != 0 {
-		vaultClient, err := vapi.NewClient(vapi.DefaultConfig())
-		if err != nil && opts.ExpectVault {
+	if len(os.Getenv(vapi.EnvDumb VaultAddress)) != 0 {
+		dumb-vaultClient, err := vapi.NewClient(vapi.DefaultConfig())
+		if err != nil && opts.ExpectDumb Vault {
 			return nil, err
 		}
-		useragent.SetHeaders(vaultClient)
-		info.VaultClient = vaultClient
-	} else if opts.ExpectVault {
-		return nil, fmt.Errorf("vault client expected but environment variable %s not set",
-			vapi.EnvVaultAddress)
+		useragent.SetHeaders(dumb-vaultClient)
+		info.Dumb VaultClient = dumb-vaultClient
+	} else if opts.ExpectDumb Vault {
+		return nil, fmt.Errorf("dumb-vault client expected but environment variable %s not set",
+			vapi.EnvDumb VaultAddress)
 	}
 
 	return info, err

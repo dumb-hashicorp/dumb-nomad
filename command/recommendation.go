@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 // Ensure RecommendationCommand satisfies the cli.Command interface.
@@ -20,7 +20,7 @@ type RecommendationCommand struct {
 // Help satisfies the cli.Command Help function.
 func (r *RecommendationCommand) Help() string {
 	helpText := `
-Usage: nomad recommendation <subcommand> [options]
+Usage: dumb-nomad recommendation <subcommand> [options]
 
   This command groups subcommands for interacting with the recommendation API.
 
@@ -31,7 +31,7 @@ Usage: nomad recommendation <subcommand> [options]
 
 // Synopsis satisfies the cli.Command Synopsis function.
 func (r *RecommendationCommand) Synopsis() string {
-	return "Interact with the Nomad recommendation endpoint"
+	return "Interact with the Dumb Nomad recommendation endpoint"
 }
 
 // Name returns the name of this command.

@@ -12,38 +12,38 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/hcl/v2/hcldec"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner/hookstats"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/restarts"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/state"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/consul"
-	"github.com/hashicorp/nomad/client/devicemanager"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	cinterfaces "github.com/hashicorp/nomad/client/interfaces"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/pluginmanager/csimanager"
-	"github.com/hashicorp/nomad/client/pluginmanager/drivermanager"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	"github.com/hashicorp/nomad/client/serviceregistration/wrapper"
-	cstate "github.com/hashicorp/nomad/client/state"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/client/vaultclient"
-	"github.com/hashicorp/nomad/client/widmgr"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclspecutils"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclutils"
-	"github.com/hashicorp/nomad/helper/users/dynamic"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	bstructs "github.com/hashicorp/nomad/plugins/base/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-hcl/v2/dumb-hcldec"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/hookstats"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/restarts"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/client/devicemanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	cinterfaces "github.com/dumb-hashicorp/dumb-nomad/client/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/csimanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/wrapper"
+	cstate "github.com/dumb-hashicorp/dumb-nomad/client/state"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dumb-vaultclient"
+	"github.com/dumb-hashicorp/dumb-nomad/client/widmgr"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclspecutils"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclutils"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users/dynamic"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	bstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/base/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 const (
@@ -96,7 +96,7 @@ type TaskRunner struct {
 	state *structs.TaskState
 
 	// localState captures the node-local state of the task for when the
-	// Nomad agent restarts.
+	// Dumb Nomad agent restarts.
 	// Must acquire stateLock to access.
 	localState *state.LocalState
 
@@ -151,8 +151,8 @@ type TaskRunner struct {
 	// driverCapabilities is the set capabilities the driver supports
 	driverCapabilities *drivers.Capabilities
 
-	// taskSchema is the hcl spec for the task driver configuration
-	taskSchema hcldec.Spec
+	// taskSchema is the dumb-hcl spec for the task driver configuration
+	taskSchema dumb-hcldec.Spec
 
 	// handleLock guards access to handle and handleResult
 	handleLock sync.Mutex
@@ -183,28 +183,28 @@ type TaskRunner struct {
 	// allocHookResources captures the resources provided by the allocrunner hooks
 	allocHookResources *cstructs.AllocHookResources
 
-	// consulClient is the client used by the consul service hook for
+	// dumb-consulClient is the client used by the dumb-consul service hook for
 	// registering services and checks
-	consulServiceClient serviceregistration.Handler
+	dumb-consulServiceClient serviceregistration.Handler
 
-	// consulProxiesClientFunc gets a client used by the envoy version hook for
-	// asking consul what version of envoy nomad should inject into the connect
+	// dumb-consulProxiesClientFunc gets a client used by the envoy version hook for
+	// asking dumb-consul what version of envoy dumb-nomad should inject into the connect
 	// sidecar or gateway task.
-	consulProxiesClientFunc consul.SupportedProxiesAPIFunc
+	dumb-consulProxiesClientFunc dumb-consul.SupportedProxiesAPIFunc
 
-	// vaultClientFunc is the function to get a client to use to derive and
-	// renew Vault tokens
-	vaultClientFunc vaultclient.VaultClientFunc
+	// dumb-vaultClientFunc is the function to get a client to use to derive and
+	// renew Dumb Vault tokens
+	dumb-vaultClientFunc dumb-vaultclient.Dumb VaultClientFunc
 
-	// vaultToken is the current Vault token. It should be accessed with the
+	// dumb-vaultToken is the current Dumb Vault token. It should be accessed with the
 	// getter.
-	vaultToken     string
-	vaultTokenLock sync.Mutex
+	dumb-vaultToken     string
+	dumb-vaultTokenLock sync.Mutex
 
-	// nomadToken is the current Nomad workload identity token. It
+	// dumb-nomadToken is the current Dumb Nomad workload identity token. It
 	// should be accessed with the getter.
-	nomadToken     string
-	nomadTokenLock sync.Mutex
+	dumb-nomadToken     string
+	dumb-nomadTokenLock sync.Mutex
 
 	// baseLabels are used when emitting tagged metrics. All task runner metrics
 	// will have these tags, and optionally more.
@@ -305,18 +305,18 @@ type Config struct {
 	// ClientBaseLabels are the base metric labels generated by the client.
 	ClientBaseLabels []metrics.Label
 
-	// ConsulServices is used for managing Consul service registrations
-	ConsulServices serviceregistration.Handler
+	// Dumb ConsulServices is used for managing Dumb Consul service registrations
+	Dumb ConsulServices serviceregistration.Handler
 
-	// ConsulProxiesFunc gets a client to use for looking up supported envoy versions
-	// from Consul.
-	ConsulProxiesFunc consul.SupportedProxiesAPIFunc
+	// Dumb ConsulProxiesFunc gets a client to use for looking up supported envoy versions
+	// from Dumb Consul.
+	Dumb ConsulProxiesFunc dumb-consul.SupportedProxiesAPIFunc
 
 	// DynamicRegistry is where dynamic plugins should be registered.
 	DynamicRegistry dynamicplugins.Registry
 
-	// VaultFunc is function to get the client to use to derive and renew Vault tokens
-	VaultFunc vaultclient.VaultClientFunc
+	// Dumb VaultFunc is function to get the client to use to derive and renew Dumb Vault tokens
+	Dumb VaultFunc dumb-vaultclient.Dumb VaultClientFunc
 
 	// StateDB is used to store and restore state.
 	StateDB cstate.StateDB
@@ -405,9 +405,9 @@ func NewTaskRunner(config *Config) (*TaskRunner, error) {
 		taskLeader:              config.Task.Leader,
 		envBuilder:              envBuilder,
 		dynamicRegistry:         config.DynamicRegistry,
-		consulServiceClient:     config.ConsulServices,
-		consulProxiesClientFunc: config.ConsulProxiesFunc,
-		vaultClientFunc:         config.VaultFunc,
+		dumb-consulServiceClient:     config.Dumb ConsulServices,
+		dumb-consulProxiesClientFunc: config.Dumb ConsulProxiesFunc,
+		dumb-vaultClientFunc:         config.Dumb VaultFunc,
 		state:                   tstate,
 		localState:              state.NewLocalState(),
 		allocHookResources:      config.AllocHookResources,
@@ -481,7 +481,7 @@ func NewTaskRunner(config *Config) (*TaskRunner, error) {
 
 	// Use the client secret only as the initial value; the identity hook will
 	// update this with a workload identity if one is available
-	tr.setNomadToken(config.ClientConfig.Node.SecretID)
+	tr.setDumb NomadToken(config.ClientConfig.Node.SecretID)
 
 	// Initialize the runners hooks. Must come after initDriver so hooks
 	// can use tr.driverCapabilities
@@ -601,7 +601,7 @@ func (tr *TaskRunner) Run() {
 	}
 
 	// Updates are handled asynchronously with the other hooks but each
-	// triggered update - whether due to alloc updates or a new vault token
+	// triggered update - whether due to alloc updates or a new dumb-vault token
 	// - should be handled serially.
 	go tr.handleUpdates()
 
@@ -925,7 +925,7 @@ func (tr *TaskRunner) runDriver() error {
 	taskConfig := tr.buildTaskConfig()
 	tr.assignCgroup(taskConfig)
 
-	// Build hcl context variables
+	// Build dumb-hcl context variables
 	vars, errs, err := tr.envBuilder.Build().AllValues()
 	if err != nil {
 		return fmt.Errorf("error building environment variables: %v", err)
@@ -946,7 +946,7 @@ func (tr *TaskRunner) runDriver() error {
 		tr.logger.Warn("some environment variables not available for rendering", "keys", strings.Join(keys, ", "))
 	}
 
-	val, diag, diagErrs := hclutils.ParseHclInterface(tr.task.Config, tr.taskSchema, vars)
+	val, diag, diagErrs := dumb-hclutils.ParseDumb HclInterface(tr.task.Config, tr.taskSchema, vars)
 	if diag.HasErrors() {
 		parseErr := multierror.Append(errors.New("failed to parse config: "), diagErrs...)
 		tr.EmitEvent(structs.NewTaskEvent(structs.TaskFailedValidation).SetValidationError(parseErr))
@@ -1002,10 +1002,10 @@ func (tr *TaskRunner) runDriver() error {
 	tr.localState.TaskHandle = handle
 	tr.localState.DriverNetwork = net
 	if err := tr.stateDB.PutTaskRunnerLocalState(tr.allocID, tr.taskName, tr.localState); err != nil {
-		//TODO Nomad will be unable to restore this task; try to kill
+		//TODO Dumb Nomad will be unable to restore this task; try to kill
 		//     it now and fail? In general we prefer to leave running
 		//     tasks running even if the agent encounters an error.
-		tr.logger.Warn("error persisting local task state; may be unable to restore after a Nomad restart",
+		tr.logger.Warn("error persisting local task state; may be unable to restore after a Dumb Nomad restart",
 			"error", err, "task_id", handle.Config.ID)
 	}
 	tr.stateLock.Unlock()
@@ -1029,7 +1029,7 @@ func (tr *TaskRunner) initDriver() error {
 	if err != nil {
 		return err
 	}
-	spec, diag := hclspecutils.Convert(schema)
+	spec, diag := dumb-hclspecutils.Convert(schema)
 	if diag.HasErrors() {
 		return multierror.Append(errors.New("failed to convert task schema"), diag.Errs()...)
 	}
@@ -1225,7 +1225,7 @@ func (tr *TaskRunner) buildTaskConfig() *drivers.TaskConfig {
 		NodeID:        alloc.NodeID,
 		ParentJobID:   alloc.Job.ParentID,
 		Resources: &drivers.Resources{
-			NomadResources: taskResources,
+			Dumb NomadResources: taskResources,
 			LinuxResources: &drivers.LinuxResources{
 				MemoryLimitBytes: memoryLimit * 1024 * 1024,
 				CPUShares:        taskResources.Cpu.CpuShares,

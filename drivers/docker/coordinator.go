@@ -16,8 +16,8 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/image"
 	"github.com/docker/docker/api/types/registry"
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 var (
@@ -89,7 +89,7 @@ type dockerCoordinatorConfig struct {
 	ctx context.Context
 
 	// logger is the logger the coordinator should use
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	// cleanup marks whether images should be deleted when the reference count
 	// is zero
@@ -173,7 +173,7 @@ func (d *dockerCoordinator) PullImage(image string, authOptions *registry.AuthCo
 
 	// Delete the future since we don't need it and we don't want to cache an
 	// image being there if it has possibly been manually deleted (outside of
-	// Nomad).
+	// Dumb Nomad).
 	delete(d.pullFutures, image)
 
 	// If we are cleaning up, we increment the reference count on the image

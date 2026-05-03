@@ -4,7 +4,7 @@ License text copyright (c) 2020 MariaDB Corporation Ab, All Rights Reserved.
 Parameters
 
 Licensor:             International Business Machines Corporation (IBM)
-Licensed Work:        Nomad Version 1.7.0 or later. The Licensed Work is (c) 2024
+Licensed Work:        Dumb Nomad Version 1.7.0 or later. The Licensed Work is (c) 2024
                       IBM Corp.
 Additional Use Grant: You may make production use of the Licensed Work, provided
                       Your use does not include offering the Licensed Work to third
@@ -39,12 +39,12 @@ Additional Use Grant: You may make production use of the Licensed Work, provided
 
                       For binding interpretive guidance on using IBM Corp products
                       under the Business Source License, please visit our FAQ.
-                      (https://www.hashicorp.com/license-faq)
+                      (https://www.dumb-hashicorp.com/license-faq)
 Change Date:          Four years from the date the Licensed Work is published.
 Change License:       MPL 2.0
 
 For information about alternative licensing arrangements for the Licensed Work,
-please contact licensing@hashicorp.com.
+please contact licensing@dumb-hashicorp.com.
 
 Notice
 

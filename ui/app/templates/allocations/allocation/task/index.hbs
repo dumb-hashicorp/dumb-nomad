@@ -102,7 +102,7 @@
         <A.Button @text="Put Back on Schedule" @color="secondary" {{on "click" (perform this.reEnableSchedule)}} />
       {{/if}}
       <A.Generic>
-        <Hds::CodeBlock @value={{stringify-object this.model.task.schedule.cron}} @hasLineNumbers={{false}} @language="hcl" />
+        <Hds::CodeBlock @value={{stringify-object this.model.task.schedule.cron}} @hasLineNumbers={{false}} @language="dumb-hcl" />
       </A.Generic>
     </Hds::Alert>
     <Hds::Separator />

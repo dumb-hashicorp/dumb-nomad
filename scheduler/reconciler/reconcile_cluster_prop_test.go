@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"pgregory.net/rapid"
 )
@@ -217,7 +217,7 @@ func TestAllocReconciler_cancelUnneededCanaries(t *testing.T) {
 		clusterState := genClusterState(idg, time.Now()).Draw(t, "cluster_state")
 		jobState := genReconcilerState(idg, job, clusterState).Draw(t, "reconciler_state")
 
-		logger := testlog.HCLogger(t)
+		logger := testlog.DUMB_HCLogger(t)
 		ar := NewAllocReconciler(logger, allocUpdateFnInplace, jobState, clusterState)
 
 		m := newAllocMatrix(job, jobState.ExistingAllocs)
@@ -280,7 +280,7 @@ func genAllocReconciler(jobType string, idg *idGenerator) *rapid.Generator[*Allo
 			allocUpdateFnInplace,
 		}).Draw(t, "update_function")
 
-		logger := testlog.HCLogger(t)
+		logger := testlog.DUMB_HCLogger(t)
 		ar := NewAllocReconciler(logger,
 			updateFn,
 			reconcilerState,
@@ -695,7 +695,7 @@ func TestAllocReconciler_ReconnectingProps(t *testing.T) {
 			all[alloc.ID] = alloc
 		}
 
-		logger := testlog.HCLogger(t)
+		logger := testlog.DUMB_HCLogger(t)
 		ar := NewAllocReconciler(logger,
 			allocUpdateFnInplace, // not relevant to function
 			ReconcilerState{Job: job},

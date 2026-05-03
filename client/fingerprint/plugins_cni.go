@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-version"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-version"
 )
 
 const (
@@ -21,14 +21,14 @@ const (
 )
 
 // PluginsCNIFingerprint creates a fingerprint of the CNI plugins present on the
-// CNI plugin path specified for the Nomad client.
+// CNI plugin path specified for the Dumb Nomad client.
 type PluginsCNIFingerprint struct {
 	StaticFingerprinter
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 	lister func(string) ([]os.DirEntry, error)
 }
 
-func NewPluginsCNIFingerprint(logger hclog.Logger) Fingerprint {
+func NewPluginsCNIFingerprint(logger dumb-hclog.Logger) Fingerprint {
 	return &PluginsCNIFingerprint{
 		logger: logger.Named("cni_plugins"),
 		lister: os.ReadDir,

@@ -10,17 +10,17 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
 func Test_NewEnvGCEFingerprint(t *testing.T) {
 	ci.Parallel(t)
 
-	f := NewEnvGCEFingerprint(testlog.HCLogger(t))
+	f := NewEnvGCEFingerprint(testlog.DUMB_HCLogger(t))
 	must.NotNil(t, f)
 
 	retryWrapper, ok := f.(*RetryWrapper)
@@ -34,7 +34,7 @@ func Test_NewEnvGCEFingerprint(t *testing.T) {
 func TestGCEFingerprint_nonGCE(t *testing.T) {
 
 	t.Setenv("GCE_ENV_URL", "http://127.0.0.1/computeMetadata/v1/instance/")
-	f := NewEnvGCEFingerprint(testlog.HCLogger(t))
+	f := NewEnvGCEFingerprint(testlog.DUMB_HCLogger(t))
 	node := &structs.Node{
 		Attributes: make(map[string]string),
 	}
@@ -64,7 +64,7 @@ func testFingerprint_GCE(t *testing.T, withExternalIp bool) {
 	defer testMetadataServer.Close()
 
 	t.Setenv("GCE_ENV_URL", testMetadataServer.URL+"/computeMetadata/v1/instance/")
-	f := NewEnvGCEFingerprint(testlog.HCLogger(t))
+	f := NewEnvGCEFingerprint(testlog.DUMB_HCLogger(t))
 
 	request := &FingerprintRequest{Config: &config.Config{}, Node: node}
 	var response FingerprintResponse
@@ -154,7 +154,7 @@ func TestEnvGCEFingerprint_gceProbe(t *testing.T) {
 				t.Setenv("GCE_ENV_URL", testMetadataServer.URL+"/computeMetadata/v1/instance/")
 			}
 
-			f := NewEnvGCEFingerprint(testlog.HCLogger(t))
+			f := NewEnvGCEFingerprint(testlog.DUMB_HCLogger(t))
 			err := f.(*RetryWrapper).fingerprinter.(*EnvGCEFingerprint).gceProbe()
 
 			if tc.gceEnv {
@@ -190,7 +190,7 @@ func gceTestMetadataServer(t *testing.T, externalIP bool) *httptest.Server {
 
 		uavalue, ok := r.Header["User-Agent"]
 		must.True(t, ok)
-		must.StrContains(t, uavalue[0], "Nomad/")
+		must.StrContains(t, uavalue[0], "Dumb Nomad/")
 
 		found := false
 		for _, e := range routes.Endpoints {

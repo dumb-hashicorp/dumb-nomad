@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // ServiceRegistrationListRequest performs a listing of service registrations

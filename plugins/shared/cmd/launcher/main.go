@@ -6,14 +6,14 @@ package main
 import (
 	"os"
 
-	"github.com/hashicorp/cli"
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/plugins/shared/cmd/launcher/command"
+	"github.com/dumb-hashicorp/cli"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/cmd/launcher/command"
 )
 
 const (
-	NomadPluginLauncherCli        = "nomad-plugin-launcher"
-	NomadPluginLauncherCliVersion = "0.0.1"
+	Dumb NomadPluginLauncherCli        = "dumb-nomad-plugin-launcher"
+	Dumb NomadPluginLauncherCliVersion = "0.0.1"
 )
 
 func main() {
@@ -23,12 +23,12 @@ func main() {
 		ErrorWriter: os.Stderr,
 	}
 
-	logger := hclog.New(&hclog.LoggerOptions{
-		Name:   NomadPluginLauncherCli,
+	logger := dumb-hclog.New(&dumb-hclog.LoggerOptions{
+		Name:   Dumb NomadPluginLauncherCli,
 		Output: &cli.UiWriter{Ui: ui},
 	})
 
-	c := cli.NewCLI(NomadPluginLauncherCli, NomadPluginLauncherCliVersion)
+	c := cli.NewCLI(Dumb NomadPluginLauncherCli, Dumb NomadPluginLauncherCliVersion)
 	c.Args = os.Args[1:]
 
 	meta := command.NewMeta(ui, logger)

@@ -13,10 +13,10 @@ import (
 	"time"
 
 	humanize "github.com/dustin/go-humanize"
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/helper/snapshot"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/raft"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/snapshot"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/raft"
 	"github.com/posener/complete"
 )
 
@@ -38,7 +38,7 @@ type SnapshotInspectFormat struct {
 // SnapshotInfo is used for passing snapshot stat
 // information between functions
 type SnapshotInfo struct {
-	Stats      map[nomad.SnapshotType]typeStats
+	Stats      map[dumb-nomad.SnapshotType]typeStats
 	TotalSize  int
 	TotalCount int
 }
@@ -60,14 +60,14 @@ func (r *countingReader) Read(p []byte) (n int, err error) {
 
 func (c *OperatorSnapshotInspectCommand) Help() string {
 	helpText := `
-Usage: nomad operator snapshot inspect [options] <file>
+Usage: dumb-nomad operator snapshot inspect [options] <file>
 
   Displays information about a snapshot file on disk.
   The output will include all snapshot types and their
   respective sizes, sorted in descending order.
 
   To inspect the file "backup.snap":
-    $ nomad operator snapshot inspect backup.snap
+    $ dumb-nomad operator snapshot inspect backup.snap
 
 Snapshot Inspect Options:
 
@@ -88,7 +88,7 @@ func (c *OperatorSnapshotInspectCommand) AutocompleteArgs() complete.Predictor {
 }
 
 func (c *OperatorSnapshotInspectCommand) Synopsis() string {
-	return "Displays information about a Nomad snapshot file"
+	return "Displays information about a Dumb Nomad snapshot file"
 }
 
 func (c *OperatorSnapshotInspectCommand) Name() string { return "operator snapshot inspect" }
@@ -170,7 +170,7 @@ func (c *OperatorSnapshotInspectCommand) Run(args []string) int {
 
 func inspect(file io.Reader) (*raft.SnapshotMeta, *SnapshotInfo, error) {
 	info := &SnapshotInfo{
-		Stats:     make(map[nomad.SnapshotType]typeStats),
+		Stats:     make(map[dumb-nomad.SnapshotType]typeStats),
 		TotalSize: 0,
 	}
 
@@ -189,7 +189,7 @@ func inspect(file io.Reader) (*raft.SnapshotMeta, *SnapshotInfo, error) {
 		}
 	}()
 
-	handler := func(header *nomad.SnapshotHeader, snapType nomad.SnapshotType, dec *codec.Decoder) error {
+	handler := func(header *dumb-nomad.SnapshotHeader, snapType dumb-nomad.SnapshotType, dec *codec.Decoder) error {
 		name := snapType.String()
 		stat := info.Stats[snapType]
 
@@ -213,7 +213,7 @@ func inspect(file io.Reader) (*raft.SnapshotMeta, *SnapshotInfo, error) {
 		return nil
 	}
 
-	err := nomad.ReadSnapshot(cr, handler)
+	err := dumb-nomad.ReadSnapshot(cr, handler)
 	if err != nil {
 		return nil, nil, err
 	}

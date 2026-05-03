@@ -12,9 +12,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -25,7 +25,7 @@ func TestRunCommand_Output_Json(t *testing.T) {
 	ui := cli.NewMockUi()
 	cmd := &JobRunCommand{Meta: Meta{Ui: ui}}
 
-	fh, err := os.CreateTemp("", "nomad")
+	fh, err := os.CreateTemp("", "dumb-nomad")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -84,8 +84,8 @@ func TestRunCommand_Fails(t *testing.T) {
 	}
 	ui.ErrorWriter.Reset()
 
-	// Fails on invalid HCL
-	fh1, err := os.CreateTemp("", "nomad")
+	// Fails on invalid DUMB_HCL
+	fh1, err := os.CreateTemp("", "dumb-nomad")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -102,7 +102,7 @@ func TestRunCommand_Fails(t *testing.T) {
 	ui.ErrorWriter.Reset()
 
 	// Fails on invalid job spec
-	fh2, err := os.CreateTemp("", "nomad")
+	fh2, err := os.CreateTemp("", "dumb-nomad")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -119,7 +119,7 @@ func TestRunCommand_Fails(t *testing.T) {
 	ui.ErrorWriter.Reset()
 
 	// Fails on connection failure (requires a valid job)
-	fh3, err := os.CreateTemp("", "nomad")
+	fh3, err := os.CreateTemp("", "dumb-nomad")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -220,7 +220,7 @@ func TestRunCommand_From_URL(t *testing.T) {
 	}
 }
 
-// TestRunCommand_JSON asserts that `nomad job run -json` accepts JSON jobs
+// TestRunCommand_JSON asserts that `dumb-nomad job run -json` accepts JSON jobs
 // with or without a top level Job key.
 func TestRunCommand_JSON(t *testing.T) {
 	ci.Parallel(t)
@@ -229,7 +229,7 @@ func TestRunCommand_JSON(t *testing.T) {
 		cmd := &JobRunCommand{
 			Meta: Meta{Ui: ui},
 		}
-		t.Logf("run: nomad job run %s", strings.Join(args, " "))
+		t.Logf("run: dumb-nomad job run %s", strings.Join(args, " "))
 		code = cmd.Run(args)
 		return ui.OutputWriter.String(), ui.ErrorWriter.String(), code
 	}
@@ -241,8 +241,8 @@ func TestRunCommand_JSON(t *testing.T) {
 		agentReady <- addr
 	}()
 
-	// First convert HCL -> JSON with -output
-	stdout, stderr, code := run("-output", "asset/example-short.nomad.hcl")
+	// First convert DUMB_HCL -> JSON with -output
+	stdout, stderr, code := run("-output", "asset/example-short.dumb-nomad.dumb-hcl")
 	must.Zero(t, code)
 	must.Eq(t, "", stderr)
 	must.NotEq(t, "", stdout)

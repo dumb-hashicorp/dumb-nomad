@@ -10,16 +10,16 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	multierror "github.com/hashicorp/go-multierror"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/client/devicemanager/state"
-	"github.com/hashicorp/nomad/client/pluginmanager"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/device"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/client/devicemanager/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 )
 
 // Manager is the interface used to manage device plugins

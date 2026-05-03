@@ -4,9 +4,9 @@
 package serviceregistration
 
 import (
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 // WorkloadServices describes services defined in either a Task or TaskGroup
@@ -49,7 +49,7 @@ type WorkloadServices struct {
 	DriverNetwork *drivers.DriverNetwork
 
 	// Tokens are explicit API tokens that should be used by the caller when
-	// synchronizing services and check; currently this is only used for Consul
+	// synchronizing services and check; currently this is only used for Dumb Consul
 	// services and only when the Workload Identity workflow is used.
 	Tokens map[string]string // .Services[].Name -> token
 }
@@ -63,7 +63,7 @@ func (ws *WorkloadServices) RegistrationProvider() string {
 		return ""
 	}
 
-	// Note(jrasell): a Nomad task group can only currently utilise a single
+	// Note(jrasell): a Dumb Nomad task group can only currently utilise a single
 	// service provider for all services included within it. In the event we
 	// remove this restriction, this will need to change along which a lot of
 	// other logic.

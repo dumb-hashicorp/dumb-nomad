@@ -13,13 +13,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-netaddrs"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-netaddrs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -114,7 +114,7 @@ func TestRetryJoin_Server_NonCloud(t *testing.T) {
 			RetryJoin:        []string{"127.0.0.1"},
 		},
 		joinFunc: mockJoin,
-		logger:   testlog.HCLogger(t),
+		logger:   testlog.DUMB_HCLogger(t),
 		errCh:    make(chan struct{}),
 	}
 
@@ -142,7 +142,7 @@ func TestRetryJoin_Server_Cloud(t *testing.T) {
 			RetryJoin:        []string{"provider=aws, tag_value=foo"},
 		},
 		joinFunc: mockJoin,
-		logger:   testlog.HCLogger(t),
+		logger:   testlog.DUMB_HCLogger(t),
 		errCh:    make(chan struct{}),
 	}
 
@@ -171,7 +171,7 @@ func TestRetryJoin_Server_MixedProvider(t *testing.T) {
 			RetryJoin:        []string{"provider=aws, tag_value=foo", "127.0.0.1"},
 		},
 		joinFunc: mockJoin,
-		logger:   testlog.HCLogger(t),
+		logger:   testlog.DUMB_HCLogger(t),
 		errCh:    make(chan struct{}),
 	}
 
@@ -209,7 +209,7 @@ func TestRetryJoin_AutoDiscover(t *testing.T) {
 				"localhost", "localhost2:4648", "127.0.0.1:4648", "100.100.100.100"},
 		},
 		joinFunc: mockJoin,
-		logger:   testlog.HCLogger(t),
+		logger:   testlog.DUMB_HCLogger(t),
 		errCh:    make(chan struct{}),
 	}
 
@@ -240,7 +240,7 @@ func TestRetryJoin_Client(t *testing.T) {
 			RetryJoin:        []string{"127.0.0.1"},
 		},
 		joinFunc: mockJoin,
-		logger:   testlog.HCLogger(t),
+		logger:   testlog.DUMB_HCLogger(t),
 		errCh:    make(chan struct{}),
 	}
 
@@ -286,7 +286,7 @@ func TestRetryJoin_RetryMaxAttempts(t *testing.T) {
 			output = s
 			return 0, nil
 		},
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 		errCh:  errCh,
 	}
 
@@ -328,10 +328,10 @@ func TestRetryJoin_joinFuncFailure(t *testing.T) {
 
 	var output []string
 
-	l := testlog.HCLogger(t)
-	s := hclog.NewSinkAdapter(&hclog.LoggerOptions{
+	l := testlog.DUMB_HCLogger(t)
+	s := dumb-hclog.NewSinkAdapter(&dumb-hclog.LoggerOptions{
 		Output: logOutput,
-		Level:  hclog.Warn,
+		Level:  dumb-hclog.Warn,
 	})
 	l.RegisterSink(s)
 

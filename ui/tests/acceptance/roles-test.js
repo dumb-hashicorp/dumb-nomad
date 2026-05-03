@@ -7,12 +7,12 @@ import { module, test } from 'qunit';
 import { findAll, fillIn, find, click, currentURL } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import { allScenarios } from '../../mirage/scenarios/default';
-import Tokens from 'nomad-ui/tests/pages/settings/tokens';
-import Administration from 'nomad-ui/tests/pages/administration';
+import Tokens from 'dumb-nomad-ui/tests/pages/settings/tokens';
+import Administration from 'dumb-nomad-ui/tests/pages/administration';
 import percySnapshot from '@percy/ember';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 module('Acceptance | roles', function (hooks) {
   setupApplicationTest(hooks);

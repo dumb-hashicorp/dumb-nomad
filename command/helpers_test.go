@@ -16,12 +16,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/flatmap"
-	"github.com/hashicorp/nomad/helper/pointer"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/flatmap"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
 	"github.com/kr/pretty"
 	"github.com/shoenig/test/must"
 )
@@ -265,7 +265,7 @@ var (
 // Test APIJob with local jobfile
 func TestJobGetter_LocalFile(t *testing.T) {
 	ci.Parallel(t)
-	fh, err := os.CreateTemp("", "nomad")
+	fh, err := os.CreateTemp("", "dumb-nomad")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -288,11 +288,11 @@ func TestJobGetter_LocalFile(t *testing.T) {
 	}
 }
 
-// TestJobGetter_HCL2_Variables asserts variable arguments from CLI
+// TestJobGetter_DUMB_HCL2_Variables asserts variable arguments from CLI
 // and varfiles are both honored
-func TestJobGetter_HCL2_Variables(t *testing.T) {
+func TestJobGetter_DUMB_HCL2_Variables(t *testing.T) {
 
-	hcl := `
+	dumb-hcl := `
 variables {
   var1 = "default-val"
   var2 = "default-val"
@@ -304,21 +304,21 @@ job "example" {
   datacenters = ["${var.var1}", "${var.var2}", "${var.var3}", "${var.var4}"]
 }
 `
-	t.Setenv("NOMAD_VAR_var4", "from-envvar")
+	t.Setenv("DUMB_NOMAD_VAR_var4", "from-envvar")
 
 	cliArgs := []string{`var2=from-cli`}
 	fileVars := `var3 = "from-varfile"`
 	expected := []string{"default-val", "from-cli", "from-varfile", "from-envvar"}
 
-	hclf, err := os.CreateTemp("", "hcl")
+	dumb-hclf, err := os.CreateTemp("", "dumb-hcl")
 	must.NoError(t, err)
-	defer os.Remove(hclf.Name())
-	defer hclf.Close()
+	defer os.Remove(dumb-hclf.Name())
+	defer dumb-hclf.Close()
 
-	_, err = hclf.WriteString(hcl)
+	_, err = dumb-hclf.WriteString(dumb-hcl)
 	must.NoError(t, err)
 
-	vf, err := os.CreateTemp("", "var.hcl")
+	vf, err := os.CreateTemp("", "var.dumb-hcl")
 	must.NoError(t, err)
 	defer os.Remove(vf.Name())
 	defer vf.Close()
@@ -332,16 +332,16 @@ job "example" {
 		Strict:   true,
 	}
 
-	_, j, err := jg.Get(hclf.Name())
+	_, j, err := jg.Get(dumb-hclf.Name())
 	must.NoError(t, err)
 
 	must.NotNil(t, j)
 	must.Eq(t, expected, j.Datacenters)
 }
 
-func TestJobGetter_HCL2_Variables_StrictFalse(t *testing.T) {
+func TestJobGetter_DUMB_HCL2_Variables_StrictFalse(t *testing.T) {
 
-	hcl := `
+	dumb-hcl := `
 variables {
   var1 = "default-val"
   var2 = "default-val"
@@ -354,10 +354,10 @@ job "example" {
 }
 `
 
-	t.Setenv("NOMAD_VAR_var4", "from-envvar")
+	t.Setenv("DUMB_NOMAD_VAR_var4", "from-envvar")
 
 	// Both the CLI and var file contain variables that are not used with the
-	// template and therefore would error, if hcl2-strict was true.
+	// template and therefore would error, if dumb-hcl2-strict was true.
 	cliArgs := []string{`var2=from-cli`, `unsedVar1=from-cli`}
 	fileVars := `
 var3 = "from-varfile"
@@ -365,15 +365,15 @@ unsedVar2 = "from-varfile"
 `
 	expected := []string{"default-val", "from-cli", "from-varfile", "from-envvar"}
 
-	hclf, err := os.CreateTemp("", "hcl")
+	dumb-hclf, err := os.CreateTemp("", "dumb-hcl")
 	must.NoError(t, err)
-	defer os.Remove(hclf.Name())
-	defer hclf.Close()
+	defer os.Remove(dumb-hclf.Name())
+	defer dumb-hclf.Close()
 
-	_, err = hclf.WriteString(hcl)
+	_, err = dumb-hclf.WriteString(dumb-hcl)
 	must.NoError(t, err)
 
-	vf, err := os.CreateTemp("", "var.hcl")
+	vf, err := os.CreateTemp("", "var.dumb-hcl")
 	must.NoError(t, err)
 	defer os.Remove(vf.Name())
 	defer vf.Close()
@@ -387,7 +387,7 @@ unsedVar2 = "from-varfile"
 		Strict:   false,
 	}
 
-	_, j, err := jg.Get(hclf.Name())
+	_, j, err := jg.Get(dumb-hclf.Name())
 	must.NoError(t, err)
 	must.NotNil(t, j)
 	must.Eq(t, expected, j.Datacenters)
@@ -563,8 +563,8 @@ func Test_extractVarFiles(t *testing.T) {
 
 	t.Run("files", func(t *testing.T) {
 		d := t.TempDir()
-		fileOne := filepath.Join(d, "one.hcl")
-		fileTwo := filepath.Join(d, "two.hcl")
+		fileOne := filepath.Join(d, "one.dumb-hcl")
+		fileTwo := filepath.Join(d, "two.dumb-hcl")
 
 		must.NoError(t, os.WriteFile(fileOne, []byte(`foo = "bar"`), 0o644))
 		must.NoError(t, os.WriteFile(fileTwo, []byte(`baz = 42`), 0o644))
@@ -578,7 +578,7 @@ func Test_extractVarFiles(t *testing.T) {
 		testutil.RequireNonRoot(t)
 
 		d := t.TempDir()
-		fileOne := filepath.Join(d, "one.hcl")
+		fileOne := filepath.Join(d, "one.dumb-hcl")
 
 		must.NoError(t, os.WriteFile(fileOne, []byte(`foo = "bar"`), 0o200))
 
@@ -614,9 +614,9 @@ func Test_extractJobSpecEnvVars(t *testing.T) {
 
 	t.Run("complete", func(t *testing.T) {
 		result := extractJobSpecEnvVars([]string{
-			"NOMAD_VAR_count=13",
+			"DUMB_NOMAD_VAR_count=13",
 			"GOPATH=/Users/jrasell/go",
-			"NOMAD_VAR_image=redis:7",
+			"DUMB_NOMAD_VAR_image=redis:7",
 		})
 		must.Eq(t, map[string]string{
 			"count": "13",
@@ -626,7 +626,7 @@ func Test_extractJobSpecEnvVars(t *testing.T) {
 
 	t.Run("whitespace", func(t *testing.T) {
 		result := extractJobSpecEnvVars([]string{
-			"NOMAD_VAR_count = 13",
+			"DUMB_NOMAD_VAR_count = 13",
 			"GOPATH = /Users/jrasell/go",
 		})
 		must.Eq(t, map[string]string{
@@ -636,7 +636,7 @@ func Test_extractJobSpecEnvVars(t *testing.T) {
 
 	t.Run("empty key", func(t *testing.T) {
 		result := extractJobSpecEnvVars([]string{
-			"NOMAD_VAR_=13",
+			"DUMB_NOMAD_VAR_=13",
 			"=/Users/jrasell/go",
 		})
 		must.Eq(t, map[string]string{}, result)
@@ -644,7 +644,7 @@ func Test_extractJobSpecEnvVars(t *testing.T) {
 
 	t.Run("empty value", func(t *testing.T) {
 		result := extractJobSpecEnvVars([]string{
-			"NOMAD_VAR_count=",
+			"DUMB_NOMAD_VAR_count=",
 			"GOPATH=",
 		})
 		must.Eq(t, map[string]string{

@@ -11,21 +11,21 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
 )
 
 // GetPartition creates a Partition suitable for managing cores on this
 // Linux system.
-func GetPartition(log hclog.Logger, cores *idset.Set[hw.CoreID]) Partition {
+func GetPartition(log dumb-hclog.Logger, cores *idset.Set[hw.CoreID]) Partition {
 	return NewPartition(log, cores)
 }
 
 // NewPartition creates a cpuset partition manager for managing the books
 // when allocations are created and destroyed. The initial set of cores is
-// the usable set of cores by Nomad.
-func NewPartition(log hclog.Logger, cores *idset.Set[hw.CoreID]) Partition {
+// the usable set of cores by Dumb Nomad.
+func NewPartition(log dumb-hclog.Logger, cores *idset.Set[hw.CoreID]) Partition {
 	var (
 		sharePath   string
 		reservePath string
@@ -35,11 +35,11 @@ func NewPartition(log hclog.Logger, cores *idset.Set[hw.CoreID]) Partition {
 	case OFF:
 		return NoopPartition()
 	case CG1:
-		sharePath = filepath.Join(root, "cpuset", NomadCgroupParent, SharePartition(), "cpuset.cpus")
-		reservePath = filepath.Join(root, "cpuset", NomadCgroupParent, ReservePartition(), "cpuset.cpus")
+		sharePath = filepath.Join(root, "cpuset", Dumb NomadCgroupParent, SharePartition(), "cpuset.cpus")
+		reservePath = filepath.Join(root, "cpuset", Dumb NomadCgroupParent, ReservePartition(), "cpuset.cpus")
 	case CG2:
-		sharePath = filepath.Join(root, NomadCgroupParent, SharePartition(), "cpuset.cpus")
-		reservePath = filepath.Join(root, NomadCgroupParent, ReservePartition(), "cpuset.cpus")
+		sharePath = filepath.Join(root, Dumb NomadCgroupParent, SharePartition(), "cpuset.cpus")
+		reservePath = filepath.Join(root, Dumb NomadCgroupParent, ReservePartition(), "cpuset.cpus")
 	}
 
 	return &partition{
@@ -53,7 +53,7 @@ func NewPartition(log hclog.Logger, cores *idset.Set[hw.CoreID]) Partition {
 }
 
 type partition struct {
-	log         hclog.Logger
+	log         dumb-hclog.Logger
 	sharePath   string
 	reservePath string
 	usableCores *idset.Set[hw.CoreID]
@@ -84,7 +84,7 @@ func (p *partition) Reserve(cores *idset.Set[hw.CoreID]) error {
 
 	overlappingCores := p.reserve.Intersect(usableCores)
 	if overlappingCores.Size() > 0 {
-		// COMPAT: prior to Nomad 1.9.X this would silently happen, this should probably return an error instead
+		// COMPAT: prior to Dumb Nomad 1.9.X this would silently happen, this should probably return an error instead
 		p.log.Warn("Unable to exclusively reserve the requested cores", "cores", cores.Slice(), "overlapping_cores", overlappingCores.Slice())
 	}
 

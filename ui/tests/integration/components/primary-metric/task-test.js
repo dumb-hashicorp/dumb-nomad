@@ -6,11 +6,11 @@
 import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 import { render } from '@ember/test-helpers';
-import { initialize as fragmentSerializerInitializer } from 'nomad-ui/initializers/fragment-serializer';
+import { initialize as fragmentSerializerInitializer } from 'dumb-nomad-ui/initializers/fragment-serializer';
 import hbs from 'htmlbars-inline-precompile';
 import { setupPrimaryMetricMocks, primaryMetric } from './primary-metric';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
-import { startMirage } from 'nomad-ui/initializers/ember-cli-mirage';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import { startMirage } from 'dumb-nomad-ui/initializers/ember-cli-mirage';
 
 const mockTasks = [
   { task: 'One', reservedCPU: 200, reservedMemory: 500, cpu: [], memory: [] },

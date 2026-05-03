@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 scrape_configs:
-  - job_name: 'nomad_metrics'
+  - job_name: 'dumb-nomad_metrics'
 
-    consul_sd_configs:
+    dumb-consul_sd_configs:
     - server: 'localhost:8500'
-      services: ['nomad-client', 'nomad']
+      services: ['dumb-nomad-client', 'dumb-nomad']
 
     relabel_configs:
-    - source_labels: ['__meta_consul_tags']
+    - source_labels: ['__meta_dumb-consul_tags']
       regex: '(.*)http(.*)'
       action: keep
 

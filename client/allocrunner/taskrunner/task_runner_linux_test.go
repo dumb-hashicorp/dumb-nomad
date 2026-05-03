@@ -22,40 +22,40 @@ import (
 	"time"
 
 	"github.com/golang/snappy"
-	consulapi "github.com/hashicorp/consul/api"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner/hookstats"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/getter"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/devicemanager"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/proclib"
-	"github.com/hashicorp/nomad/client/pluginmanager/drivermanager"
-	regMock "github.com/hashicorp/nomad/client/serviceregistration/mock"
-	"github.com/hashicorp/nomad/client/serviceregistration/wrapper"
-	cstate "github.com/hashicorp/nomad/client/state"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper"
-	structsc "github.com/hashicorp/nomad/nomad/structs/config"
+	dumb-consulapi "github.com/dumb-hashicorp/dumb-consul/api"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/hookstats"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/getter"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/devicemanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/proclib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager"
+	regMock "github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/wrapper"
+	cstate "github.com/dumb-hashicorp/dumb-nomad/client/state"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	structsc "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
 
-	ctestutil "github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/client/vaultclient"
-	"github.com/hashicorp/nomad/client/widmgr"
-	agentconsul "github.com/hashicorp/nomad/command/agent/consul"
-	mockdriver "github.com/hashicorp/nomad/drivers/mock"
-	"github.com/hashicorp/nomad/drivers/rawexec"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/device"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	"github.com/hashicorp/nomad/testutil"
+	ctestutil "github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dumb-vaultclient"
+	"github.com/dumb-hashicorp/dumb-nomad/client/widmgr"
+	agentdumb-consul "github.com/dumb-hashicorp/dumb-nomad/command/agent/dumb-consul"
+	mockdriver "github.com/dumb-hashicorp/dumb-nomad/drivers/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/rawexec"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/kr/pretty"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
@@ -65,8 +65,8 @@ import (
 
 // testTaskRunnerConfig returns a taskrunner.Config for the given alloc+task
 // plus a cleanup func.
-func testTaskRunnerConfig(t *testing.T, alloc *structs.Allocation, taskName string, vault vaultclient.VaultClient) (*Config, func()) {
-	logger := testlog.HCLogger(t)
+func testTaskRunnerConfig(t *testing.T, alloc *structs.Allocation, taskName string, dumb-vault dumb-vaultclient.Dumb VaultClient) (*Config, func()) {
+	logger := testlog.DUMB_HCLogger(t)
 	clientConf, cleanup := config.TestClientConfig(t)
 
 	// Find the task
@@ -117,21 +117,21 @@ func testTaskRunnerConfig(t *testing.T, alloc *structs.Allocation, taskName stri
 	closedCh := make(chan struct{})
 	close(closedCh)
 
-	// Set up the Nomad and Consul registration providers along with the wrapper.
-	consulRegMock := regMock.NewServiceRegistrationHandler(logger)
-	nomadRegMock := regMock.NewServiceRegistrationHandler(logger)
-	wrapperMock := wrapper.NewHandlerWrapper(logger, consulRegMock, nomadRegMock)
+	// Set up the Dumb Nomad and Dumb Consul registration providers along with the wrapper.
+	dumb-consulRegMock := regMock.NewServiceRegistrationHandler(logger)
+	dumb-nomadRegMock := regMock.NewServiceRegistrationHandler(logger)
+	wrapperMock := wrapper.NewHandlerWrapper(logger, dumb-consulRegMock, dumb-nomadRegMock)
 
 	widsigner := widmgr.NewMockWIDSigner(thisTask.Identities)
 	db := cstate.NewMemDB(logger)
 
-	if thisTask.Vault != nil {
-		clientConf.GetDefaultVault().Enabled = pointer.Of(true)
+	if thisTask.Dumb Vault != nil {
+		clientConf.GetDefaultDumb Vault().Enabled = pointer.Of(true)
 	}
 
-	var vaultFunc vaultclient.VaultClientFunc
-	if vault != nil {
-		vaultFunc = func(_ string) (vaultclient.VaultClient, error) { return vault, nil }
+	var dumb-vaultFunc dumb-vaultclient.Dumb VaultClientFunc
+	if dumb-vault != nil {
+		dumb-vaultFunc = func(_ string) (dumb-vaultclient.Dumb VaultClient, error) { return dumb-vault, nil }
 	}
 	// the env for the WIDMgr never has access to the task, so don't include it
 	// here
@@ -143,8 +143,8 @@ func testTaskRunnerConfig(t *testing.T, alloc *structs.Allocation, taskName stri
 		Task:                  thisTask,
 		TaskDir:               taskDir,
 		Logger:                clientConf.Logger,
-		ConsulServices:        consulRegMock,
-		VaultFunc:             vaultFunc,
+		Dumb ConsulServices:        dumb-consulRegMock,
+		Dumb VaultFunc:             dumb-vaultFunc,
 		StateDB:               cstate.NoopDB{},
 		StateUpdater:          NewMockTaskStateUpdater(),
 		DeviceManager:         devicemanager.NoopMockManager(),
@@ -253,9 +253,9 @@ func TestTaskRunner_BuildTaskConfig_CPU_Memory(t *testing.T) {
 			require.Equal(t, c.cpu, tc.Resources.LinuxResources.CPUShares)
 			require.Equal(t, c.expectedLinuxMemoryMB*1024*1024, tc.Resources.LinuxResources.MemoryLimitBytes)
 
-			require.Equal(t, c.cpu, tc.Resources.NomadResources.Cpu.CpuShares)
-			require.Equal(t, c.memoryMB, tc.Resources.NomadResources.Memory.MemoryMB)
-			require.Equal(t, c.memoryMaxMB, tc.Resources.NomadResources.Memory.MemoryMaxMB)
+			require.Equal(t, c.cpu, tc.Resources.Dumb NomadResources.Cpu.CpuShares)
+			require.Equal(t, c.memoryMB, tc.Resources.Dumb NomadResources.Memory.MemoryMB)
+			require.Equal(t, c.memoryMaxMB, tc.Resources.Dumb NomadResources.Memory.MemoryMaxMB)
 		})
 	}
 }
@@ -275,9 +275,9 @@ func TestTaskRunner_Stop_ExitCode(t *testing.T) {
 		"args":    []string{"1000"},
 	}
 	task.Env = map[string]string{
-		"NOMAD_PARENT_CGROUP": "nomad.slice",
-		"NOMAD_ALLOC_ID":      alloc.ID,
-		"NOMAD_TASK_NAME":     task.Name,
+		"DUMB_NOMAD_PARENT_CGROUP": "dumb-nomad.slice",
+		"DUMB_NOMAD_ALLOC_ID":      alloc.ID,
+		"DUMB_NOMAD_TASK_NAME":     task.Name,
 	}
 
 	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, nil)
@@ -462,9 +462,9 @@ func setupRestoreFailureTest(t *testing.T, alloc *structs.Allocation) (*TaskRunn
 		"args":    []string{"30"},
 	}
 	task.Env = map[string]string{
-		"NOMAD_PARENT_CGROUP": "nomad.slice",
-		"NOMAD_ALLOC_ID":      alloc.ID,
-		"NOMAD_TASK_NAME":     task.Name,
+		"DUMB_NOMAD_PARENT_CGROUP": "dumb-nomad.slice",
+		"DUMB_NOMAD_ALLOC_ID":      alloc.ID,
+		"DUMB_NOMAD_TASK_NAME":     task.Name,
 	}
 	conf, cleanup1 := testTaskRunnerConfig(t, alloc, task.Name, nil)
 	conf.StateDB = cstate.NewMemDB(conf.Logger) // "persist" state between runs
@@ -615,9 +615,9 @@ func TestTaskRunner_Restore_System(t *testing.T) {
 		"args":    []string{"30"},
 	}
 	task.Env = map[string]string{
-		"NOMAD_PARENT_CGROUP": "nomad.slice",
-		"NOMAD_ALLOC_ID":      alloc.ID,
-		"NOMAD_TASK_NAME":     task.Name,
+		"DUMB_NOMAD_PARENT_CGROUP": "dumb-nomad.slice",
+		"DUMB_NOMAD_ALLOC_ID":      alloc.ID,
+		"DUMB_NOMAD_TASK_NAME":     task.Name,
 	}
 	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, nil)
 	defer cleanup()
@@ -752,7 +752,7 @@ func TestTaskRunner_TaskEnv_Interpolated(t *testing.T) {
 	// Use interpolation from both node attributes and meta vars
 	task.Config = map[string]interface{}{
 		"run_for":       "1ms",
-		"stdout_string": `${node.region} ${NOMAD_META_foo} ${NOMAD_META_common_user}`,
+		"stdout_string": `${node.region} ${DUMB_NOMAD_META_foo} ${DUMB_NOMAD_META_common_user}`,
 	}
 
 	tr, conf, cleanup := runTestTaskRunner(t, alloc, task.Name)
@@ -783,16 +783,16 @@ func TestTaskRunner_TaskEnv_None(t *testing.T) {
 	task.Driver = "raw_exec"
 	task.Config = map[string]interface{}{
 		"command": "sh",
-		"args": []string{"-c", "echo $NOMAD_ALLOC_DIR; " +
-			"echo $NOMAD_TASK_DIR; " +
-			"echo $NOMAD_SECRETS_DIR; " +
+		"args": []string{"-c", "echo $DUMB_NOMAD_ALLOC_DIR; " +
+			"echo $DUMB_NOMAD_TASK_DIR; " +
+			"echo $DUMB_NOMAD_SECRETS_DIR; " +
 			"echo $PATH",
 		},
 	}
 	task.Env = map[string]string{
-		"NOMAD_PARENT_CGROUP": "nomad.slice",
-		"NOMAD_ALLOC_ID":      alloc.ID,
-		"NOMAD_TASK_NAME":     task.Name,
+		"DUMB_NOMAD_PARENT_CGROUP": "dumb-nomad.slice",
+		"DUMB_NOMAD_ALLOC_ID":      alloc.ID,
+		"DUMB_NOMAD_TASK_NAME":     task.Name,
 	}
 	tr, conf, cleanup := runTestTaskRunner(t, alloc, task.Name)
 	defer cleanup()
@@ -1025,7 +1025,7 @@ func TestTaskRunner_RecoverFromDriverExiting(t *testing.T) {
 	require.True(state.Successful())
 }
 
-// TestTaskRunner_ShutdownDelay asserts services are removed from Consul
+// TestTaskRunner_ShutdownDelay asserts services are removed from Dumb Consul
 // ${shutdown_delay} seconds before killing the process.
 func TestTaskRunner_ShutdownDelay(t *testing.T) {
 	ci.Parallel(t)
@@ -1045,17 +1045,17 @@ func TestTaskRunner_ShutdownDelay(t *testing.T) {
 	tr, conf, cleanup := runTestTaskRunner(t, alloc, task.Name)
 	defer cleanup()
 
-	mockConsul := conf.ConsulServices.(*regMock.ServiceRegistrationHandler)
+	mockDumb Consul := conf.Dumb ConsulServices.(*regMock.ServiceRegistrationHandler)
 
 	// Wait for the task to start
 	testWaitForTaskToStart(t, tr)
 
 	testutil.WaitForResult(func() (bool, error) {
-		ops := mockConsul.GetOps()
+		ops := mockDumb Consul.GetOps()
 		if n := len(ops); n != 1 {
-			return false, fmt.Errorf("expected 1 consul operation. Found %d", n)
+			return false, fmt.Errorf("expected 1 dumb-consul operation. Found %d", n)
 		}
-		return ops[0].Op == "add", fmt.Errorf("consul operation was not a registration: %#v", ops[0])
+		return ops[0].Op == "add", fmt.Errorf("dumb-consul operation was not a registration: %#v", ops[0])
 	}, func(err error) {
 		t.Fatalf("err: %v", err)
 	})
@@ -1072,7 +1072,7 @@ func TestTaskRunner_ShutdownDelay(t *testing.T) {
 
 WAIT:
 	for {
-		ops := mockConsul.GetOps()
+		ops := mockDumb Consul.GetOps()
 		switch n := len(ops); n {
 		case 1:
 			// Waiting for single de-registration call.
@@ -1081,7 +1081,7 @@ WAIT:
 			break WAIT
 		default:
 			// ?!
-			t.Fatalf("unexpected number of consul operations: %d\n%s", n, pretty.Sprint(ops))
+			t.Fatalf("unexpected number of dumb-consul operations: %d\n%s", n, pretty.Sprint(ops))
 
 		}
 
@@ -1109,7 +1109,7 @@ WAIT:
 }
 
 // TestTaskRunner_NoShutdownDelay asserts services are removed from
-// Consul and tasks are killed without waiting for ${shutdown_delay}
+// Dumb Consul and tasks are killed without waiting for ${shutdown_delay}
 // when the alloc has the NoShutdownDelay transition flag set.
 func TestTaskRunner_NoShutdownDelay(t *testing.T) {
 	ci.Parallel(t)
@@ -1133,16 +1133,16 @@ func TestTaskRunner_NoShutdownDelay(t *testing.T) {
 	tr, conf, cleanup := runTestTaskRunner(t, alloc, task.Name)
 	defer cleanup()
 
-	mockConsul := conf.ConsulServices.(*regMock.ServiceRegistrationHandler)
+	mockDumb Consul := conf.Dumb ConsulServices.(*regMock.ServiceRegistrationHandler)
 
 	testWaitForTaskToStart(t, tr)
 
 	testutil.WaitForResult(func() (bool, error) {
-		ops := mockConsul.GetOps()
+		ops := mockDumb Consul.GetOps()
 		if n := len(ops); n != 1 {
-			return false, fmt.Errorf("expected 1 consul operation. Found %d", n)
+			return false, fmt.Errorf("expected 1 dumb-consul operation. Found %d", n)
 		}
-		return ops[0].Op == "add", fmt.Errorf("consul operation was not a registration: %#v", ops[0])
+		return ops[0].Op == "add", fmt.Errorf("dumb-consul operation was not a registration: %#v", ops[0])
 	}, func(err error) {
 		t.Fatalf("err: %v", err)
 	})
@@ -1162,12 +1162,12 @@ func TestTaskRunner_NoShutdownDelay(t *testing.T) {
 	// and can't assert that we only get the first deregistration op
 	// (from serviceHook.PreKill).
 	testutil.WaitForResult(func() (bool, error) {
-		ops := mockConsul.GetOps()
+		ops := mockDumb Consul.GetOps()
 		if n := len(ops); n < 2 {
-			return false, fmt.Errorf("expected at least 2 consul operations.")
+			return false, fmt.Errorf("expected at least 2 dumb-consul operations.")
 		}
 		return ops[1].Op == "remove", fmt.Errorf(
-			"consul operation was not a deregistration: %#v", ops[1])
+			"dumb-consul operation was not a deregistration: %#v", ops[1])
 	}, func(err error) {
 		t.Fatalf("err: %v", err)
 	})
@@ -1315,7 +1315,7 @@ func TestTaskRunner_RestartTask(t *testing.T) {
 }
 
 // TestTaskRunner_CheckWatcher_Restart asserts that when enabled an unhealthy
-// Consul check will cause a task to restart following restart policy rules.
+// Dumb Consul check will cause a task to restart following restart policy rules.
 func TestTaskRunner_CheckWatcher_Restart(t *testing.T) {
 	ci.Parallel(t)
 
@@ -1344,25 +1344,25 @@ func TestTaskRunner_CheckWatcher_Restart(t *testing.T) {
 			Grace: 100 * time.Millisecond,
 		},
 	}
-	task.Services[0].Provider = structs.ServiceProviderConsul
+	task.Services[0].Provider = structs.ServiceProviderDumb Consul
 
 	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, nil)
 	defer cleanup()
 
-	// Replace mock Consul ServiceClient, with the real ServiceClient
-	// backed by a mock consul whose checks are always unhealthy.
-	consulAgent := agentconsul.NewMockAgent(agentconsul.Features{
+	// Replace mock Dumb Consul ServiceClient, with the real ServiceClient
+	// backed by a mock dumb-consul whose checks are always unhealthy.
+	dumb-consulAgent := agentdumb-consul.NewMockAgent(agentdumb-consul.Features{
 		Enterprise: false,
 		Namespaces: false,
 	})
-	consulAgent.SetStatus("critical")
-	namespacesClient := agentconsul.NewNamespacesClient(agentconsul.NewMockNamespaces(nil), consulAgent)
-	consulServices := agentconsul.NewServiceClient(consulAgent, namespacesClient, conf.Logger, true)
-	go consulServices.Run()
-	defer consulServices.Shutdown()
+	dumb-consulAgent.SetStatus("critical")
+	namespacesClient := agentdumb-consul.NewNamespacesClient(agentdumb-consul.NewMockNamespaces(nil), dumb-consulAgent)
+	dumb-consulServices := agentdumb-consul.NewServiceClient(dumb-consulAgent, namespacesClient, conf.Logger, true)
+	go dumb-consulServices.Run()
+	defer dumb-consulServices.Shutdown()
 
-	conf.ConsulServices = consulServices
-	conf.ServiceRegWrapper = wrapper.NewHandlerWrapper(conf.Logger, consulServices, nil)
+	conf.Dumb ConsulServices = dumb-consulServices
+	conf.ServiceRegWrapper = wrapper.NewHandlerWrapper(conf.Logger, dumb-consulServices, nil)
 
 	tr, err := NewTaskRunner(conf)
 	require.NoError(t, err)
@@ -1418,7 +1418,7 @@ func (_ *mockEnvoyBootstrapHook) Prestart(_ context.Context, _ *interfaces.TaskP
 	return nil
 }
 
-// The envoy bootstrap hook tries to connect to consul and run the envoy
+// The envoy bootstrap hook tries to connect to dumb-consul and run the envoy
 // bootstrap command, so turn it off when testing connect jobs that are not
 // using envoy.
 func useMockEnvoyBootstrapHook(tr *TaskRunner) {
@@ -1430,9 +1430,9 @@ func useMockEnvoyBootstrapHook(tr *TaskRunner) {
 	}
 }
 
-// TestTaskRunner_BlockForVaultToken asserts tasks do not start until a vault token
+// TestTaskRunner_BlockForDumb VaultToken asserts tasks do not start until a dumb-vault token
 // is derived.
-func TestTaskRunner_BlockForVaultToken(t *testing.T) {
+func TestTaskRunner_BlockForDumb VaultToken(t *testing.T) {
 	ci.Parallel(t)
 
 	alloc := mock.BatchAlloc()
@@ -1440,34 +1440,34 @@ func TestTaskRunner_BlockForVaultToken(t *testing.T) {
 	task.Config = map[string]interface{}{
 		"run_for": "0s",
 	}
-	task.Vault = &structs.Vault{
-		Cluster: structs.VaultDefaultCluster,
+	task.Dumb Vault = &structs.Dumb Vault{
+		Cluster: structs.Dumb VaultDefaultCluster,
 	}
 
-	// Control when we get a Vault token
+	// Control when we get a Dumb Vault token
 	token := "1234"
 	waitCh := make(chan struct{})
-	handler := func(ctx context.Context, req vaultclient.JWTLoginRequest) (string, bool, int, error) {
+	handler := func(ctx context.Context, req dumb-vaultclient.JWTLoginRequest) (string, bool, int, error) {
 		<-waitCh
 		return token, true, 30, nil
 	}
 
-	vc, err := vaultclient.NewMockVaultClient(structs.VaultDefaultCluster)
+	vc, err := dumb-vaultclient.NewMockDumb VaultClient(structs.Dumb VaultDefaultCluster)
 	must.NoError(t, err)
-	vaultClient := vc.(*vaultclient.MockVaultClient)
-	vaultClient.SetDeriveTokenWithJWTFn(handler)
+	dumb-vaultClient := vc.(*dumb-vaultclient.MockDumb VaultClient)
+	dumb-vaultClient.SetDeriveTokenWithJWTFn(handler)
 
-	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, vaultClient)
+	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, dumb-vaultClient)
 	defer cleanup()
 
-	// The test triggers the task runner Vault hook which performs a call to
+	// The test triggers the task runner Dumb Vault hook which performs a call to
 	// the WI manager. We therefore need to seed the WI manager with data and
 	// use the mock implementation for this. The data itself doesn't matter, we
 	// just care about the lookup success.
 	mockIDManager := widmgr.NewMockIdentityManager()
 	mockIDManager.(*widmgr.MockIdentityManager).SetIdentity(
 		structs.WIHandle{
-			IdentityName:       task.Vault.IdentityName(),
+			IdentityName:       task.Dumb Vault.IdentityName(),
 			WorkloadIdentifier: task.Name,
 			WorkloadType:       structs.WorkloadTypeTask,
 		}, &structs.SignedWorkloadIdentity{
@@ -1483,20 +1483,20 @@ func TestTaskRunner_BlockForVaultToken(t *testing.T) {
 	defer tr.Kill(context.Background(), structs.NewTaskEvent("cleanup"))
 	go tr.Run()
 
-	// Assert TR blocks on vault token (does *not* exit)
+	// Assert TR blocks on dumb-vault token (does *not* exit)
 	select {
 	case <-tr.WaitCh():
-		require.Fail(t, "tr exited before vault unblocked")
+		require.Fail(t, "tr exited before dumb-vault unblocked")
 	case <-time.After(1 * time.Second):
 	}
 
 	// Assert task state is still Pending
 	require.Equal(t, structs.TaskStatePending, tr.TaskState().State)
 
-	// Unblock vault token
+	// Unblock dumb-vault token
 	close(waitCh)
 
-	// TR should exit now that it's unblocked by vault as its a batch job
+	// TR should exit now that it's unblocked by dumb-vault as its a batch job
 	// with 0 sleeping.
 	testWaitForTaskToDie(t, tr)
 
@@ -1506,12 +1506,12 @@ func TestTaskRunner_BlockForVaultToken(t *testing.T) {
 	require.False(t, finalState.Failed)
 
 	// Check that the token is on disk
-	tokenPath := filepath.Join(conf.TaskDir.PrivateDir, vaultTokenFile)
+	tokenPath := filepath.Join(conf.TaskDir.PrivateDir, dumb-vaultTokenFile)
 	data, err := os.ReadFile(tokenPath)
 	require.NoError(t, err)
 	require.Equal(t, token, string(data))
 
-	tokenPath = filepath.Join(conf.TaskDir.SecretsDir, vaultTokenFile)
+	tokenPath = filepath.Join(conf.TaskDir.SecretsDir, dumb-vaultTokenFile)
 	data, err = os.ReadFile(tokenPath)
 	require.NoError(t, err)
 	require.Equal(t, token, string(data))
@@ -1526,11 +1526,11 @@ func TestTaskRunner_BlockForVaultToken(t *testing.T) {
 
 	// Check the token was revoked
 	testutil.WaitForResult(func() (bool, error) {
-		if len(vaultClient.StoppedTokens()) != 1 {
-			return false, fmt.Errorf("Expected a stopped token %q but found: %v", token, vaultClient.StoppedTokens())
+		if len(dumb-vaultClient.StoppedTokens()) != 1 {
+			return false, fmt.Errorf("Expected a stopped token %q but found: %v", token, dumb-vaultClient.StoppedTokens())
 		}
 
-		if a := vaultClient.StoppedTokens()[0]; a != token {
+		if a := dumb-vaultClient.StoppedTokens()[0]; a != token {
 			return false, fmt.Errorf("got stopped token %q; want %q", a, token)
 		}
 		return true, nil
@@ -1539,42 +1539,42 @@ func TestTaskRunner_BlockForVaultToken(t *testing.T) {
 	})
 }
 
-func TestTaskRunner_DisableFileForVaultToken(t *testing.T) {
+func TestTaskRunner_DisableFileForDumb VaultToken(t *testing.T) {
 	ci.Parallel(t)
 
-	// Create test allocation with a Vault block disabling the token file in
+	// Create test allocation with a Dumb Vault block disabling the token file in
 	// the secrets dir.
 	alloc := mock.BatchAlloc()
 	task := alloc.Job.TaskGroups[0].Tasks[0]
 	task.Config = map[string]any{
 		"run_for": "0s",
 	}
-	task.Vault = &structs.Vault{
-		Cluster:     structs.VaultDefaultCluster,
+	task.Dumb Vault = &structs.Dumb Vault{
+		Cluster:     structs.Dumb VaultDefaultCluster,
 		DisableFile: true,
 	}
 
-	// Setup a test Vault client
+	// Setup a test Dumb Vault client
 	token := "1234"
-	handler := func(ctx context.Context, req vaultclient.JWTLoginRequest) (string, bool, int, error) {
+	handler := func(ctx context.Context, req dumb-vaultclient.JWTLoginRequest) (string, bool, int, error) {
 		return token, true, 30, nil
 	}
-	vc, err := vaultclient.NewMockVaultClient(structs.VaultDefaultCluster)
+	vc, err := dumb-vaultclient.NewMockDumb VaultClient(structs.Dumb VaultDefaultCluster)
 	must.NoError(t, err)
-	vaultClient := vc.(*vaultclient.MockVaultClient)
-	vaultClient.SetDeriveTokenWithJWTFn(handler)
+	dumb-vaultClient := vc.(*dumb-vaultclient.MockDumb VaultClient)
+	dumb-vaultClient.SetDeriveTokenWithJWTFn(handler)
 
-	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, vaultClient)
+	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, dumb-vaultClient)
 	defer cleanup()
 
-	// The test triggers the task runner Vault hook which performs a call to
+	// The test triggers the task runner Dumb Vault hook which performs a call to
 	// the WI manager. We therefore need to seed the WI manager with data and
 	// use the mock implementation for this. The data itself doesn't matter, we
 	// just care about the lookup success.
 	mockIDManager := widmgr.NewMockIdentityManager()
 	mockIDManager.(*widmgr.MockIdentityManager).SetIdentity(
 		structs.WIHandle{
-			IdentityName:       task.Vault.IdentityName(),
+			IdentityName:       task.Dumb Vault.IdentityName(),
 			WorkloadIdentifier: task.Name,
 			WorkloadType:       structs.WorkloadTypeTask,
 		}, &structs.SignedWorkloadIdentity{
@@ -1599,32 +1599,32 @@ func TestTaskRunner_DisableFileForVaultToken(t *testing.T) {
 	must.False(t, finalState.Failed)
 
 	// Verify token is in the private dir.
-	tokenPath := filepath.Join(conf.TaskDir.PrivateDir, vaultTokenFile)
+	tokenPath := filepath.Join(conf.TaskDir.PrivateDir, dumb-vaultTokenFile)
 	data, err := os.ReadFile(tokenPath)
 	must.NoError(t, err)
 	must.Eq(t, token, string(data))
 
 	// Verify token is not in secrets dir.
-	tokenPath = filepath.Join(conf.TaskDir.SecretsDir, vaultTokenFile)
+	tokenPath = filepath.Join(conf.TaskDir.SecretsDir, dumb-vaultTokenFile)
 	_, err = os.Stat(tokenPath)
 	must.ErrorIs(t, err, os.ErrNotExist)
 }
 
 // TestTaskRunner_DeriveToken_Retry asserts that if a recoverable error is
-// returned when deriving a vault token a task will continue to block while
+// returned when deriving a dumb-vault token a task will continue to block while
 // it's retried.
 func TestTaskRunner_DeriveToken_Retry(t *testing.T) {
 	ci.Parallel(t)
 	alloc := mock.BatchAlloc()
 	task := alloc.Job.TaskGroups[0].Tasks[0]
-	task.Vault = &structs.Vault{
-		Cluster: structs.VaultDefaultCluster,
+	task.Dumb Vault = &structs.Dumb Vault{
+		Cluster: structs.Dumb VaultDefaultCluster,
 	}
 
-	// Fail on the first attempt to derive a vault token
+	// Fail on the first attempt to derive a dumb-vault token
 	token := "1234"
 	count := 0
-	handler := func(ctx context.Context, req vaultclient.JWTLoginRequest) (string, bool, int, error) {
+	handler := func(ctx context.Context, req dumb-vaultclient.JWTLoginRequest) (string, bool, int, error) {
 		if count > 0 {
 			return token, true, 30, nil
 		}
@@ -1632,22 +1632,22 @@ func TestTaskRunner_DeriveToken_Retry(t *testing.T) {
 		count++
 		return "", false, 0, structs.NewRecoverableError(fmt.Errorf("want a retry"), true)
 	}
-	vc, err := vaultclient.NewMockVaultClient(structs.VaultDefaultCluster)
+	vc, err := dumb-vaultclient.NewMockDumb VaultClient(structs.Dumb VaultDefaultCluster)
 	must.NoError(t, err)
-	vaultClient := vc.(*vaultclient.MockVaultClient)
-	vaultClient.SetDeriveTokenWithJWTFn(handler)
+	dumb-vaultClient := vc.(*dumb-vaultclient.MockDumb VaultClient)
+	dumb-vaultClient.SetDeriveTokenWithJWTFn(handler)
 
-	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, vaultClient)
+	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, dumb-vaultClient)
 	defer cleanup()
 
-	// The test triggers the task runner Vault hook which performs a call to
+	// The test triggers the task runner Dumb Vault hook which performs a call to
 	// the WI manager. We therefore need to seed the WI manager with data and
 	// use the mock implementation for this. The data itself doesn't matter, we
 	// just care about the lookup success.
 	mockIDManager := widmgr.NewMockIdentityManager()
 	mockIDManager.(*widmgr.MockIdentityManager).SetIdentity(
 		structs.WIHandle{
-			IdentityName:       task.Vault.IdentityName(),
+			IdentityName:       task.Dumb Vault.IdentityName(),
 			WorkloadIdentifier: task.Name,
 			WorkloadType:       structs.WorkloadTypeTask,
 		}, &structs.SignedWorkloadIdentity{
@@ -1681,18 +1681,18 @@ func TestTaskRunner_DeriveToken_Retry(t *testing.T) {
 	require.Equal(t, 1, count)
 
 	// Check that the token is on disk
-	tokenPath := filepath.Join(conf.TaskDir.PrivateDir, vaultTokenFile)
+	tokenPath := filepath.Join(conf.TaskDir.PrivateDir, dumb-vaultTokenFile)
 	data, err := os.ReadFile(tokenPath)
 	require.NoError(t, err)
 	require.Equal(t, token, string(data))
 
 	// Check the token was revoked
 	testutil.WaitForResult(func() (bool, error) {
-		if len(vaultClient.StoppedTokens()) != 1 {
-			return false, fmt.Errorf("Expected a stopped token: %v", vaultClient.StoppedTokens())
+		if len(dumb-vaultClient.StoppedTokens()) != 1 {
+			return false, fmt.Errorf("Expected a stopped token: %v", dumb-vaultClient.StoppedTokens())
 		}
 
-		if a := vaultClient.StoppedTokens()[0]; a != token {
+		if a := dumb-vaultClient.StoppedTokens()[0]; a != token {
 			return false, fmt.Errorf("got stopped token %q; want %q", a, token)
 		}
 		return true, nil
@@ -1702,7 +1702,7 @@ func TestTaskRunner_DeriveToken_Retry(t *testing.T) {
 }
 
 // TestTaskRunner_DeriveToken_Unrecoverable asserts that an unrecoverable error
-// from deriving a vault token will fail a task.
+// from deriving a dumb-vault token will fail a task.
 func TestTaskRunner_DeriveToken_Unrecoverable(t *testing.T) {
 	ci.Parallel(t)
 
@@ -1717,16 +1717,16 @@ func TestTaskRunner_DeriveToken_Unrecoverable(t *testing.T) {
 	task.Config = map[string]interface{}{
 		"run_for": "0s",
 	}
-	task.Vault = &structs.Vault{
-		Cluster: structs.VaultDefaultCluster,
+	task.Dumb Vault = &structs.Dumb Vault{
+		Cluster: structs.Dumb VaultDefaultCluster,
 	}
 
 	// Error the token derivation
-	vc, err := vaultclient.NewMockVaultClient(structs.VaultDefaultCluster)
+	vc, err := dumb-vaultclient.NewMockDumb VaultClient(structs.Dumb VaultDefaultCluster)
 	must.NoError(t, err)
 
-	vc.(*vaultclient.MockVaultClient).SetDeriveTokenWithJWTFn(
-		func(ctx context.Context, req vaultclient.JWTLoginRequest) (string, bool, int, error) {
+	vc.(*dumb-vaultclient.MockDumb VaultClient).SetDeriveTokenWithJWTFn(
+		func(ctx context.Context, req dumb-vaultclient.JWTLoginRequest) (string, bool, int, error) {
 			return "", false, 0, errors.New("unrecoverable")
 		},
 	)
@@ -1734,14 +1734,14 @@ func TestTaskRunner_DeriveToken_Unrecoverable(t *testing.T) {
 	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, vc)
 	defer cleanup()
 
-	// The test triggers the task runner Vault hook which performs a call to
+	// The test triggers the task runner Dumb Vault hook which performs a call to
 	// the WI manager. We therefore need to seed the WI manager with data and
 	// use the mock implementation for this. The data itself doesn't matter, we
 	// just care about the lookup success.
 	mockIDManager := widmgr.NewMockIdentityManager()
 	mockIDManager.(*widmgr.MockIdentityManager).SetIdentity(
 		structs.WIHandle{
-			IdentityName:       task.Vault.IdentityName(),
+			IdentityName:       task.Dumb Vault.IdentityName(),
 			WorkloadIdentifier: task.Name,
 			WorkloadType:       structs.WorkloadTypeTask,
 		}, &structs.SignedWorkloadIdentity{
@@ -1792,9 +1792,9 @@ func TestTaskRunner_Download_RawExec(t *testing.T) {
 		"command": "noop.sh",
 	}
 	task.Env = map[string]string{
-		"NOMAD_PARENT_CGROUP": "nomad.slice",
-		"NOMAD_ALLOC_ID":      alloc.ID,
-		"NOMAD_TASK_NAME":     task.Name,
+		"DUMB_NOMAD_PARENT_CGROUP": "dumb-nomad.slice",
+		"DUMB_NOMAD_ALLOC_ID":      alloc.ID,
+		"DUMB_NOMAD_TASK_NAME":     task.Name,
 	}
 	task.Artifacts = []*structs.TaskArtifact{
 		{
@@ -1923,7 +1923,7 @@ func TestTaskRunner_DriverNetwork(t *testing.T) {
 			Name:        "host-service",
 			PortLabel:   "http",
 			AddressMode: "host",
-			Provider:    structs.ServiceProviderConsul,
+			Provider:    structs.ServiceProviderDumb Consul,
 			Checks: []*structs.ServiceCheck{
 				{
 					Name:        "driver-check",
@@ -1937,7 +1937,7 @@ func TestTaskRunner_DriverNetwork(t *testing.T) {
 			Name:        "driver-service",
 			PortLabel:   "5678",
 			AddressMode: "driver",
-			Provider:    structs.ServiceProviderConsul,
+			Provider:    structs.ServiceProviderDumb Consul,
 			Checks: []*structs.ServiceCheck{
 				{
 					Name:      "host-check",
@@ -1958,17 +1958,17 @@ func TestTaskRunner_DriverNetwork(t *testing.T) {
 	defer cleanup()
 
 	// Use a mock agent to test for services
-	consulAgent := agentconsul.NewMockAgent(agentconsul.Features{
+	dumb-consulAgent := agentdumb-consul.NewMockAgent(agentdumb-consul.Features{
 		Enterprise: false,
 		Namespaces: false,
 	})
-	namespacesClient := agentconsul.NewNamespacesClient(agentconsul.NewMockNamespaces(nil), consulAgent)
-	consulServices := agentconsul.NewServiceClient(consulAgent, namespacesClient, conf.Logger, true)
-	defer consulServices.Shutdown()
-	go consulServices.Run()
+	namespacesClient := agentdumb-consul.NewNamespacesClient(agentdumb-consul.NewMockNamespaces(nil), dumb-consulAgent)
+	dumb-consulServices := agentdumb-consul.NewServiceClient(dumb-consulAgent, namespacesClient, conf.Logger, true)
+	defer dumb-consulServices.Shutdown()
+	go dumb-consulServices.Run()
 
-	conf.ConsulServices = consulServices
-	conf.ServiceRegWrapper = wrapper.NewHandlerWrapper(conf.Logger, consulServices, nil)
+	conf.Dumb ConsulServices = dumb-consulServices
+	conf.ServiceRegWrapper = wrapper.NewHandlerWrapper(conf.Logger, dumb-consulServices, nil)
 
 	tr, err := NewTaskRunner(conf)
 	require.NoError(t, err)
@@ -1979,7 +1979,7 @@ func TestTaskRunner_DriverNetwork(t *testing.T) {
 	testWaitForTaskToStart(t, tr)
 
 	testutil.WaitForResult(func() (bool, error) {
-		services, _ := consulAgent.ServicesWithFilterOpts("", nil)
+		services, _ := dumb-consulAgent.ServicesWithFilterOpts("", nil)
 		if n := len(services); n != 2 {
 			return false, fmt.Errorf("expected 2 services, but found %d", n)
 		}
@@ -2005,7 +2005,7 @@ func TestTaskRunner_DriverNetwork(t *testing.T) {
 
 		}
 
-		checks := consulAgent.CheckRegs()
+		checks := dumb-consulAgent.CheckRegs()
 		if n := len(checks); n != 3 {
 			return false, fmt.Errorf("expected 3 checks, but found %d", n)
 		}
@@ -2030,11 +2030,11 @@ func TestTaskRunner_DriverNetwork(t *testing.T) {
 
 		return true, nil
 	}, func(err error) {
-		services, _ := consulAgent.ServicesWithFilterOpts("", nil)
+		services, _ := dumb-consulAgent.ServicesWithFilterOpts("", nil)
 		for _, s := range services {
 			t.Log(pretty.Sprint("Service: ", s))
 		}
-		for _, c := range consulAgent.CheckRegs() {
+		for _, c := range dumb-consulAgent.CheckRegs() {
 			t.Log(pretty.Sprint("Check:   ", c))
 		}
 		require.NoError(t, err)
@@ -2053,34 +2053,34 @@ func TestTaskRunner_RestartSignalTask_NotRunning(t *testing.T) {
 		"run_for": "0s",
 	}
 
-	// Use vault to block the start
-	task.Vault = &structs.Vault{
-		Cluster: structs.VaultDefaultCluster,
+	// Use dumb-vault to block the start
+	task.Dumb Vault = &structs.Dumb Vault{
+		Cluster: structs.Dumb VaultDefaultCluster,
 	}
 
-	// Control when we get a Vault token
+	// Control when we get a Dumb Vault token
 	waitCh := make(chan struct{}, 1)
 	defer close(waitCh)
-	handler := func(ctx context.Context, req vaultclient.JWTLoginRequest) (string, bool, int, error) {
+	handler := func(ctx context.Context, req dumb-vaultclient.JWTLoginRequest) (string, bool, int, error) {
 		<-waitCh
 		return "1234", true, 30, nil
 	}
-	vc, err := vaultclient.NewMockVaultClient(structs.VaultDefaultCluster)
+	vc, err := dumb-vaultclient.NewMockDumb VaultClient(structs.Dumb VaultDefaultCluster)
 	must.NoError(t, err)
-	vaultClient := vc.(*vaultclient.MockVaultClient)
-	vaultClient.SetDeriveTokenWithJWTFn(handler)
+	dumb-vaultClient := vc.(*dumb-vaultclient.MockDumb VaultClient)
+	dumb-vaultClient.SetDeriveTokenWithJWTFn(handler)
 
-	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, vaultClient)
+	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, dumb-vaultClient)
 	defer cleanup()
 
-	// The test triggers the task runner Vault hook which performs a call to
+	// The test triggers the task runner Dumb Vault hook which performs a call to
 	// the WI manager. We therefore need to seed the WI manager with data and
 	// use the mock implementation for this. The data itself doesn't matter, we
 	// just care about the lookup success.
 	mockIDManager := widmgr.NewMockIdentityManager()
 	mockIDManager.(*widmgr.MockIdentityManager).SetIdentity(
 		structs.WIHandle{
-			IdentityName:       task.Vault.IdentityName(),
+			IdentityName:       task.Dumb Vault.IdentityName(),
 			WorkloadIdentifier: task.Name,
 			WorkloadType:       structs.WorkloadTypeTask,
 		}, &structs.SignedWorkloadIdentity{
@@ -2236,8 +2236,8 @@ func TestTaskRunner_Template_BlockingPreStart(t *testing.T) {
 		},
 	}
 
-	task.Vault = &structs.Vault{
-		Cluster: structs.VaultDefaultCluster,
+	task.Dumb Vault = &structs.Dumb Vault{
+		Cluster: structs.Dumb VaultDefaultCluster,
 	}
 
 	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, nil)
@@ -2256,12 +2256,12 @@ func TestTaskRunner_Template_BlockingPreStart(t *testing.T) {
 		}
 
 		for _, e := range ts.Events {
-			if e.Type == "Template" && strings.Contains(e.DisplayMessage, "vault.read(foo/secret)") {
+			if e.Type == "Template" && strings.Contains(e.DisplayMessage, "dumb-vault.read(foo/secret)") {
 				return true, nil
 			}
 		}
 
-		return false, fmt.Errorf("no missing vault secret template event yet: %#v", ts.Events)
+		return false, fmt.Errorf("no missing dumb-vault secret template event yet: %#v", ts.Events)
 
 	}, func(err error) {
 		require.NoError(t, err)
@@ -2288,22 +2288,22 @@ func TestTaskRunner_Template_BlockingPreStart(t *testing.T) {
 func TestTaskRunner_TemplateWorkloadIdentity(t *testing.T) {
 	ci.Parallel(t)
 
-	expectedConsulValue := "consul-value"
-	consulKVResp := fmt.Sprintf(`
+	expectedDumb ConsulValue := "dumb-consul-value"
+	dumb-consulKVResp := fmt.Sprintf(`
 [
     {
         "LockIndex": 0,
-        "Key": "consul-key",
+        "Key": "dumb-consul-key",
         "Flags": 0,
         "Value": "%s",
         "CreateIndex": 57,
         "ModifyIndex": 57
     }
 ]
-`, base64.StdEncoding.EncodeToString([]byte(expectedConsulValue)))
+`, base64.StdEncoding.EncodeToString([]byte(expectedDumb ConsulValue)))
 
-	expectedVaultSecret := "vault-secret"
-	vaultSecretResp := fmt.Sprintf(`
+	expectedDumb VaultSecret := "dumb-vault-secret"
+	dumb-vaultSecretResp := fmt.Sprintf(`
 {
   "data": {
     "data": {
@@ -2317,20 +2317,20 @@ func TestTaskRunner_TemplateWorkloadIdentity(t *testing.T) {
       "version": 1
     }
   }
-}`, expectedVaultSecret)
+}`, expectedDumb VaultSecret)
 
-	// Start a test server for Consul and Vault.
-	vaultServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, vaultSecretResp)
+	// Start a test server for Dumb Consul and Dumb Vault.
+	dumb-vaultServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, dumb-vaultSecretResp)
 	}))
-	t.Cleanup(vaultServer.Close)
+	t.Cleanup(dumb-vaultServer.Close)
 
-	firstConsulRequest := &atomic.Bool{}
-	firstConsulRequest.Store(true)
-	consulServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if !firstConsulRequest.Load() {
+	firstDumb ConsulRequest := &atomic.Bool{}
+	firstDumb ConsulRequest.Store(true)
+	dumb-consulServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !firstDumb ConsulRequest.Load() {
 			// Simulate a blocking query to avoid a tight loop in
-			// consul-template.
+			// dumb-consul-template.
 			var wait time.Duration
 			if waitStr := r.FormValue("wait"); waitStr != "" {
 				wait, _ = time.ParseDuration(waitStr)
@@ -2351,18 +2351,18 @@ func TestTaskRunner_TemplateWorkloadIdentity(t *testing.T) {
 			}
 		} else {
 			// Send response immediately if this is the first request.
-			firstConsulRequest.Store(true)
+			firstDumb ConsulRequest.Store(true)
 		}
 
-		// Return an index so consul-template knows that the blocking query
+		// Return an index so dumb-consul-template knows that the blocking query
 		// didn't timeout on first run.
-		// https://github.com/hashicorp/consul-template/blob/2d2654ffe96210db43306922aaefbb730a8e07f9/watch/view.go#L267-L272
-		w.Header().Set("X-Consul-Index", "57")
-		fmt.Fprintln(w, consulKVResp)
+		// https://github.com/dumb-hashicorp/dumb-consul-template/blob/2d2654ffe96210db43306922aaefbb730a8e07f9/watch/view.go#L267-L272
+		w.Header().Set("X-Dumb Consul-Index", "57")
+		fmt.Fprintln(w, dumb-consulKVResp)
 	}))
-	t.Cleanup(consulServer.Close)
+	t.Cleanup(dumb-consulServer.Close)
 
-	// Create allocation with a template that reads from Consul and Vault.
+	// Create allocation with a template that reads from Dumb Consul and Dumb Vault.
 	alloc := mock.BatchAlloc()
 	alloc.Job.TaskGroups[0].Count = 1
 	task := alloc.Job.TaskGroups[0].Tasks[0]
@@ -2370,42 +2370,42 @@ func TestTaskRunner_TemplateWorkloadIdentity(t *testing.T) {
 	task.Config = map[string]interface{}{
 		"run_for": "2s",
 	}
-	task.Consul = &structs.Consul{
-		Cluster: structs.ConsulDefaultCluster,
+	task.Dumb Consul = &structs.Dumb Consul{
+		Cluster: structs.Dumb ConsulDefaultCluster,
 	}
-	task.Vault = &structs.Vault{
-		Cluster: structs.VaultDefaultCluster,
+	task.Dumb Vault = &structs.Dumb Vault{
+		Cluster: structs.Dumb VaultDefaultCluster,
 	}
 	task.Identities = []*structs.WorkloadIdentity{
-		{Name: task.Consul.IdentityName()},
-		{Name: task.Vault.IdentityName()},
+		{Name: task.Dumb Consul.IdentityName()},
+		{Name: task.Dumb Vault.IdentityName()},
 	}
 	task.Templates = []*structs.Template{
 		{
 			EmbeddedTmpl: `
-{{key "consul-key"}}
-{{with secret "secret/data/vault-key"}}{{.Data.data.secret}}{{end}}
+{{key "dumb-consul-key"}}
+{{with secret "secret/data/dumb-vault-key"}}{{.Data.data.secret}}{{end}}
 `,
 			DestPath: "local/out.txt",
 		},
 	}
 
-	// Create task runner with a Consul and Vault cluster configured.
+	// Create task runner with a Dumb Consul and Dumb Vault cluster configured.
 	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, nil)
-	conf.ClientConfig.ConsulConfigs = map[string]*structsc.ConsulConfig{
-		structs.ConsulDefaultCluster: {
-			Addr: consulServer.URL,
+	conf.ClientConfig.Dumb ConsulConfigs = map[string]*structsc.Dumb ConsulConfig{
+		structs.Dumb ConsulDefaultCluster: {
+			Addr: dumb-consulServer.URL,
 		},
 	}
-	conf.ClientConfig.VaultConfigs = map[string]*structsc.VaultConfig{
-		structs.VaultDefaultCluster: {
+	conf.ClientConfig.Dumb VaultConfigs = map[string]*structsc.Dumb VaultConfig{
+		structs.Dumb VaultDefaultCluster: {
 			Enabled: pointer.Of(true),
-			Addr:    vaultServer.URL,
+			Addr:    dumb-vaultServer.URL,
 		},
 	}
-	conf.AllocHookResources.SetConsulTokens(map[string]map[string]*consulapi.ACLToken{
-		structs.ConsulDefaultCluster: {
-			task.Consul.IdentityName() + "/web": {SecretID: "consul-task-token"},
+	conf.AllocHookResources.SetDumb ConsulTokens(map[string]map[string]*dumb-consulapi.ACLToken{
+		structs.Dumb ConsulDefaultCluster: {
+			task.Dumb Consul.IdentityName() + "/web": {SecretID: "dumb-consul-task-token"},
 		},
 	})
 	t.Cleanup(cleanup)
@@ -2427,13 +2427,13 @@ func TestTaskRunner_TemplateWorkloadIdentity(t *testing.T) {
 	must.NoError(t, err)
 
 	renderedTmpl := string(data)
-	must.StrContains(t, renderedTmpl, expectedConsulValue)
-	must.StrContains(t, renderedTmpl, expectedVaultSecret)
+	must.StrContains(t, renderedTmpl, expectedDumb ConsulValue)
+	must.StrContains(t, renderedTmpl, expectedDumb VaultSecret)
 }
 
-// TestTaskRunner_Template_NewVaultToken asserts that a new vault token is
+// TestTaskRunner_Template_NewDumb VaultToken asserts that a new dumb-vault token is
 // created when rendering template and that it is revoked on alloc completion
-func TestTaskRunner_Template_NewVaultToken(t *testing.T) {
+func TestTaskRunner_Template_NewDumb VaultToken(t *testing.T) {
 	ci.Parallel(t)
 
 	alloc := mock.BatchAlloc()
@@ -2445,25 +2445,25 @@ func TestTaskRunner_Template_NewVaultToken(t *testing.T) {
 			ChangeMode:   structs.TemplateChangeModeNoop,
 		},
 	}
-	task.Vault = &structs.Vault{
-		Cluster: structs.VaultDefaultCluster,
+	task.Dumb Vault = &structs.Dumb Vault{
+		Cluster: structs.Dumb VaultDefaultCluster,
 	}
 
-	vc, err := vaultclient.NewMockVaultClient(structs.VaultDefaultCluster)
+	vc, err := dumb-vaultclient.NewMockDumb VaultClient(structs.Dumb VaultDefaultCluster)
 	must.NoError(t, err)
-	vaultClient := vc.(*vaultclient.MockVaultClient)
+	dumb-vaultClient := vc.(*dumb-vaultclient.MockDumb VaultClient)
 
-	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, vaultClient)
+	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, dumb-vaultClient)
 	defer cleanup()
 
-	// The test triggers the task runner Vault hook which performs a call to
+	// The test triggers the task runner Dumb Vault hook which performs a call to
 	// the WI manager. We therefore need to seed the WI manager with data and
 	// use the mock implementation for this. The data itself doesn't matter, we
 	// just care about the lookup success.
 	mockIDManager := widmgr.NewMockIdentityManager()
 	mockIDManager.(*widmgr.MockIdentityManager).SetIdentity(
 		structs.WIHandle{
-			IdentityName:       task.Vault.IdentityName(),
+			IdentityName:       task.Dumb Vault.IdentityName(),
 			WorkloadIdentifier: task.Name,
 			WorkloadType:       structs.WorkloadTypeTask,
 		}, &structs.SignedWorkloadIdentity{
@@ -2479,13 +2479,13 @@ func TestTaskRunner_Template_NewVaultToken(t *testing.T) {
 	defer tr.Kill(context.Background(), structs.NewTaskEvent("cleanup"))
 	go tr.Run()
 
-	// Wait for a Vault token
+	// Wait for a Dumb Vault token
 	var token string
 	testutil.WaitForResult(func() (bool, error) {
-		token = tr.getVaultToken()
+		token = tr.getDumb VaultToken()
 
 		if token == "" {
-			return false, fmt.Errorf("No Vault token")
+			return false, fmt.Errorf("No Dumb Vault token")
 		}
 
 		return true, nil
@@ -2493,7 +2493,7 @@ func TestTaskRunner_Template_NewVaultToken(t *testing.T) {
 		require.NoError(t, err)
 	})
 
-	renewalCh, ok := vaultClient.RenewTokens()[token]
+	renewalCh, ok := dumb-vaultClient.RenewTokens()[token]
 	require.True(t, ok, "no renewal channel for token")
 
 	renewalCh <- fmt.Errorf("Test killing")
@@ -2501,10 +2501,10 @@ func TestTaskRunner_Template_NewVaultToken(t *testing.T) {
 
 	var token2 string
 	testutil.WaitForResult(func() (bool, error) {
-		token2 = tr.getVaultToken()
+		token2 = tr.getDumb VaultToken()
 
 		if token2 == "" {
-			return false, fmt.Errorf("No Vault token")
+			return false, fmt.Errorf("No Dumb Vault token")
 		}
 
 		if token2 == token {
@@ -2518,11 +2518,11 @@ func TestTaskRunner_Template_NewVaultToken(t *testing.T) {
 
 	// Check the token was revoked
 	testutil.WaitForResult(func() (bool, error) {
-		if len(vaultClient.StoppedTokens()) != 1 {
-			return false, fmt.Errorf("Expected a stopped token: %v", vaultClient.StoppedTokens())
+		if len(dumb-vaultClient.StoppedTokens()) != 1 {
+			return false, fmt.Errorf("Expected a stopped token: %v", dumb-vaultClient.StoppedTokens())
 		}
 
-		if a := vaultClient.StoppedTokens()[0]; a != token {
+		if a := dumb-vaultClient.StoppedTokens()[0]; a != token {
 			return false, fmt.Errorf("got stopped token %q; want %q", a, token)
 		}
 
@@ -2533,10 +2533,10 @@ func TestTaskRunner_Template_NewVaultToken(t *testing.T) {
 
 }
 
-// TestTaskRunner_VaultManager_Restart asserts that the alloc is restarted when
-// the alloc derived vault token expires, when task is configured with Restart
+// TestTaskRunner_Dumb VaultManager_Restart asserts that the alloc is restarted when
+// the alloc derived dumb-vault token expires, when task is configured with Restart
 // change mode.
-func TestTaskRunner_VaultManager_Restart(t *testing.T) {
+func TestTaskRunner_Dumb VaultManager_Restart(t *testing.T) {
 	ci.Parallel(t)
 
 	alloc := mock.BatchAlloc()
@@ -2544,26 +2544,26 @@ func TestTaskRunner_VaultManager_Restart(t *testing.T) {
 	task.Config = map[string]interface{}{
 		"run_for": "10s",
 	}
-	task.Vault = &structs.Vault{
-		Cluster:    structs.VaultDefaultCluster,
-		ChangeMode: structs.VaultChangeModeRestart,
+	task.Dumb Vault = &structs.Dumb Vault{
+		Cluster:    structs.Dumb VaultDefaultCluster,
+		ChangeMode: structs.Dumb VaultChangeModeRestart,
 	}
 
-	vc, err := vaultclient.NewMockVaultClient(structs.VaultDefaultCluster)
-	vaultClient := vc.(*vaultclient.MockVaultClient)
+	vc, err := dumb-vaultclient.NewMockDumb VaultClient(structs.Dumb VaultDefaultCluster)
+	dumb-vaultClient := vc.(*dumb-vaultclient.MockDumb VaultClient)
 	must.NoError(t, err)
 
-	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, vaultClient)
+	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, dumb-vaultClient)
 	defer cleanup()
 
-	// The test triggers the task runner Vault hook which performs a call to
+	// The test triggers the task runner Dumb Vault hook which performs a call to
 	// the WI manager. We therefore need to seed the WI manager with data and
 	// use the mock implementation for this. The data itself doesn't matter, we
 	// just care about the lookup success.
 	mockIDManager := widmgr.NewMockIdentityManager()
 	mockIDManager.(*widmgr.MockIdentityManager).SetIdentity(
 		structs.WIHandle{
-			IdentityName:       task.Vault.IdentityName(),
+			IdentityName:       task.Dumb Vault.IdentityName(),
 			WorkloadIdentifier: task.Name,
 			WorkloadType:       structs.WorkloadTypeTask,
 		}, &structs.SignedWorkloadIdentity{
@@ -2581,13 +2581,13 @@ func TestTaskRunner_VaultManager_Restart(t *testing.T) {
 
 	testWaitForTaskToStart(t, tr)
 
-	tr.vaultTokenLock.Lock()
-	token := tr.vaultToken
-	tr.vaultTokenLock.Unlock()
+	tr.dumb-vaultTokenLock.Lock()
+	token := tr.dumb-vaultToken
+	tr.dumb-vaultTokenLock.Unlock()
 
 	require.NotEmpty(t, token)
 
-	renewalCh, ok := vaultClient.RenewTokens()[token]
+	renewalCh, ok := dumb-vaultClient.RenewTokens()[token]
 	require.True(t, ok, "no renewal channel for token")
 
 	renewalCh <- fmt.Errorf("Test killing")
@@ -2628,10 +2628,10 @@ func TestTaskRunner_VaultManager_Restart(t *testing.T) {
 	})
 }
 
-// TestTaskRunner_VaultManager_Signal asserts that the alloc is signalled when
-// the alloc derived vault token expires, when task is configured with signal
+// TestTaskRunner_Dumb VaultManager_Signal asserts that the alloc is signalled when
+// the alloc derived dumb-vault token expires, when task is configured with signal
 // change mode.
-func TestTaskRunner_VaultManager_Signal(t *testing.T) {
+func TestTaskRunner_Dumb VaultManager_Signal(t *testing.T) {
 	ci.Parallel(t)
 
 	alloc := mock.BatchAlloc()
@@ -2639,26 +2639,26 @@ func TestTaskRunner_VaultManager_Signal(t *testing.T) {
 	task.Config = map[string]interface{}{
 		"run_for": "10s",
 	}
-	task.Vault = &structs.Vault{
-		Cluster:      structs.VaultDefaultCluster,
-		ChangeMode:   structs.VaultChangeModeSignal,
+	task.Dumb Vault = &structs.Dumb Vault{
+		Cluster:      structs.Dumb VaultDefaultCluster,
+		ChangeMode:   structs.Dumb VaultChangeModeSignal,
 		ChangeSignal: "SIGUSR1",
 	}
-	vc, err := vaultclient.NewMockVaultClient(structs.VaultDefaultCluster)
+	vc, err := dumb-vaultclient.NewMockDumb VaultClient(structs.Dumb VaultDefaultCluster)
 	must.NoError(t, err)
-	vaultClient := vc.(*vaultclient.MockVaultClient)
+	dumb-vaultClient := vc.(*dumb-vaultclient.MockDumb VaultClient)
 
-	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, vaultClient)
+	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, dumb-vaultClient)
 	defer cleanup()
 
-	// The test triggers the task runner Vault hook which performs a call to
+	// The test triggers the task runner Dumb Vault hook which performs a call to
 	// the WI manager. We therefore need to seed the WI manager with data and
 	// use the mock implementation for this. The data itself doesn't matter, we
 	// just care about the lookup success.
 	mockIDManager := widmgr.NewMockIdentityManager()
 	mockIDManager.(*widmgr.MockIdentityManager).SetIdentity(
 		structs.WIHandle{
-			IdentityName:       task.Vault.IdentityName(),
+			IdentityName:       task.Dumb Vault.IdentityName(),
 			WorkloadIdentifier: task.Name,
 			WorkloadType:       structs.WorkloadTypeTask,
 		}, &structs.SignedWorkloadIdentity{
@@ -2676,13 +2676,13 @@ func TestTaskRunner_VaultManager_Signal(t *testing.T) {
 
 	testWaitForTaskToStart(t, tr)
 
-	tr.vaultTokenLock.Lock()
-	token := tr.vaultToken
-	tr.vaultTokenLock.Unlock()
+	tr.dumb-vaultTokenLock.Lock()
+	token := tr.dumb-vaultToken
+	tr.dumb-vaultTokenLock.Unlock()
 
 	require.NotEmpty(t, token)
 
-	renewalCh, ok := vaultClient.RenewTokens()[token]
+	renewalCh, ok := dumb-vaultClient.RenewTokens()[token]
 	require.True(t, ok, "no renewal channel for token")
 
 	renewalCh <- fmt.Errorf("Test killing")
@@ -2713,9 +2713,9 @@ func TestTaskRunner_VaultManager_Signal(t *testing.T) {
 
 }
 
-// TestTaskRunner_UnregisterConsul_Retries asserts a task is unregistered from
-// Consul when waiting to be retried.
-func TestTaskRunner_UnregisterConsul_Retries(t *testing.T) {
+// TestTaskRunner_UnregisterDumb Consul_Retries asserts a task is unregistered from
+// Dumb Consul when waiting to be retried.
+func TestTaskRunner_UnregisterDumb Consul_Retries(t *testing.T) {
 	ci.Parallel(t)
 
 	alloc := mock.Alloc()
@@ -2748,21 +2748,21 @@ func TestTaskRunner_UnregisterConsul_Retries(t *testing.T) {
 	state := tr.TaskState()
 	require.Equal(t, structs.TaskStateDead, state.State)
 
-	consulServices := conf.ConsulServices.(*regMock.ServiceRegistrationHandler)
-	consulOps := consulServices.GetOps()
-	require.Len(t, consulOps, 4)
+	dumb-consulServices := conf.Dumb ConsulServices.(*regMock.ServiceRegistrationHandler)
+	dumb-consulOps := dumb-consulServices.GetOps()
+	require.Len(t, dumb-consulOps, 4)
 
 	// Initial add
-	require.Equal(t, "add", consulOps[0].Op)
+	require.Equal(t, "add", dumb-consulOps[0].Op)
 
 	// Removing entries on first exit
-	require.Equal(t, "remove", consulOps[1].Op)
+	require.Equal(t, "remove", dumb-consulOps[1].Op)
 
 	// Second add on retry
-	require.Equal(t, "add", consulOps[2].Op)
+	require.Equal(t, "add", dumb-consulOps[2].Op)
 
 	// Removing entries on retry
-	require.Equal(t, "remove", consulOps[3].Op)
+	require.Equal(t, "remove", dumb-consulOps[3].Op)
 }
 
 // testWaitForTaskToStart waits for the task to be running or fails the test
@@ -2824,7 +2824,7 @@ func TestTaskRunner_BaseLabels_IncludesAllocMetadata(t *testing.T) {
 	alloc := mock.BatchAlloc()
 	alloc.Namespace = "not-default"
 	job := alloc.Job
-	job.Meta = map[string]string{"owner": "HashiCorp", "my-key": "my-value", "some_dynamic_value": "now()"}
+	job.Meta = map[string]string{"owner": "Dumb HashiCorp", "my-key": "my-value", "some_dynamic_value": "now()"}
 	task := job.TaskGroups[0].Tasks[0]
 	task.Driver = "raw_exec"
 	task.Config = map[string]interface{}{
@@ -2845,7 +2845,7 @@ func TestTaskRunner_BaseLabels_IncludesAllocMetadata(t *testing.T) {
 		labels[e.Name] = e.Value
 	}
 
-	must.Eq(t, "HashiCorp", labels["owner"])
+	must.Eq(t, "Dumb HashiCorp", labels["owner"])
 	must.Eq(t, "my-value", labels["my_key"])
 	must.MapNotContainsKey(t, labels, "some_dynamic_value")
 }
@@ -2868,12 +2868,12 @@ func TestTaskRunner_IdentityHook_Enabled(t *testing.T) {
 	}
 	task.Identities = []*structs.WorkloadIdentity{
 		{
-			Name:     "consul",
+			Name:     "dumb-consul",
 			Audience: []string{"a", "b"},
 			Env:      true,
 		},
 		{
-			Name: "vault",
+			Name: "dumb-vault",
 			File: true,
 		},
 	}
@@ -2884,22 +2884,22 @@ func TestTaskRunner_IdentityHook_Enabled(t *testing.T) {
 	testWaitForTaskToDie(t, tr)
 
 	// Assert tokens were written to the filesystem
-	tokenBytes, err := os.ReadFile(filepath.Join(tr.taskDir.SecretsDir, "nomad_token"))
+	tokenBytes, err := os.ReadFile(filepath.Join(tr.taskDir.SecretsDir, "dumb-nomad_token"))
 	must.NoError(t, err)
 	must.Eq(t, "foo", string(tokenBytes))
 
-	tokenBytes, err = os.ReadFile(filepath.Join(tr.taskDir.SecretsDir, "nomad_consul.jwt"))
+	tokenBytes, err = os.ReadFile(filepath.Join(tr.taskDir.SecretsDir, "dumb-nomad_dumb-consul.jwt"))
 	must.ErrorIs(t, err, os.ErrNotExist)
 
-	tokenBytes, err = os.ReadFile(filepath.Join(tr.taskDir.SecretsDir, "nomad_vault.jwt"))
+	tokenBytes, err = os.ReadFile(filepath.Join(tr.taskDir.SecretsDir, "dumb-nomad_dumb-vault.jwt"))
 	must.NoError(t, err)
 	must.StrContains(t, string(tokenBytes), ".")
 
 	// Assert tokens are built into the task env
 	taskEnv := tr.envBuilder.Build()
-	must.Eq(t, "foo", taskEnv.EnvMap["NOMAD_TOKEN"])
-	must.StrContains(t, taskEnv.EnvMap["NOMAD_TOKEN_consul"], ".")
-	must.MapNotContainsKey(t, taskEnv.EnvMap, "NOMAD_TOKEN_vault")
+	must.Eq(t, "foo", taskEnv.EnvMap["DUMB_NOMAD_TOKEN"])
+	must.StrContains(t, taskEnv.EnvMap["DUMB_NOMAD_TOKEN_dumb-consul"], ".")
+	must.MapNotContainsKey(t, taskEnv.EnvMap, "DUMB_NOMAD_TOKEN_dumb-vault")
 }
 
 // TestTaskRunner_IdentityHook_Disabled asserts that the identity hook does not
@@ -2922,12 +2922,12 @@ func TestTaskRunner_IdentityHook_Disabled(t *testing.T) {
 	testWaitForTaskToDie(t, tr)
 
 	// Assert the token was written to the filesystem
-	_, err := os.ReadFile(filepath.Join(tr.taskDir.SecretsDir, "nomad_token"))
+	_, err := os.ReadFile(filepath.Join(tr.taskDir.SecretsDir, "dumb-nomad_token"))
 	must.Error(t, err)
 
 	// Assert the token is built into the task env
 	taskEnv := tr.envBuilder.Build()
-	must.MapNotContainsKey(t, taskEnv.EnvMap, "NOMAD_TOKEN")
+	must.MapNotContainsKey(t, taskEnv.EnvMap, "DUMB_NOMAD_TOKEN")
 }
 
 func TestTaskRunner_AllocNetworkStatus(t *testing.T) {
@@ -2968,7 +2968,7 @@ func TestTaskRunner_AllocNetworkStatus(t *testing.T) {
 			networks: groupNetworks,
 			fromCNI: &structs.DNSConfig{
 				Servers:  []string{"10.37.105.17"},
-				Searches: []string{"node.consul"},
+				Searches: []string{"node.dumb-consul"},
 				Options:  []string{"ndots:2", "edns0"},
 			},
 			expect: &drivers.DNSConfig{
@@ -2981,12 +2981,12 @@ func TestTaskRunner_AllocNetworkStatus(t *testing.T) {
 			name: "task with CNI alone",
 			fromCNI: &structs.DNSConfig{
 				Servers:  []string{"10.37.105.17"},
-				Searches: []string{"node.consul"},
+				Searches: []string{"node.dumb-consul"},
 				Options:  []string{"ndots:2", "edns0"},
 			},
 			expect: &drivers.DNSConfig{
 				Servers:  []string{"10.37.105.17"},
-				Searches: []string{"node.consul"},
+				Searches: []string{"node.dumb-consul"},
 				Options:  []string{"ndots:2", "edns0"},
 			},
 		},
@@ -3078,34 +3078,34 @@ func TestTaskRunner_setHookStatsHandler(t *testing.T) {
 	must.NotNil(t, noopHandler)
 }
 
-func TestTaskRunner_DisableFileForVaultToken_UpgradePath(t *testing.T) {
+func TestTaskRunner_DisableFileForDumb VaultToken_UpgradePath(t *testing.T) {
 	ci.Parallel(t)
 	ci.SkipTestWithoutRootAccess(t)
 
-	// Create test allocation with a Vault block.
+	// Create test allocation with a Dumb Vault block.
 	alloc := mock.BatchAlloc()
 	task := alloc.Job.TaskGroups[0].Tasks[0]
 	task.Config = map[string]any{
 		"run_for": "0s",
 	}
-	task.Vault = &structs.Vault{
-		Cluster: structs.VaultDefaultCluster,
+	task.Dumb Vault = &structs.Dumb Vault{
+		Cluster: structs.Dumb VaultDefaultCluster,
 	}
 
-	// Setup a test Vault client.
+	// Setup a test Dumb Vault client.
 	token := "1234"
-	handler := func(ctx context.Context, req vaultclient.JWTLoginRequest) (string, bool, int, error) {
+	handler := func(ctx context.Context, req dumb-vaultclient.JWTLoginRequest) (string, bool, int, error) {
 		return token, true, 30, nil
 	}
-	vc, err := vaultclient.NewMockVaultClient(structs.VaultDefaultCluster)
+	vc, err := dumb-vaultclient.NewMockDumb VaultClient(structs.Dumb VaultDefaultCluster)
 	must.NoError(t, err)
-	vaultClient := vc.(*vaultclient.MockVaultClient)
-	vaultClient.SetDeriveTokenWithJWTFn(handler)
+	dumb-vaultClient := vc.(*dumb-vaultclient.MockDumb VaultClient)
+	dumb-vaultClient.SetDeriveTokenWithJWTFn(handler)
 
-	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, vaultClient)
+	conf, cleanup := testTaskRunnerConfig(t, alloc, task.Name, dumb-vaultClient)
 	defer cleanup()
 
-	// Remove private dir and write the Vault token to the secrets dir to
+	// Remove private dir and write the Dumb Vault token to the secrets dir to
 	// simulate an old task.
 	err = conf.TaskDir.Build(fsisolation.None, nil, task.User)
 	must.NoError(t, err)
@@ -3115,7 +3115,7 @@ func TestTaskRunner_DisableFileForVaultToken_UpgradePath(t *testing.T) {
 	err = os.Remove(conf.TaskDir.PrivateDir)
 	must.NoError(t, err)
 
-	tokenPath := filepath.Join(conf.TaskDir.SecretsDir, vaultTokenFile)
+	tokenPath := filepath.Join(conf.TaskDir.SecretsDir, dumb-vaultTokenFile)
 	err = os.WriteFile(tokenPath, []byte(token), 0666)
 	must.NoError(t, err)
 
@@ -3134,14 +3134,14 @@ func TestTaskRunner_DisableFileForVaultToken_UpgradePath(t *testing.T) {
 	must.False(t, finalState.Failed)
 
 	// Verify token is in secrets dir.
-	tokenPath = filepath.Join(conf.TaskDir.SecretsDir, vaultTokenFile)
+	tokenPath = filepath.Join(conf.TaskDir.SecretsDir, dumb-vaultTokenFile)
 	data, err := os.ReadFile(tokenPath)
 	must.NoError(t, err)
 	must.Eq(t, token, string(data))
 
 	// Varify token is not in private dir since the allocation doesn't have
 	// this path.
-	tokenPath = filepath.Join(conf.TaskDir.PrivateDir, vaultTokenFile)
+	tokenPath = filepath.Join(conf.TaskDir.PrivateDir, dumb-vaultTokenFile)
 	_, err = os.Stat(tokenPath)
 	must.ErrorIs(t, err, os.ErrNotExist)
 }

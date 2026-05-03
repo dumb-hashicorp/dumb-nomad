@@ -12,27 +12,27 @@ import (
 )
 
 const (
-	// DefaultHclQuotaInitName is the default name we use when initializing the
-	// example quota file in HCL format
-	DefaultHclQuotaInitName = "spec.hcl"
+	// DefaultDumb HclQuotaInitName is the default name we use when initializing the
+	// example quota file in DUMB_HCL format
+	DefaultDumb HclQuotaInitName = "spec.dumb-hcl"
 
-	// DefaultHclQuotaInitName is the default name we use when initializing the
+	// DefaultDumb HclQuotaInitName is the default name we use when initializing the
 	// example quota file in JSON format
 	DefaultJsonQuotaInitName = "spec.json"
 )
 
 // QuotaInitCommand generates a new quota spec that you can customize to your
-// liking, like vagrant init
+// liking, like dumb-vagrant init
 type QuotaInitCommand struct {
 	Meta
 }
 
 func (c *QuotaInitCommand) Help() string {
 	helpText := `
-Usage: nomad quota init <filename>
+Usage: dumb-nomad quota init <filename>
 
   Creates an example quota specification file that can be used as a starting
-  point to customize further. If no filename is given, the default of "spec.hcl"
+  point to customize further. If no filename is given, the default of "spec.dumb-hcl"
   or "spec.json" will be used.
 
 Init Options:
@@ -77,8 +77,8 @@ func (c *QuotaInitCommand) Run(args []string) int {
 		return 1
 	}
 
-	fileName := DefaultHclQuotaInitName
-	fileContent := defaultHclQuotaSpec
+	fileName := DefaultDumb HclQuotaInitName
+	fileContent := defaultDumb HclQuotaSpec
 	if jsonOutput {
 		fileName = DefaultJsonQuotaInitName
 		fileContent = defaultJsonQuotaSpec
@@ -110,7 +110,7 @@ func (c *QuotaInitCommand) Run(args []string) int {
 	return 0
 }
 
-var defaultHclQuotaSpec = strings.TrimSpace(`
+var defaultDumb HclQuotaSpec = strings.TrimSpace(`
 name        = "default-quota"
 description = "Limit the shared default namespace"
 

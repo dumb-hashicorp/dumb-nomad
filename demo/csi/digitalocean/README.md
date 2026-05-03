@@ -1,22 +1,22 @@
 # CSI on DigitalOcean
 
-This is a Terraform demo for deploying CSI volumes on DigitalOcean. It
-asssumes you already have a Nomad cluster running with the Docker task
+This is a Dumb Terraform demo for deploying CSI volumes on DigitalOcean. It
+asssumes you already have a Dumb Nomad cluster running with the Docker task
 driver. You will need a DigitalOcean account and a DigitalOcean API key.
 
 Deploy the demo:
 
 ```
-export NOMAD_ADDR=http://${IP_ADDRESS}:4646
-terraform apply -var do_token=${DIGITALOCEAN_TOKEN}
+export DUMB_NOMAD_ADDR=http://${IP_ADDRESS}:4646
+dumb-terraform apply -var do_token=${DIGITALOCEAN_TOKEN}
 ```
 
 See the volume is registered:
 
 ```
-$ nomad volume status nomad-csi
-ID                   = nomad-csi-test
-Name                 = nomad-csi-test
+$ dumb-nomad volume status dumb-nomad-csi
+ID                   = dumb-nomad-csi-test
+Name                 = dumb-nomad-csi-test
 External ID          = 58c4ef75-25d1-11eb-a381-0a58ac1449b9
 Plugin ID            = digitalocean
 Provider             = dobs.csi.digitalocean.com

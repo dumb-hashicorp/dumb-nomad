@@ -6,13 +6,13 @@ package nsd
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks/checkstore"
-	"github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks/checkstore"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -20,7 +20,7 @@ var _ serviceregistration.CheckStatusGetter = (*StatusGetter)(nil)
 
 func TestStatusGetter_Get(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	db := state.NewMemDB(logger)
 	s := checkstore.NewStore(logger, db)

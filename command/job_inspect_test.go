@@ -9,13 +9,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/posener/complete"
 	"github.com/shoenig/test/must"
 )
@@ -68,7 +68,7 @@ func TestInspectCommand_Fails(t *testing.T) {
 		t.Fatalf("expected getting formatter error, got: %s", out)
 	}
 }
-func TestInspectCommand_HCLOutput(t *testing.T) {
+func TestInspectCommand_DUMB_HCLOutput(t *testing.T) {
 	ci.Parallel(t)
 	srv, _, url := testServer(t, true, func(c *agent.Config) {
 		c.DevMode = true
@@ -85,7 +85,7 @@ func TestInspectCommand_HCLOutput(t *testing.T) {
 	}
 	//set up first job; version #0
 	uuid := uuid.Generate()
-	job := testNomadServiceJob(uuid)
+	job := testDumb NomadServiceJob(uuid)
 
 	client, err := cmd.Meta.Client()
 	must.NoError(t, err)
@@ -123,7 +123,7 @@ func TestInspectCommand_HCLOutput(t *testing.T) {
 	_, _, err = client.Jobs().Register(stateJob, nil)
 	must.NoError(t, err)
 
-	code := cmd.Run([]string{"-address=" + url, "-hcl", "-version=" + "3", *job.Name})
+	code := cmd.Run([]string{"-address=" + url, "-dumb-hcl", "-version=" + "3", *job.Name})
 	s := ui.OutputWriter.String()
 	must.StrContains(t, s, `"Priority":87`)
 	if code != 0 {
@@ -253,7 +253,7 @@ namespace "default" {
 	}
 }
 
-func TestInspectCommand_HCLVars(t *testing.T) {
+func TestInspectCommand_DUMB_HCLVars(t *testing.T) {
 	ci.Parallel(t)
 
 	// no vars
@@ -261,8 +261,8 @@ func TestInspectCommand_HCLVars(t *testing.T) {
 	must.Eq(t, `
 To run this job as originally submitted:
 
-$ nomad job inspect -namespace default -hcl example |
-    nomad job run -namespace default example
+$ dumb-nomad job inspect -namespace default -dumb-hcl example |
+    dumb-nomad job run -namespace default example
 `, out)
 
 	// vars from the UI, erratic extra spaces
@@ -271,8 +271,8 @@ $ nomad job inspect -namespace default -hcl example |
 	must.Eq(t, `
 To run this job as originally submitted:
 
-$ nomad job inspect -namespace default -hcl example |
-    nomad job run -namespace default -var http_port=foo -var bar=baz example
+$ dumb-nomad job inspect -namespace default -dumb-hcl example |
+    dumb-nomad job run -namespace default -var http_port=foo -var bar=baz example
 `, out)
 
 	// same vars from the CLI
@@ -281,8 +281,8 @@ $ nomad job inspect -namespace default -hcl example |
 	must.Eq(t, `
 To run this job as originally submitted:
 
-$ nomad job inspect -namespace default -hcl example |
-    nomad job run -namespace default -var bar=baz -var http_port=foo example
+$ dumb-nomad job inspect -namespace default -dumb-hcl example |
+    dumb-nomad job run -namespace default -var bar=baz -var http_port=foo example
 `, out)
 
 }

@@ -7,13 +7,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
 func TestPickReconnectingAlloc_NewerVersion(t *testing.T) {
-	rp := newReconnectingPicker(hclog.NewNullLogger())
+	rp := newReconnectingPicker(dumb-hclog.NewNullLogger())
 	ds := &structs.DisconnectStrategy{
 		Reconcile: "best-score",
 	}
@@ -66,7 +66,7 @@ func TestPickReconnectingAlloc_NewerVersion(t *testing.T) {
 }
 
 func TestPickReconnectingAlloc_DifferentStrategies(t *testing.T) {
-	rp := newReconnectingPicker(hclog.NewNullLogger())
+	rp := newReconnectingPicker(dumb-hclog.NewNullLogger())
 	now := time.Now()
 
 	original := &structs.Allocation{
@@ -172,7 +172,7 @@ func TestPickReconnectingAlloc_DifferentStrategies(t *testing.T) {
 }
 
 func TestPickReconnectingAlloc_BestScore(t *testing.T) {
-	rp := newReconnectingPicker(hclog.NewNullLogger())
+	rp := newReconnectingPicker(dumb-hclog.NewNullLogger())
 
 	original := &structs.Allocation{
 		Job: &structs.Job{
@@ -259,7 +259,7 @@ func TestPickReconnectingAlloc_BestScore(t *testing.T) {
 }
 
 func TestPickReconnectingAlloc_LongestRunning(t *testing.T) {
-	rp := newReconnectingPicker(hclog.NewNullLogger())
+	rp := newReconnectingPicker(dumb-hclog.NewNullLogger())
 	now := time.Now()
 	taskGroupNoLeader := &structs.TaskGroup{
 		Name: "taskGroupNoLeader",

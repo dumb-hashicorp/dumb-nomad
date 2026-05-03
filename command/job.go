@@ -6,8 +6,8 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -17,25 +17,25 @@ type JobCommand struct {
 
 func (f *JobCommand) Help() string {
 	helpText := `
-Usage: nomad job <subcommand> [options] [args]
+Usage: dumb-nomad job <subcommand> [options] [args]
 
   This command groups subcommands for interacting with jobs.
 
   Run a new job or update an existing job:
 
-      $ nomad job run <path>
+      $ dumb-nomad job run <path>
 
   Plan the run of a job to determine what changes would occur:
 
-      $ nomad job plan <path>
+      $ dumb-nomad job plan <path>
 
   Stop a running job:
 
-      $ nomad job stop <name>
+      $ dumb-nomad job stop <name>
 
   Examine the status of a running job:
 
-      $ nomad job status <name>
+      $ dumb-nomad job status <name>
 
   Please see the individual subcommand help for detailed usage information.
 `

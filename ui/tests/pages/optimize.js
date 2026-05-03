@@ -14,8 +14,8 @@ import {
   visitable,
 } from 'ember-cli-page-object';
 
-import recommendationCard from 'nomad-ui/tests/pages/components/recommendation-card';
-import { multiFacet, singleFacet } from 'nomad-ui/tests/pages/components/facet';
+import recommendationCard from 'dumb-nomad-ui/tests/pages/components/recommendation-card';
+import { multiFacet, singleFacet } from 'dumb-nomad-ui/tests/pages/components/facet';
 
 export default create({
   visit: visitable('/optimize'),

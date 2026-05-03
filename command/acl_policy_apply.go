@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -19,7 +19,7 @@ type ACLPolicyApplyCommand struct {
 
 func (c *ACLPolicyApplyCommand) Help() string {
 	helpText := `
-Usage: nomad acl policy apply [options] <name> <path>
+Usage: dumb-nomad acl policy apply [options] <name> <path>
 
   Apply is used to create or update an ACL policy. The policy is
   sourced from <path> or from stdin if path is "-".

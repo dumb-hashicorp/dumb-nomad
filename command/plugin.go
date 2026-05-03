@@ -3,7 +3,7 @@
 
 package command
 
-import "github.com/hashicorp/cli"
+import "github.com/dumb-hashicorp/cli"
 
 type PluginCommand struct {
 	Meta
@@ -11,7 +11,7 @@ type PluginCommand struct {
 
 func (c *PluginCommand) Help() string {
 	helpText := `
-Usage nomad plugin status [options] [plugin]
+Usage dumb-nomad plugin status [options] [plugin]
 
     This command groups subcommands for interacting with plugins.
 `

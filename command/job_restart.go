@@ -17,9 +17,9 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/dustin/go-humanize/english"
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/api"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/mitchellh/colorstring"
 	"github.com/posener/complete"
 )
@@ -77,7 +77,7 @@ func (e ErrJobRestartPlacementFailure) Is(err error) bool {
 type JobRestartCommand struct {
 	Meta
 
-	// client is the Nomad API client shared by all functions in the command to
+	// client is the Dumb Nomad API client shared by all functions in the command to
 	// reuse the same connection.
 	client *api.Client
 
@@ -107,7 +107,7 @@ type JobRestartCommand struct {
 
 func (c *JobRestartCommand) Help() string {
 	helpText := `
-Usage: nomad job restart [options] <job>
+Usage: dumb-nomad job restart [options] <job>
 
   Restart or reschedule allocations for a particular job.
 
@@ -116,7 +116,7 @@ Usage: nomad job restart [options] <job>
   rather restarted in-place.
 
   Rescheduling the job uses the 'Stop Allocation' API endpoint to stop the
-  allocations and trigger the Nomad scheduler to compute new placements. This
+  allocations and trigger the Dumb Nomad scheduler to compute new placements. This
   may cause the new allocations to be scheduled in different clients from the
   originals.
 
@@ -129,10 +129,10 @@ Usage: nomad job restart [options] <job>
   the command may target specific tasks in the allocations, restart only tasks
   that are currently running, or restart all tasks, even the ones that have
   already run. Groups and tasks can also target allocations.  When you define
-  both groups and tasks, Nomad restarts only the tasks for the allocations of
+  both groups and tasks, Dumb Nomad restarts only the tasks for the allocations of
   those groups.
 
-  When migrating, Nomad stops the current allocations, triggering the Nomad
+  When migrating, Dumb Nomad stops the current allocations, triggering the Dumb Nomad
   scheduler to create new allocations that may be placed in different
   clients. The command waits until the new allocations have client status
   'ready' before proceeding with the remaining batches. The command does not

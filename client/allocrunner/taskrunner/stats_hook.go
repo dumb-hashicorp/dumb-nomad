@@ -8,12 +8,12 @@ import (
 	"sync"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
-	bstructs "github.com/hashicorp/nomad/plugins/base/structs"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	bstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/base/structs"
 )
 
 // StatsUpdater is the interface required by the StatsHook to update stats.
@@ -36,10 +36,10 @@ type statsHook struct {
 
 	mu sync.Mutex
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
-func newStatsHook(su StatsUpdater, interval time.Duration, doPublish bool, logger hclog.Logger) *statsHook {
+func newStatsHook(su StatsUpdater, interval time.Duration, doPublish bool, logger dumb-hclog.Logger) *statsHook {
 	h := &statsHook{
 		updater:   su,
 		interval:  interval,

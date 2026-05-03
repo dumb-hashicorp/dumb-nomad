@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
-	log "github.com/hashicorp/go-hclog"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
 	"github.com/mitchellh/go-homedir"
 	"github.com/shoenig/go-landlock"
 	"golang.org/x/sys/unix"

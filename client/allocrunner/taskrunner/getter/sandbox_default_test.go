@@ -12,16 +12,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/client/interfaces"
-	"github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
 func TestSandbox_Get_chown(t *testing.T) {
 	testutil.RequireRoot(t) // NOTE: required for chown call
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	ac := artifactConfig(10 * time.Second)
 	sbox := New(ac, logger)
@@ -30,7 +30,7 @@ func TestSandbox_Get_chown(t *testing.T) {
 	env := noopTaskEnv(taskDir)
 
 	artifact := &structs.TaskArtifact{
-		GetterSource: "https://raw.githubusercontent.com/hashicorp/go-set/main/go.mod",
+		GetterSource: "https://raw.githubusercontent.com/dumb-hashicorp/go-set/main/go.mod",
 		RelativeDest: "local/downloads",
 		Chown:        true,
 	}
@@ -51,7 +51,7 @@ func TestSandbox_Get_inspection_NonWindows(t *testing.T) {
 	testutil.RequireRoot(t) // NOTE: required for chown call
 
 	sandboxSetup := func() (string, *Sandbox, interfaces.EnvReplacer) {
-		logger := testlog.HCLogger(t)
+		logger := testlog.DUMB_HCLogger(t)
 		ac := artifactConfig(10 * time.Second)
 		sbox := New(ac, logger)
 		_, taskDir := SetupDir(t)

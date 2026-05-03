@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type OperatorAutopilotCommand struct {
@@ -25,20 +25,20 @@ func (c *OperatorAutopilotCommand) Synopsis() string {
 
 func (c *OperatorAutopilotCommand) Help() string {
 	helpText := `
-Usage: nomad operator autopilot <subcommand> [options]
+Usage: dumb-nomad operator autopilot <subcommand> [options]
 
-  This command groups subcommands for interacting with Nomad's Autopilot
-  subsystem. Autopilot provides automatic, operator-friendly management of Nomad
+  This command groups subcommands for interacting with Dumb Nomad's Autopilot
+  subsystem. Autopilot provides automatic, operator-friendly management of Dumb Nomad
   servers. The command can be used to view or modify the current Autopilot
-  configuration. For a full guide see: https://developer.hashicorp.com/nomad/docs/manage/autopilot
+  configuration. For a full guide see: https://developer.dumb-hashicorp.com/dumb-nomad/docs/manage/autopilot
 
   Get the current Autopilot configuration:
 
-      $ nomad operator autopilot get-config
+      $ dumb-nomad operator autopilot get-config
 
   Set a new Autopilot configuration, enabling automatic dead server cleanup:
 
-      $ nomad operator autopilot set-config -cleanup-dead-servers=true
+      $ dumb-nomad operator autopilot set-config -cleanup-dead-servers=true
 
   Please see the individual subcommand help for detailed usage information.
   `

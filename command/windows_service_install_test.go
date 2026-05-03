@@ -12,8 +12,8 @@ import (
 	"testing"
 	"text/template"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/helper/winsvc"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/winsvc"
 	"github.com/shoenig/test/must"
 )
 
@@ -24,7 +24,7 @@ func TestWindowsServiceInstallCommand_Run(t *testing.T) {
 		srv := m.NewMockWindowsService()
 		m.ExpectIsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME, false, nil)
 		m.ExpectIsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME, false, nil)
-		m.ExpectCreateService(winsvc.WINDOWS_SERVICE_NAME, "nomad.exe",
+		m.ExpectCreateService(winsvc.WINDOWS_SERVICE_NAME, "dumb-nomad.exe",
 			winsvc.WindowsServiceConfiguration{}, srv, nil)
 		srv.ExpectEnableEventlog(nil)
 		srv.ExpectStop(nil)
@@ -67,7 +67,7 @@ func TestWindowsServiceInstallCommand_Run(t *testing.T) {
 				freshInstallFn(m)
 			},
 			after: func(dir string) {
-				must.FileExists(t, filepath.Join(dir, "programdata/HashiCorp/nomad/config/config.hcl"))
+				must.FileExists(t, filepath.Join(dir, "programdata/Dumb HashiCorp/dumb-nomad/config/config.dumb-hcl"))
 			},
 			output: "initial configuration file",
 		},
@@ -77,39 +77,39 @@ func TestWindowsServiceInstallCommand_Run(t *testing.T) {
 				freshInstallFn(m)
 			},
 			after: func(dir string) {
-				must.FileExists(t, filepath.Join(dir, "programfiles/HashiCorp/nomad/bin/nomad.exe"))
+				must.FileExists(t, filepath.Join(dir, "programfiles/Dumb HashiCorp/dumb-nomad/bin/dumb-nomad.exe"))
 			},
 			output: "binary installed",
 		},
 		{
 			desc: "fresh install configuration already exists",
 			setup: func(dir string, m *winsvc.MockWindowsServiceManager) {
-				cdir := filepath.Join(dir, "programdata/HashiCorp/nomad/config")
+				cdir := filepath.Join(dir, "programdata/Dumb HashiCorp/dumb-nomad/config")
 				err := os.MkdirAll(cdir, 0o755)
 				must.NoError(t, err)
-				f, err := os.Create(filepath.Join(cdir, "custom.hcl"))
+				f, err := os.Create(filepath.Join(cdir, "custom.dumb-hcl"))
 				must.NoError(t, err)
 				f.Close()
 				freshInstallFn(m)
 			},
 			after: func(dir string) {
-				must.FileNotExists(t, filepath.Join(dir, "programdata/HashiCorp/nomad/config/config.hcl"))
+				must.FileNotExists(t, filepath.Join(dir, "programdata/Dumb HashiCorp/dumb-nomad/config/config.dumb-hcl"))
 			},
 		},
 		{
 			desc: "fresh install binary already exists",
 			setup: func(dir string, m *winsvc.MockWindowsServiceManager) {
-				cdir := filepath.Join(dir, "programfiles/HashiCorp/nomad/bin")
+				cdir := filepath.Join(dir, "programfiles/Dumb HashiCorp/dumb-nomad/bin")
 				err := os.MkdirAll(cdir, 0o755)
 				must.NoError(t, err)
 				// create empty binary file
-				f, err := os.Create(filepath.Join(cdir, "nomad.exe"))
+				f, err := os.Create(filepath.Join(cdir, "dumb-nomad.exe"))
 				must.NoError(t, err)
 				f.Close()
 				freshInstallFn(m)
 			},
 			after: func(dir string) {
-				s, err := os.Stat(filepath.Join(dir, "programfiles/HashiCorp/nomad/bin/nomad.exe"))
+				s, err := os.Stat(filepath.Join(dir, "programfiles/Dumb HashiCorp/dumb-nomad/bin/dumb-nomad.exe"))
 				must.NoError(t, err)
 				// ensure binary file is not empty
 				must.NonZero(t, s.Size())
@@ -136,7 +136,7 @@ func TestWindowsServiceInstallCommand_Run(t *testing.T) {
 			},
 			args: []string{"-install-dir", "{{.ProgramFiles}}/custom/bin"},
 			after: func(dir string) {
-				_, err := os.Stat(filepath.Join(dir, "programfiles/custom/bin/nomad.exe"))
+				_, err := os.Stat(filepath.Join(dir, "programfiles/custom/bin/dumb-nomad.exe"))
 				must.NoError(t, err)
 			},
 		},
@@ -145,9 +145,9 @@ func TestWindowsServiceInstallCommand_Run(t *testing.T) {
 			setup: func(_ string, m *winsvc.MockWindowsServiceManager) {
 				freshInstallFn(m)
 			},
-			args: []string{"-config-dir", "{{.ProgramData}}/custom/nomad-configuration"},
+			args: []string{"-config-dir", "{{.ProgramData}}/custom/dumb-nomad-configuration"},
 			after: func(dir string) {
-				_, err := os.Stat(filepath.Join(dir, "programdata/custom/nomad-configuration"))
+				_, err := os.Stat(filepath.Join(dir, "programdata/custom/dumb-nomad-configuration"))
 				must.NoError(t, err)
 			},
 		},
@@ -156,9 +156,9 @@ func TestWindowsServiceInstallCommand_Run(t *testing.T) {
 			setup: func(_ string, m *winsvc.MockWindowsServiceManager) {
 				freshInstallFn(m)
 			},
-			args: []string{"-data-dir", "{{.ProgramData}}/custom/nomad-data"},
+			args: []string{"-data-dir", "{{.ProgramData}}/custom/dumb-nomad-data"},
 			after: func(dir string) {
-				_, err := os.Stat(filepath.Join(dir, "programdata/custom/nomad-data"))
+				_, err := os.Stat(filepath.Join(dir, "programdata/custom/dumb-nomad-data"))
 				must.NoError(t, err)
 			},
 		},
@@ -233,7 +233,7 @@ func TestWindowsServiceInstallCommand_Run(t *testing.T) {
 			setup: func(_ string, m *winsvc.MockWindowsServiceManager) {
 				m.ExpectIsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME, false, nil)
 				m.ExpectIsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME, false, nil)
-				m.ExpectCreateService(winsvc.WINDOWS_SERVICE_NAME, "nomad.exe", winsvc.WindowsServiceConfiguration{}, nil, errors.New("create service failure"))
+				m.ExpectCreateService(winsvc.WINDOWS_SERVICE_NAME, "dumb-nomad.exe", winsvc.WindowsServiceConfiguration{}, nil, errors.New("create service failure"))
 			},
 			errOutput: "unable to create service",
 			status:    1,
@@ -244,7 +244,7 @@ func TestWindowsServiceInstallCommand_Run(t *testing.T) {
 				srv := m.NewMockWindowsService()
 				m.ExpectIsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME, false, nil)
 				m.ExpectIsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME, false, nil)
-				m.ExpectCreateService(winsvc.WINDOWS_SERVICE_NAME, "nomad.exe", winsvc.WindowsServiceConfiguration{}, srv, nil)
+				m.ExpectCreateService(winsvc.WINDOWS_SERVICE_NAME, "dumb-nomad.exe", winsvc.WindowsServiceConfiguration{}, srv, nil)
 				srv.ExpectEnableEventlog(errors.New("eventlog configure failure"))
 			},
 			errOutput: "could not configure eventlog",
@@ -256,7 +256,7 @@ func TestWindowsServiceInstallCommand_Run(t *testing.T) {
 				srv := m.NewMockWindowsService()
 				m.ExpectIsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME, false, nil)
 				m.ExpectIsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME, false, nil)
-				m.ExpectCreateService(winsvc.WINDOWS_SERVICE_NAME, "nomad.exe", winsvc.WindowsServiceConfiguration{}, srv, nil)
+				m.ExpectCreateService(winsvc.WINDOWS_SERVICE_NAME, "dumb-nomad.exe", winsvc.WindowsServiceConfiguration{}, srv, nil)
 				srv.ExpectEnableEventlog(nil)
 				srv.ExpectStop(errors.New("service stop failure"))
 			},
@@ -269,7 +269,7 @@ func TestWindowsServiceInstallCommand_Run(t *testing.T) {
 				srv := m.NewMockWindowsService()
 				m.ExpectIsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME, false, nil)
 				m.ExpectIsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME, false, nil)
-				m.ExpectCreateService(winsvc.WINDOWS_SERVICE_NAME, "nomad.exe", winsvc.WindowsServiceConfiguration{}, srv, nil)
+				m.ExpectCreateService(winsvc.WINDOWS_SERVICE_NAME, "dumb-nomad.exe", winsvc.WindowsServiceConfiguration{}, srv, nil)
 				srv.ExpectEnableEventlog(nil)
 				srv.ExpectStop(nil)
 				srv.ExpectStart(errors.New("service start failure"))

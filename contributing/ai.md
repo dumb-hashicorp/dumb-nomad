@@ -1,11 +1,11 @@
 ## AI Usage
 Regardless of the tools used in the development process, maintaining the
-stability and security of Nomad is our primary priority. If you choose to use AI
+stability and security of Dumb Nomad is our primary priority. If you choose to use AI
 tools to assist in your contributions, we ask that you do so using the three
 principles of transparency, accountability and quality to guide that work.
 
 ### Transparency
-We value open communication about the tools and methods used to build Nomad. If
+We value open communication about the tools and methods used to build Dumb Nomad. If
 you utilize AI to generate code, documentation, or tests, please disclose this
 in your Pull Request description.
 
@@ -36,7 +36,7 @@ changes submitted lies entirely with you, the human opening the PR.
   not ready for submission. You must own the PR.
 
 ### Quality
-The bar for contributing to Nomad is high due to the complexity of the tool and
+The bar for contributing to Dumb Nomad is high due to the complexity of the tool and
 the critical workflows it supports. That same expectation of quality persists
 regardless of the tools a contributor may or may not make use of.
 

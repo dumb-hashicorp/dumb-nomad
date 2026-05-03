@@ -4,8 +4,8 @@
 package feasible
 
 import (
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (

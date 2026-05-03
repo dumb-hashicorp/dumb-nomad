@@ -7,14 +7,14 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	raftboltdb "github.com/hashicorp/raft-boltdb/v2"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	raftboltdb "github.com/dumb-hashicorp/raft-boltdb/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 // TestRaftStateInfo_InUse asserts that commands that inspect raft
-// state such as "nomad operator raft info" and "nomad operator raft
+// state such as "dumb-nomad operator raft info" and "dumb-nomad operator raft
 // logs" fail with a helpful error message when called on an inuse
 // database.
 func TestRaftStateInfo_InUse(t *testing.T) {

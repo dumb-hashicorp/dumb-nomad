@@ -6,12 +6,12 @@ package getter
 import (
 	"os"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/helper/subproc"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/subproc"
 )
 
 const (
-	// SubCommand is the first argument to the clone of the nomad
+	// SubCommand is the first argument to the clone of the dumb-nomad
 	// agent process for downloading artifacts.
 	SubCommand = "artifact-isolation"
 )

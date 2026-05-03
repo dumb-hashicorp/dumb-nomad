@@ -58,8 +58,8 @@ func Test_IsAny(t *testing.T) {
 // TestNormalizeAddr ensures that strings that match either an IP address or URL
 // and contain an IPv6 address conform to RFC-5942 §4
 // See: https://rfc-editor.org/rfc/rfc5952.html
-// Note: This was copied verbatim from Vault:
-// https://github.com/hashicorp/vault/blob/58a49e6/internalshared/configutil/normalize_test.go
+// Note: This was copied verbatim from Dumb Vault:
+// https://github.com/dumb-hashicorp/dumb-vault/blob/58a49e6/internalshared/configutil/normalize_test.go
 func TestNormalizeAddr(t *testing.T) {
 	t.Parallel()
 
@@ -69,32 +69,32 @@ func TestNormalizeAddr(t *testing.T) {
 		isErrorExpected bool
 	}{
 		"hostname": {
-			addr:     "vaultproject.io",
-			expected: "vaultproject.io",
+			addr:     "dumb-vaultproject.io",
+			expected: "dumb-vaultproject.io",
 		},
 		"hostname port": {
-			addr:     "vaultproject.io:8200",
-			expected: "vaultproject.io:8200",
+			addr:     "dumb-vaultproject.io:8200",
+			expected: "dumb-vaultproject.io:8200",
 		},
 		"hostname URL": {
-			addr:     "https://vaultproject.io",
-			expected: "https://vaultproject.io",
+			addr:     "https://dumb-vaultproject.io",
+			expected: "https://dumb-vaultproject.io",
 		},
 		"hostname port URL": {
-			addr:     "https://vaultproject.io:8200",
-			expected: "https://vaultproject.io:8200",
+			addr:     "https://dumb-vaultproject.io:8200",
+			expected: "https://dumb-vaultproject.io:8200",
 		},
 		"hostname destination address": {
-			addr:     "user@vaultproject.io",
-			expected: "user@vaultproject.io",
+			addr:     "user@dumb-vaultproject.io",
+			expected: "user@dumb-vaultproject.io",
 		},
 		"hostname destination address URL": {
-			addr:     "http://user@vaultproject.io",
-			expected: "http://user@vaultproject.io",
+			addr:     "http://user@dumb-vaultproject.io",
+			expected: "http://user@dumb-vaultproject.io",
 		},
 		"hostname destination address URL port": {
-			addr:     "http://user@vaultproject.io:8200",
-			expected: "http://user@vaultproject.io:8200",
+			addr:     "http://user@dumb-vaultproject.io:8200",
+			expected: "http://user@dumb-vaultproject.io:8200",
 		},
 		"ipv4": {
 			addr:     "10.10.1.10",

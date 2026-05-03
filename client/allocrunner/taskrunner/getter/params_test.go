@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-getter"
+	"github.com/dumb-hashicorp/go-getter"
 	"github.com/shoenig/test/must"
 )
 
@@ -37,7 +37,7 @@ const paramsAsJSON = `
   "artifact_source": "https://example.com/file.txt",
   "artifact_destination": "local/out.txt",
   "artifact_headers": {
-    "X-Nomad-Artifact": ["hi"]
+    "X-Dumb Nomad-Artifact": ["hi"]
   },
   "alloc_dir": "/path/to/alloc",
   "task_dir": "/path/to/alloc/task",
@@ -66,7 +66,7 @@ var paramsAsStruct = &parameters{
 	AllocDir:    "/path/to/alloc",
 	TaskDir:     "/path/to/alloc/task",
 	Headers: map[string][]string{
-		"X-Nomad-Artifact": {"hi"},
+		"X-Dumb Nomad-Artifact": {"hi"},
 	},
 	User:  "nobody",
 	Chown: true,

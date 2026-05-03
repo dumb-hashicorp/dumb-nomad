@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -18,9 +18,9 @@ type VolumeDeregisterCommand struct {
 
 func (c *VolumeDeregisterCommand) Help() string {
 	helpText := `
-Usage: nomad volume deregister [options] <id>
+Usage: dumb-nomad volume deregister [options] <id>
 
-  Remove an unused volume from Nomad.
+  Remove an unused volume from Dumb Nomad.
 
   When ACLs are enabled, this command requires a token with the
   'csi-write-volume' capability for the volume's namespace.

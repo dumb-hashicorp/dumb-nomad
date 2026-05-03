@@ -6,7 +6,7 @@ package fingerprint
 import (
 	"fmt"
 
-	"github.com/hashicorp/go-hclog"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
 	"github.com/shoenig/go-landlock"
 )
 
@@ -17,11 +17,11 @@ const (
 // LandlockFingerprint is used to fingerprint the kernel landlock feature.
 type LandlockFingerprint struct {
 	StaticFingerprinter
-	logger   hclog.Logger
+	logger   dumb-hclog.Logger
 	detector func() (int, error)
 }
 
-func NewLandlockFingerprint(logger hclog.Logger) Fingerprint {
+func NewLandlockFingerprint(logger dumb-hclog.Logger) Fingerprint {
 	return &LandlockFingerprint{
 		logger:   logger.Named("landlock"),
 		detector: landlock.Detect,

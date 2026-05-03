@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-import KEYS from 'nomad-ui/utils/keys';
+import KEYS from 'dumb-nomad-ui/utils/keys';
 
 const REVERSE_WRAPAROUND_MODE = '\x1b[?45h';
 const BACKSPACE_ONE_CHARACTER = '\x08 \x08';

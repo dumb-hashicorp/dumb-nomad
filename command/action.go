@@ -20,7 +20,7 @@ type ActionCommand struct {
 
 func (c *ActionCommand) Help() string {
 	helpText := `
-Usage: nomad action [options] <action>
+Usage: dumb-nomad action [options] <action>
 
   Perform a predefined command inside the environment of a given context.
   Currently this acts as a wrapper around the job action command.

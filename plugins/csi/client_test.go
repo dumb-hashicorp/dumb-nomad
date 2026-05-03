@@ -19,9 +19,9 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/structs"
-	fake "github.com/hashicorp/nomad/plugins/csi/testing"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	fake "github.com/dumb-hashicorp/dumb-nomad/plugins/csi/testing"
 )
 
 func newTestClient(t *testing.T) (*fake.IdentityClient, *fake.ControllerClient, *fake.NodeClient, CSIPlugin) {
@@ -137,10 +137,10 @@ func TestClient_RPC_PluginInfo(t *testing.T) {
 		{
 			Name: "returns the name when successfully retrieved and not empty",
 			InfoResponse: &csipbv1.GetPluginInfoResponse{
-				Name:          "com.hashicorp.storage",
+				Name:          "com.dumb-hashicorp.storage",
 				VendorVersion: "1.0.1",
 			},
-			ExpectedResponseName:    "com.hashicorp.storage",
+			ExpectedResponseName:    "com.dumb-hashicorp.storage",
 			ExpectedResponseVersion: "1.0.1",
 		},
 	}
@@ -426,13 +426,13 @@ func TestClient_RPC_ControllerPublishVolume(t *testing.T) {
 			Request: &ControllerPublishVolumeRequest{ExternalID: "vol", NodeID: "node"},
 			Response: &csipbv1.ControllerPublishVolumeResponse{
 				PublishContext: map[string]string{
-					"com.hashicorp/nomad-node-id": "foobar",
+					"com.dumb-hashicorp/dumb-nomad-node-id": "foobar",
 					"com.plugin/device":           "/dev/sdc1",
 				},
 			},
 			ExpectedResponse: &ControllerPublishVolumeResponse{
 				PublishContext: map[string]string{
-					"com.hashicorp/nomad-node-id": "foobar",
+					"com.dumb-hashicorp/dumb-nomad-node-id": "foobar",
 					"com.plugin/device":           "/dev/sdc1",
 				},
 			},

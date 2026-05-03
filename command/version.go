@@ -4,8 +4,8 @@
 package command
 
 import (
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/version"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/version"
 )
 
 // VersionCommand is a Command implementation prints the version.
@@ -26,5 +26,5 @@ func (c *VersionCommand) Run(_ []string) int {
 }
 
 func (c *VersionCommand) Synopsis() string {
-	return "Prints the Nomad version"
+	return "Prints the Dumb Nomad version"
 }

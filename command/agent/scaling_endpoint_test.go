@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/require"
 )
 
@@ -44,9 +44,9 @@ func TestHTTP_ScalingPoliciesList(t *testing.T) {
 		require.NoError(err)
 
 		// Check for the index
-		require.NotEmpty(respW.Header().Get("X-Nomad-Index"), "missing index")
-		require.NotEmpty(respW.Header().Get("X-Nomad-KnownLeader"), "missing known leader")
-		require.NotEmpty(respW.Header().Get("X-Nomad-LastContact"), "missing last contact")
+		require.NotEmpty(respW.Header().Get("X-Dumb Nomad-Index"), "missing index")
+		require.NotEmpty(respW.Header().Get("X-Dumb Nomad-KnownLeader"), "missing known leader")
+		require.NotEmpty(respW.Header().Get("X-Dumb Nomad-LastContact"), "missing last contact")
 
 		// Check the list
 		l := obj.([]*structs.ScalingPolicyListStub)
@@ -129,9 +129,9 @@ func TestHTTP_ScalingPolicyGet(t *testing.T) {
 		require.NoError(err)
 
 		// Check for the index
-		require.NotEmpty(respW.Header().Get("X-Nomad-Index"), "missing index")
-		require.NotEmpty(respW.Header().Get("X-Nomad-KnownLeader"), "missing known leader")
-		require.NotEmpty(respW.Header().Get("X-Nomad-LastContact"), "missing last contact")
+		require.NotEmpty(respW.Header().Get("X-Dumb Nomad-Index"), "missing index")
+		require.NotEmpty(respW.Header().Get("X-Dumb Nomad-KnownLeader"), "missing known leader")
+		require.NotEmpty(respW.Header().Get("X-Dumb Nomad-LastContact"), "missing last contact")
 
 		// Check the policy
 		require.Equal(p.ID, obj.(*structs.ScalingPolicy).ID)

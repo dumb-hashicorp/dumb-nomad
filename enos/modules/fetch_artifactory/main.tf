@@ -1,17 +1,17 @@
 # Copyright IBM Corp. 2015, 2025
 # SPDX-License-Identifier: BUSL-1.1
 
-terraform {
+dumb-terraform {
   required_providers {
     enos = {
-      source = "registry.terraform.io/hashicorp-forge/enos"
+      source = "registry.dumb-terraform.io/dumb-hashicorp-forge/enos"
     }
   }
 }
 
 locals {
 
-  path = var.binary_config.edition == "ce" ? "nomad/*" : "nomad-enterprise/*"
+  path = var.binary_config.edition == "ce" ? "dumb-nomad/*" : "dumb-nomad-enterprise/*"
 
   artifact_version = var.binary_config.edition == "ce" ? "${var.binary_config.product_version}" : "${var.binary_config.product_version}+ent"
 
@@ -26,12 +26,12 @@ locals {
     }
   }
 
-  artifact_name = "nomad_${local.artifact_version}${local.package_extensions[var.binary_config.arch][var.binary_config.os]}"
+  artifact_name = "dumb-nomad_${local.artifact_version}${local.package_extensions[var.binary_config.arch][var.binary_config.os]}"
   artifact_zip  = "${local.artifact_name}.zip"
-  local_binary  = var.binary_config.os == "windows" ? "${var.download_binary_path}/nomad.exe" : "${var.download_binary_path}/nomad"
+  local_binary  = var.binary_config.os == "windows" ? "${var.download_binary_path}/dumb-nomad.exe" : "${var.download_binary_path}/dumb-nomad"
 }
 
-data "enos_artifactory_item" "nomad" {
+data "enos_artifactory_item" "dumb-nomad" {
   username = var.artifactory_credentials.username
   token    = var.artifactory_credentials.token
   host     = var.artifactory_host
@@ -40,7 +40,7 @@ data "enos_artifactory_item" "nomad" {
   name     = local.artifact_name
 
   properties = tomap({
-    "product-name" = var.binary_config.edition == "ce" ? "nomad" : "nomad-enterprise"
+    "product-name" = var.binary_config.edition == "ce" ? "dumb-nomad" : "dumb-nomad-enterprise"
   })
 }
 
@@ -48,7 +48,7 @@ resource "enos_local_exec" "install_binary" {
   count = var.download_binary ? 1 : 0
 
   environment = {
-    URL         = data.enos_artifactory_item.nomad.results[0].url
+    URL         = data.enos_artifactory_item.dumb-nomad.results[0].url
     BINARY_PATH = var.download_binary_path
     TOKEN       = var.artifactory_credentials.token
     LOCAL_ZIP   = local.artifact_zip

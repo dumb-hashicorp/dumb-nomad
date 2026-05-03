@@ -8,10 +8,10 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { find, click, render, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import Pretender from 'pretender';
 import { logEncode } from '../../../mirage/data/logs';
-import { startMirage } from 'nomad-ui/initializers/ember-cli-mirage';
+import { startMirage } from 'dumb-nomad-ui/initializers/ember-cli-mirage';
 
 const HOST = '1.1.1.1:1111';
 const allowedConnectionTime = 100;
@@ -40,7 +40,7 @@ module('Integration | Component | task log', function (hooks) {
   hooks.beforeEach(async function () {
     this.server = startMirage();
     const managementToken = this.server.create('token');
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
     const tokenService = this.owner.lookup('service:token');
     const tokenPromise = tokenService.fetchSelfTokenAndPolicies.perform();
     const timeoutPromise = new Promise((_, reject) => {
@@ -429,7 +429,7 @@ module('Integration | Component | task log', function (hooks) {
   });
 
   test('The log streaming mode is persisted in localStorage', async function (assert) {
-    window.localStorage.nomadLogMode = JSON.stringify('stderr');
+    window.localStorage.dumb-nomadLogMode = JSON.stringify('stderr');
 
     run.later(run, run.cancelTimers, commonProps.interval);
 
@@ -458,6 +458,6 @@ module('Integration | Component | task log', function (hooks) {
         (req) => req.queryParams.type === 'stdout'
       ).length
     );
-    assert.equal(window.localStorage.nomadLogMode, JSON.stringify('stdout'));
+    assert.equal(window.localStorage.dumb-nomadLogMode, JSON.stringify('stdout'));
   });
 });

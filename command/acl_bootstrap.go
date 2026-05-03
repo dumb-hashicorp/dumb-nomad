@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -21,7 +21,7 @@ type ACLBootstrapCommand struct {
 
 func (c *ACLBootstrapCommand) Help() string {
 	helpText := `
-Usage: nomad acl bootstrap [options] [<path>]
+Usage: dumb-nomad acl bootstrap [options] [<path>]
 
   Bootstrap is used to bootstrap the ACL system and get an initial token.
 

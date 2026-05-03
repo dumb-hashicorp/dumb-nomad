@@ -12,8 +12,8 @@ import (
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 )
 
 // TestNamespacesFiltering exercises the -namespace flag on various commands to
@@ -30,20 +30,20 @@ func TestNamespacesFiltering(t *testing.T) {
 		}
 
 		for _, namespaceID := range namespaceIDs {
-			_, err := e2eutil.Command("nomad", "namespace", "delete", namespaceID)
+			_, err := e2eutil.Command("dumb-nomad", "namespace", "delete", namespaceID)
 			test.NoError(t, err)
 		}
 
-		_, err := e2eutil.Command("nomad", "system", "gc")
+		_, err := e2eutil.Command("dumb-nomad", "system", "gc")
 		test.NoError(t, err)
 	})
 
-	_, err := e2eutil.Command("nomad", "namespace", "apply",
+	_, err := e2eutil.Command("dumb-nomad", "namespace", "apply",
 		"-description", "namespace A", "NamespaceA")
 	require.NoError(t, err, "could not create namespace")
 	namespaceIDs = append(namespaceIDs, "NamespaceA")
 
-	_, err = e2eutil.Command("nomad", "namespace", "apply",
+	_, err = e2eutil.Command("dumb-nomad", "namespace", "apply",
 		"-description", "namespace B", "NamespaceB")
 	require.NoError(t, err, "could not create namespace")
 	namespaceIDs = append(namespaceIDs, "NamespaceB")
@@ -57,11 +57,11 @@ func TestNamespacesFiltering(t *testing.T) {
 		return jobID
 	}
 
-	jobA := run("./input/namespace_a.nomad", "NamespaceA")
-	jobB := run("./input/namespace_b.nomad", "NamespaceB")
-	jobDefault := run("./input/namespace_default.nomad", "")
+	jobA := run("./input/namespace_a.dumb-nomad", "NamespaceA")
+	jobB := run("./input/namespace_b.dumb-nomad", "NamespaceB")
+	jobDefault := run("./input/namespace_default.dumb-nomad", "")
 
-	// exercise 'nomad job status' filtering
+	// exercise 'dumb-nomad job status' filtering
 	parse := func(out string) []map[string]string {
 		rows, err := e2eutil.ParseColumns(out)
 		require.NoError(t, err, "failed to parse job status output: %v", out)
@@ -79,76 +79,76 @@ func TestNamespacesFiltering(t *testing.T) {
 		return result
 	}
 
-	out, err := e2eutil.Command("nomad", "job", "status", "-namespace", "NamespaceA")
-	require.NoError(t, err, "'nomad job status -namespace NamespaceA' failed")
+	out, err := e2eutil.Command("dumb-nomad", "job", "status", "-namespace", "NamespaceA")
+	require.NoError(t, err, "'dumb-nomad job status -namespace NamespaceA' failed")
 	rows := parse(out)
 	must.Len(t, 1, rows)
 	must.Eq(t, rows[0]["ID"], jobA)
 
-	out, err = e2eutil.Command("nomad", "job", "status", "-namespace", "NamespaceB")
-	require.NoError(t, err, "'nomad job status -namespace NamespaceB' failed")
+	out, err = e2eutil.Command("dumb-nomad", "job", "status", "-namespace", "NamespaceB")
+	require.NoError(t, err, "'dumb-nomad job status -namespace NamespaceB' failed")
 	rows = parse(out)
 	must.Len(t, 1, rows)
 	must.Eq(t, rows[0]["ID"], jobB)
 
-	out, err = e2eutil.Command("nomad", "job", "status", "-namespace", "*")
-	require.NoError(t, err, "'nomad job status -namespace *' failed")
+	out, err = e2eutil.Command("dumb-nomad", "job", "status", "-namespace", "*")
+	require.NoError(t, err, "'dumb-nomad job status -namespace *' failed")
 	rows = parse(out)
 	must.Len(t, 3, rows)
 
-	out, err = e2eutil.Command("nomad", "job", "status")
-	require.NoError(t, err, "'nomad job status' failed")
+	out, err = e2eutil.Command("dumb-nomad", "job", "status")
+	require.NoError(t, err, "'dumb-nomad job status' failed")
 	rows = parse(out)
 	must.Len(t, 1, rows)
 	must.Eq(t, rows[0]["ID"], jobDefault)
 
-	// exercise 'nomad status' filtering
+	// exercise 'dumb-nomad status' filtering
 
-	out, err = e2eutil.Command("nomad", "status", "-namespace", "NamespaceA")
-	require.NoError(t, err, "'nomad job status -namespace NamespaceA' failed")
+	out, err = e2eutil.Command("dumb-nomad", "status", "-namespace", "NamespaceA")
+	require.NoError(t, err, "'dumb-nomad job status -namespace NamespaceA' failed")
 	rows = parse(out)
 	must.Len(t, 1, rows)
 	must.Eq(t, rows[0]["ID"], jobA)
 
-	out, err = e2eutil.Command("nomad", "status", "-namespace", "NamespaceB")
-	require.NoError(t, err, "'nomad job status -namespace NamespaceB' failed")
+	out, err = e2eutil.Command("dumb-nomad", "status", "-namespace", "NamespaceB")
+	require.NoError(t, err, "'dumb-nomad job status -namespace NamespaceB' failed")
 	rows = parse(out)
 	must.Len(t, 1, rows)
 	must.Eq(t, rows[0]["ID"], jobB)
 
-	out, err = e2eutil.Command("nomad", "status", "-namespace", "*")
-	require.NoError(t, err, "'nomad job status -namespace *' failed")
+	out, err = e2eutil.Command("dumb-nomad", "status", "-namespace", "*")
+	require.NoError(t, err, "'dumb-nomad job status -namespace *' failed")
 	rows = parse(out)
 	must.Len(t, 3, rows)
 
-	out, err = e2eutil.Command("nomad", "status")
-	require.NoError(t, err, "'nomad status' failed")
+	out, err = e2eutil.Command("dumb-nomad", "status")
+	require.NoError(t, err, "'dumb-nomad status' failed")
 	rows = parse(out)
 	must.Len(t, 1, rows)
 	must.Eq(t, rows[0]["ID"], jobDefault)
 
-	// exercise 'nomad deployment list' filtering
+	// exercise 'dumb-nomad deployment list' filtering
 	// note: '-namespace *' is only supported for job and alloc subcommands
 
-	out, err = e2eutil.Command("nomad", "deployment", "list", "-namespace", "NamespaceA")
-	require.NoError(t, err, "'nomad job status -namespace NamespaceA' failed")
+	out, err = e2eutil.Command("dumb-nomad", "deployment", "list", "-namespace", "NamespaceA")
+	require.NoError(t, err, "'dumb-nomad job status -namespace NamespaceA' failed")
 	rows = parse(out)
 	must.Len(t, 1, rows)
 	must.Eq(t, rows[0]["Job ID"], jobA)
 
-	out, err = e2eutil.Command("nomad", "deployment", "list", "-namespace", "NamespaceB")
-	require.NoError(t, err, "'nomad job status -namespace NamespaceB' failed")
+	out, err = e2eutil.Command("dumb-nomad", "deployment", "list", "-namespace", "NamespaceB")
+	require.NoError(t, err, "'dumb-nomad job status -namespace NamespaceB' failed")
 	rows = parse(out)
 	must.Eq(t, len(rows), 1)
 	must.Eq(t, rows[0]["Job ID"], jobB)
 
-	out, err = e2eutil.Command("nomad", "deployment", "list")
-	require.NoError(t, err, "'nomad deployment list' failed")
+	out, err = e2eutil.Command("dumb-nomad", "deployment", "list")
+	require.NoError(t, err, "'dumb-nomad deployment list' failed")
 	rows = parse(out)
 	must.Len(t, 1, rows)
 	must.Eq(t, rows[0]["Job ID"], jobDefault)
 
-	out, err = e2eutil.Command("nomad", "job", "stop", jobA)
+	out, err = e2eutil.Command("dumb-nomad", "job", "stop", jobA)
 	must.Eq(t, fmt.Sprintf("No job(s) with prefix or ID %q found\n", jobA), out)
 	must.StrContains(t, err.Error(), "exit status 1")
 

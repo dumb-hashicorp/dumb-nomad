@@ -29,7 +29,7 @@ func Test_Backoff(t *testing.T) {
 			expectedResult: time.Minute,
 		},
 		{
-			name:           "backoff limit clamps for boundary attempt",
+			name:           "backoff limit clamps for dumb-boundary attempt",
 			backoffBase:    time.Hour,
 			backoffLimit:   time.Minute,
 			attempt:        63,

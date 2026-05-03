@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 	"github.com/posener/complete"
 )
 
@@ -23,7 +23,7 @@ type ACLTokenCreateCommand struct {
 
 func (c *ACLTokenCreateCommand) Help() string {
 	helpText := `
-Usage: nomad acl token create [options]
+Usage: dumb-nomad acl token create [options]
 
   Create is used to issue new ACL tokens. Requires a management token.
 

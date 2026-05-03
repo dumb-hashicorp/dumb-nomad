@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 )
 
 func main() {
@@ -48,9 +48,9 @@ func main() {
 	isRunning := false
 	allocClient := client.Allocations()
 
-	cmd := exec.Command("nomad", "run", fh.Name())
+	cmd := exec.Command("dumb-nomad", "run", fh.Name())
 	if err := cmd.Run(); err != nil {
-		fmt.Println("nomad run failed: " + err.Error())
+		fmt.Println("dumb-nomad run failed: " + err.Error())
 		return
 	}
 	start := time.Now()

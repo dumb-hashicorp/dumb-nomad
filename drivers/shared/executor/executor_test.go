@@ -17,21 +17,21 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	tu "github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	tu "github.com/dumb-hashicorp/dumb-nomad/testutil"
 	ps "github.com/mitchellh/go-ps"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
@@ -41,7 +41,7 @@ import (
 var executorFactories = map[string]executorFactory{}
 
 type executorFactory struct {
-	new              func(hclog.Logger, cpustats.Compute) Executor
+	new              func(dumb-hclog.Logger, cpustats.Compute) Executor
 	configureExecCmd func(*testing.T, *ExecCommand)
 }
 
@@ -67,7 +67,7 @@ func testExecutorCommand(t *testing.T) *testExecCmd {
 	task := alloc.Job.TaskGroups[0].Tasks[0]
 	taskEnv := taskenv.NewBuilder(mock.Node(), alloc, task, "global").Build()
 
-	allocDir := allocdir.NewAllocDir(testlog.HCLogger(t), t.TempDir(), t.TempDir(), alloc.ID)
+	allocDir := allocdir.NewAllocDir(testlog.DUMB_HCLogger(t), t.TempDir(), t.TempDir(), alloc.ID)
 	if err := allocDir.Build(); err != nil {
 		t.Fatalf("AllocDir.Build() failed: %v", err)
 	}
@@ -80,7 +80,7 @@ func testExecutorCommand(t *testing.T) *testExecCmd {
 		Env:     taskEnv.List(),
 		TaskDir: td.Dir,
 		Resources: &drivers.Resources{
-			NomadResources: &structs.AllocatedTaskResources{
+			Dumb NomadResources: &structs.AllocatedTaskResources{
 				Cpu: structs.AllocatedCpuResources{
 					CpuShares: 500,
 				},
@@ -126,7 +126,7 @@ func TestExecutor_Start_Invalid(t *testing.T) {
 			execCmd.Args = []string{"1"}
 			factory.configureExecCmd(t, execCmd)
 			defer allocDir.Destroy()
-			executor := factory.new(testlog.HCLogger(t), compute)
+			executor := factory.new(testlog.DUMB_HCLogger(t), compute)
 			defer executor.Shutdown("", 0)
 
 			_, err := executor.Launch(execCmd)
@@ -146,7 +146,7 @@ func TestExecutor_Start_Wait_Failure_Code(t *testing.T) {
 			execCmd.Args = []string{"-c", "sleep 1; /bin/date fail"}
 			factory.configureExecCmd(t, execCmd)
 			defer allocDir.Destroy()
-			executor := factory.new(testlog.HCLogger(t), compute)
+			executor := factory.new(testlog.DUMB_HCLogger(t), compute)
 			defer executor.Shutdown("", 0)
 
 			ps, err := executor.Launch(execCmd)
@@ -171,7 +171,7 @@ func TestExecutor_Start_Wait(t *testing.T) {
 			factory.configureExecCmd(t, execCmd)
 
 			defer allocDir.Destroy()
-			executor := factory.new(testlog.HCLogger(t), compute)
+			executor := factory.new(testlog.DUMB_HCLogger(t), compute)
 			defer executor.Shutdown("", 0)
 
 			ps, err := executor.Launch(execCmd)
@@ -208,7 +208,7 @@ func TestExecutor_Start_Wait_Children(t *testing.T) {
 			factory.configureExecCmd(t, execCmd)
 
 			defer allocDir.Destroy()
-			executor := factory.new(testlog.HCLogger(t), compute)
+			executor := factory.new(testlog.DUMB_HCLogger(t), compute)
 			defer executor.Shutdown("SIGKILL", 0)
 
 			ps, err := executor.Launch(execCmd)
@@ -249,7 +249,7 @@ func TestExecutor_WaitExitSignal(t *testing.T) {
 			factory.configureExecCmd(t, execCmd)
 
 			defer allocDir.Destroy()
-			executor := factory.new(testlog.HCLogger(t), compute)
+			executor := factory.new(testlog.DUMB_HCLogger(t), compute)
 			defer executor.Shutdown("", 0)
 
 			pState, err := executor.Launch(execCmd)
@@ -307,7 +307,7 @@ func TestExecutor_Start_Kill(t *testing.T) {
 			factory.configureExecCmd(t, execCmd)
 
 			defer allocDir.Destroy()
-			executor := factory.new(testlog.HCLogger(t), compute)
+			executor := factory.new(testlog.DUMB_HCLogger(t), compute)
 			defer executor.Shutdown("", 0)
 
 			ps, err := executor.Launch(execCmd)
@@ -344,7 +344,7 @@ func TestExecutor_Shutdown_Exit(t *testing.T) {
 		Topology: numalib.Scan(numalib.PlatformScanners(false)),
 	}
 
-	executor, pluginClient, err := CreateExecutor(testlog.HCLogger(t), driverCfg, cfg)
+	executor, pluginClient, err := CreateExecutor(testlog.DUMB_HCLogger(t), driverCfg, cfg)
 	require.NoError(err)
 
 	proc, err := executor.Launch(execCmd)
@@ -519,7 +519,7 @@ func TestExecutor_Start_Kill_Immediately_NoGrace(t *testing.T) {
 			execCmd.Args = []string{"100"}
 			factory.configureExecCmd(t, execCmd)
 			defer allocDir.Destroy()
-			executor := factory.new(testlog.HCLogger(t), compute)
+			executor := factory.new(testlog.DUMB_HCLogger(t), compute)
 			defer executor.Shutdown("", 0)
 
 			ps, err := executor.Launch(execCmd)
@@ -555,7 +555,7 @@ func TestExecutor_Start_Kill_Immediately_WithGrace(t *testing.T) {
 			execCmd.Args = []string{"100"}
 			factory.configureExecCmd(t, execCmd)
 			defer allocDir.Destroy()
-			executor := factory.new(testlog.HCLogger(t), compute)
+			executor := factory.new(testlog.DUMB_HCLogger(t), compute)
 			defer executor.Shutdown("", 0)
 
 			ps, err := executor.Launch(execCmd)
@@ -601,7 +601,7 @@ func TestExecutor_Start_NonExecutableBinaries(t *testing.T) {
 			execCmd.Cmd = nonExecutablePath
 			factory.configureExecCmd(t, execCmd)
 
-			executor := factory.new(testlog.HCLogger(t), compute)
+			executor := factory.new(testlog.DUMB_HCLogger(t), compute)
 			defer executor.Shutdown("", 0)
 
 			// need to configure path in chroot with that file if using isolation executor

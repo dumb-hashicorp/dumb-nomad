@@ -8,7 +8,7 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
-	proto1 "github.com/hashicorp/nomad/plugins/drivers/proto"
+	proto1 "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -891,24 +891,24 @@ func (m *ProcessState) GetOomKilled() bool {
 }
 
 func init() {
-	proto.RegisterType((*LaunchRequest)(nil), "hashicorp.nomad.plugins.executor.proto.LaunchRequest")
-	proto.RegisterMapType((map[string]string)(nil), "hashicorp.nomad.plugins.executor.proto.LaunchRequest.CgroupV1OverrideEntry")
-	proto.RegisterType((*LaunchResponse)(nil), "hashicorp.nomad.plugins.executor.proto.LaunchResponse")
-	proto.RegisterType((*WaitRequest)(nil), "hashicorp.nomad.plugins.executor.proto.WaitRequest")
-	proto.RegisterType((*WaitResponse)(nil), "hashicorp.nomad.plugins.executor.proto.WaitResponse")
-	proto.RegisterType((*ShutdownRequest)(nil), "hashicorp.nomad.plugins.executor.proto.ShutdownRequest")
-	proto.RegisterType((*ShutdownResponse)(nil), "hashicorp.nomad.plugins.executor.proto.ShutdownResponse")
-	proto.RegisterType((*UpdateResourcesRequest)(nil), "hashicorp.nomad.plugins.executor.proto.UpdateResourcesRequest")
-	proto.RegisterType((*UpdateResourcesResponse)(nil), "hashicorp.nomad.plugins.executor.proto.UpdateResourcesResponse")
-	proto.RegisterType((*VersionRequest)(nil), "hashicorp.nomad.plugins.executor.proto.VersionRequest")
-	proto.RegisterType((*VersionResponse)(nil), "hashicorp.nomad.plugins.executor.proto.VersionResponse")
-	proto.RegisterType((*StatsRequest)(nil), "hashicorp.nomad.plugins.executor.proto.StatsRequest")
-	proto.RegisterType((*StatsResponse)(nil), "hashicorp.nomad.plugins.executor.proto.StatsResponse")
-	proto.RegisterType((*SignalRequest)(nil), "hashicorp.nomad.plugins.executor.proto.SignalRequest")
-	proto.RegisterType((*SignalResponse)(nil), "hashicorp.nomad.plugins.executor.proto.SignalResponse")
-	proto.RegisterType((*ExecRequest)(nil), "hashicorp.nomad.plugins.executor.proto.ExecRequest")
-	proto.RegisterType((*ExecResponse)(nil), "hashicorp.nomad.plugins.executor.proto.ExecResponse")
-	proto.RegisterType((*ProcessState)(nil), "hashicorp.nomad.plugins.executor.proto.ProcessState")
+	proto.RegisterType((*LaunchRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.LaunchRequest")
+	proto.RegisterMapType((map[string]string)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.LaunchRequest.CgroupV1OverrideEntry")
+	proto.RegisterType((*LaunchResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.LaunchResponse")
+	proto.RegisterType((*WaitRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.WaitRequest")
+	proto.RegisterType((*WaitResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.WaitResponse")
+	proto.RegisterType((*ShutdownRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.ShutdownRequest")
+	proto.RegisterType((*ShutdownResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.ShutdownResponse")
+	proto.RegisterType((*UpdateResourcesRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.UpdateResourcesRequest")
+	proto.RegisterType((*UpdateResourcesResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.UpdateResourcesResponse")
+	proto.RegisterType((*VersionRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.VersionRequest")
+	proto.RegisterType((*VersionResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.VersionResponse")
+	proto.RegisterType((*StatsRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.StatsRequest")
+	proto.RegisterType((*StatsResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.StatsResponse")
+	proto.RegisterType((*SignalRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.SignalRequest")
+	proto.RegisterType((*SignalResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.SignalResponse")
+	proto.RegisterType((*ExecRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.ExecRequest")
+	proto.RegisterType((*ExecResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.ExecResponse")
+	proto.RegisterType((*ProcessState)(nil), "dumb-hashicorp.dumb-nomad.plugins.executor.proto.ProcessState")
 }
 
 func init() {
@@ -1029,7 +1029,7 @@ func NewExecutorClient(cc grpc.ClientConnInterface) ExecutorClient {
 
 func (c *executorClient) Launch(ctx context.Context, in *LaunchRequest, opts ...grpc.CallOption) (*LaunchResponse, error) {
 	out := new(LaunchResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.executor.proto.Executor/Launch", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Launch", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1038,7 +1038,7 @@ func (c *executorClient) Launch(ctx context.Context, in *LaunchRequest, opts ...
 
 func (c *executorClient) Wait(ctx context.Context, in *WaitRequest, opts ...grpc.CallOption) (*WaitResponse, error) {
 	out := new(WaitResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.executor.proto.Executor/Wait", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Wait", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1047,7 +1047,7 @@ func (c *executorClient) Wait(ctx context.Context, in *WaitRequest, opts ...grpc
 
 func (c *executorClient) Shutdown(ctx context.Context, in *ShutdownRequest, opts ...grpc.CallOption) (*ShutdownResponse, error) {
 	out := new(ShutdownResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.executor.proto.Executor/Shutdown", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Shutdown", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1056,7 +1056,7 @@ func (c *executorClient) Shutdown(ctx context.Context, in *ShutdownRequest, opts
 
 func (c *executorClient) UpdateResources(ctx context.Context, in *UpdateResourcesRequest, opts ...grpc.CallOption) (*UpdateResourcesResponse, error) {
 	out := new(UpdateResourcesResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.executor.proto.Executor/UpdateResources", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/UpdateResources", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1065,7 +1065,7 @@ func (c *executorClient) UpdateResources(ctx context.Context, in *UpdateResource
 
 func (c *executorClient) Version(ctx context.Context, in *VersionRequest, opts ...grpc.CallOption) (*VersionResponse, error) {
 	out := new(VersionResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.executor.proto.Executor/Version", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Version", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1073,7 +1073,7 @@ func (c *executorClient) Version(ctx context.Context, in *VersionRequest, opts .
 }
 
 func (c *executorClient) Stats(ctx context.Context, in *StatsRequest, opts ...grpc.CallOption) (Executor_StatsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Executor_serviceDesc.Streams[0], "/hashicorp.nomad.plugins.executor.proto.Executor/Stats", opts...)
+	stream, err := c.cc.NewStream(ctx, &_Executor_serviceDesc.Streams[0], "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Stats", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1106,7 +1106,7 @@ func (x *executorStatsClient) Recv() (*StatsResponse, error) {
 
 func (c *executorClient) Signal(ctx context.Context, in *SignalRequest, opts ...grpc.CallOption) (*SignalResponse, error) {
 	out := new(SignalResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.executor.proto.Executor/Signal", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Signal", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1115,7 +1115,7 @@ func (c *executorClient) Signal(ctx context.Context, in *SignalRequest, opts ...
 
 func (c *executorClient) Exec(ctx context.Context, in *ExecRequest, opts ...grpc.CallOption) (*ExecResponse, error) {
 	out := new(ExecResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.executor.proto.Executor/Exec", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Exec", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1123,7 +1123,7 @@ func (c *executorClient) Exec(ctx context.Context, in *ExecRequest, opts ...grpc
 }
 
 func (c *executorClient) ExecStreaming(ctx context.Context, opts ...grpc.CallOption) (Executor_ExecStreamingClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Executor_serviceDesc.Streams[1], "/hashicorp.nomad.plugins.executor.proto.Executor/ExecStreaming", opts...)
+	stream, err := c.cc.NewStream(ctx, &_Executor_serviceDesc.Streams[1], "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/ExecStreaming", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1213,7 +1213,7 @@ func _Executor_Launch_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.executor.proto.Executor/Launch",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Launch",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ExecutorServer).Launch(ctx, req.(*LaunchRequest))
@@ -1231,7 +1231,7 @@ func _Executor_Wait_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.executor.proto.Executor/Wait",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Wait",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ExecutorServer).Wait(ctx, req.(*WaitRequest))
@@ -1249,7 +1249,7 @@ func _Executor_Shutdown_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.executor.proto.Executor/Shutdown",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Shutdown",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ExecutorServer).Shutdown(ctx, req.(*ShutdownRequest))
@@ -1267,7 +1267,7 @@ func _Executor_UpdateResources_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.executor.proto.Executor/UpdateResources",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/UpdateResources",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ExecutorServer).UpdateResources(ctx, req.(*UpdateResourcesRequest))
@@ -1285,7 +1285,7 @@ func _Executor_Version_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.executor.proto.Executor/Version",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Version",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ExecutorServer).Version(ctx, req.(*VersionRequest))
@@ -1324,7 +1324,7 @@ func _Executor_Signal_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.executor.proto.Executor/Signal",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Signal",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ExecutorServer).Signal(ctx, req.(*SignalRequest))
@@ -1342,7 +1342,7 @@ func _Executor_Exec_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.executor.proto.Executor/Exec",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor/Exec",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ExecutorServer).Exec(ctx, req.(*ExecRequest))
@@ -1377,7 +1377,7 @@ func (x *executorExecStreamingServer) Recv() (*proto1.ExecTaskStreamingRequest, 
 }
 
 var _Executor_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "hashicorp.nomad.plugins.executor.proto.Executor",
+	ServiceName: "dumb-hashicorp.dumb-nomad.plugins.executor.proto.Executor",
 	HandlerType: (*ExecutorServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

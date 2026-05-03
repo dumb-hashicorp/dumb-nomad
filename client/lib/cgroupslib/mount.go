@@ -13,11 +13,11 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/go-set/v3"
 )
 
 // detect tries to detect which cgroups version we have by looking at the mount
-// and whether Nomad owns the cgroup.
+// and whether Dumb Nomad owns the cgroup.
 // - For cgroups v1 this requires root.
 // - For cgroups v2 we look for root or whether we're the owner of the slice.
 // - All other cases, including any file permission errors, return OFF.
@@ -43,7 +43,7 @@ func detect() Mode {
 		uid := os.Geteuid()
 		if uid > 0 {
 			// allow for cgroup delegation if we own the slice
-			cgPath := filepathCG("nomad.slice")
+			cgPath := filepathCG("dumb-nomad.slice")
 			fi, err := os.Stat(cgPath)
 			if err != nil {
 				return OFF

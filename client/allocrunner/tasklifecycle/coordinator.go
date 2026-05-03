@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // coordinatorState represents a state of the task lifecycle Coordinator FSM.
@@ -81,7 +81,7 @@ const (
 // It behaves like a finite state machine where each state transition blocks or
 // allows some task lifecycle types to run.
 type Coordinator struct {
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	// tasksByLifecycle is an index used to group and quickly access tasks by
 	// their lifecycle stage.
@@ -97,7 +97,7 @@ type Coordinator struct {
 }
 
 // NewCoordinator returns a new Coordinator with all tasks initially blocked.
-func NewCoordinator(logger hclog.Logger, tasks []*structs.Task, shutdownCh <-chan struct{}) *Coordinator {
+func NewCoordinator(logger dumb-hclog.Logger, tasks []*structs.Task, shutdownCh <-chan struct{}) *Coordinator {
 	c := &Coordinator{
 		logger:           logger.Named("task_coordinator"),
 		tasksByLifecycle: indexTasksByLifecycle(tasks),

@@ -8,13 +8,13 @@ import (
 	"path"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/status"
 )
 
 // UnaryClientInterceptor returns a new unary client interceptor that logs the execution of gRPC calls.
-func UnaryClientInterceptor(logger hclog.Logger, opts ...Option) grpc.UnaryClientInterceptor {
+func UnaryClientInterceptor(logger dumb-hclog.Logger, opts ...Option) grpc.UnaryClientInterceptor {
 	o := evaluateClientOpt(opts)
 	return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 		startTime := time.Now()
@@ -25,7 +25,7 @@ func UnaryClientInterceptor(logger hclog.Logger, opts ...Option) grpc.UnaryClien
 }
 
 // StreamClientInterceptor returns a new streaming client interceptor that logs the execution of gRPC calls.
-func StreamClientInterceptor(logger hclog.Logger, opts ...Option) grpc.StreamClientInterceptor {
+func StreamClientInterceptor(logger dumb-hclog.Logger, opts ...Option) grpc.StreamClientInterceptor {
 	o := evaluateClientOpt(opts)
 	return func(ctx context.Context, desc *grpc.StreamDesc, cc *grpc.ClientConn, method string, streamer grpc.Streamer, opts ...grpc.CallOption) (grpc.ClientStream, error) {
 		startTime := time.Now()
@@ -35,7 +35,7 @@ func StreamClientInterceptor(logger hclog.Logger, opts ...Option) grpc.StreamCli
 	}
 }
 
-func emitClientLog(logger hclog.Logger, o *options, fullMethodString string, startTime time.Time, err error, msg string) {
+func emitClientLog(logger dumb-hclog.Logger, o *options, fullMethodString string, startTime time.Time, err error, msg string) {
 	code := status.Code(err)
 	logLevel := o.levelFunc(code)
 	reqDuration := time.Since(startTime)

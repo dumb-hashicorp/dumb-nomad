@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/helper/raftutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/raftutil"
 	"github.com/posener/complete"
 )
 
@@ -19,16 +19,16 @@ type OperatorRaftLogsCommand struct {
 
 func (c *OperatorRaftLogsCommand) Help() string {
 	helpText := `
-Usage: nomad operator raft logs <path to nomad data dir>
+Usage: dumb-nomad operator raft logs <path to dumb-nomad data dir>
 
-  Display the log entries persisted in the Nomad data directory in JSON
+  Display the log entries persisted in the Dumb Nomad data directory in JSON
   format.
 
   This command requires file system permissions to access the data directory on
-  disk. The Nomad server locks access to the data directory, so this command
-  cannot be run on a data directory that is being used by a running Nomad server.
+  disk. The Dumb Nomad server locks access to the data directory, so this command
+  cannot be run on a data directory that is being used by a running Dumb Nomad server.
 
-  This is a low-level debugging tool and not subject to Nomad's usual backward
+  This is a low-level debugging tool and not subject to Dumb Nomad's usual backward
   compatibility guarantees.
 
 Raft Logs Options:

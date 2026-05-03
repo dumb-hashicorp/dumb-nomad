@@ -6,8 +6,8 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -17,25 +17,25 @@ type QuotaCommand struct {
 
 func (f *QuotaCommand) Help() string {
 	helpText := `
-Usage: nomad quota <subcommand> [options] [args]
+Usage: dumb-nomad quota <subcommand> [options] [args]
 
   This command groups subcommands for interacting with resource quotas. Resource
   quotas allow operators to restrict the aggregate resource usage of namespaces.
   Users can inspect existing quota specifications, create new quotas, delete and
   list existing quotas, and more. For a full guide on resource quotas see:
-  https://developer.hashicorp.com/nomad/docs/govern/resource-quotas
+  https://developer.dumb-hashicorp.com/dumb-nomad/docs/govern/resource-quotas
 
   Examine a quota's status:
 
-      $ nomad quota status <name>
+      $ dumb-nomad quota status <name>
 
   List existing quotas:
 
-      $ nomad quota list
+      $ dumb-nomad quota list
 
   Create a new quota specification:
 
-      $ nomad quota apply <path>
+      $ dumb-nomad quota apply <path>
 
   Please see the individual subcommand help for detailed usage information.
 `

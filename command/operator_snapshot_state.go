@@ -9,9 +9,9 @@ import (
 	"os"
 	"strings"
 
-	flaghelper "github.com/hashicorp/nomad/helper/flags"
-	"github.com/hashicorp/nomad/helper/raftutil"
-	"github.com/hashicorp/nomad/nomad"
+	flaghelper "github.com/dumb-hashicorp/dumb-nomad/helper/flags"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/raftutil"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
 	"github.com/posener/complete"
 )
 
@@ -21,13 +21,13 @@ type OperatorSnapshotStateCommand struct {
 
 func (c *OperatorSnapshotStateCommand) Help() string {
 	helpText := `
-Usage: nomad operator snapshot state [options] <file>
+Usage: dumb-nomad operator snapshot state [options] <file>
 
   Displays a JSON representation of state in the snapshot.
 
   To inspect the file "backup.snap":
 
-    $ nomad operator snapshot state backup.snap
+    $ dumb-nomad operator snapshot state backup.snap
 
 Snapshot State Options:
 
@@ -47,7 +47,7 @@ func (c *OperatorSnapshotStateCommand) AutocompleteArgs() complete.Predictor {
 }
 
 func (c *OperatorSnapshotStateCommand) Synopsis() string {
-	return "Displays information about a Nomad snapshot file"
+	return "Displays information about a Dumb Nomad snapshot file"
 }
 
 func (c *OperatorSnapshotStateCommand) Name() string { return "operator snapshot state" }
@@ -64,7 +64,7 @@ func (c *OperatorSnapshotStateCommand) Run(args []string) int {
 		return 1
 	}
 
-	filter, err := nomad.NewFSMFilter(filterExpr.String())
+	filter, err := dumb-nomad.NewFSMFilter(filterExpr.String())
 	if err != nil {
 		c.Ui.Error(fmt.Sprintf("Invalid filter expression %q: %s", filterExpr, err))
 		return 1

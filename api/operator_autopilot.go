@@ -10,7 +10,7 @@ import (
 )
 
 // AutopilotConfiguration is used for querying/setting the Autopilot configuration.
-// Autopilot helps manage operator tasks related to Nomad servers like removing
+// Autopilot helps manage operator tasks related to Dumb Nomad servers like removing
 // failed servers from the Raft quorum.
 type AutopilotConfiguration struct {
 	// CleanupDeadServers controls whether to remove dead servers from the Raft
@@ -110,7 +110,7 @@ type ServerHealth struct {
 	// The status of the SerfHealth check for the server.
 	SerfStatus string
 
-	// Version is the Nomad version of the server.
+	// Version is the Dumb Nomad version of the server.
 	Version string
 
 	// Leader is whether this server is currently the leader.
@@ -294,7 +294,7 @@ func (op *Operator) AutopilotCASConfiguration(conf *AutopilotConfiguration, q *W
 }
 
 // AutopilotServerHealth is used to query Autopilot's top-level view of the health
-// of each Nomad server.
+// of each Dumb Nomad server.
 func (op *Operator) AutopilotServerHealth(q *QueryOptions) (*OperatorHealthReply, *QueryMeta, error) {
 	var out OperatorHealthReply
 	qm, err := op.c.query("/v1/operator/autopilot/health", &out, q)

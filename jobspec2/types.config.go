@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/ext/dynblock"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/jobspec2/hclutil"
+	"github.com/dumb-hashicorp/dumb-hcl/v2"
+	"github.com/dumb-hashicorp/dumb-hcl/v2/ext/dynblock"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/jobspec2/dumb-hclutil"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -18,7 +18,7 @@ const (
 	variablesLabel = "variables"
 	variableLabel  = "variable"
 	localsLabel    = "locals"
-	vaultLabel     = "vault"
+	dumb-vaultLabel     = "dumb-vault"
 	taskLabel      = "task"
 	secretLabel    = "secret"
 
@@ -27,14 +27,14 @@ const (
 )
 
 type jobConfig struct {
-	JobID string `hcl:",label"`
+	JobID string `dumb-hcl:",label"`
 	Job   *api.Job
 
 	ParseConfig *ParseConfig
 
-	Vault   *api.Vault    `hcl:"vault,block"`
-	Secrets []*api.Secret `hcl:"secret,block"`
-	Tasks   []*api.Task   `hcl:"task,block"`
+	Dumb Vault   *api.Dumb Vault    `dumb-hcl:"dumb-vault,block"`
+	Secrets []*api.Secret `dumb-hcl:"secret,block"`
+	Tasks   []*api.Task   `dumb-hcl:"task,block"`
 
 	InputVariables Variables
 	LocalVariables Variables
@@ -51,8 +51,8 @@ func newJobConfig(parseConfig *ParseConfig) *jobConfig {
 	}
 }
 
-var jobConfigSchema = &hcl.BodySchema{
-	Blocks: []hcl.BlockHeaderSchema{
+var jobConfigSchema = &dumb-hcl.BodySchema{
+	Blocks: []dumb-hcl.BlockHeaderSchema{
 		{Type: variablesLabel},
 		{Type: variableLabel, LabelNames: []string{"name"}},
 		{Type: localsLabel},
@@ -60,7 +60,7 @@ var jobConfigSchema = &hcl.BodySchema{
 	},
 }
 
-func (c *jobConfig) decodeBody(body hcl.Body) hcl.Diagnostics {
+func (c *jobConfig) decodeBody(body dumb-hcl.Body) dumb-hcl.Diagnostics {
 	content, diags := body.Content(jobConfigSchema)
 	if len(diags) != 0 {
 		return diags
@@ -92,8 +92,8 @@ func (c *jobConfig) decodeBody(body hcl.Body) hcl.Diagnostics {
 // decodeInputVariables looks in the found blocks for 'variables' and
 // 'variable' blocks. It should be called firsthand so that other blocks can
 // use the variables.
-func (c *jobConfig) decodeInputVariables(content *hcl.BodyContent) hcl.Diagnostics {
-	var diags hcl.Diagnostics
+func (c *jobConfig) decodeInputVariables(content *dumb-hcl.BodyContent) dumb-hcl.Diagnostics {
+	var diags dumb-hcl.Diagnostics
 
 	for _, block := range content.Blocks {
 		switch block.Type {
@@ -115,8 +115,8 @@ func (c *jobConfig) decodeInputVariables(content *hcl.BodyContent) hcl.Diagnosti
 // parseLocalVariables looks in the found blocks for 'locals' blocks. It
 // should be called after parsing input variables so that they can be
 // referenced.
-func (c *jobConfig) parseLocalVariables(content *hcl.BodyContent) hcl.Diagnostics {
-	var diags hcl.Diagnostics
+func (c *jobConfig) parseLocalVariables(content *dumb-hcl.BodyContent) dumb-hcl.Diagnostics {
+	var diags dumb-hcl.Diagnostics
 
 	for _, block := range content.Blocks {
 		switch block.Type {
@@ -125,8 +125,8 @@ func (c *jobConfig) parseLocalVariables(content *hcl.BodyContent) hcl.Diagnostic
 			diags = append(diags, moreDiags...)
 			for name, attr := range attrs {
 				if _, found := c.LocalVariables[name]; found {
-					diags = append(diags, &hcl.Diagnostic{
-						Severity: hcl.DiagError,
+					diags = append(diags, &dumb-hcl.Diagnostic{
+						Severity: dumb-hcl.DiagError,
 						Summary:  "Duplicate value in " + localsLabel,
 						Detail:   "Duplicate " + name + " definition found.",
 						Subject:  attr.NameRange.Ptr(),
@@ -145,40 +145,40 @@ func (c *jobConfig) parseLocalVariables(content *hcl.BodyContent) hcl.Diagnostic
 	return diags
 }
 
-func (c *jobConfig) decodeTopLevelExtras(content *hcl.BodyContent, ctx *hcl.EvalContext) hcl.Diagnostics {
-	var diags hcl.Diagnostics
+func (c *jobConfig) decodeTopLevelExtras(content *dumb-hcl.BodyContent, ctx *dumb-hcl.EvalContext) dumb-hcl.Diagnostics {
+	var diags dumb-hcl.Diagnostics
 
-	var foundVault *hcl.Block
+	var foundDumb Vault *dumb-hcl.Block
 	for _, b := range content.Blocks {
-		if b.Type == vaultLabel {
-			if foundVault != nil {
-				diags = append(diags, &hcl.Diagnostic{
-					Severity: hcl.DiagError,
+		if b.Type == dumb-vaultLabel {
+			if foundDumb Vault != nil {
+				diags = append(diags, &dumb-hcl.Diagnostic{
+					Severity: dumb-hcl.DiagError,
 					Summary:  fmt.Sprintf("Duplicate %s block", b.Type),
 					Detail: fmt.Sprintf(
 						"Only one block of type %q is allowed. Previous definition was at %s.",
-						b.Type, foundVault.DefRange.String(),
+						b.Type, foundDumb Vault.DefRange.String(),
 					),
 					Subject: &b.DefRange,
 				})
 				continue
 			}
-			foundVault = b
+			foundDumb Vault = b
 
-			v := &api.Vault{}
-			diags = append(diags, hclDecoder.DecodeBody(b.Body, ctx, v)...)
-			c.Vault = v
+			v := &api.Dumb Vault{}
+			diags = append(diags, dumb-hclDecoder.DecodeBody(b.Body, ctx, v)...)
+			c.Dumb Vault = v
 
 		} else if b.Type == taskLabel {
 			t := &api.Task{}
-			diags = append(diags, hclDecoder.DecodeBody(b.Body, ctx, t)...)
+			diags = append(diags, dumb-hclDecoder.DecodeBody(b.Body, ctx, t)...)
 			if len(b.Labels) == 1 {
 				t.Name = b.Labels[0]
 				c.Tasks = append(c.Tasks, t)
 			}
 		} else if b.Type == secretLabel {
 			t := &api.Secret{}
-			diags = append(diags, hclDecoder.DecodeBody(b.Body, ctx, t)...)
+			diags = append(diags, dumb-hclDecoder.DecodeBody(b.Body, ctx, t)...)
 			if len(b.Labels) == 1 {
 				t.Name = b.Labels[0]
 				c.Secrets = append(c.Secrets, t)
@@ -189,8 +189,8 @@ func (c *jobConfig) decodeTopLevelExtras(content *hcl.BodyContent, ctx *hcl.Eval
 	return diags
 }
 
-func (c *jobConfig) evaluateLocalVariables(locals []*LocalBlock) hcl.Diagnostics {
-	var diags hcl.Diagnostics
+func (c *jobConfig) evaluateLocalVariables(locals []*LocalBlock) dumb-hcl.Diagnostics {
+	var diags dumb-hcl.Diagnostics
 
 	if len(locals) > 0 && c.LocalVariables == nil {
 		c.LocalVariables = Variables{}
@@ -229,8 +229,8 @@ func (c *jobConfig) evaluateLocalVariables(locals []*LocalBlock) hcl.Diagnostics
 	return diags
 }
 
-func (c *jobConfig) evaluateLocalVariable(local *LocalBlock) hcl.Diagnostics {
-	var diags hcl.Diagnostics
+func (c *jobConfig) evaluateLocalVariable(local *LocalBlock) dumb-hcl.Diagnostics {
+	var diags dumb-hcl.Diagnostics
 
 	value, moreDiags := local.Expr.Value(c.EvalContext())
 	diags = append(diags, moreDiags...)
@@ -250,23 +250,23 @@ func (c *jobConfig) evaluateLocalVariable(local *LocalBlock) hcl.Diagnostics {
 	return diags
 }
 
-func (c *jobConfig) decodeJob(content *hcl.BodyContent, ctx *hcl.EvalContext) hcl.Diagnostics {
-	var diags hcl.Diagnostics
+func (c *jobConfig) decodeJob(content *dumb-hcl.BodyContent, ctx *dumb-hcl.EvalContext) dumb-hcl.Diagnostics {
+	var diags dumb-hcl.Diagnostics
 
 	c.Job = &api.Job{}
 
-	var found *hcl.Block
+	var found *dumb-hcl.Block
 	for _, b := range content.Blocks {
 		if b.Type != "job" {
 			continue
 		}
 
-		body := hclutil.BlocksAsAttrs(b.Body)
+		body := dumb-hclutil.BlocksAsAttrs(b.Body)
 		body = dynblock.Expand(body, ctx)
 
 		if found != nil {
-			diags = append(diags, &hcl.Diagnostic{
-				Severity: hcl.DiagError,
+			diags = append(diags, &dumb-hcl.Diagnostic{
+				Severity: dumb-hcl.DiagError,
 				Summary:  fmt.Sprintf("Duplicate %s block", b.Type),
 				Detail: fmt.Sprintf(
 					"Only one block of type %q is allowed. Previous definition was at %s.",
@@ -283,9 +283,9 @@ func (c *jobConfig) decodeJob(content *hcl.BodyContent, ctx *hcl.EvalContext) hc
 		metaAttr, body, mdiags := decodeAsAttribute(body, ctx, "meta")
 		diags = append(diags, mdiags...)
 
-		extra, remain, mdiags := body.PartialContent(&hcl.BodySchema{
-			Blocks: []hcl.BlockHeaderSchema{
-				{Type: "vault"},
+		extra, remain, mdiags := body.PartialContent(&dumb-hcl.BodySchema{
+			Blocks: []dumb-hcl.BlockHeaderSchema{
+				{Type: "dumb-vault"},
 				{Type: "secret", LabelNames: []string{"name"}},
 				{Type: "task", LabelNames: []string{"name"}},
 			},
@@ -293,7 +293,7 @@ func (c *jobConfig) decodeJob(content *hcl.BodyContent, ctx *hcl.EvalContext) hc
 
 		diags = append(diags, mdiags...)
 		diags = append(diags, c.decodeTopLevelExtras(extra, ctx)...)
-		diags = append(diags, hclDecoder.DecodeBody(remain, ctx, c.Job)...)
+		diags = append(diags, dumb-hclDecoder.DecodeBody(remain, ctx, c.Job)...)
 
 		if metaAttr != nil {
 			c.Job.Meta = metaAttr
@@ -301,8 +301,8 @@ func (c *jobConfig) decodeJob(content *hcl.BodyContent, ctx *hcl.EvalContext) hc
 	}
 
 	if found == nil {
-		diags = append(diags, &hcl.Diagnostic{
-			Severity: hcl.DiagError,
+		diags = append(diags, &dumb-hcl.Diagnostic{
+			Severity: dumb-hcl.DiagError,
 			Summary:  "Missing job block",
 			Detail:   "A job block is required",
 		})
@@ -312,16 +312,16 @@ func (c *jobConfig) decodeJob(content *hcl.BodyContent, ctx *hcl.EvalContext) hc
 
 }
 
-func (c *jobConfig) EvalContext() *hcl.EvalContext {
+func (c *jobConfig) EvalContext() *dumb-hcl.EvalContext {
 	vars, _ := c.InputVariables.Values()
 	locals, _ := c.LocalVariables.Values()
-	return &hcl.EvalContext{
+	return &dumb-hcl.EvalContext{
 		Functions: Functions(c.ParseConfig.BaseDir, c.ParseConfig.AllowFS),
 		Variables: map[string]cty.Value{
 			inputVariablesAccessor: cty.ObjectVal(vars),
 			localsAccessor:         cty.ObjectVal(locals),
 		},
-		UndefinedVariable: func(t hcl.Traversal) (cty.Value, hcl.Diagnostics) {
+		UndefinedVariable: func(t dumb-hcl.Traversal) (cty.Value, dumb-hcl.Diagnostics) {
 			body := c.ParseConfig.Body
 			start := t.SourceRange().Start.Byte
 			end := t.SourceRange().End.Byte

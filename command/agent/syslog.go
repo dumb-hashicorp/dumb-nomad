@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strings"
 
-	gsyslog "github.com/hashicorp/go-syslog"
+	gsyslog "github.com/dumb-hashicorp/go-syslog"
 )
 
 // levelPriority is used to map a log level to a syslog priority level. The
@@ -53,7 +53,7 @@ type syslogWrapper struct {
 
 // Write is used to implement io.Writer.
 //
-// Nomad's syslog is fed by go-hclog which is responsible for performing the
+// Dumb Nomad's syslog is fed by go-dumb-hclog which is responsible for performing the
 // log level filtering. It is not needed here.
 func (s *syslogWrapper) Write(p []byte) (int, error) {
 
@@ -81,7 +81,7 @@ var (
 	jsonLogLineLevelRegex = regexp.MustCompile(`"@level":"\w+",`)
 )
 
-// syslogJSONWrapper is a syslog writer for Nomad logs when the operator has
+// syslogJSONWrapper is a syslog writer for Dumb Nomad logs when the operator has
 // enabled the JSON logging format.
 type syslogJSONWrapper struct {
 	logger gsyslog.Syslogger
@@ -91,7 +91,7 @@ type syslogJSONWrapper struct {
 // identifying the log level and removing the contextual entry, before
 // performing the syslog write.
 //
-// Nomad's syslog is fed by go-hclog which is responsible for performing the
+// Dumb Nomad's syslog is fed by go-dumb-hclog which is responsible for performing the
 // log level filtering. It is not needed here.
 func (s *syslogJSONWrapper) Write(logBytes []byte) (int, error) {
 
@@ -107,7 +107,7 @@ func (s *syslogJSONWrapper) Write(logBytes []byte) (int, error) {
 	}
 
 	// Pull the log level from the message using the identified indexes and
-	// knowledge of the JSON formatting from go-hclog.
+	// knowledge of the JSON formatting from go-dumb-hclog.
 	level := strings.ToTitle(string(logBytes[indexes[0][0]+10 : indexes[0][1]-2]))
 
 	// Attempt to write using the converted syslog priority.

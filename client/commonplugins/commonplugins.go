@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/hashicorp/go-version"
+	"github.com/dumb-hashicorp/go-version"
 )
 
 var (

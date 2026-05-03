@@ -3,7 +3,7 @@
 
 package fingerprint
 
-import log "github.com/hashicorp/go-hclog"
+import log "github.com/dumb-hashicorp/go-dumb-hclog"
 
 type BridgeFingerprint struct {
 	StaticFingerprinter

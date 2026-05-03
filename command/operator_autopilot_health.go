@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -72,7 +72,7 @@ func (c *OperatorAutopilotHealthCommand) Synopsis() string {
 
 func (c *OperatorAutopilotHealthCommand) Help() string {
 	helpText := `
-Usage: nomad operator autopilot health [options]
+Usage: dumb-nomad operator autopilot health [options]
 
   Displays the current Autopilot state.
 

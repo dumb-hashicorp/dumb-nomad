@@ -8,13 +8,13 @@ import (
 	"fmt"
 	"testing"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/helper/pluginutils/singleton"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/plugins/base"
-	dtu "github.com/hashicorp/nomad/plugins/drivers/testutils"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/singleton"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	dtu "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -51,7 +51,7 @@ func TestInstanceManager_dispense(t *testing.T) {
 	cat.Test(t)
 	var fetchRet bool
 	i := &instanceManager{
-		logger:               testlog.HCLogger(t),
+		logger:               testlog.DUMB_HCLogger(t),
 		ctx:                  ctx,
 		cancel:               cancel,
 		loader:               cat,

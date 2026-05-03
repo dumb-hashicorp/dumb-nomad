@@ -12,14 +12,14 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/users"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users"
 )
 
-// apiHook exposes the Task API. The Task API allows task's to access the Nomad
+// apiHook exposes the Task API. The Task API allows task's to access the Dumb Nomad
 // HTTP API without having to discover and connect to an agent's address.
 // Instead a unix socket is provided in a standard location. To prevent access
 // by untrusted workloads the Task API always requires authentication even when
@@ -33,7 +33,7 @@ import (
 type apiHook struct {
 	shutdownCtx context.Context
 	srv         config.APIListenerRegistrar
-	logger      hclog.Logger
+	logger      dumb-hclog.Logger
 
 	// Lock listener as it is updated from multiple hooks.
 	lock sync.Mutex
@@ -42,7 +42,7 @@ type apiHook struct {
 	ln net.Listener
 }
 
-func newAPIHook(shutdownCtx context.Context, srv config.APIListenerRegistrar, logger hclog.Logger) *apiHook {
+func newAPIHook(shutdownCtx context.Context, srv config.APIListenerRegistrar, logger dumb-hclog.Logger) *apiHook {
 	h := &apiHook{
 		shutdownCtx: shutdownCtx,
 		srv:         srv,
@@ -115,7 +115,7 @@ func (h *apiHook) Stop(ctx context.Context, req *interfaces.TaskStopRequest, res
 // The path needs to be as short as possible because of the low limits on the
 // sun_path char array imposed by the syscall used to create unix sockets.
 //
-// See https://github.com/hashicorp/nomad/pull/13971 for an example of the
+// See https://github.com/dumb-hashicorp/dumb-nomad/pull/13971 for an example of the
 // sadness this causes.
 func apiSocketPath(taskDir *allocdir.TaskDir) string {
 	return filepath.Join(taskDir.SecretsDir, "api.sock")

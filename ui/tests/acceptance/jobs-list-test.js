@@ -15,11 +15,11 @@ import {
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import pageSizeSelect from './behaviors/page-size-select';
-import JobsList from 'nomad-ui/tests/pages/jobs/list';
+import JobsList from 'dumb-nomad-ui/tests/pages/jobs/list';
 import percySnapshot from '@percy/ember';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 let managementToken, clientToken;
 
@@ -36,7 +36,7 @@ module('Acceptance | jobs list', function (hooks) {
     clientToken = server.create('token');
 
     window.localStorage.clear();
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
   });
 
   test('it passes an accessibility audit', async function (assert) {
@@ -48,7 +48,7 @@ module('Acceptance | jobs list', function (hooks) {
     await JobsList.visit();
 
     assert.equal(currentURL(), '/jobs');
-    assert.equal(document.title, 'Jobs - Nomad');
+    assert.equal(document.title, 'Jobs - Dumb Nomad');
   });
 
   test('/jobs should list the first page of jobs sorted by modify index', async function (assert) {
@@ -114,7 +114,7 @@ module('Acceptance | jobs list', function (hooks) {
   });
 
   test('the job run button is disabled when the token lacks permission', async function (assert) {
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     await JobsList.visit();
 
@@ -122,7 +122,7 @@ module('Acceptance | jobs list', function (hooks) {
   });
 
   test('the anonymous policy is fetched to check whether to show the job run button', async function (assert) {
-    window.localStorage.removeItem('nomadTokenSecret');
+    window.localStorage.removeItem('dumb-nomadTokenSecret');
 
     server.create('policy', {
       id: 'anonymous',
@@ -455,7 +455,7 @@ module('Acceptance | jobs list', function (hooks) {
     clientToken.policyIds = [policy.id];
     clientToken.save();
 
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     await JobsList.visit({ namespace: READ_AND_WRITE_NAMESPACE });
     assert.notOk(JobsList.runJobButton.isDisabled);
@@ -486,7 +486,7 @@ module('Acceptance | jobs list', function (hooks) {
     clientToken.policyIds = [policy.id];
     clientToken.save();
 
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     await JobsList.visit({ namespace: READ_AND_WRITE_NAMESPACE });
     assert.ok(JobsList.runJobButton.isDisabled);
@@ -533,7 +533,7 @@ module('Acceptance | jobs list', function (hooks) {
   });
 
   test('Parent/child jobs are displayed correctly', async function (assert) {
-    localStorage.setItem('nomadPageSize', '10');
+    localStorage.setItem('dumb-nomadPageSize', '10');
     createJobs(server, 5);
 
     let periodicJob = server.create('job', 'periodic', {
@@ -601,7 +601,7 @@ module('Acceptance | jobs list', function (hooks) {
     }, duelingQueryUpdateTime);
 
     await percySnapshot(assert);
-    localStorage.removeItem('nomadPageSize');
+    localStorage.removeItem('dumb-nomadPageSize');
   });
 
   test('aggregateAllocStatus reflects job status correctly', async function (assert) {
@@ -816,7 +816,7 @@ module('Acceptance | jobs list', function (hooks) {
         await percySnapshot(assert);
       });
       test('when there are fewer jobs than your page size setting', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
         createJobs(server, 5);
         await JobsList.visit();
         assert.dom('[data-test-pager="first"]').isDisabled();
@@ -824,10 +824,10 @@ module('Acceptance | jobs list', function (hooks) {
         assert.dom('[data-test-pager="next"]').isDisabled();
         assert.dom('[data-test-pager="last"]').isDisabled();
         await percySnapshot(assert);
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
       test('when you have plenty of jobs', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
         createJobs(server, 25);
         await JobsList.visit();
         assert.dom('.job-row').exists({ count: 10 });
@@ -850,13 +850,13 @@ module('Acceptance | jobs list', function (hooks) {
         assert.dom('[data-test-pager="next"]').isDisabled();
         assert.dom('[data-test-pager="last"]').isDisabled();
         await percySnapshot(assert);
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
     });
     module('Jobs are appropriately sorted by modify index', function () {
       test('on a single long page', async function (assert) {
         const jobsToCreate = 25;
-        localStorage.setItem('nomadPageSize', '25');
+        localStorage.setItem('dumb-nomadPageSize', '25');
         createJobs(server, jobsToCreate);
         await JobsList.visit();
         assert.dom('.job-row').exists({ count: 25 });
@@ -873,12 +873,12 @@ module('Acceptance | jobs list', function (hooks) {
             .reverse(),
           'Jobs are sorted by modify index'
         );
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
       test('across multiple pages', async function (assert) {
         const jobsToCreate = 90;
         const pageSize = 25;
-        localStorage.setItem('nomadPageSize', pageSize.toString());
+        localStorage.setItem('dumb-nomadPageSize', pageSize.toString());
         createJobs(server, jobsToCreate);
         await JobsList.visit();
         let rows = document.querySelectorAll('.job-row');
@@ -1036,12 +1036,12 @@ module('Acceptance | jobs list', function (hooks) {
           'Keynav takes me forward a page'
         );
 
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
     });
     module('Live updates are reflected in the list', function () {
       test('When you have live updates enabled, the list updates when new jobs are created', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
         createJobs(server, 10);
         await JobsList.visit();
         assert.dom('.job-row').exists({ count: 10 });
@@ -1137,11 +1137,11 @@ module('Acceptance | jobs list', function (hooks) {
           updatedJob();
         }, duelingQueryUpdateTime);
 
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
       test('When you have live updates disabled, the list does not update, but prompts you to refresh', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
-        localStorage.setItem('nomadLiveUpdateJobsIndex', 'false');
+        localStorage.setItem('dumb-nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadLiveUpdateJobsIndex', 'false');
         createJobs(server, 10);
         await JobsList.visit();
         assert.dom('[data-test-updates-pending-button]').doesNotExist();
@@ -1254,8 +1254,8 @@ module('Acceptance | jobs list', function (hooks) {
           updatedUnshownJob();
         }, duelingQueryUpdateTime);
 
-        localStorage.removeItem('nomadPageSize');
-        localStorage.removeItem('nomadLiveUpdateJobsIndex');
+        localStorage.removeItem('dumb-nomadPageSize');
+        localStorage.removeItem('dumb-nomadLiveUpdateJobsIndex');
       });
     });
   });
@@ -1263,7 +1263,7 @@ module('Acceptance | jobs list', function (hooks) {
   module('Searching and Filtering', function () {
     module('Search', function () {
       test('Searching reasons about whether you intended a job name or a filter expression', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
         createJobs(server, 10);
         await JobsList.visit();
 
@@ -1287,11 +1287,11 @@ module('Acceptance | jobs list', function (hooks) {
           'A request was made with a filter query param for a filter expression as typed'
         );
 
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
 
       test('Searching by name filters the list', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
         createJobs(server, 10);
         server.create('job', {
           name: 'hashi-one',
@@ -1384,11 +1384,11 @@ module('Acceptance | jobs list', function (hooks) {
             'The job hashi-two should disappear again when the filter is cleared.'
           );
 
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
 
       test('Searching by name filters the list case-insensitively', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
         createJobs(server, 10);
         server.create('job', {
           name: 'hashi-one',
@@ -1410,7 +1410,7 @@ module('Acceptance | jobs list', function (hooks) {
       });
 
       test('Searching by type filters the list', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
         server.createList('job', 10, {
           createAllocations: false,
           type: 'service',
@@ -1562,11 +1562,11 @@ module('Acceptance | jobs list', function (hooks) {
           .dom('[data-test-pager="last"]')
           .isNotDisabled('The last page button should be enabled as well.');
 
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
 
       test('Searching with a bad filter expression gives hints', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
         createJobs(server, 10);
         await JobsList.visit();
 
@@ -1596,12 +1596,12 @@ module('Acceptance | jobs list', function (hooks) {
         assert.dom('[data-test-filter-random-suggestion]').exists();
         await percySnapshot('Filter no results with random suggestion');
 
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
     });
     module('Filtering', function () {
       test('Filtering by namespace filters the list', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
 
         server.create('namespace', {
           id: 'default',
@@ -1705,10 +1705,10 @@ module('Acceptance | jobs list', function (hooks) {
             '11 jobs with both namespaces filtered, so second page is available'
           );
 
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
       test('Namespace filter options can be filtered', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
         server.create('namespace', {
           id: 'default',
           name: 'default',
@@ -1770,7 +1770,7 @@ module('Acceptance | jobs list', function (hooks) {
         await percySnapshot(assert);
       });
       test('Namespace filter only shows up if the server has more than one namespace', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
 
         server.create('namespace', {
           id: 'default',
@@ -1804,10 +1804,10 @@ module('Acceptance | jobs list', function (hooks) {
             'Namespace filter should appear with more than one namespace.'
           );
 
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
       test('Filtering by status filters the list', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
         server.createList('job', 10, {
           createAllocations: false,
           status: 'running',
@@ -1881,11 +1881,11 @@ module('Acceptance | jobs list', function (hooks) {
             'The job in the "dead" status appears as expected when filtered.'
           );
 
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
 
       test('Filtering by a dynamically-generated facet: data-test-facet="Node Pool"', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
 
         server.create('node-pool', {
           id: 'pool-1',
@@ -1936,11 +1936,11 @@ module('Acceptance | jobs list', function (hooks) {
             'The job in the "pool-2" node pool appears as expected when filtered.'
           );
 
-        localStorage.removeItem('nomadPageSize');
+        localStorage.removeItem('dumb-nomadPageSize');
       });
 
       test('Combined Filtering and Searching', async function (assert) {
-        localStorage.setItem('nomadPageSize', '10');
+        localStorage.setItem('dumb-nomadPageSize', '10');
         // 2 service, 1 batch, 1 system, 1 sysbatch
         // 3 running, 1 dead, 1 pending
         server.create('job', {

@@ -10,14 +10,14 @@ import (
 	"time"
 
 	pb "github.com/golang/protobuf/proto"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
-	psstructs "github.com/hashicorp/nomad/plugins/shared/structs"
-	"github.com/hashicorp/nomad/testutil"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
+	psstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/stretchr/testify/require"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/msgpack"
@@ -99,7 +99,7 @@ func TestDevicePlugin_ConfigSchema(t *testing.T) {
 
 	mock := &MockDevicePlugin{
 		MockPlugin: &base.MockPlugin{
-			ConfigSchemaF: func() (*hclspec.Spec, error) {
+			ConfigSchemaF: func() (*dumb-hclspec.Spec, error) {
 				return base.TestSpec, nil
 			},
 		},
@@ -142,7 +142,7 @@ func TestDevicePlugin_SetConfig(t *testing.T) {
 					Name:              "mock_device",
 				}, nil
 			},
-			ConfigSchemaF: func() (*hclspec.Spec, error) {
+			ConfigSchemaF: func() (*dumb-hclspec.Spec, error) {
 				return base.TestSpec, nil
 			},
 			SetConfigF: func(cfg *base.Config) error {

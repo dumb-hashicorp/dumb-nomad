@@ -10,15 +10,15 @@ import (
 	"math"
 
 	"github.com/golang/protobuf/ptypes"
-	"github.com/hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/go-plugin"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	"github.com/hashicorp/nomad/plugins/drivers/proto"
-	dstructs "github.com/hashicorp/nomad/plugins/shared/structs"
-	sproto "github.com/hashicorp/nomad/plugins/shared/structs/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/proto"
+	dstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
+	sproto "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs/proto"
 )
 
 type driverPluginServer struct {

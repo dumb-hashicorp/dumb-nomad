@@ -11,7 +11,7 @@ import (
 )
 
 // OperatorGossipKeyringGenerateCommand is a Command implementation that
-// generates an encryption key for use in `nomad agent`.
+// generates an encryption key for use in `dumb-nomad agent`.
 type OperatorGossipKeyringGenerateCommand struct {
 	Meta
 }
@@ -22,7 +22,7 @@ func (c *OperatorGossipKeyringGenerateCommand) Synopsis() string {
 
 func (c *OperatorGossipKeyringGenerateCommand) Help() string {
 	helpText := `
-Usage: nomad operator gossip keying generate
+Usage: dumb-nomad operator gossip keying generate
 
   Generates a new 32-byte encryption key that can be used to configure the
   agent to encrypt traffic. The output of this command is already

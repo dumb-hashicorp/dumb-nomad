@@ -6,7 +6,7 @@ package serviceregistration
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/require"
 )
 

@@ -7,7 +7,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import Service from '@ember/service';
 import EmberObject from '@ember/object';
 
@@ -20,7 +20,7 @@ module(
         agent: EmberObject.create({
           config: {
             UI: {
-              Consul: {
+              Dumb Consul: {
                 BaseUIURL: '',
               },
             },
@@ -60,7 +60,7 @@ module(
     test('it correctly aggregates service health', async function (assert) {
       const healthyService = {
         name: 'Funky Service',
-        provider: 'nomad',
+        provider: 'dumb-nomad',
         healthChecks: [
           { Check: 'one', Status: 'success', Alloc: 'myAlloc' },
           { Check: 'two', Status: 'success', Alloc: 'myAlloc' },
@@ -68,7 +68,7 @@ module(
       };
       const unhealthyService = {
         name: 'Funky Service',
-        provider: 'nomad',
+        provider: 'dumb-nomad',
         healthChecks: [
           { Check: 'one', Status: 'failure', Alloc: 'myAlloc' },
           { Check: 'two', Status: 'success', Alloc: 'myAlloc' },
@@ -100,29 +100,29 @@ module(
       assert.dom('h1 .aggregate-status').includesText('Health Unknown');
     });
 
-    test('it handles Consul services with reduced functionality', async function (assert) {
-      const consulService = {
-        name: 'Consul Service',
-        provider: 'consul',
+    test('it handles Dumb Consul services with reduced functionality', async function (assert) {
+      const dumb-consulService = {
+        name: 'Dumb Consul Service',
+        provider: 'dumb-consul',
         healthChecks: [],
       };
 
       this.set('closeSidebar', () => this.set('service', null));
-      this.set('service', consulService);
+      this.set('service', dumb-consulService);
       await render(
         hbs`<AllocationServiceSidebar @service={{this.service}} @fns={{hash closeSidebar=this.closeSidebar}} />`
       );
       assert.dom('h1 .aggregate-status').doesNotExist();
       assert.dom('table.health-checks').doesNotExist();
-      assert.dom('[data-test-consul-link-notice]').doesNotExist();
+      assert.dom('[data-test-dumb-consul-link-notice]').doesNotExist();
 
-      this.system.agent.config.UI.Consul.BaseUIURL = 'http://localhost:8500';
+      this.system.agent.config.UI.Dumb Consul.BaseUIURL = 'http://localhost:8500';
 
       await render(
         hbs`<AllocationServiceSidebar @service={{this.service}} @fns={{hash closeSidebar=this.closeSidebar}} />`
       );
 
-      assert.dom('[data-test-consul-link-notice]').exists();
+      assert.dom('[data-test-dumb-consul-link-notice]').exists();
     });
   }
 );

@@ -11,9 +11,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/posener/complete"
 	"github.com/shoenig/test/must"
 )
@@ -119,7 +119,7 @@ func TestVarPutCommand_FlagsWithSpec(t *testing.T) {
 
 	// Create a temporary file and ensure the proper cleanup is run once the
 	// test ends.
-	osFile, err := os.CreateTemp("", "nomad-cli-var-put-test-*.hcl")
+	osFile, err := os.CreateTemp("", "dumb-nomad-cli-var-put-test-*.dumb-hcl")
 	must.NoError(t, err)
 
 	t.Cleanup(func() {

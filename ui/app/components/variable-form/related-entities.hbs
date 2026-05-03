@@ -14,7 +14,7 @@
     {{else if @job}}
       job <Hds::Link::Inline @route="jobs.job" @model={{concat @job "@" @namespace}} @icon="external-link">{{@job}}</Hds::Link::Inline>
     {{else}}
-      all nomad jobs in this namespace
+      all dumb-nomad jobs in this namespace
     {{/if}}
   </A.Description>
 </Hds::Alert>

@@ -7,20 +7,20 @@ import (
 	"strconv"
 
 	"github.com/docker/go-connections/nat"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclutils"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclutils"
 )
 
 // publishedPorts is a utility struct to keep track of the port bindings to publish.
 // After calling add for each port, the publishedPorts and exposedPorts fields can be
 // used in the docker container and host configs
 type publishedPorts struct {
-	logger         hclog.Logger
+	logger         dumb-hclog.Logger
 	publishedPorts map[nat.Port][]nat.PortBinding
 	exposedPorts   map[nat.Port]struct{}
 }
 
-func newPublishedPorts(logger hclog.Logger) *publishedPorts {
+func newPublishedPorts(logger dumb-hclog.Logger) *publishedPorts {
 	return &publishedPorts{
 		logger:         logger,
 		publishedPorts: map[nat.Port][]nat.PortBinding{},
@@ -29,7 +29,7 @@ func newPublishedPorts(logger hclog.Logger) *publishedPorts {
 }
 
 // addMapped adds the port to the structures the Docker API expects for declaring mapped ports
-func (p *publishedPorts) addMapped(label, ip string, port int, portMap hclutils.MapStrInt) {
+func (p *publishedPorts) addMapped(label, ip string, port int, portMap dumb-hclutils.MapStrInt) {
 	// By default we will map the allocated port 1:1 to the container
 	containerPortInt := port
 

@@ -19,7 +19,7 @@ export default class AccessControlRolesRoleController extends Controller {
   @alias('model.policies') policies;
 
   get newTokenString() {
-    return `nomad acl token create -name="<TOKEN_NAME>" -role-name="${this.role.name}" -type=client -ttl=8h`;
+    return `dumb-nomad acl token create -name="<TOKEN_NAME>" -role-name="${this.role.name}" -type=client -ttl=8h`;
   }
 
   @task(function* () {

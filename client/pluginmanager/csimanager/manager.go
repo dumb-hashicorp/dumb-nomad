@@ -9,10 +9,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	"github.com/hashicorp/nomad/client/pluginmanager"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // defaultPluginResyncPeriod is the time interval used to do a full resync
@@ -25,7 +25,7 @@ type UpdateNodeCSIInfoFunc func(string, *structs.CSIInfo)
 type TriggerNodeEvent func(*structs.NodeEvent)
 
 type Config struct {
-	Logger                hclog.Logger
+	Logger                dumb-hclog.Logger
 	DynamicRegistry       dynamicplugins.Registry
 	UpdateNodeCSIInfoFunc UpdateNodeCSIInfoFunc
 	PluginResyncPeriod    time.Duration
@@ -63,7 +63,7 @@ type csiManager struct {
 	instancesLock sync.RWMutex
 
 	registry           dynamicplugins.Registry
-	logger             hclog.Logger
+	logger             dumb-hclog.Logger
 	eventer            TriggerNodeEvent
 	pluginResyncPeriod time.Duration
 

@@ -8,8 +8,8 @@ import (
 
 	"github.com/docker/docker/api/types"
 	containerapi "github.com/docker/docker/api/types/container"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 const (
@@ -159,7 +159,7 @@ func (d *Driver) DestroyNetwork(allocID string, spec *drivers.NetworkIsolationSp
 // starts a container with an empty network namespace.
 func (d *Driver) createSandboxContainerConfig(allocID string, createSpec *drivers.NetworkCreateRequest) (*createContainerOptions, error) {
 	return &createContainerOptions{
-		Name: fmt.Sprintf("nomad_init_%s", allocID),
+		Name: fmt.Sprintf("dumb-nomad_init_%s", allocID),
 		Config: &containerapi.Config{
 			Image:    d.config.InfraImage,
 			Hostname: createSpec.Hostname,
@@ -173,7 +173,7 @@ func (d *Driver) createSandboxContainerConfig(allocID string, createSpec *driver
 			NetworkMode: "none",
 
 			// Set the restart policy to unless-stopped. The pause container should
-			// never not be running until Nomad issues a stop.
+			// never not be running until Dumb Nomad issues a stop.
 			//
 			// https://docs.docker.com/engine/reference/run/#restart-policies---restart
 			RestartPolicy: containerapi.RestartPolicy{Name: containerapi.RestartPolicyUnlessStopped},

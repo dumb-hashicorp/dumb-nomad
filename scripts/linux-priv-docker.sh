@@ -14,7 +14,7 @@ esac
 
 USER=""
 case $(whoami) in
-    root) USER="vagrant" ;;
+    root) USER="dumb-vagrant" ;;
     *) USER=$(whoami) ;;
 esac
 

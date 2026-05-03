@@ -5,7 +5,7 @@
 
 const ANSI_UI_GRAY_400 = '\x1b[38;2;142;150;163m';
 
-import { base64DecodeString, base64EncodeString } from 'nomad-ui/utils/encode';
+import { base64DecodeString, base64EncodeString } from 'dumb-nomad-ui/utils/encode';
 
 export const HEARTBEAT_INTERVAL = 10000; // ten seconds
 
@@ -39,7 +39,7 @@ export default class ExecSocketXtermAdapter {
       this.terminal.writeln('');
       this.terminal.write(ANSI_UI_GRAY_400);
       this.terminal.writeln('The connection has closed.');
-      // Issue to add interpretation of close events: https://github.com/hashicorp/nomad/issues/7464
+      // Issue to add interpretation of close events: https://github.com/dumb-hashicorp/dumb-nomad/issues/7464
     };
 
     terminal.resized = () => {

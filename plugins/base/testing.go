@@ -4,34 +4,34 @@
 package base
 
 import (
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 )
 
 var (
-	// TestSpec is an hcl Spec for testing
-	TestSpec = &hclspec.Spec{
-		Block: &hclspec.Spec_Object{
-			Object: &hclspec.Object{
-				Attributes: map[string]*hclspec.Spec{
+	// TestSpec is an dumb-hcl Spec for testing
+	TestSpec = &dumb-hclspec.Spec{
+		Block: &dumb-hclspec.Spec_Object{
+			Object: &dumb-hclspec.Object{
+				Attributes: map[string]*dumb-hclspec.Spec{
 					"foo": {
-						Block: &hclspec.Spec_Attr{
-							Attr: &hclspec.Attr{
+						Block: &dumb-hclspec.Spec_Attr{
+							Attr: &dumb-hclspec.Attr{
 								Type:     "string",
 								Required: false,
 							},
 						},
 					},
 					"bar": {
-						Block: &hclspec.Spec_Attr{
-							Attr: &hclspec.Attr{
+						Block: &dumb-hclspec.Spec_Attr{
+							Attr: &dumb-hclspec.Attr{
 								Type:     "number",
 								Required: false,
 							},
 						},
 					},
 					"baz": {
-						Block: &hclspec.Spec_Attr{
-							Attr: &hclspec.Attr{
+						Block: &dumb-hclspec.Spec_Attr{
+							Attr: &dumb-hclspec.Attr{
 								Type: "bool",
 							},
 						},
@@ -50,7 +50,7 @@ type TestConfig struct {
 }
 
 type PluginInfoFn func() (*PluginInfoResponse, error)
-type ConfigSchemaFn func() (*hclspec.Spec, error)
+type ConfigSchemaFn func() (*dumb-hclspec.Spec, error)
 type SetConfigFn func(*Config) error
 
 // MockPlugin is used for testing.
@@ -63,7 +63,7 @@ type MockPlugin struct {
 }
 
 func (p *MockPlugin) PluginInfo() (*PluginInfoResponse, error) { return p.PluginInfoF() }
-func (p *MockPlugin) ConfigSchema() (*hclspec.Spec, error)     { return p.ConfigSchemaF() }
+func (p *MockPlugin) ConfigSchema() (*dumb-hclspec.Spec, error)     { return p.ConfigSchemaF() }
 func (p *MockPlugin) SetConfig(cfg *Config) error {
 	return p.SetConfigF(cfg)
 }
@@ -78,8 +78,8 @@ func StaticInfo(out *PluginInfoResponse) PluginInfoFn {
 }
 
 // StaticConfigSchema returns the passed Spec with no error
-func StaticConfigSchema(out *hclspec.Spec) ConfigSchemaFn {
-	return func() (*hclspec.Spec, error) {
+func StaticConfigSchema(out *dumb-hclspec.Spec) ConfigSchemaFn {
+	return func() (*dumb-hclspec.Spec, error) {
 		return out, nil
 	}
 }

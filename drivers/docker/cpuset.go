@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 )
 
 const (

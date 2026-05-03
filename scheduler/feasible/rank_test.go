@@ -7,14 +7,14 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/scheduler/tests"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/tests"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
@@ -1629,7 +1629,7 @@ func TestBinPackIterator_ExistingAlloc_PlannedEvict(t *testing.T) {
 	}
 }
 
-// This is a fairly high level test that asserts the bin packer uses the device
+// This is a fairly high level test that asserts the bin dumb-packer uses the device
 // allocator properly. It is not intended to handle every possible device
 // request versus availability scenario. That should be covered in device
 // allocator tests.

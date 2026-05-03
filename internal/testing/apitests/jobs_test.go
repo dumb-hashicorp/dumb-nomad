@@ -6,9 +6,9 @@ package apitests
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,13 +36,13 @@ func TestJobs_Parse(t *testing.T) {
 			}
 		}
 	}
-	job, err := jobs.ParseHCL(mock.HCL(), true)
+	job, err := jobs.ParseDUMB_HCL(mock.DUMB_HCL(), true)
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
 	checkJob(job, "global")
 
-	job, err = jobs.ParseHCL(mock.HCL(), false)
+	job, err = jobs.ParseDUMB_HCL(mock.DUMB_HCL(), false)
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}

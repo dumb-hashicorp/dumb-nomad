@@ -10,18 +10,18 @@ import (
 	"testing"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/pluginmanager"
-	"github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	dtu "github.com/hashicorp/nomad/plugins/drivers/testutils"
-	"github.com/hashicorp/nomad/testutil"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	dtu "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -35,7 +35,7 @@ func testSetup(t *testing.T) (chan *drivers.Fingerprint, chan *drivers.TaskEvent
 	drv := mockDriver(fpChan, evChan)
 	cat := mockCatalog(map[string]drivers.DriverPlugin{"mock": drv})
 	cfg := &Config{
-		Logger:              testlog.HCLogger(t),
+		Logger:              testlog.DUMB_HCLogger(t),
 		Loader:              cat,
 		PluginConfig:        &base.AgentConfig{},
 		Updater:             noopUpdater,
@@ -256,7 +256,7 @@ func TestManager_Run_AllowedBlockedDrivers_Combined(t *testing.T) {
 	}
 	cat := mockCatalog(drvs)
 	cfg := &Config{
-		Logger:       testlog.HCLogger(t),
+		Logger:       testlog.DUMB_HCLogger(t),
 		Loader:       cat,
 		PluginConfig: nil,
 		Updater:      noopUpdater,

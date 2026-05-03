@@ -28,12 +28,12 @@ export default class TaskGroup extends Fragment {
     if (this.job.parent.get('id')) {
       return this.job.variables?.findBy(
         'path',
-        `nomad/jobs/${this.job.parent.get('plainId')}/${this.name}`
+        `dumb-nomad/jobs/${this.job.parent.get('plainId')}/${this.name}`
       );
     } else {
       return this.job.variables?.findBy(
         'path',
-        `nomad/jobs/${this.job.plainId}/${this.name}`
+        `dumb-nomad/jobs/${this.job.plainId}/${this.name}`
       );
     }
   }
@@ -44,12 +44,12 @@ export default class TaskGroup extends Fragment {
     if (this.job.parent.get('id')) {
       return await this.job.variables?.findBy(
         'path',
-        `nomad/jobs/${this.job.parent.get('plainId')}/${this.name}`
+        `dumb-nomad/jobs/${this.job.parent.get('plainId')}/${this.name}`
       );
     } else {
       return await this.job.variables?.findBy(
         'path',
-        `nomad/jobs/${this.job.plainId}/${this.name}`
+        `dumb-nomad/jobs/${this.job.plainId}/${this.name}`
       );
     }
   }

@@ -4,14 +4,14 @@
 
 set -xeuo pipefail
 
-nomad job stop job || true
+dumb-nomad job stop job || true
 
 for _ in {1..5}; do
   sleep 3
-  ids="$(nomad volume status -type=host -verbose | awk '/ternal-plugin/ {print$1}')"
+  ids="$(dumb-nomad volume status -type=host -verbose | awk '/ternal-plugin/ {print$1}')"
   test -z "$ids" && break
   for id in $ids; do 
-    nomad volume delete -type=host "$id" || continue
+    dumb-nomad volume delete -type=host "$id" || continue
   done
 done
 

@@ -16,14 +16,14 @@ import (
 	containerapi "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
-	"github.com/hashicorp/consul-template/signals"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/drivers/docker/docklog"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/dumb-consul-template/signals"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/docker/docklog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 )
 
 type taskHandle struct {
@@ -40,7 +40,7 @@ type taskHandle struct {
 	// normal dockerClient which includes a default timeout.
 	infinityClient *client.Client
 
-	logger                  hclog.Logger
+	logger                  dumb-hclog.Logger
 	dlogger                 docklog.DockerLogger
 	dloggerPluginClient     *plugin.Client
 	task                    *drivers.TaskConfig
@@ -289,7 +289,7 @@ func (h *taskHandle) run() {
 	var werr error
 	var exitCode containerapi.WaitResponse
 	// this needs to use the background context because the container can
-	// outlive Nomad itself
+	// outlive Dumb Nomad itself
 	exitCodeC, errC := h.infinityClient.ContainerWait(
 		context.Background(), h.containerID, containerapi.WaitConditionNotRunning)
 
@@ -313,9 +313,9 @@ func (h *taskHandle) run() {
 		h.logger.Error("OOM Killed",
 			"container_id", h.containerID,
 			"container_image", h.containerImage,
-			"nomad_job_name", h.task.JobName,
-			"nomad_task_name", h.task.Name,
-			"nomad_alloc_id", h.task.AllocID)
+			"dumb-nomad_job_name", h.task.JobName,
+			"dumb-nomad_task_name", h.task.Name,
+			"dumb-nomad_alloc_id", h.task.AllocID)
 
 		// Note that with cgroups.v2 the cgroup OOM killer is not
 		// observed by docker container status. But we can't test the

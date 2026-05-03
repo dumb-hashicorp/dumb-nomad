@@ -9,9 +9,9 @@ import { click, find, findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import moment from 'moment';
 import { create, collection } from 'ember-cli-page-object';
-import { startMirage } from 'nomad-ui/initializers/ember-cli-mirage';
-import pageSizeSelect from 'nomad-ui/tests/acceptance/behaviors/page-size-select';
-import pageSizeSelectPageObject from 'nomad-ui/tests/pages/components/page-size-select';
+import { startMirage } from 'dumb-nomad-ui/initializers/ember-cli-mirage';
+import pageSizeSelect from 'dumb-nomad-ui/tests/acceptance/behaviors/page-size-select';
+import pageSizeSelectPageObject from 'dumb-nomad-ui/tests/pages/components/page-size-select';
 import {
   jobURL,
   stopJob,
@@ -21,7 +21,7 @@ import {
   expectStartRequest,
   expectPurgeRequest,
 } from './helpers';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 
 // A minimum viable page object to use with the pageSizeSelect behavior
 const PeriodicJobPage = create({
@@ -42,7 +42,7 @@ module('Integration | Component | job-page/periodic', function (hooks) {
     this.server.create('node-pool');
     this.server.create('node');
     let managementToken = this.server.create('token');
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
   });
 
   hooks.afterEach(function () {

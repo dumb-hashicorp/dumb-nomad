@@ -7,12 +7,12 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks"
-	"github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -34,7 +34,7 @@ type qrMap = map[structs.CheckID]*structs.CheckQueryResult
 
 func TestShim_New(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	t.Run("restore empty", func(t *testing.T) {
 		db := state.NewMemDB(logger)
@@ -61,7 +61,7 @@ func TestShim_New(t *testing.T) {
 
 func TestShim_Set(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	t.Run("insert pending", func(t *testing.T) {
 		db := state.NewMemDB(logger)
@@ -153,7 +153,7 @@ func TestShim_Set(t *testing.T) {
 
 func TestShim_List(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	t.Run("list empty", func(t *testing.T) {
 		db := state.NewMemDB(logger)
@@ -199,7 +199,7 @@ func TestShim_List(t *testing.T) {
 
 func TestShim_Difference(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	t.Run("empty store", func(t *testing.T) {
 		db := state.NewMemDB(logger)
@@ -263,7 +263,7 @@ func TestShim_Difference(t *testing.T) {
 
 func TestShim_Remove(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	t.Run("remove from empty store", func(t *testing.T) {
 		db := state.NewMemDB(logger)
@@ -343,7 +343,7 @@ func TestShim_Remove(t *testing.T) {
 
 func TestShim_Purge(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	t.Run("purge from empty", func(t *testing.T) {
 		db := state.NewMemDB(logger)
@@ -384,7 +384,7 @@ func TestShim_Purge(t *testing.T) {
 
 func TestShim_Snapshot(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	db := state.NewMemDB(logger)
 	s := NewStore(logger, db)

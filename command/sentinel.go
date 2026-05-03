@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type SentinelCommand struct {
@@ -15,7 +15,7 @@ type SentinelCommand struct {
 
 func (f *SentinelCommand) Help() string {
 	helpText := `
-Usage: nomad sentinel <subcommand> [options] [args]
+Usage: dumb-nomad sentinel <subcommand> [options] [args]
 
   This command groups subcommands for interacting with Sentinel policies.
   Sentinel policies allow operators to express fine-grained policies as code and
@@ -24,19 +24,19 @@ Usage: nomad sentinel <subcommand> [options] [args]
   Sentinel integration builds on the ACL System. Users can read existing
   Sentinel policies, create new policies, delete and list existing policies, and
   more. For a full guide on Sentinel policies see:
-  https://developer.hashicorp.com/nomad/docs/govern/sentinel
+  https://developer.dumb-hashicorp.com/dumb-nomad/docs/govern/sentinel
 
   Read an existing policy:
 
-      $ nomad sentinel read <name>
+      $ dumb-nomad sentinel read <name>
 
   List existing policies:
 
-      $ nomad sentinel list
+      $ dumb-nomad sentinel list
 
   Create a new Sentinel policy:
 
-      $ nomad sentinel apply <name> <path>
+      $ dumb-nomad sentinel apply <name> <path>
 
   Please see the individual subcommand help for detailed usage information.
 `

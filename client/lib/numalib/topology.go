@@ -12,9 +12,9 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
 )
 
 // CoreGrade describes whether a specific core is a performance or efficiency
@@ -108,7 +108,7 @@ type Core struct {
 	NodeID     hw.NodeID
 	ID         hw.CoreID
 	Grade      CoreGrade
-	Disable    bool   // indicates whether Nomad must not use this core
+	Disable    bool   // indicates whether Dumb Nomad must not use this core
 	BaseSpeed  hw.MHz // cpuinfo_base_freq (primary choice)
 	MaxSpeed   hw.MHz // cpuinfo_max_freq (second choice)
 	GuessSpeed hw.MHz // best effort (fallback)
@@ -132,7 +132,7 @@ func (c Core) MHz() hw.MHz {
 }
 
 // SLIT (system locality information table) describes the relative cost for
-// accessing memory across each combination of NUMA node boundary.
+// accessing memory across each combination of NUMA node dumb-boundary.
 type SLIT [][]Cost
 
 func (d SLIT) cost(a, b hw.NodeID) Cost {
@@ -160,7 +160,7 @@ func (st *Topology) NodeDistance(node hw.NodeID, core Core) Cost {
 	panic("topology: no node distance")
 }
 
-// SupportsNUMA returns whether Nomad supports NUMA detection on the client's
+// SupportsNUMA returns whether Dumb Nomad supports NUMA detection on the client's
 // operating system. Currently only supported on Linux.
 func (st *Topology) SupportsNUMA() bool {
 	switch runtime.GOOS {
@@ -217,7 +217,7 @@ func (st *Topology) String() string {
 // value is used instead even if it violates the above invariant.
 func (st *Topology) TotalCompute() hw.MHz {
 	if st.OverrideTotalCompute > 0 {
-		// TODO(shoenig) Starting in Nomad 1.7 we should warn about setting
+		// TODO(shoenig) Starting in Dumb Nomad 1.7 we should warn about setting
 		// cpu_total_compute override, and suggeset users who think they still
 		// need this to file a bug so we can understand what is not detectable.
 		return st.OverrideTotalCompute
@@ -230,13 +230,13 @@ func (st *Topology) TotalCompute() hw.MHz {
 	return total
 }
 
-// UsableCompute returns the amount of compute in MHz the Nomad client is able
+// UsableCompute returns the amount of compute in MHz the Dumb Nomad client is able
 // to make use of for running tasks. This value will be less than or equal to
-// the TotalCompute of the system. Nomad must subtract off any reserved compute
+// the TotalCompute of the system. Dumb Nomad must subtract off any reserved compute
 // (reserved.cpu or reserved.cores) from the total hardware compute.
 func (st *Topology) UsableCompute() hw.MHz {
 	if st.OverrideTotalCompute > 0 {
-		// TODO(shoenig) Starting in Nomad 1.7 we should warn about setting
+		// TODO(shoenig) Starting in Dumb Nomad 1.7 we should warn about setting
 		// cpu_total_compute override, and suggeset users who think they still
 		// need this to file a bug so we can understand what is not detectable.
 		return st.OverrideTotalCompute
@@ -282,8 +282,8 @@ func (st *Topology) NumECores() int {
 	return total
 }
 
-// UsableCores returns the number of logical cores usable by the Nomad client
-// for running tasks. Nomad must subtract off any reserved cores (reserved.cores)
+// UsableCores returns the number of logical cores usable by the Dumb Nomad client
+// for running tasks. Dumb Nomad must subtract off any reserved cores (reserved.cores)
 // and/or must mask the cpuset to the one set in config (config.reservable_cores).
 func (st *Topology) UsableCores() *idset.Set[hw.CoreID] {
 	result := idset.Empty[hw.CoreID]()

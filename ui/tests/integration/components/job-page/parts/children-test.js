@@ -8,8 +8,8 @@ import hbs from 'htmlbars-inline-precompile';
 import { findAll, find, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { startMirage } from 'nomad-ui/initializers/ember-cli-mirage';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { startMirage } from 'dumb-nomad-ui/initializers/ember-cli-mirage';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 
 module('Integration | Component | job-page/parts/children', function (hooks) {
   setupRenderingTest(hooks);
@@ -74,7 +74,7 @@ module('Integration | Component | job-page/parts/children', function (hooks) {
     assert.expect(5);
 
     const pageSize = 10;
-    window.localStorage.nomadPageSize = pageSize;
+    window.localStorage.dumb-nomadPageSize = pageSize;
 
     this.server.create('job', 'periodic', {
       id: 'parent',

@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/shoenig/test/must"
 )
 
@@ -18,13 +18,13 @@ import (
 // coupling between the ACL objects.
 func testACLRole(t *testing.T) {
 
-	nomadClient := e2eutil.NomadClient(t)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
 
 	// Create and defer the Cleanup process. This is used to remove all
 	// resources created by this test and covers situations where the test
 	// fails or during normal running.
 	cleanUpProcess := NewCleanup()
-	defer cleanUpProcess.Run(t, nomadClient)
+	defer cleanUpProcess.Run(t, dumb-nomadClient)
 
 	// An ACL role must reference an ACL policy that is stored in state. Ensure
 	// this behaviour by attempting to create a role that links to a policy
@@ -34,7 +34,7 @@ func testACLRole(t *testing.T) {
 		Description: "E2E ACL Role Testing",
 		Policies:    []*api.ACLRolePolicyLink{{Name: "404-not-found"}},
 	}
-	aclRoleCreateResp, _, err := nomadClient.ACLRoles().Create(&invalidRole, nil)
+	aclRoleCreateResp, _, err := dumb-nomadClient.ACLRoles().Create(&invalidRole, nil)
 	must.ErrorContains(t, err, "cannot find policy 404-not-found")
 	must.Nil(t, aclRoleCreateResp)
 
@@ -43,7 +43,7 @@ func testACLRole(t *testing.T) {
 		Name:        "e2e-acl-" + uuid.Short(),
 		Description: "E2E ACL Role Testing",
 	}
-	_, err = nomadClient.Namespaces().Register(&ns, nil)
+	_, err = dumb-nomadClient.Namespaces().Register(&ns, nil)
 	must.NoError(t, err)
 
 	cleanUpProcess.Add(ns.Name, NamespaceTestResourceType)
@@ -55,7 +55,7 @@ func testACLRole(t *testing.T) {
 		Description: "E2E ACL Role Testing",
 		Rules:       fmt.Sprintf(`namespace %q {policy = "read"}`, ns.Name),
 	}
-	_, err = nomadClient.ACLPolicies().Upsert(&customNamespacePolicy, nil)
+	_, err = dumb-nomadClient.ACLPolicies().Upsert(&customNamespacePolicy, nil)
 	must.NoError(t, err)
 
 	cleanUpProcess.Add(customNamespacePolicy.Name, ACLPolicyTestResourceType)
@@ -66,7 +66,7 @@ func testACLRole(t *testing.T) {
 		Description: "E2E ACL Role Testing",
 		Policies:    []*api.ACLRolePolicyLink{{Name: customNamespacePolicy.Name}},
 	}
-	aclRoleCreateResp, _, err = nomadClient.ACLRoles().Create(&validRole, nil)
+	aclRoleCreateResp, _, err = dumb-nomadClient.ACLRoles().Create(&validRole, nil)
 	must.NoError(t, err)
 	must.NotNil(t, aclRoleCreateResp)
 	must.NotEq(t, "", aclRoleCreateResp.ID)
@@ -75,7 +75,7 @@ func testACLRole(t *testing.T) {
 	cleanUpProcess.Add(aclRoleCreateResp.ID, ACLRoleTestResourceType)
 
 	// Perform a role listing and check we have the expected entries.
-	aclRoleListResp, _, err := nomadClient.ACLRoles().List(nil)
+	aclRoleListResp, _, err := dumb-nomadClient.ACLRoles().List(nil)
 	must.NoError(t, err)
 	must.Len(t, 1, aclRoleListResp)
 	must.Eq(t, aclRoleCreateResp.ID, aclRoleListResp[0].ID)
@@ -86,7 +86,7 @@ func testACLRole(t *testing.T) {
 		Type:  "client",
 		Roles: []*api.ACLTokenRoleLink{{ID: aclRoleCreateResp.ID}},
 	}
-	aclTokenCreateResp, _, err := nomadClient.ACLTokens().Create(&token, nil)
+	aclTokenCreateResp, _, err := dumb-nomadClient.ACLTokens().Create(&token, nil)
 	must.NoError(t, err)
 	must.NotNil(t, aclTokenCreateResp)
 
@@ -98,10 +98,10 @@ func testACLRole(t *testing.T) {
 	customNSQueryMeta := api.QueryOptions{Namespace: ns.Name, AuthToken: aclTokenCreateResp.SecretID}
 	defaultNSQueryMeta := api.QueryOptions{Namespace: "default", AuthToken: aclTokenCreateResp.SecretID}
 
-	_, _, err = nomadClient.Jobs().List(&customNSQueryMeta)
+	_, _, err = dumb-nomadClient.Jobs().List(&customNSQueryMeta)
 	must.NoError(t, err)
 
-	_, _, err = nomadClient.Jobs().List(&defaultNSQueryMeta)
+	_, _, err = dumb-nomadClient.Jobs().List(&defaultNSQueryMeta)
 	must.ErrorContains(t, err, "Permission denied")
 
 	// Create an ACL policy which grants read access to the default namespace.
@@ -110,7 +110,7 @@ func testACLRole(t *testing.T) {
 		Description: "E2E ACL Role Testing",
 		Rules:       `namespace "default" {policy = "read"}`,
 	}
-	_, err = nomadClient.ACLPolicies().Upsert(&defaultNamespacePolicy, nil)
+	_, err = dumb-nomadClient.ACLPolicies().Upsert(&defaultNamespacePolicy, nil)
 	must.NoError(t, err)
 
 	cleanUpProcess.Add(defaultNamespacePolicy.Name, ACLPolicyTestResourceType)
@@ -120,35 +120,35 @@ func testACLRole(t *testing.T) {
 	aclRoleCreateResp.Policies = append(aclRoleCreateResp.Policies, &api.ACLRolePolicyLink{
 		Name: defaultNamespacePolicy.Name,
 	})
-	aclRoleUpdateResp, _, err := nomadClient.ACLRoles().Update(aclRoleCreateResp, nil)
+	aclRoleUpdateResp, _, err := dumb-nomadClient.ACLRoles().Update(aclRoleCreateResp, nil)
 	must.NoError(t, err)
 	must.Eq(t, aclRoleCreateResp.ID, aclRoleUpdateResp.ID)
 	must.Len(t, 2, aclRoleUpdateResp.Policies)
 
 	// Try listing the jobs in the default namespace again to ensure we now
 	// have permission due to the updated role.
-	_, _, err = nomadClient.Jobs().List(&defaultNSQueryMeta)
+	_, _, err = dumb-nomadClient.Jobs().List(&defaultNSQueryMeta)
 	must.NoError(t, err)
 
 	// Delete a policy from under the role.
-	_, err = nomadClient.ACLPolicies().Delete(defaultNamespacePolicy.Name, nil)
+	_, err = dumb-nomadClient.ACLPolicies().Delete(defaultNamespacePolicy.Name, nil)
 	must.NoError(t, err)
 
 	cleanUpProcess.Remove(defaultNamespacePolicy.Name, ACLPolicyTestResourceType)
 
 	// The permission to list the job in the default namespace should now be
 	// revoked.
-	_, _, err = nomadClient.Jobs().List(&defaultNSQueryMeta)
+	_, _, err = dumb-nomadClient.Jobs().List(&defaultNSQueryMeta)
 	must.ErrorContains(t, err, "Permission denied")
 
 	// Delete the ACL role.
-	_, err = nomadClient.ACLRoles().Delete(aclRoleUpdateResp.ID, nil)
+	_, err = dumb-nomadClient.ACLRoles().Delete(aclRoleUpdateResp.ID, nil)
 	must.NoError(t, err)
 
 	cleanUpProcess.Remove(aclRoleUpdateResp.ID, ACLRoleTestResourceType)
 
 	// We should now not be able to list jobs in the custom namespace either as
 	// the token does not have any permissions.
-	_, _, err = nomadClient.Jobs().List(&customNSQueryMeta)
+	_, _, err = dumb-nomadClient.Jobs().List(&customNSQueryMeta)
 	must.ErrorContains(t, err, "Permission denied")
 }

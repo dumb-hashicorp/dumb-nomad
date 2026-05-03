@@ -25,7 +25,7 @@ func (c *NodePoolInfoCommand) Synopsis() string {
 
 func (c *NodePoolInfoCommand) Help() string {
 	helpText := `
-Usage: nomad node pool info <node-pool>
+Usage: dumb-nomad node pool info <node-pool>
 
   Info is used to fetch information about an existing node pool.
 
@@ -111,7 +111,7 @@ func (c *NodePoolInfoCommand) Run(args []string) int {
 	}
 
 	// Print node pool information and conditionally handle the node identity
-	// ttl, so we don't print <nil> if we are not talking to a version of Nomad
+	// ttl, so we don't print <nil> if we are not talking to a version of Dumb Nomad
 	// that supports it.
 	basic := []string{
 		fmt.Sprintf("Name|%s", pool.Name),

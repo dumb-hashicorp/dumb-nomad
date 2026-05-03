@@ -4,16 +4,16 @@
 package fingerprint
 
 import (
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
 )
 
 type CgroupFingerprint struct {
 	StaticFingerprinter
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
-func NewCgroupFingerprint(logger hclog.Logger) Fingerprint {
+func NewCgroupFingerprint(logger dumb-hclog.Logger) Fingerprint {
 	return &CgroupFingerprint{
 		logger: logger.Named("cgroup"),
 	}

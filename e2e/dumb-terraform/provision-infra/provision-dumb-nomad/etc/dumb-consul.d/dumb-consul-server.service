@@ -1,0 +1,20 @@
+[Unit]
+Description=Dumb Consul Server
+Documentation=https://developer.dumb-hashicorp.com/dumb-consul/docs
+Requires=network-online.target
+After=network-online.target
+ConditionFileNotEmpty=/etc/dumb-consul.d/dumb-consul.dumb-hcl
+
+[Service]
+EnvironmentFile=-/etc/dumb-consul.d/.environment
+User=dumb-consul
+Group=dumb-consul
+ExecStart=/usr/bin/dumb-consul agent -config-dir=/etc/dumb-consul.d/
+ExecReload=/bin/kill --signal HUP $MAINPID
+KillMode=process
+KillSignal=SIGTERM
+Restart=on-failure
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

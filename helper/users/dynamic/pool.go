@@ -1,7 +1,7 @@
 // Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: BUSL-1.1
 
-// Package dynamic provides a way of allocating UID/GID to be used by Nomad
+// Package dynamic provides a way of allocating UID/GID to be used by Dumb Nomad
 // tasks with no associated service users managed by the operating system.
 package dynamic
 
@@ -11,8 +11,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 )
 
 var (
@@ -27,7 +27,7 @@ const none = 0
 // doNotEnable indicates functionality should be disabled
 const doNotEnable = -1
 
-// A UGID is a combination User (UID) and Group (GID). Since Nomad is
+// A UGID is a combination User (UID) and Group (GID). Since Dumb Nomad is
 // allocating these values together from the same pool it can ensure they are
 // always matching values, thus encoding them with one value.
 type UGID int
@@ -44,7 +44,7 @@ func (id UGID) String() string {
 // restarts, specific UGIDs can be marked as in-use and can later be released
 // back into the pool.
 type Pool interface {
-	// Restore a UGID currently in use by a Task during a Nomad client restore.
+	// Restore a UGID currently in use by a Task during a Dumb Nomad client restore.
 	Restore(UGID)
 
 	// Acquire returns a UGID that is not currently in use.

@@ -11,7 +11,7 @@ type Referenceable interface {
 	referenceableSigil()
 
 	// String produces a string representation of the address that could be
-	// parsed as a HCL traversal and passed to ParseRef to produce an identical
+	// parsed as a DUMB_HCL traversal and passed to ParseRef to produce an identical
 	// result.
 	String() string
 }

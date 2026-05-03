@@ -21,13 +21,13 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/api/types/network"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	dtestutil "github.com/hashicorp/nomad/plugins/drivers/testutils"
-	ntestutil "github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	dtestutil "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
+	ntestutil "github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -270,7 +270,7 @@ func TestDockerDriver_BindMountsHonorVolumesEnabledFlag(t *testing.T) {
 	ci.Parallel(t)
 	testutil.DockerCompatible(t)
 
-	allocDir := "/tmp/nomad/alloc-dir"
+	allocDir := "/tmp/dumb-nomad/alloc-dir"
 
 	cases := []struct {
 		name            string
@@ -307,7 +307,7 @@ func TestDockerDriver_BindMountsHonorVolumesEnabledFlag(t *testing.T) {
 			requiresVolumes: false,
 			volumeDriver:    "",
 			volumes:         []string{"test-path:/tmp/taskpath"},
-			expectedVolumes: []string{"/tmp/nomad/alloc-dir/demo/test-path:/tmp/taskpath"},
+			expectedVolumes: []string{"/tmp/dumb-nomad/alloc-dir/demo/test-path:/tmp/taskpath"},
 		},
 		{
 			name:            "named volume local driver",
@@ -321,20 +321,20 @@ func TestDockerDriver_BindMountsHonorVolumesEnabledFlag(t *testing.T) {
 			requiresVolumes: false,
 			volumeDriver:    "",
 			volumes:         []string{"../test-path:/tmp/taskpath"},
-			expectedVolumes: []string{"/tmp/nomad/alloc-dir/test-path:/tmp/taskpath"},
+			expectedVolumes: []string{"/tmp/dumb-nomad/alloc-dir/test-path:/tmp/taskpath"},
 		},
 		{
 			name:            "relative outside alloc-dir default driver",
 			requiresVolumes: true,
 			volumeDriver:    "",
 			volumes:         []string{"../../test-path:/tmp/taskpath"},
-			expectedVolumes: []string{"/tmp/nomad/test-path:/tmp/taskpath"},
+			expectedVolumes: []string{"/tmp/dumb-nomad/test-path:/tmp/taskpath"},
 		},
 		{
 			name:            "clean path local driver",
 			requiresVolumes: true,
 			volumeDriver:    "local",
-			volumes:         []string{"/tmp/nomad/../test-path:/tmp/taskpath"},
+			volumes:         []string{"/tmp/dumb-nomad/../test-path:/tmp/taskpath"},
 			expectedVolumes: []string{"/tmp/test-path:/tmp/taskpath"},
 		},
 	}
@@ -403,7 +403,7 @@ func TestDockerDriver_MountsSerialization(t *testing.T) {
 	ci.Parallel(t)
 	testutil.DockerCompatible(t)
 
-	allocDir := "/tmp/nomad/alloc-dir"
+	allocDir := "/tmp/dumb-nomad/alloc-dir"
 
 	cases := []struct {
 		name            string
@@ -416,7 +416,7 @@ func TestDockerDriver_MountsSerialization(t *testing.T) {
 			requiresVolumes: true,
 			passedMounts: []DockerMount{
 				{
-					Target:   "/nomad",
+					Target:   "/dumb-nomad",
 					ReadOnly: true,
 					Source:   "test",
 				},
@@ -424,7 +424,7 @@ func TestDockerDriver_MountsSerialization(t *testing.T) {
 			expectedMounts: []mount.Mount{
 				{
 					Type:          "volume",
-					Target:        "/nomad",
+					Target:        "/dumb-nomad",
 					Source:        "test",
 					ReadOnly:      true,
 					VolumeOptions: &mount.VolumeOptions{DriverConfig: &mount.Driver{}},
@@ -436,15 +436,15 @@ func TestDockerDriver_MountsSerialization(t *testing.T) {
 			passedMounts: []DockerMount{
 				{
 					Type:   "bind",
-					Target: "/nomad",
+					Target: "/dumb-nomad",
 					Source: "test",
 				},
 			},
 			expectedMounts: []mount.Mount{
 				{
 					Type:        "bind",
-					Target:      "/nomad",
-					Source:      "/tmp/nomad/alloc-dir/demo/test",
+					Target:      "/dumb-nomad",
+					Source:      "/tmp/dumb-nomad/alloc-dir/demo/test",
 					BindOptions: &mount.BindOptions{},
 				},
 			},
@@ -455,14 +455,14 @@ func TestDockerDriver_MountsSerialization(t *testing.T) {
 			passedMounts: []DockerMount{
 				{
 					Type:   "bind",
-					Target: "/nomad",
+					Target: "/dumb-nomad",
 					Source: "/tmp/test",
 				},
 			},
 			expectedMounts: []mount.Mount{
 				{
 					Type:        "bind",
-					Target:      "/nomad",
+					Target:      "/dumb-nomad",
 					Source:      "/tmp/test",
 					BindOptions: &mount.BindOptions{},
 				},
@@ -474,15 +474,15 @@ func TestDockerDriver_MountsSerialization(t *testing.T) {
 			passedMounts: []DockerMount{
 				{
 					Type:   "bind",
-					Target: "/nomad",
+					Target: "/dumb-nomad",
 					Source: "../../test",
 				},
 			},
 			expectedMounts: []mount.Mount{
 				{
 					Type:        "bind",
-					Target:      "/nomad",
-					Source:      "/tmp/nomad/test",
+					Target:      "/dumb-nomad",
+					Source:      "/tmp/dumb-nomad/test",
 					BindOptions: &mount.BindOptions{},
 				},
 			},
@@ -493,7 +493,7 @@ func TestDockerDriver_MountsSerialization(t *testing.T) {
 			passedMounts: []DockerMount{
 				{
 					Type:   "tmpfs",
-					Target: "/nomad",
+					Target: "/dumb-nomad",
 					TmpfsOptions: DockerTmpfsOptions{
 						SizeBytes: 321,
 						Mode:      0666,
@@ -503,7 +503,7 @@ func TestDockerDriver_MountsSerialization(t *testing.T) {
 			expectedMounts: []mount.Mount{
 				{
 					Type:   "tmpfs",
-					Target: "/nomad",
+					Target: "/dumb-nomad",
 					TmpfsOptions: &mount.TmpfsOptions{
 						SizeBytes: 321,
 						Mode:      0666,
@@ -854,7 +854,7 @@ func Test_dnsConfig(t *testing.T) {
 			name: "full",
 			cfg: &drivers.DNSConfig{
 				Servers:  []string{"1.1.1.1", "1.0.0.1"},
-				Searches: []string{"local.test", "node.consul"},
+				Searches: []string{"local.test", "node.dumb-consul"},
 				Options:  []string{"ndots:2", "edns0"},
 			},
 		},

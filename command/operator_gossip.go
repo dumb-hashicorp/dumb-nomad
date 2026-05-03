@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type OperatorGossipCommand struct {
@@ -15,7 +15,7 @@ type OperatorGossipCommand struct {
 
 func (*OperatorGossipCommand) Help() string {
 	helpText := `
-Usage: nomad operator gossip <subcommand> [options] [args]
+Usage: dumb-nomad operator gossip <subcommand> [options] [args]
 	
   This command is accessed by using one of the subcommands below.
 `

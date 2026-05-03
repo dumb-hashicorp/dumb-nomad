@@ -6,11 +6,11 @@ package drivers
 import (
 	"context"
 
-	hclog "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/plugins/base"
-	baseproto "github.com/hashicorp/nomad/plugins/base/proto"
-	"github.com/hashicorp/nomad/plugins/drivers/proto"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	baseproto "github.com/dumb-hashicorp/dumb-nomad/plugins/base/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/proto"
 	"google.golang.org/grpc"
 )
 
@@ -21,10 +21,10 @@ var _ plugin.GRPCPlugin = &PluginDriver{}
 type PluginDriver struct {
 	plugin.NetRPCUnsupportedPlugin
 	impl   DriverPlugin
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
-func NewDriverPlugin(d DriverPlugin, logger hclog.Logger) *PluginDriver {
+func NewDriverPlugin(d DriverPlugin, logger dumb-hclog.Logger) *PluginDriver {
 	return &PluginDriver{
 		impl:   d,
 		logger: logger,
@@ -52,7 +52,7 @@ func (p *PluginDriver) GRPCClient(ctx context.Context, broker *plugin.GRPCBroker
 }
 
 // Serve is used to serve a driverplugin
-func Serve(d DriverPlugin, logger hclog.Logger) {
+func Serve(d DriverPlugin, logger dumb-hclog.Logger) {
 	plugin.Serve(&plugin.ServeConfig{
 		HandshakeConfig: base.Handshake,
 		Plugins: map[string]plugin.Plugin{

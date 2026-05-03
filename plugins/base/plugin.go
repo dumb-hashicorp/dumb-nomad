@@ -8,9 +8,9 @@ import (
 	"context"
 	"reflect"
 
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/plugins/base/proto"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base/proto"
 	"google.golang.org/grpc"
 )
 
@@ -26,13 +26,13 @@ const (
 )
 
 var (
-	// Handshake is a common handshake that is shared by all plugins and Nomad.
+	// Handshake is a common handshake that is shared by all plugins and Dumb Nomad.
 	Handshake = plugin.HandshakeConfig{
 		// ProtocolVersion for the executor protocol.
 		// Version 1: pre 0.9 netrpc based executor
 		// Version 2: 0.9+ grpc based executor
 		ProtocolVersion:  2,
-		MagicCookieKey:   "NOMAD_PLUGIN_MAGIC_COOKIE",
+		MagicCookieKey:   "DUMB_NOMAD_PLUGIN_MAGIC_COOKIE",
 		MagicCookieValue: "e4327c2e01eabfd75a8a67adb114fb34a757d57eee7728d857a8cec6e91a7255",
 	}
 )

@@ -6,11 +6,11 @@ package command
 import (
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -33,7 +33,7 @@ func TestOperatorClientStateCommand(t *testing.T) {
 	must.StrContains(t, ui.OutputWriter.String(), "{}")
 
 	// create a minimal client state db
-	db, err := state.NewBoltStateDB(testlog.HCLogger(t), dir)
+	db, err := state.NewBoltStateDB(testlog.DUMB_HCLogger(t), dir)
 	must.NoError(t, err)
 	alloc := structs.MockAlloc()
 	err = db.PutAllocation(alloc)

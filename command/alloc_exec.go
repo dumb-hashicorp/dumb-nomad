@@ -14,9 +14,9 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
-	"github.com/hashicorp/nomad/helper/escapingio"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/escapingio"
 	"github.com/moby/term"
 	"github.com/posener/complete"
 )
@@ -31,7 +31,7 @@ type AllocExecCommand struct {
 
 func (l *AllocExecCommand) Help() string {
 	helpText := `
-Usage: nomad alloc exec [options] <allocation> <command>
+Usage: dumb-nomad alloc exec [options] <allocation> <command>
 
   Run command inside the environment of the given allocation and task.
 

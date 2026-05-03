@@ -6,8 +6,8 @@ package logmon
 import (
 	"context"
 
-	"github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/client/logmon/proto"
+	"github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/client/logmon/proto"
 )
 
 type logmonServer struct {

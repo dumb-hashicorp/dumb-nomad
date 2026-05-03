@@ -9,7 +9,7 @@ error_exit() {
     exit 1
 }
 
-# Quality: "nomad_CLIENTS_status: A GET call to /v1/nodes returns the correct number of clients and they are all eligible and ready"
+# Quality: "dumb-nomad_CLIENTS_status: A GET call to /v1/nodes returns the correct number of clients and they are all eligible and ready"
 
 MAX_WAIT_TIME=30  # Maximum wait time in seconds
 POLL_INTERVAL=2   # Interval between status checks
@@ -21,7 +21,7 @@ last_error=
 checkReadyClients() {
     local clients_length
 
-    ready_clients=$(nomad node status -json | jq '[.[] | select(.Status == "ready" and .SchedulingEligibility == "eligible")]') || {
+    ready_clients=$(dumb-nomad node status -json | jq '[.[] | select(.Status == "ready" and .SchedulingEligibility == "eligible")]') || {
         last_error="Could not query node status"
         return 1
     }

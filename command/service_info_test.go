@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -55,10 +55,10 @@ func TestServiceInfoCommand_Run(t *testing.T) {
 		"This command takes one argument: <service_name>")
 	ui.ErrorWriter.Reset()
 
-	// Create a test job with a Nomad service.
-	testJob := testJob("service-discovery-nomad-info")
+	// Create a test job with a Dumb Nomad service.
+	testJob := testJob("service-discovery-dumb-nomad-info")
 	testJob.TaskGroups[0].Services = []*api.Service{
-		{Name: "service-discovery-nomad-info", Provider: "nomad", PortLabel: "9999", Tags: []string{"foo", "bar"}}}
+		{Name: "service-discovery-dumb-nomad-info", Provider: "dumb-nomad", PortLabel: "9999", Tags: []string{"foo", "bar"}}}
 
 	// Register that job.
 	regResp, _, err := client.Jobs().Register(testJob, nil)
@@ -80,7 +80,7 @@ func TestServiceInfoCommand_Run(t *testing.T) {
 		defer ui.OutputWriter.Reset()
 
 		// Perform a standard lookup.
-		if code := cmd.Run([]string{"-address=" + url, "service-discovery-nomad-info"}); code != 0 {
+		if code := cmd.Run([]string{"-address=" + url, "service-discovery-dumb-nomad-info"}); code != 0 {
 			return false
 		}
 
@@ -98,7 +98,7 @@ func TestServiceInfoCommand_Run(t *testing.T) {
 		if !strings.Contains(s, "Alloc ID") {
 			return false
 		}
-		if !strings.Contains(s, "service-discovery-nomad-info") {
+		if !strings.Contains(s, "service-discovery-dumb-nomad-info") {
 			return false
 		}
 		if !strings.Contains(s, ":9999") {
@@ -111,14 +111,14 @@ func TestServiceInfoCommand_Run(t *testing.T) {
 	}, 5*time.Second, 100*time.Millisecond)
 
 	// Perform a verbose lookup.
-	code := cmd.Run([]string{"-address=" + url, "-verbose", "service-discovery-nomad-info"})
+	code := cmd.Run([]string{"-address=" + url, "-verbose", "service-discovery-dumb-nomad-info"})
 	must.Zero(t, code)
 
 	// Test KV entries.
 	s := ui.OutputWriter.String()
-	must.StrContains(t, s, "Service Name = service-discovery-nomad-info")
+	must.StrContains(t, s, "Service Name = service-discovery-dumb-nomad-info")
 	must.StrContains(t, s, "Namespace    = default")
-	must.StrContains(t, s, "Job ID       = service-discovery-nomad-info")
+	must.StrContains(t, s, "Job ID       = service-discovery-dumb-nomad-info")
 	must.StrContains(t, s, "Datacenter   = dc1")
 	must.StrContains(t, s, "Address      = :9999")
 	must.StrContains(t, s, "Tags         = [foo,bar]")
@@ -137,39 +137,39 @@ func Test_argsWithNewPageToken(t *testing.T) {
 		name           string
 	}{
 		{
-			inputOsArgs:    []string{"nomad", "service", "info", "-page-token=abcdef", "example-cache"},
+			inputOsArgs:    []string{"dumb-nomad", "service", "info", "-page-token=abcdef", "example-cache"},
 			inputNextToken: "ghijkl",
-			expectedOutput: "nomad service info -page-token=ghijkl example-cache",
+			expectedOutput: "dumb-nomad service info -page-token=ghijkl example-cache",
 			name:           "page token with equals sign",
 		},
 		{
-			inputOsArgs:    []string{"nomad", "service", "info", "-page-token", "abcdef", "example-cache"},
+			inputOsArgs:    []string{"dumb-nomad", "service", "info", "-page-token", "abcdef", "example-cache"},
 			inputNextToken: "ghijkl",
-			expectedOutput: "nomad service info -page-token ghijkl example-cache",
+			expectedOutput: "dumb-nomad service info -page-token ghijkl example-cache",
 			name:           "page token with whitespace gap",
 		},
 		{
-			inputOsArgs:    []string{"nomad", "service", "info", "-per-page", "3", "-page-token", "abcdef", "example-cache"},
+			inputOsArgs:    []string{"dumb-nomad", "service", "info", "-per-page", "3", "-page-token", "abcdef", "example-cache"},
 			inputNextToken: "ghijkl",
-			expectedOutput: "nomad service info -per-page 3 -page-token ghijkl example-cache",
+			expectedOutput: "dumb-nomad service info -per-page 3 -page-token ghijkl example-cache",
 			name:           "per page and page token",
 		},
 		{
-			inputOsArgs:    []string{"nomad", "service", "info", "-page-token", "abcdef", "-per-page", "3", "example-cache"},
+			inputOsArgs:    []string{"dumb-nomad", "service", "info", "-page-token", "abcdef", "-per-page", "3", "example-cache"},
 			inputNextToken: "ghijkl",
-			expectedOutput: "nomad service info -page-token ghijkl -per-page 3 example-cache",
+			expectedOutput: "dumb-nomad service info -page-token ghijkl -per-page 3 example-cache",
 			name:           "page token and per page",
 		},
 		{
-			inputOsArgs:    []string{"nomad", "service", "info", "-page-token", "abcdef", "-per-page=3", "example-cache"},
+			inputOsArgs:    []string{"dumb-nomad", "service", "info", "-page-token", "abcdef", "-per-page=3", "example-cache"},
 			inputNextToken: "ghijkl",
-			expectedOutput: "nomad service info -page-token ghijkl -per-page=3 example-cache",
+			expectedOutput: "dumb-nomad service info -page-token ghijkl -per-page=3 example-cache",
 			name:           "page token and per page with equal",
 		},
 		{
-			inputOsArgs:    []string{"nomad", "service", "info", "-verbose", "-page-token", "abcdef", "-per-page=3", "example-cache"},
+			inputOsArgs:    []string{"dumb-nomad", "service", "info", "-verbose", "-page-token", "abcdef", "-per-page=3", "example-cache"},
 			inputNextToken: "ghijkl",
-			expectedOutput: "nomad service info -verbose -page-token ghijkl -per-page=3 example-cache",
+			expectedOutput: "dumb-nomad service info -verbose -page-token ghijkl -per-page=3 example-cache",
 			name:           "page token per page with verbose",
 		},
 	}

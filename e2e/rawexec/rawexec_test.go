@@ -6,8 +6,8 @@ package rawexec
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/e2e/v3/cluster3"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/cluster3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
 	"github.com/shoenig/test/must"
 )
 
@@ -21,7 +21,7 @@ func TestRawExec(t *testing.T) {
 }
 
 func testOomAdj(t *testing.T) {
-	job, cleanup := jobs3.Submit(t, "./input/oomadj.hcl")
+	job, cleanup := jobs3.Submit(t, "./input/oomadj.dumb-hcl")
 	t.Cleanup(cleanup)
 
 	logs := job.TaskLogs("group", "cat")

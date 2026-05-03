@@ -30,8 +30,8 @@
   }
 
   &.is-complete {
-    background: $nomad-green-pale;
-    color: findColorInvert($nomad-green-pale);
+    background: $dumb-nomad-green-pale;
+    color: findColorInvert($dumb-nomad-green-pale);
   }
 
   &.is-error {

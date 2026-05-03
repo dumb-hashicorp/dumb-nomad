@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	bstructs "github.com/hashicorp/nomad/plugins/base/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	bstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/base/structs"
 )
 
 const (

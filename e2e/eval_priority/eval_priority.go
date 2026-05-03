@@ -4,10 +4,10 @@
 package eval_priority
 
 import (
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 )
 
 type EvalPriorityTest struct {
@@ -26,18 +26,18 @@ func init() {
 }
 
 func (tc *EvalPriorityTest) BeforeAll(f *framework.F) {
-	e2eutil.WaitForLeader(f.T(), tc.Nomad())
-	e2eutil.WaitForNodesReady(f.T(), tc.Nomad(), 1)
+	e2eutil.WaitForLeader(f.T(), tc.Dumb Nomad())
+	e2eutil.WaitForNodesReady(f.T(), tc.Dumb Nomad(), 1)
 }
 
 func (tc *EvalPriorityTest) AfterEach(f *framework.F) {
 	for _, id := range tc.jobIDs {
-		_, _, err := tc.Nomad().Jobs().Deregister(id, true, nil)
+		_, _, err := tc.Dumb Nomad().Jobs().Deregister(id, true, nil)
 		f.NoError(err)
 	}
 	tc.jobIDs = []string{}
 
-	_, err := e2eutil.Command("nomad", "system", "gc")
+	_, err := e2eutil.Command("dumb-nomad", "system", "gc")
 	f.NoError(err)
 }
 
@@ -49,7 +49,7 @@ func (tc *EvalPriorityTest) TestEvalPrioritySet(f *framework.F) {
 	// priority. In case there is a problem found here and the job registers,
 	// we need to ensure it gets cleaned up.
 	jobID := "test-eval-priority-" + uuid.Generate()[0:8]
-	f.NoError(e2eutil.RegisterWithArgs(jobID, "eval_priority/inputs/thirteen_job_priority.nomad",
+	f.NoError(e2eutil.RegisterWithArgs(jobID, "eval_priority/inputs/thirteen_job_priority.dumb-nomad",
 		"-eval-priority=80"))
 	tc.jobIDs = append(tc.jobIDs, jobID)
 
@@ -61,7 +61,7 @@ func (tc *EvalPriorityTest) TestEvalPrioritySet(f *framework.F) {
 	//
 	// Eval 1: the job registration eval.
 	// Eval 2: the deployment watcher eval.
-	registerEvals, _, err := tc.Nomad().Jobs().Evaluations(jobID, nil)
+	registerEvals, _, err := tc.Dumb Nomad().Jobs().Evaluations(jobID, nil)
 	f.NoError(err)
 	f.Len(registerEvals, 2, "job expected to have two evals")
 
@@ -78,14 +78,14 @@ func (tc *EvalPriorityTest) TestEvalPrioritySet(f *framework.F) {
 
 	// Update the job image and set an eval priority higher than the job
 	// priority.
-	f.NoError(e2eutil.RegisterWithArgs(jobID, "eval_priority/inputs/thirteen_job_priority.nomad",
+	f.NoError(e2eutil.RegisterWithArgs(jobID, "eval_priority/inputs/thirteen_job_priority.dumb-nomad",
 		"-eval-priority=7", "-var", "image=busybox:1.34"))
 	f.NoError(e2eutil.WaitForLastDeploymentStatus(jobID, "default", "successful",
 		&e2eutil.WaitConfig{Retries: 200}))
 
 	// Pull the latest list of evaluations for the job which will include those
 	// as a result of the job update.
-	updateEvals, _, err := tc.Nomad().Jobs().Evaluations(jobID, nil)
+	updateEvals, _, err := tc.Dumb Nomad().Jobs().Evaluations(jobID, nil)
 	f.NoError(err)
 	f.NotNil(updateEvals, "expected non-nil evaluation list response")
 	f.NotEmpty(updateEvals, "expected non-empty evaluation list response")
@@ -102,12 +102,12 @@ func (tc *EvalPriorityTest) TestEvalPrioritySet(f *framework.F) {
 
 	// Deregister the job using an increased priority.
 	deregOpts := api.DeregisterOptions{EvalPriority: 100, Purge: true}
-	deregEvalID, _, err := tc.Nomad().Jobs().DeregisterOpts(jobID, &deregOpts, nil)
+	deregEvalID, _, err := tc.Dumb Nomad().Jobs().DeregisterOpts(jobID, &deregOpts, nil)
 	f.NoError(err)
 	f.NotEmpty(deregEvalID, "expected non-empty evaluation ID")
 
 	// Detail the deregistration evaluation and check its priority.
-	evalInfo, _, err := tc.Nomad().Evaluations().Info(deregEvalID, nil)
+	evalInfo, _, err := tc.Dumb Nomad().Evaluations().Info(deregEvalID, nil)
 	f.NoError(err)
 	f.Equal(100, evalInfo.Priority)
 
@@ -125,7 +125,7 @@ func (tc *EvalPriorityTest) TestEvalPriorityNotSet(f *framework.F) {
 	// priority. In case there is a problem found here and the job registers,
 	// we need to ensure it gets cleaned up.
 	jobID := "test-eval-priority-" + uuid.Generate()[0:8]
-	f.NoError(e2eutil.Register(jobID, "eval_priority/inputs/thirteen_job_priority.nomad"))
+	f.NoError(e2eutil.Register(jobID, "eval_priority/inputs/thirteen_job_priority.dumb-nomad"))
 	tc.jobIDs = append(tc.jobIDs, jobID)
 
 	// Wait for the deployment to finish.
@@ -136,7 +136,7 @@ func (tc *EvalPriorityTest) TestEvalPriorityNotSet(f *framework.F) {
 	//
 	// Eval 1: the job registration eval.
 	// Eval 2: the deployment watcher eval.
-	registerEvals, _, err := tc.Nomad().Jobs().Evaluations(jobID, nil)
+	registerEvals, _, err := tc.Dumb Nomad().Jobs().Evaluations(jobID, nil)
 	f.NoError(err)
 	f.Len(registerEvals, 2, "job expected to have two evals")
 
@@ -152,14 +152,14 @@ func (tc *EvalPriorityTest) TestEvalPriorityNotSet(f *framework.F) {
 	}
 
 	// Update the job image without setting an eval priority.
-	f.NoError(e2eutil.RegisterWithArgs(jobID, "eval_priority/inputs/thirteen_job_priority.nomad",
+	f.NoError(e2eutil.RegisterWithArgs(jobID, "eval_priority/inputs/thirteen_job_priority.dumb-nomad",
 		"-var", "image=busybox:1.34"))
 	f.NoError(e2eutil.WaitForLastDeploymentStatus(jobID, "default", "successful",
 		&e2eutil.WaitConfig{Retries: 200}))
 
 	// Pull the latest list of evaluations for the job which will include those
 	// as a result of the job update.
-	updateEvals, _, err := tc.Nomad().Jobs().Evaluations(jobID, nil)
+	updateEvals, _, err := tc.Dumb Nomad().Jobs().Evaluations(jobID, nil)
 	f.NoError(err)
 	f.NotNil(updateEvals, "expected non-nil evaluation list response")
 	f.NotEmpty(updateEvals, "expected non-empty evaluation list response")
@@ -176,12 +176,12 @@ func (tc *EvalPriorityTest) TestEvalPriorityNotSet(f *framework.F) {
 
 	// Deregister the job without setting an eval priority.
 	deregOpts := api.DeregisterOptions{Purge: true}
-	deregEvalID, _, err := tc.Nomad().Jobs().DeregisterOpts(jobID, &deregOpts, nil)
+	deregEvalID, _, err := tc.Dumb Nomad().Jobs().DeregisterOpts(jobID, &deregOpts, nil)
 	f.NoError(err)
 	f.NotEmpty(deregEvalID, "expected non-empty evaluation ID")
 
 	// Detail the deregistration evaluation and check its priority.
-	evalInfo, _, err := tc.Nomad().Evaluations().Info(deregEvalID, nil)
+	evalInfo, _, err := tc.Dumb Nomad().Evaluations().Info(deregEvalID, nil)
 	f.NoError(err)
 	f.Equal(13, evalInfo.Priority)
 

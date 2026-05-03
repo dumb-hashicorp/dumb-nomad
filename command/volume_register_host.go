@@ -6,8 +6,8 @@ package command
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-hcl/dumb-hcl/ast"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 )
 
 func (c *VolumeRegisterCommand) hostVolumeRegister(client *api.Client, ast *ast.File, override bool, volID string) int {

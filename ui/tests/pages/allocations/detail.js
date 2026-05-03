@@ -13,9 +13,9 @@ import {
   visitable,
 } from 'ember-cli-page-object';
 
-import allocations from 'nomad-ui/tests/pages/components/allocations';
-import twoStepButton from 'nomad-ui/tests/pages/components/two-step-button';
-import LifecycleChart from 'nomad-ui/tests/pages/components/lifecycle-chart';
+import allocations from 'dumb-nomad-ui/tests/pages/components/allocations';
+import twoStepButton from 'dumb-nomad-ui/tests/pages/components/two-step-button';
+import LifecycleChart from 'dumb-nomad-ui/tests/pages/components/lifecycle-chart';
 
 export default create({
   visit: visitable('/allocations/:id'),

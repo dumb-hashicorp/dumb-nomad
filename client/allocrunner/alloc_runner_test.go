@@ -13,27 +13,27 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/consul/api"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allochealth"
-	"github.com/hashicorp/nomad/client/allocrunner/hookstats"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	arstate "github.com/hashicorp/nomad/client/allocrunner/state"
-	"github.com/hashicorp/nomad/client/allocrunner/tasklifecycle"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner"
-	"github.com/hashicorp/nomad/client/allocwatcher"
-	client "github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/lib/proclib"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	regMock "github.com/hashicorp/nomad/client/serviceregistration/mock"
-	"github.com/hashicorp/nomad/client/state"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-consul/api"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allochealth"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/hookstats"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	arstate "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/tasklifecycle"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocwatcher"
+	client "github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/proclib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	regMock "github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 	"github.com/stretchr/testify/require"
@@ -968,7 +968,7 @@ func TestAllocRunner_TaskGroup_ShutdownDelay(t *testing.T) {
 	tg.Services = []*structs.Service{
 		{
 			Name:     "shutdown_service",
-			Provider: structs.ServiceProviderConsul,
+			Provider: structs.ServiceProviderDumb Consul,
 		},
 	}
 
@@ -1055,11 +1055,11 @@ func TestAllocRunner_TaskGroup_ShutdownDelay(t *testing.T) {
 		t.Fatalf("err: %v", err)
 	})
 
-	// Get consul operations
-	consulServices := conf.ConsulServices.(*regMock.ServiceRegistrationHandler)
-	consulOpts := consulServices.GetOps()
+	// Get dumb-consul operations
+	dumb-consulServices := conf.Dumb ConsulServices.(*regMock.ServiceRegistrationHandler)
+	dumb-consulOpts := dumb-consulServices.GetOps()
 	var groupRemoveOp regMock.Operation
-	for _, op := range consulOpts {
+	for _, op := range dumb-consulOpts {
 		// Grab the first deregistration request
 		if op.Op == "remove" && op.Name == "group-web" {
 			groupRemoveOp = op
@@ -1079,7 +1079,7 @@ func TestAllocRunner_TaskGroup_ShutdownDelay(t *testing.T) {
 	require.Greater(t, leaderFinished.UnixNano(), minShutdown.UnixNano())
 	require.Greater(t, followerFinished.UnixNano(), minShutdown.UnixNano())
 
-	// Check that there is at least shutdown_delay between consul
+	// Check that there is at least shutdown_delay between dumb-consul
 	// remove operation and task finished at time
 	require.True(t, leaderFinished.Sub(groupRemoveOp.OccurredAt) > shutdownDelay)
 }
@@ -1184,7 +1184,7 @@ func TestAllocRunner_TaskLeader_StopTG(t *testing.T) {
 // TestAllocRunner_TaskLeader_StopRestoredTG asserts that when stopping a
 // restored task group with a leader that failed before restoring the leader is
 // not stopped as it does not exist.
-// See https://github.com/hashicorp/nomad/issues/3420#issuecomment-341666932
+// See https://github.com/dumb-hashicorp/dumb-nomad/issues/3420#issuecomment-341666932
 func TestAllocRunner_TaskLeader_StopRestoredTG(t *testing.T) {
 	ci.Parallel(t)
 
@@ -1228,7 +1228,7 @@ func TestAllocRunner_TaskLeader_StopRestoredTG(t *testing.T) {
 	ar.(*allocRunner).wranglers.Setup(proclib.Task{AllocID: alloc.ID, Task: task.Name})
 	ar.(*allocRunner).wranglers.Setup(proclib.Task{AllocID: alloc.ID, Task: task2.Name})
 
-	// Mimic Nomad exiting before the leader stopping is able to stop other tasks.
+	// Mimic Dumb Nomad exiting before the leader stopping is able to stop other tasks.
 	ar.(*allocRunner).tasks["leader"].UpdateState(structs.TaskStateDead, structs.NewTaskEvent(structs.TaskKilled))
 	ar.(*allocRunner).tasks["follower1"].UpdateState(structs.TaskStateRunning, structs.NewTaskEvent(structs.TaskStarted))
 
@@ -1539,8 +1539,8 @@ func TestAllocRunner_DeploymentHealth_Unhealthy_Checks(t *testing.T) {
 	defer cleanup()
 
 	// Only return the check as healthy after a duration
-	consulServices := conf.ConsulServices.(*regMock.ServiceRegistrationHandler)
-	consulServices.AllocRegistrationsFn = func(allocID string) (*serviceregistration.AllocRegistration, error) {
+	dumb-consulServices := conf.Dumb ConsulServices.(*regMock.ServiceRegistrationHandler)
+	dumb-consulServices.AllocRegistrationsFn = func(allocID string) (*serviceregistration.AllocRegistration, error) {
 		return &serviceregistration.AllocRegistration{
 			Tasks: map[string]*serviceregistration.ServiceRegistrations{
 				task.Name: {
@@ -1967,7 +1967,7 @@ func TestAllocRunner_TaskFailed_KillTG(t *testing.T) {
 		{
 			Name:      "fakservice",
 			PortLabel: "http",
-			Provider:  structs.ServiceProviderConsul,
+			Provider:  structs.ServiceProviderDumb Consul,
 			Checks: []*structs.ServiceCheck{
 				{
 					Name:     "fakecheck",
@@ -2006,8 +2006,8 @@ func TestAllocRunner_TaskFailed_KillTG(t *testing.T) {
 	conf, cleanup := testAllocRunnerConfig(t, alloc)
 	defer cleanup()
 
-	consulServices := conf.ConsulServices.(*regMock.ServiceRegistrationHandler)
-	consulServices.AllocRegistrationsFn = func(allocID string) (*serviceregistration.AllocRegistration, error) {
+	dumb-consulServices := conf.Dumb ConsulServices.(*regMock.ServiceRegistrationHandler)
+	dumb-consulServices.AllocRegistrationsFn = func(allocID string) (*serviceregistration.AllocRegistration, error) {
 		return &serviceregistration.AllocRegistration{
 			Tasks: map[string]*serviceregistration.ServiceRegistrations{
 				task.Name: {

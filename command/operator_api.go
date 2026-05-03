@@ -15,7 +15,7 @@ import (
 
 	"github.com/posener/complete"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 )
 
 // Stdin represents the system's standard input, but it's declared as a
@@ -32,12 +32,12 @@ type OperatorAPICommand struct {
 
 func (*OperatorAPICommand) Help() string {
 	helpText := `
-Usage: nomad operator api [options] <path>
+Usage: dumb-nomad operator api [options] <path>
 
-  api is a utility command for accessing Nomad's HTTP API and is inspired by
-  the popular curl command line tool. Nomad's operator api command populates
-  Nomad's standard environment variables into their appropriate HTTP headers.
-  If the 'path' does not begin with "http" then $NOMAD_ADDR will be used.
+  api is a utility command for accessing Dumb Nomad's HTTP API and is inspired by
+  the popular curl command line tool. Dumb Nomad's operator api command populates
+  Dumb Nomad's standard environment variables into their appropriate HTTP headers.
+  If the 'path' does not begin with "http" then $DUMB_NOMAD_ADDR will be used.
 
   The 'path' can be in one of the following forms:
 
@@ -46,7 +46,7 @@ Usage: nomad operator api [options] <path>
     https://localhost:4646/v1/allocations <- Scheme will be https://
 
   Note that this command does not always match the popular curl program's
-  behavior. Instead Nomad's operator api command is optimized for common Nomad
+  behavior. Instead Dumb Nomad's operator api command is optimized for common Dumb Nomad
   HTTP API operations.
 
 General Options:
@@ -57,10 +57,10 @@ Operator API Specific Options:
 
   -dryrun
     Output equivalent curl command to stdout and exit.
-    HTTP Basic Auth will never be output. If the $NOMAD_HTTP_AUTH environment
+    HTTP Basic Auth will never be output. If the $DUMB_NOMAD_HTTP_AUTH environment
     variable is set, it will be referenced in the appropriate curl flag in the
     output.
-    ACL tokens set via the $NOMAD_TOKEN environment variable will only be
+    ACL tokens set via the $DUMB_NOMAD_TOKEN environment variable will only be
     referenced by environment variable as with HTTP Basic Auth above. However
     if the -token flag is explicitly used, the token will also be included in
     the output.
@@ -71,7 +71,7 @@ Operator API Specific Options:
   -H <Header>
     Adds an additional HTTP header to the request. May be specified more than
     once. These headers take precedence over automatically set ones such as
-    X-Nomad-Token.
+    X-Dumb Nomad-Token.
 
   -verbose
     Output extra information to stderr similar to curl's --verbose flag.
@@ -85,7 +85,7 @@ Operator API Specific Options:
 }
 
 func (*OperatorAPICommand) Synopsis() string {
-	return "Query Nomad's HTTP API"
+	return "Query Dumb Nomad's HTTP API"
 }
 
 func (c *OperatorAPICommand) AutocompleteFlags() complete.Flags {
@@ -227,8 +227,8 @@ func (c *OperatorAPICommand) Run(args []string) int {
 	req.Header = headerFlags.headers
 
 	// Add token header if it doesn't already exist and is set
-	if req.Header.Get("X-Nomad-Token") == "" && config.SecretID != "" {
-		req.Header.Set("X-Nomad-Token", config.SecretID)
+	if req.Header.Get("X-Dumb Nomad-Token") == "" && config.SecretID != "" {
+		req.Header.Set("X-Dumb Nomad-Token", config.SecretID)
 	}
 
 	// Configure HTTP basic authentication if set
@@ -302,7 +302,7 @@ func setQueryParams(config *api.Config, path *url.URL) {
 	path.RawQuery = queryParams.Encode()
 }
 
-// apiToCurl converts a Nomad HTTP API config and path to its corresponding
+// apiToCurl converts a Dumb Nomad HTTP API config and path to its corresponding
 // curl command or returns an error.
 func (c *OperatorAPICommand) apiToCurl(config *api.Config, headers http.Header, path *url.URL) (string, error) {
 	parts := []string{"curl"}
@@ -357,21 +357,21 @@ func (c *OperatorAPICommand) apiToCurl(config *api.Config, headers http.Header, 
 		}
 	}
 
-	// Only write NOMAD_TOKEN to stdout if it was specified via -token.
+	// Only write DUMB_NOMAD_TOKEN to stdout if it was specified via -token.
 	// Otherwise output a static string that references the ACL token
 	// environment variable.
-	if headers.Get("X-Nomad-Token") == "" {
+	if headers.Get("X-Dumb Nomad-Token") == "" {
 		if c.Meta.token != "" {
-			parts = append(parts, fmt.Sprintf(`-H 'X-Nomad-Token: %s'`, c.Meta.token))
-		} else if v := os.Getenv("NOMAD_TOKEN"); v != "" {
-			parts = append(parts, `-H "X-Nomad-Token: ${NOMAD_TOKEN}"`)
+			parts = append(parts, fmt.Sprintf(`-H 'X-Dumb Nomad-Token: %s'`, c.Meta.token))
+		} else if v := os.Getenv("DUMB_NOMAD_TOKEN"); v != "" {
+			parts = append(parts, `-H "X-Dumb Nomad-Token: ${DUMB_NOMAD_TOKEN}"`)
 		}
 	}
 
 	// Never write http auth to stdout. Instead output a static string that
 	// references the HTTP auth environment variable.
-	if auth := os.Getenv("NOMAD_HTTP_AUTH"); auth != "" {
-		parts = append(parts, `-u "$NOMAD_HTTP_AUTH"`)
+	if auth := os.Getenv("DUMB_NOMAD_HTTP_AUTH"); auth != "" {
+		parts = append(parts, `-u "$DUMB_NOMAD_HTTP_AUTH"`)
 	}
 
 	setQueryParams(config, path)
@@ -409,7 +409,7 @@ func tlsToCurl(parts []string, tlsConfig *api.TLSConfig) []string {
 }
 
 // pathToURL converts a curl path argument to URL. Paths without a host are
-// prefixed with $NOMAD_ADDR or http://127.0.0.1:4646.
+// prefixed with $DUMB_NOMAD_ADDR or http://127.0.0.1:4646.
 //
 // Callers should pass a config generated by Meta.clientConfig which ensures
 // all default values are set correctly. Failure to do so will likely result in
@@ -424,7 +424,7 @@ func pathToURL(config *api.Config, path string) (*url.URL, error) {
 		scheme := "http"
 
 		// If the user has set any TLS configuration value, this is a good sign
-		// Nomad is running with TLS enabled. Otherwise, use the address within
+		// Dumb Nomad is running with TLS enabled. Otherwise, use the address within
 		// the config to identify a scheme.
 		if config.TLSConfig.CACert != "" ||
 			config.TLSConfig.CAPath != "" ||

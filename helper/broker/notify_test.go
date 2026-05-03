@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/stretchr/testify/require"
 )
 

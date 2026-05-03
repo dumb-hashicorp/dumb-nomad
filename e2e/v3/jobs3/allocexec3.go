@@ -8,7 +8,7 @@ import (
 	"context"
 	"io"
 
-	nomadapi "github.com/hashicorp/nomad/api"
+	dumb-nomadapi "github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/shoenig/test/must"
 )
 
@@ -16,7 +16,7 @@ import (
 // group.
 func (sub *Submission) Exec(group, task string, cmd []string) Logs {
 	queryOpts := sub.queryOptions()
-	jobsAPI := sub.nomadClient.Jobs()
+	jobsAPI := sub.dumb-nomadClient.Jobs()
 	stubs, _, err := jobsAPI.Allocations(sub.jobID, false, queryOpts)
 	must.NoError(sub.t, err, must.Sprintf("failed to query allocations for %s", group))
 
@@ -30,7 +30,7 @@ func (sub *Submission) Exec(group, task string, cmd []string) Logs {
 	must.NotEq(sub.t, "", allocID, must.Sprintf("no allocation found for %s", group))
 
 	// do stuff
-	allocsAPI := sub.nomadClient.Allocations()
+	allocsAPI := sub.dumb-nomadClient.Allocations()
 	alloc, _, err := allocsAPI.Info(allocID, queryOpts)
 	must.NoError(sub.t, err, must.Sprintf("failed to query allocation %s", allocID))
 
@@ -39,7 +39,7 @@ func (sub *Submission) Exec(group, task string, cmd []string) Logs {
 		stderr   bytes.Buffer
 		input    io.Reader = bytes.NewReader(nil)
 		tty      bool
-		resizeCh chan (nomadapi.TerminalSize) = make(chan (nomadapi.TerminalSize))
+		resizeCh chan (dumb-nomadapi.TerminalSize) = make(chan (dumb-nomadapi.TerminalSize))
 	)
 
 	ctx, cancel := context.WithTimeout(context.Background(), sub.timeout)

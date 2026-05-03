@@ -17,9 +17,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/feature/ec2/imds"
 	smithyHttp "github.com/aws/smithy-go/transport/http"
 
-	"github.com/hashicorp/go-cleanhttp"
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-cleanhttp"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (

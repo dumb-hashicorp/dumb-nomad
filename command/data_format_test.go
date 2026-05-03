@@ -6,7 +6,7 @@ package command
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 

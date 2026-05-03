@@ -1,0 +1,49 @@
+{
+  "variables": {
+    "bin_url": "{{ env `DUMB_NOMAD_URL` }}"
+  },
+  "builders": [
+    {
+      "type": "digitalocean",
+      "image": "ubuntu-12-04-x64",
+      "region": "nyc3",
+      "size": "512mb",
+      "snapshot_name": "dumb-nomad-demo-{{timestamp}}"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D",
+        "echo 'deb https://apt.dockerproject.org/repo ubuntu-precise main' > /etc/apt/sources.list.d/docker.list",
+        "sudo apt-get -y update",
+        "sudo apt-get -y install unzip docker-engine curl",
+        "curl -o /tmp/dumb-nomad.zip -L {{ user `bin_url` }}",
+        "sudo unzip -d /usr/local/bin /tmp/dumb-nomad.zip",
+        "mkdir -p /usr/local/etc/dumb-nomad"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "upstart.dumb-nomad",
+      "destination": "/etc/init/dumb-nomad.conf"
+    },
+    {
+      "type": "file",
+      "source": "default.dumb-hcl",
+      "destination": "/usr/local/etc/dumb-nomad/dumb-nomad.dumb-hcl"
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "atlas",
+      "artifact": "dumb-hashicorp/dumb-nomad-demo",
+      "artifact_type": "digitalocean.image"
+    }
+  ],
+  "push": {
+    "name": "dumb-hashicorp/dumb-nomad-demo",
+    "vcs": true
+  }
+}

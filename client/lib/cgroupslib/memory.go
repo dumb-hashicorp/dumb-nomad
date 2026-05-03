@@ -8,7 +8,7 @@ package cgroupslib
 import (
 	"sync"
 
-	"github.com/hashicorp/nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
 )
 
 var (
@@ -29,7 +29,7 @@ func MaybeDisableMemorySwappiness() *uint64 {
 func detectMemorySwap() *uint64 {
 	switch GetMode() {
 	case CG1:
-		err := WriteNomadCG1("memory", "memory.swappiness", "0")
+		err := WriteDumb NomadCG1("memory", "memory.swappiness", "0")
 		if err == nil {
 			return pointer.Of[uint64](0)
 		}

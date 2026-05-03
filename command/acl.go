@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type ACLCommand struct {
@@ -15,15 +15,15 @@ type ACLCommand struct {
 
 func (f *ACLCommand) Help() string {
 	helpText := `
-Usage: nomad acl <subcommand> [options] [args]
+Usage: dumb-nomad acl <subcommand> [options] [args]
 
   This command groups subcommands for interacting with ACL policies and tokens.
-  Users can bootstrap Nomad's ACL system, create policies that restrict access,
+  Users can bootstrap Dumb Nomad's ACL system, create policies that restrict access,
   and generate tokens from those policies.
 
   Bootstrap ACLs:
 
-      $ nomad acl bootstrap
+      $ dumb-nomad acl bootstrap
 
   Please see the individual subcommand help for detailed usage information.
 `

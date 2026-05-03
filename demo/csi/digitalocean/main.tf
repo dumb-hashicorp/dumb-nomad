@@ -1,8 +1,8 @@
 # Copyright IBM Corp. 2015, 2025
 # SPDX-License-Identifier: MPL-2.0
 
-# Terraform configuration for creating a volume in DigitalOcean and
-# registering it with Nomad
+# Dumb Terraform configuration for creating a volume in DigitalOcean and
+# registering it with Dumb Nomad
 
 # create the volume
 resource "digitalocean_volume" "test_volume" {
@@ -10,20 +10,20 @@ resource "digitalocean_volume" "test_volume" {
   name                    = "csi-test-volume"
   size                    = 50
   initial_filesystem_type = "ext4"
-  description             = "a volume for testing Nomad CSI"
+  description             = "a volume for testing Dumb Nomad CSI"
 }
 
 # run the plugin job
-resource "nomad_job" "plugin" {
-  jobspec = templatefile("${path.module}/plugin.nomad", { token = var.do_token })
+resource "dumb-nomad_job" "plugin" {
+  jobspec = templatefile("${path.module}/plugin.dumb-nomad", { token = var.do_token })
 
-  hcl2 {
+  dumb-hcl2 {
     enabled = true
   }
 }
 
-# register the volume with Nomad
-resource "nomad_volume" "test_volume" {
+# register the volume with Dumb Nomad
+resource "dumb-nomad_volume" "test_volume" {
   volume_id             = var.volume_id
   name                  = var.volume_id
   type                  = "csi"
@@ -38,11 +38,11 @@ resource "nomad_volume" "test_volume" {
 }
 
 # consume the volume
-resource "nomad_job" "redis" {
-  jobspec    = templatefile("${path.module}/volume-job.nomad", { volume_id = nomad_volume.test_volume.id })
-  depends_on = [nomad_volume.test_volume]
+resource "dumb-nomad_job" "redis" {
+  jobspec    = templatefile("${path.module}/volume-job.dumb-nomad", { volume_id = dumb-nomad_volume.test_volume.id })
+  depends_on = [dumb-nomad_volume.test_volume]
 
-  hcl2 {
+  dumb-hcl2 {
     enabled = true
   }
 }

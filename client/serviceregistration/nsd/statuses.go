@@ -4,7 +4,7 @@
 package nsd
 
 import (
-	"github.com/hashicorp/nomad/client/serviceregistration/checks/checkstore"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks/checkstore"
 )
 
 func NewStatusGetter(shim checkstore.Shim) *StatusGetter {
@@ -13,14 +13,14 @@ func NewStatusGetter(shim checkstore.Shim) *StatusGetter {
 	}
 }
 
-// StatusGetter is the implementation of CheckStatusGetter for Nomad services.
+// StatusGetter is the implementation of CheckStatusGetter for Dumb Nomad services.
 type StatusGetter struct {
-	// Unlike consul we can simply query for check status information from our
+	// Unlike dumb-consul we can simply query for check status information from our
 	// own Client state store.
 	shim checkstore.Shim
 }
 
-// Get returns current status of every live check in the Nomad service provider.
+// Get returns current status of every live check in the Dumb Nomad service provider.
 //
 // returns checkID => checkStatus
 func (s StatusGetter) Get() (map[string]string, error) {

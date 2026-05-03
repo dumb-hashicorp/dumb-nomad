@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/jobspec2"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/jobspec2"
 	"github.com/posener/complete"
 )
 
@@ -20,13 +20,13 @@ type JobStartCommand struct {
 
 func (c *JobStartCommand) Help() string {
 	helpText := `
-Usage: nomad job start [options] <job>
-Alias: nomad start
+Usage: dumb-nomad job start [options] <job>
+Alias: dumb-nomad start
 
- Starts a stopped job. The job must be currently registered. Nomad will create a
+ Starts a stopped job. The job must be currently registered. Dumb Nomad will create a
  new version of the job based on its most recent version. Upon successful start,
- Nomad will enter an interactive monitor session. This is useful to watch
- Nomad's internals make scheduling decisions and place the submitted work onto
+ Dumb Nomad will enter an interactive monitor session. This is useful to watch
+ Dumb Nomad's internals make scheduling decisions and place the submitted work onto
  nodes. The monitor will end once job placement is done. It is safe to exit the
  monitor early using ctrl+c.
 
@@ -195,7 +195,7 @@ func parseFromSubmission(sub *api.JobSubmission) (*api.Job, error) {
 	var err error
 
 	switch sub.Format {
-	case "hcl2":
+	case "dumb-hcl2":
 		job, err = jobspec2.Parse("", strings.NewReader(sub.Source))
 		if err != nil {
 			return nil, fmt.Errorf("Unable to parse job submission to re-enable scaling policies: %w", err)

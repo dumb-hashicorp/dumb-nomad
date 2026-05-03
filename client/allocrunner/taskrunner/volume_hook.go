@@ -7,12 +7,12 @@ import (
 	"context"
 	"fmt"
 
-	log "github.com/hashicorp/go-hclog"
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 type volumeHook struct {

@@ -8,12 +8,12 @@ import { module, skip, test } from 'qunit';
 import { currentURL, settled } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import Service from '@ember/service';
-import Exec from 'nomad-ui/tests/pages/exec';
-import KEYS from 'nomad-ui/utils/keys';
+import Exec from 'dumb-nomad-ui/tests/pages/exec';
+import KEYS from 'dumb-nomad-ui/utils/keys';
 import percySnapshot from '@percy/ember';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 module('Acceptance | exec', function (hooks) {
   setupApplicationTest(hooks);
@@ -298,7 +298,7 @@ module('Acceptance | exec', function (hooks) {
 
     assert.equal(
       window.execTerminal.buffer.active.getLine(6).translateToString().trim(),
-      `$ nomad alloc exec -i -t -task ${task.name} ${
+      `$ dumb-nomad alloc exec -i -t -task ${task.name} ${
         allocationId.split('-')[0]
       } /bin/bash`
     );
@@ -339,7 +339,7 @@ module('Acceptance | exec', function (hooks) {
 
     assert.equal(
       window.execTerminal.buffer.active.getLine(4).translateToString().trim(),
-      `$ nomad alloc exec -i -t -task spaced\\ name\\! ${
+      `$ dumb-nomad alloc exec -i -t -task spaced\\ name\\! ${
         allocation.id.split('-')[0]
       } /bin/bash`
     );
@@ -376,7 +376,7 @@ module('Acceptance | exec', function (hooks) {
 
     assert.equal(
       window.execTerminal.buffer.active.getLine(4).translateToString().trim(),
-      `$ nomad alloc exec -i -t -namespace should-show-in-example-string -task ${
+      `$ dumb-nomad alloc exec -i -t -namespace should-show-in-example-string -task ${
         task.name
       } ${allocation.id.split('-')[0]} /bin/bash`
     );
@@ -453,7 +453,7 @@ module('Acceptance | exec', function (hooks) {
 
   test('the opening message includes the token if it exists', async function (assert) {
     const { secretId } = server.create('token');
-    window.localStorage.nomadTokenSecret = secretId;
+    window.localStorage.dumb-nomadTokenSecret = secretId;
 
     let mockSocket = new MockSocket();
     let mockSockets = Service.extend({
@@ -523,7 +523,7 @@ module('Acceptance | exec', function (hooks) {
     let mockSockets = Service.extend({
       getTaskStateSocket(taskState, command) {
         assert.equal(command, '/sh');
-        window.localStorage.getItem('nomadExecCommand', JSON.stringify('/sh'));
+        window.localStorage.getItem('dumb-nomadExecCommand', JSON.stringify('/sh'));
 
         assert.step('Socket built');
 
@@ -566,7 +566,7 @@ module('Acceptance | exec', function (hooks) {
 
     assert.equal(
       window.execTerminal.buffer.active.getLine(6).translateToString().trim(),
-      `$ nomad alloc exec -i -t -task ${task.name} ${
+      `$ dumb-nomad alloc exec -i -t -task ${task.name} ${
         allocation.id.split('-')[0]
       }`
     );
@@ -580,7 +580,7 @@ module('Acceptance | exec', function (hooks) {
   });
 
   test('a persisted customised command is recalled', async function (assert) {
-    window.localStorage.setItem('nomadExecCommand', JSON.stringify('/bin/sh'));
+    window.localStorage.setItem('dumb-nomadExecCommand', JSON.stringify('/bin/sh'));
 
     let taskGroup = this.job.taskGroups.models[0];
     let task = taskGroup.tasks.models[0];
@@ -602,7 +602,7 @@ module('Acceptance | exec', function (hooks) {
 
     assert.equal(
       window.execTerminal.buffer.active.getLine(4).translateToString().trim(),
-      `$ nomad alloc exec -i -t -task ${task.name} ${
+      `$ dumb-nomad alloc exec -i -t -task ${task.name} ${
         allocation.id.split('-')[0]
       } /bin/sh`
     );

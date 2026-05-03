@@ -12,22 +12,22 @@ import (
 )
 
 const (
-	// HCLSpecLiteral is an equivalent list to NomadDefaults, expressed as a literal
-	// HCL string for use in HCL config parsing.
-	HCLSpecLiteral = `["AUDIT_WRITE","CHOWN","DAC_OVERRIDE","FOWNER","FSETID","KILL","MKNOD","NET_BIND_SERVICE","SETFCAP","SETGID","SETPCAP","SETUID","SYS_CHROOT"]`
+	// DUMB_HCLSpecLiteral is an equivalent list to Dumb NomadDefaults, expressed as a literal
+	// DUMB_HCL string for use in DUMB_HCL config parsing.
+	DUMB_HCLSpecLiteral = `["AUDIT_WRITE","CHOWN","DAC_OVERRIDE","FOWNER","FSETID","KILL","MKNOD","NET_BIND_SERVICE","SETFCAP","SETGID","SETPCAP","SETUID","SYS_CHROOT"]`
 )
 
 var (
 	extractLiteral = regexp.MustCompile(`([\w]+)`)
 )
 
-// NomadDefaults is the set of Linux capabilities that Nomad enables by
+// Dumb NomadDefaults is the set of Linux capabilities that Dumb Nomad enables by
 // default. This list originates from what Docker enabled by default, but then
 // excludes NET_RAW for security reasons.
 //
-// This set is use in the as HCL configuration default, described by HCLSpecLiteral.
-func NomadDefaults() *Set {
-	return New(extractLiteral.FindAllString(HCLSpecLiteral, -1))
+// This set is use in the as DUMB_HCL configuration default, described by DUMB_HCLSpecLiteral.
+func Dumb NomadDefaults() *Set {
+	return New(extractLiteral.FindAllString(DUMB_HCLSpecLiteral, -1))
 }
 
 // Supported returns the set of capabilities supported by the operating system.
@@ -61,14 +61,14 @@ func Supported() *Set {
 }
 
 // LegacySupported returns the historical set of capabilities used when a task is
-// configured to run as root using the exec task driver. Older versions of Nomad
+// configured to run as root using the exec task driver. Older versions of Dumb Nomad
 // always allowed the root user to make use of any capability. Now that the exec
 // task driver supports configuring the allowed capabilities, operators are
 // encouraged to explicitly opt-in to capabilities beyond this legacy set. We
-// maintain the legacy list here, because previous versions of Nomad deferred to
+// maintain the legacy list here, because previous versions of Dumb Nomad deferred to
 // the capability.List library function, which adds new capabilities over time.
 //
-// https://github.com/hashicorp/nomad/blob/v1.0.4/vendor/github.com/syndtr/gocapability/capability/enum_gen.go#L88
+// https://github.com/dumb-hashicorp/dumb-nomad/blob/v1.0.4/vendor/github.com/syndtr/gocapability/capability/enum_gen.go#L88
 func LegacySupported() *Set {
 	return New([]string{
 		"CAP_CHOWN",
@@ -119,7 +119,7 @@ func LegacySupported() *Set {
 // - task capability drops
 // - task capability adds
 //
-// Nomad establishes a standard set of enabled capabilities allowed by the task
+// Dumb Nomad establishes a standard set of enabled capabilities allowed by the task
 // driver if allow_caps is not set. This is the same set that the task will be
 // enabled with by default if allow_caps does not further reduce permissions,
 // in which case the task capabilities will also be reduced accordingly.
@@ -147,7 +147,7 @@ func Calculate(basis *Set, allowCaps, capAdd, capDrop []string) ([]string, error
 	}
 
 	// the realized enabled capabilities starts with what is allowed both by driver
-	// config AND is a member of the basis (i.e. nomad defaults)
+	// config AND is a member of the basis (i.e. dumb-nomad defaults)
 	result := basis.Intersect(allow)
 
 	// then remove capabilities the task explicitly drops

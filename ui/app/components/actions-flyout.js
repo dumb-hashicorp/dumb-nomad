@@ -9,7 +9,7 @@ import { inject as service } from '@ember/service';
 import { alias } from '@ember/object/computed';
 
 export default class ActionsFlyoutComponent extends Component {
-  @service nomadActions;
+  @service dumb-nomadActions;
   @service router;
 
   get job() {
@@ -45,13 +45,13 @@ export default class ActionsFlyoutComponent extends Component {
     return this.contextualParent?.actions || [];
   }
 
-  @alias('nomadActions.flyoutActive') isOpen;
+  @alias('dumb-nomadActions.flyoutActive') isOpen;
 
   /**
    * Group peers together by their peerID
    */
   get actionInstances() {
-    let instances = this.nomadActions.actionsQueue;
+    let instances = this.dumb-nomadActions.actionsQueue;
 
     // Only keep the first of any found peerID value from the list
     let peerIDs = new Set();

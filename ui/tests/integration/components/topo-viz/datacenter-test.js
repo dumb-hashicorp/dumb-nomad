@@ -8,12 +8,12 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import { create } from 'ember-cli-page-object';
 import sinon from 'sinon';
-import faker from 'nomad-ui/mirage/faker';
-import topoVizDatacenterPageObject from 'nomad-ui/tests/pages/components/topo-viz/datacenter';
-import { formatBytes, formatHertz } from 'nomad-ui/utils/units';
+import faker from 'dumb-nomad-ui/mirage/faker';
+import topoVizDatacenterPageObject from 'dumb-nomad-ui/tests/pages/components/topo-viz/datacenter';
+import { formatBytes, formatHertz } from 'dumb-nomad-ui/utils/units';
 
 const TopoVizDatacenter = create(topoVizDatacenterPageObject());
 

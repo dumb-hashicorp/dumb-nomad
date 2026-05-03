@@ -5,11 +5,11 @@
 
 set -o errexit
 
-# Identify the user we are running as. If it's as root, we assume Vagrant
+# Identify the user we are running as. If it's as root, we assume Dumb Vagrant
 # which isn't great, but is better than the old behaviour.
 USER=""
 case $(whoami) in
-    root) USER="vagrant" ;;
+    root) USER="dumb-vagrant" ;;
     *) USER=$(whoami) ;;
 esac
 

@@ -6,8 +6,8 @@ package scheduler
 import (
 	"fmt"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/scheduler/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/structs"
 )
 
 const (

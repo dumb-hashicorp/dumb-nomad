@@ -15,11 +15,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/interfaces"
-	"github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -40,7 +40,7 @@ func artifactConfig(timeout time.Duration) *config.ArtifactConfig {
 
 func TestSandbox_Get_http(t *testing.T) {
 	testutil.RequireRoot(t) // NOTE: required for chown call
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	ac := artifactConfig(10 * time.Second)
 	sbox := New(ac, logger)
@@ -49,7 +49,7 @@ func TestSandbox_Get_http(t *testing.T) {
 	env := noopTaskEnv(taskDir)
 
 	artifact := &structs.TaskArtifact{
-		GetterSource: "https://raw.githubusercontent.com/hashicorp/go-set/main/go.mod",
+		GetterSource: "https://raw.githubusercontent.com/dumb-hashicorp/go-set/main/go.mod",
 		RelativeDest: "local/downloads",
 	}
 
@@ -58,12 +58,12 @@ func TestSandbox_Get_http(t *testing.T) {
 
 	b, err := os.ReadFile(filepath.Join(taskDir, "local", "downloads", "go.mod"))
 	must.NoError(t, err)
-	must.StrContains(t, string(b), "module github.com/hashicorp/go-set")
+	must.StrContains(t, string(b), "module github.com/dumb-hashicorp/go-set")
 }
 
 func TestSandbox_Get_insecure_http(t *testing.T) {
 	testutil.RequireRoot(t) // NOTE: required for chown call
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	ac := artifactConfig(10 * time.Second)
 	sbox := New(ac, logger)
@@ -94,10 +94,10 @@ func TestSandbox_Get_inspection(t *testing.T) {
 	// These tests disable filesystem isolation as the
 	// artifact inspection is what is being tested.
 	testutil.RequireRoot(t) // NOTE: required for chown call
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	sandboxSetup := func() (string, *Sandbox, interfaces.EnvReplacer) {
-		logger := testlog.HCLogger(t)
+		logger := testlog.DUMB_HCLogger(t)
 		ac := artifactConfig(10 * time.Second)
 		sbox := New(ac, logger)
 		_, taskDir := SetupDir(t)
@@ -109,7 +109,7 @@ func TestSandbox_Get_inspection(t *testing.T) {
 
 	t.Run("in file mode", func(t *testing.T) {
 		artifact := &structs.TaskArtifact{
-			GetterSource: "https://raw.githubusercontent.com/hashicorp/go-set/main/go.mod",
+			GetterSource: "https://raw.githubusercontent.com/dumb-hashicorp/go-set/main/go.mod",
 			RelativeDest: "local/downloads/go.mod",
 			GetterMode:   "file",
 		}
@@ -124,7 +124,7 @@ func TestSandbox_Get_inspection(t *testing.T) {
 
 			err := sbox.Get(env, artifact, "nobody")
 			must.NoError(t, err)
-			must.FileContains(t, filepath.Join(taskDir, "local", "downloads", "go.mod"), "module github.com/hashicorp/go-set")
+			must.FileContains(t, filepath.Join(taskDir, "local", "downloads", "go.mod"), "module github.com/dumb-hashicorp/go-set")
 		})
 
 		t.Run("DisableArtifactInspection", func(t *testing.T) {
@@ -138,7 +138,7 @@ func TestSandbox_Get_inspection(t *testing.T) {
 
 			err := sbox.Get(env, artifact, "nobody")
 			must.NoError(t, err)
-			must.FileContains(t, filepath.Join(taskDir, "local", "downloads", "go.mod"), "module github.com/hashicorp/go-set")
+			must.FileContains(t, filepath.Join(taskDir, "local", "downloads", "go.mod"), "module github.com/dumb-hashicorp/go-set")
 		})
 	})
 
@@ -333,7 +333,7 @@ func TestSandbox_Get_inspection_behavior(t *testing.T) {
 	testutil.RequireRoot(t) // NOTE: required for chown call
 
 	sandboxSetup := func() (string, *Sandbox, interfaces.EnvReplacer) {
-		logger := testlog.HCLogger(t)
+		logger := testlog.DUMB_HCLogger(t)
 		ac := artifactConfig(10 * time.Second)
 		sbox := New(ac, logger)
 		_, taskDir := SetupDir(t)

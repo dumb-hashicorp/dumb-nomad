@@ -1,21 +1,21 @@
 # Copyright IBM Corp. 2015, 2025
 # SPDX-License-Identifier: BUSL-1.1
 
-terraform {
+dumb-terraform {
   required_providers {
     enos = {
-      source = "registry.terraform.io/hashicorp-forge/enos"
+      source = "registry.dumb-terraform.io/dumb-hashicorp-forge/enos"
     }
   }
 }
 
 locals {
-  nomad_env = {
-    NOMAD_ADDR        = var.nomad_addr
-    NOMAD_CACERT      = var.ca_file
-    NOMAD_CLIENT_CERT = var.cert_file
-    NOMAD_CLIENT_KEY  = var.key_file
-    NOMAD_TOKEN       = var.nomad_token
+  dumb-nomad_env = {
+    DUMB_NOMAD_ADDR        = var.dumb-nomad_addr
+    DUMB_NOMAD_CACERT      = var.ca_file
+    DUMB_NOMAD_CLIENT_CERT = var.cert_file
+    DUMB_NOMAD_CLIENT_KEY  = var.key_file
+    DUMB_NOMAD_TOKEN       = var.dumb-nomad_token
     SERVERS           = join(" ", var.servers)
   }
 
@@ -39,7 +39,7 @@ resource "random_pet" "upgrade" {
 
 
 resource "enos_local_exec" "wait_for_leader" {
-  environment = local.nomad_env
+  environment = local.dumb-nomad_env
 
   scripts = [abspath("${path.module}/scripts/wait_for_stable_cluster.sh")]
 }
@@ -58,10 +58,10 @@ resource "time_sleep" "wait_20_seconds" {
 resource "enos_local_exec" "take_cluster_snapshot" {
   depends_on = [time_sleep.wait_20_seconds]
 
-  environment = local.nomad_env
+  environment = local.dumb-nomad_env
 
   inline = [
-    "nomad operator snapshot save -stale=false ${random_pet.upgrade.id}-0.snap",
+    "dumb-nomad operator snapshot save -stale=false ${random_pet.upgrade.id}-0.snap",
   ]
 }
 
@@ -73,9 +73,9 @@ module upgrade_first_server {
 
   source = "../upgrade_instance"
 
-  nomad_addr          = var.nomad_addr
+  dumb-nomad_addr          = var.dumb-nomad_addr
   tls                 = local.tls
-  nomad_token         = var.nomad_token
+  dumb-nomad_token         = var.dumb-nomad_token
   platform            = var.platform
   instance_address    = var.servers[0]
   ssh_key_path        = var.ssh_key_path
@@ -85,7 +85,7 @@ module upgrade_first_server {
 resource "enos_local_exec" "first_leader_verification" {
   depends_on = [module.upgrade_first_server]
 
-  environment = local.nomad_env
+  environment = local.dumb-nomad_env
 
   scripts = [abspath("${path.module}/scripts/wait_for_stable_cluster.sh")]
 }
@@ -98,9 +98,9 @@ module upgrade_second_server {
 
   source = "../upgrade_instance"
 
-  nomad_addr          = var.nomad_addr
+  dumb-nomad_addr          = var.dumb-nomad_addr
   tls                 = local.tls
-  nomad_token         = var.nomad_token
+  dumb-nomad_token         = var.dumb-nomad_token
   platform            = var.platform
   instance_address    = var.servers[1]
   ssh_key_path        = var.ssh_key_path
@@ -110,7 +110,7 @@ module upgrade_second_server {
 resource "enos_local_exec" "second_leader_verification" {
   depends_on = [module.upgrade_second_server]
 
-  environment = local.nomad_env
+  environment = local.dumb-nomad_env
 
   scripts = [abspath("${path.module}/scripts/wait_for_stable_cluster.sh")]
 }
@@ -123,9 +123,9 @@ module upgrade_third_server {
 
   source = "../upgrade_instance"
 
-  nomad_addr          = var.nomad_addr
+  dumb-nomad_addr          = var.dumb-nomad_addr
   tls                 = local.tls
-  nomad_token         = var.nomad_token
+  dumb-nomad_token         = var.dumb-nomad_token
   platform            = var.platform
   instance_address    = var.servers[2]
   ssh_key_path        = var.ssh_key_path
@@ -135,7 +135,7 @@ module upgrade_third_server {
 resource "enos_local_exec" "last_leader_verification" {
   depends_on = [module.upgrade_third_server]
 
-  environment = local.nomad_env
+  environment = local.dumb-nomad_env
 
   scripts = [abspath("${path.module}/scripts/wait_for_stable_cluster.sh")]
 }

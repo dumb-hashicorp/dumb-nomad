@@ -18,55 +18,55 @@ import (
 	"sync/atomic"
 	"time"
 
-	consulapi "github.com/hashicorp/consul/api"
-	hclog "github.com/hashicorp/go-hclog"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	arstate "github.com/hashicorp/nomad/client/allocrunner/state"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/getter"
-	"github.com/hashicorp/nomad/client/allocwatcher"
-	"github.com/hashicorp/nomad/client/config"
-	consulApiShim "github.com/hashicorp/nomad/client/consul"
-	"github.com/hashicorp/nomad/client/devicemanager"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	"github.com/hashicorp/nomad/client/fingerprint"
-	"github.com/hashicorp/nomad/client/hoststats"
-	hvm "github.com/hashicorp/nomad/client/hostvolumemanager"
-	cinterfaces "github.com/hashicorp/nomad/client/interfaces"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	"github.com/hashicorp/nomad/client/lib/proclib"
-	"github.com/hashicorp/nomad/client/pluginmanager"
-	"github.com/hashicorp/nomad/client/pluginmanager/csimanager"
-	"github.com/hashicorp/nomad/client/pluginmanager/drivermanager"
-	"github.com/hashicorp/nomad/client/servers"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks/checkstore"
-	"github.com/hashicorp/nomad/client/serviceregistration/nsd"
-	"github.com/hashicorp/nomad/client/serviceregistration/wrapper"
-	"github.com/hashicorp/nomad/client/state"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/vaultclient"
-	"github.com/hashicorp/nomad/client/widmgr"
-	"github.com/hashicorp/nomad/command/agent/consul"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/envoy"
-	"github.com/hashicorp/nomad/helper/escapingfs"
-	"github.com/hashicorp/nomad/helper/goruntime"
-	"github.com/hashicorp/nomad/helper/group"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/pool"
-	"github.com/hashicorp/nomad/helper/tlsutil"
-	"github.com/hashicorp/nomad/helper/users/dynamic"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/lib/lang"
-	"github.com/hashicorp/nomad/nomad/structs"
-	nconfig "github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/plugins/csi"
-	"github.com/hashicorp/nomad/plugins/device"
+	dumb-consulapi "github.com/dumb-hashicorp/dumb-consul/api"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	arstate "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/getter"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocwatcher"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	dumb-consulApiShim "github.com/dumb-hashicorp/dumb-nomad/client/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/client/devicemanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/client/fingerprint"
+	"github.com/dumb-hashicorp/dumb-nomad/client/hoststats"
+	hvm "github.com/dumb-hashicorp/dumb-nomad/client/hostvolumemanager"
+	cinterfaces "github.com/dumb-hashicorp/dumb-nomad/client/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/proclib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/csimanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/servers"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks/checkstore"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/nsd"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/wrapper"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dumb-vaultclient"
+	"github.com/dumb-hashicorp/dumb-nomad/client/widmgr"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/envoy"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/escapingfs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/goruntime"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/group"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pool"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/tlsutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users/dynamic"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/lib/lang"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	nconfig "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
 	"github.com/shirou/gopsutil/v3/host"
 )
 
@@ -80,7 +80,7 @@ const (
 	clientMaxStreams = 2
 
 	// datacenterQueryLimit searches through up to this many adjacent
-	// datacenters looking for the Nomad server service.
+	// datacenters looking for the Dumb Nomad server service.
 	datacenterQueryLimit = 9
 
 	// registerRetryIntv is minimum interval on which we retry
@@ -124,7 +124,7 @@ var (
 	batchFirstFingerprintsProcessingGrace = batchFirstFingerprintsTimeout + 5*time.Second
 )
 
-// ClientStatsReporter exposes all the APIs related to resource usage of a Nomad
+// ClientStatsReporter exposes all the APIs related to resource usage of a Dumb Nomad
 // Client
 type ClientStatsReporter interface {
 	// GetAllocStats returns the AllocStatsReporter for the passed allocation.
@@ -135,7 +135,7 @@ type ClientStatsReporter interface {
 	LatestHostStats() *hoststats.HostStats
 }
 
-// Client is used to implement the client interaction with Nomad. Clients
+// Client is used to implement the client interaction with Dumb Nomad. Clients
 // are expected to register as a schedule-able node to the servers, and to
 // run allocations as determined by the servers.
 type Client struct {
@@ -162,8 +162,8 @@ type Client struct {
 	// at runtime it may be accessed outside of locks.
 	metaStatic map[string]string
 
-	logger    hclog.InterceptLogger
-	rpcLogger hclog.Logger
+	logger    dumb-hclog.InterceptLogger
+	rpcLogger dumb-hclog.Logger
 
 	connPool *pool.ConnPool
 
@@ -172,7 +172,7 @@ type Client struct {
 	tlsWrap     tlsutil.RegionWrapper
 	tlsWrapLock sync.RWMutex
 
-	// servers is the list of nomad servers
+	// servers is the list of dumb-nomad servers
 	servers *servers.Manager
 
 	// heartbeat related times for tracking how often to heartbeat
@@ -181,7 +181,7 @@ type Client struct {
 	heartbeatLock   sync.Mutex
 	heartbeatStop   *heartbeatStop
 
-	// triggerDiscoveryCh triggers Consul discovery; see triggerDiscovery
+	// triggerDiscoveryCh triggers Dumb Consul discovery; see triggerDiscovery
 	triggerDiscoveryCh chan struct{}
 
 	// triggerNodeUpdate triggers the client to mark the Node as changed and
@@ -215,30 +215,30 @@ type Client struct {
 	// pendingUpdates stores allocations that need to be synced to the server.
 	pendingUpdates *pendingClientUpdates
 
-	// consulServices gets a Consul handler implementation for managing
+	// dumb-consulServices gets a Dumb Consul handler implementation for managing
 	// services and checks.
-	consulServices serviceregistration.Handler
+	dumb-consulServices serviceregistration.Handler
 
-	// nomadService is the Nomad handler implementation for managing service
+	// dumb-nomadService is the Dumb Nomad handler implementation for managing service
 	// registrations.
-	nomadService serviceregistration.Handler
+	dumb-nomadService serviceregistration.Handler
 
 	// checkStore is used to store group and task checks and their current pass/fail
 	// status.
 	checkStore checkstore.Shim
 
-	// serviceRegWrapper wraps the consulService and nomadService
+	// serviceRegWrapper wraps the dumb-consulService and dumb-nomadService
 	// implementations so that the alloc and task runner service hooks can call
 	// this without needing to identify which backend provider should be used.
 	serviceRegWrapper *wrapper.HandlerWrapper
 
-	// consulProxiesFunc gets an interface to Nomad's custom Consul client for
+	// dumb-consulProxiesFunc gets an interface to Dumb Nomad's custom Dumb Consul client for
 	// looking up supported envoy versions
-	consulProxiesFunc consulApiShim.SupportedProxiesAPIFunc
+	dumb-consulProxiesFunc dumb-consulApiShim.SupportedProxiesAPIFunc
 
-	// consulCatalog is the subset of Consul's Catalog API Nomad uses for self
+	// dumb-consulCatalog is the subset of Dumb Consul's Catalog API Dumb Nomad uses for self
 	// service discovery
-	consulCatalog consul.CatalogAPI
+	dumb-consulCatalog dumb-consul.CatalogAPI
 
 	// HostStatsCollector collects host resource usage stats
 	hostStatsCollector *hoststats.HostStatsCollector
@@ -256,8 +256,8 @@ type Client struct {
 	// Shutdown() blocks on Wait() after closing shutdownCh.
 	shutdownGroup group.Group
 
-	// vaultClients is used to interact with Vault for token and secret renewals
-	vaultClients map[string]vaultclient.VaultClient
+	// dumb-vaultClients is used to interact with Dumb Vault for token and secret renewals
+	dumb-vaultClients map[string]dumb-vaultclient.Dumb VaultClient
 
 	// garbageCollector is used to garbage collect terminal allocations present
 	// in the node automatically
@@ -309,7 +309,7 @@ type Client struct {
 	serversContactedOnce sync.Once
 
 	// dynamicRegistry provides access to plugins that are dynamically registered
-	// with a nomad client. Currently only used for CSI.
+	// with a dumb-nomad client. Currently only used for CSI.
 	dynamicRegistry dynamicplugins.Registry
 
 	// EnterpriseClient is used to set and check enterprise features for clients
@@ -348,7 +348,7 @@ type Client struct {
 
 var (
 	// noServersErr is returned by the RPC method when the client has no
-	// configured servers. This is used to trigger Consul discovery if
+	// configured servers. This is used to trigger Dumb Consul discovery if
 	// enabled.
 	noServersErr = errors.New("no servers")
 )
@@ -358,7 +358,7 @@ var (
 // registered via https://golang.org/pkg/net/rpc/#Server.RegisterName in place
 // of the client's normal RPC handlers. This allows server tests to override
 // the behavior of the client.
-func NewClient(cfg *config.Config, consulCatalog consul.CatalogAPI, consulProxiesFunc consulApiShim.SupportedProxiesAPIFunc, consulServices serviceregistration.Handler, rpcs map[string]interface{}) (*Client, error) {
+func NewClient(cfg *config.Config, dumb-consulCatalog dumb-consul.CatalogAPI, dumb-consulProxiesFunc dumb-consulApiShim.SupportedProxiesAPIFunc, dumb-consulServices serviceregistration.Handler, rpcs map[string]interface{}) (*Client, error) {
 	// Create the tls wrapper
 	var tlsWrap tlsutil.RegionWrapper
 	if cfg.TLSConfig.EnableRPC {
@@ -382,9 +382,9 @@ func NewClient(cfg *config.Config, consulCatalog consul.CatalogAPI, consulProxie
 	// Create the client
 	c := &Client{
 		config:               cfg,
-		consulCatalog:        consulCatalog,
-		consulProxiesFunc:    consulProxiesFunc,
-		consulServices:       consulServices,
+		dumb-consulCatalog:        dumb-consulCatalog,
+		dumb-consulProxiesFunc:    dumb-consulProxiesFunc,
+		dumb-consulServices:       dumb-consulServices,
 		start:                time.Now(),
 		connPool:             pool.NewPool(logger, clientRPCCache, clientMaxStreams, tlsWrap, cfg.RPCSessionConfig, cfg.RPCDialTimeout),
 		tlsWrap:              tlsWrap,
@@ -521,7 +521,7 @@ func NewClient(cfg *config.Config, consulCatalog consul.CatalogAPI, consulProxie
 	driverConfig := &drivermanager.Config{
 		Logger:              c.logger,
 		Loader:              cfg.PluginSingletonLoader,
-		PluginConfig:        cfg.NomadPluginConfig(c.topology),
+		PluginConfig:        cfg.Dumb NomadPluginConfig(c.topology),
 		Updater:             c.batchNodeUpdates.updateNodeFromDriver,
 		EventHandlerFactory: c.GetTaskEventHandler,
 		State:               c.stateDB,
@@ -536,7 +536,7 @@ func NewClient(cfg *config.Config, consulCatalog consul.CatalogAPI, consulProxie
 	devConfig := &devicemanager.Config{
 		Logger:        c.logger,
 		Loader:        cfg.PluginSingletonLoader,
-		PluginConfig:  cfg.NomadPluginConfig(c.topology),
+		PluginConfig:  cfg.Dumb NomadPluginConfig(c.topology),
 		Updater:       c.batchNodeUpdates.updateNodeFromDevices,
 		StatsInterval: cfg.StatsCollectionInterval,
 		State:         c.stateDB,
@@ -555,11 +555,11 @@ func NewClient(cfg *config.Config, consulCatalog consul.CatalogAPI, consulProxie
 	})
 	c.pluginManagers.RegisterAndRun(c.hostVolumeManager)
 
-	// Set up the service registration wrapper using the Consul and Nomad
-	// implementations. The Nomad implementation is only ever used on the
+	// Set up the service registration wrapper using the Dumb Consul and Dumb Nomad
+	// implementations. The Dumb Nomad implementation is only ever used on the
 	// client, so we do that here rather than within the agent.
-	c.setupNomadServiceRegistrationHandler()
-	c.serviceRegWrapper = wrapper.NewHandlerWrapper(c.logger, c.consulServices, c.nomadService)
+	c.setupDumb NomadServiceRegistrationHandler()
+	c.serviceRegWrapper = wrapper.NewHandlerWrapper(c.logger, c.dumb-consulServices, c.dumb-nomadService)
 
 	// Batching of initial fingerprints is done to reduce the number of node
 	// updates sent to the server on startup.
@@ -596,18 +596,18 @@ func NewClient(cfg *config.Config, consulCatalog consul.CatalogAPI, consulProxie
 		}
 	}
 
-	// Setup Consul discovery if enabled
-	if cfg.GetDefaultConsul().ClientAutoJoin != nil && *cfg.GetDefaultConsul().ClientAutoJoin {
-		c.shutdownGroup.Go(c.consulDiscovery)
+	// Setup Dumb Consul discovery if enabled
+	if cfg.GetDefaultDumb Consul().ClientAutoJoin != nil && *cfg.GetDefaultDumb Consul().ClientAutoJoin {
+		c.shutdownGroup.Go(c.dumb-consulDiscovery)
 		if c.servers.NumServers() == 0 {
 			// No configured servers; trigger discovery manually
 			c.triggerDiscoveryCh <- struct{}{}
 		}
 	}
 
-	// Setup the vault client for token and secret renewals
-	if err := c.setupVaultClients(); err != nil {
-		return nil, fmt.Errorf("failed to setup vault client: %v", err)
+	// Setup the dumb-vault client for token and secret renewals
+	if err := c.setupDumb VaultClients(); err != nil {
+		return nil, fmt.Errorf("failed to setup dumb-vault client: %v", err)
 	}
 
 	// wait until drivers are healthy before restoring or registering with servers
@@ -621,7 +621,7 @@ func NewClient(cfg *config.Config, consulCatalog consul.CatalogAPI, consulProxie
 	// is starting for the first time, this will be empty, so avoid an
 	// unnecessary set call to the client atomic. This needs to happen before we
 	// start heartbeating to avoid unnecessary identity generation and load on
-	// the Nomad servers.
+	// the Dumb Nomad servers.
 	//
 	// If the DB returns an error, it is more than likely that the full
 	// restoration will fail. It isn't terminal for us at this point though, as
@@ -640,14 +640,14 @@ func NewClient(cfg *config.Config, consulCatalog consul.CatalogAPI, consulProxie
 	// Restore the state
 	if err := c.restoreState(); err != nil {
 		logger.Error("failed to restore state", "error", err)
-		logger.Error("Nomad is unable to start due to corrupt state. "+
+		logger.Error("Dumb Nomad is unable to start due to corrupt state. "+
 			"The safest way to proceed is to manually stop running task processes "+
-			"and remove Nomad's state and alloc directories before "+
+			"and remove Dumb Nomad's state and alloc directories before "+
 			"restarting. Lost allocations will be rescheduled.",
 			"state_dir", cfg.StateDir, "alloc_dir", cfg.AllocDir)
 		logger.Error("Corrupt state is often caused by a bug. Please " +
 			"report as much information as possible to " +
-			"https://github.com/hashicorp/nomad/issues")
+			"https://github.com/dumb-hashicorp/dumb-nomad/issues")
 		return nil, fmt.Errorf("failed to restore state")
 	}
 
@@ -690,7 +690,7 @@ func (c *Client) init() error {
 
 	} else {
 		// Otherwise make a temp directory to use.
-		p, err := os.MkdirTemp("", "NomadClient")
+		p, err := os.MkdirTemp("", "Dumb NomadClient")
 		if err != nil {
 			return fmt.Errorf("failed creating temporary directory for the StateDir: %v", err)
 		}
@@ -745,7 +745,7 @@ func (c *Client) init() error {
 		}
 	} else {
 		// Otherwise make a temp directory to use.
-		p, err := os.MkdirTemp("", "NomadClient")
+		p, err := os.MkdirTemp("", "Dumb NomadClient")
 		if err != nil {
 			return fmt.Errorf("failed creating temporary directory for the AllocDir: %v", err)
 		}
@@ -783,9 +783,9 @@ func (c *Client) init() error {
 	// setup the nsd check store
 	c.checkStore = checkstore.NewStore(c.logger, c.stateDB)
 
-	// COMPAT(1.12.0): remove in Nomad 1.12.0
-	oldCNIDir := "/var/lib/cni/networks/nomad"
-	newCNIDir := "/var/run/cni/nomad"
+	// COMPAT(1.12.0): remove in Dumb Nomad 1.12.0
+	oldCNIDir := "/var/lib/cni/networks/dumb-nomad"
+	newCNIDir := "/var/run/cni/dumb-nomad"
 	if _, err := os.Stat(newCNIDir); os.IsNotExist(err) {
 		if _, err := os.Stat(oldCNIDir); err == nil {
 			err := escapingfs.CopyDir(oldCNIDir, newCNIDir)
@@ -934,9 +934,9 @@ func (c *Client) NodeID() string {
 }
 
 // secretNodeID returns the secret node ID for the given client. This is no
-// longer used as the primary authentication method for Nomad clients. In fully
+// longer used as the primary authentication method for Dumb Nomad clients. In fully
 // upgraded clusters, the node identity token is used instead. It will still be
-// used if the client has been upgraded, but the Nomad server has not. Most
+// used if the client has been upgraded, but the Dumb Nomad server has not. Most
 // callers should use the nodeAuthToken function instead of this as it correctly
 // handles both authentication token methods. There are some limited places
 // where the secret node ID is still used on the RPC request object such as
@@ -949,7 +949,7 @@ func (c *Client) secretNodeID() string {
 // return the node identity token if it is set, otherwise it will return the
 // secret node ID.
 //
-// The callers of this should be moved to nodeIdentityToken in Nomad 1.13 when
+// The callers of this should be moved to nodeIdentityToken in Dumb Nomad 1.13 when
 // all clients should be using the node identity token.
 func (c *Client) nodeAuthToken() string {
 	if nID := c.nodeIdentityToken(); nID != "" {
@@ -960,7 +960,7 @@ func (c *Client) nodeAuthToken() string {
 
 // nodeIdentityToken returns the node identity token for the given client. If
 // the client is coming up for the first time, restarting, or is in a cluster
-// where the Nomad servers have not been upgraded to support the node identity,
+// where the Dumb Nomad servers have not been upgraded to support the node identity,
 // this will be empty. Callers should use the nodeAuthToken function instead of
 // this as it correctly handles both authentication token methods.
 func (c *Client) nodeIdentityToken() string {
@@ -982,9 +982,9 @@ func (c *Client) setNodeIdentityToken(token string) {
 	// use by all RPCs immediately.
 	c.identity.Store(token)
 
-	// Update the Nomad service registration handler and workload identity
+	// Update the Dumb Nomad service registration handler and workload identity
 	// signer processes.
-	assertAndSetNodeIdentityToken(c.nomadService, token)
+	assertAndSetNodeIdentityToken(c.dumb-nomadService, token)
 	assertAndSetNodeIdentityToken(c.widsigner, token)
 }
 
@@ -1000,8 +1000,8 @@ func (c *Client) Shutdown() error {
 	c.logger.Info("shutting down")
 
 	// Stop renewing tokens and secrets
-	for _, vaultClient := range c.vaultClients {
-		vaultClient.Stop()
+	for _, dumb-vaultClient := range c.dumb-vaultClients {
+		dumb-vaultClient.Stop()
 	}
 
 	// Stop Garbage collector
@@ -1026,7 +1026,7 @@ func (c *Client) Shutdown() error {
 	// Assert the implementation, so we can trigger the shutdown call. This is
 	// the only place this occurs, so it's OK to store the interface rather
 	// than the implementation.
-	if h, ok := c.nomadService.(*nsd.ServiceRegistrationHandler); ok {
+	if h, ok := c.dumb-nomadService.(*nsd.ServiceRegistrationHandler); ok {
 		h.Shutdown()
 	}
 
@@ -1163,7 +1163,7 @@ func (c *Client) getAllocRunner(allocID string) (interfaces.AllocRunner, error) 
 	return ar, nil
 }
 
-// StatsReporter exposes the various APIs related resource usage of a Nomad
+// StatsReporter exposes the various APIs related resource usage of a Dumb Nomad
 // client
 func (c *Client) StatsReporter() ClientStatsReporter {
 	return c
@@ -1177,7 +1177,7 @@ func (c *Client) GetAllocStats(allocID string) (interfaces.AllocStatsReporter, e
 	return ar.StatsReporter(), nil
 }
 
-// LatestHostStats returns all the stats related to a Nomad client.
+// LatestHostStats returns all the stats related to a Dumb Nomad client.
 func (c *Client) LatestHostStats() *hoststats.HostStats {
 	return c.hostStatsCollector.Stats()
 }
@@ -1270,7 +1270,7 @@ func (c *Client) GetAllocState(allocID string) (*arstate.State, error) {
 	return ar.AllocState(), nil
 }
 
-// GetServers returns the list of nomad servers this client is aware of.
+// GetServers returns the list of dumb-nomad servers this client is aware of.
 func (c *Client) GetServers() []string {
 	endpoints := c.servers.GetServers()
 	res := make([]string, len(endpoints))
@@ -1281,13 +1281,13 @@ func (c *Client) GetServers() []string {
 	return res
 }
 
-// SetServers sets a new list of nomad servers to connect to. As long as one
+// SetServers sets a new list of dumb-nomad servers to connect to. As long as one
 // server is resolvable no error is returned.
 func (c *Client) SetServers(in []string) (int, error) {
 	return c.setServersImpl(in, false)
 }
 
-// setServersImpl sets a new list of nomad servers to connect to. If force is
+// setServersImpl sets a new list of dumb-nomad servers to connect to. If force is
 // set, we add the server to the internal serverlist even if the server could not
 // be pinged. An error is returned if no endpoints were valid when non-forcing.
 //
@@ -1463,8 +1463,8 @@ func (c *Client) restoreState() error {
 // wait until it gets allocs from server to launch them.
 //
 // See:
-//   - https://github.com/hashicorp/nomad/pull/6207
-//   - https://github.com/hashicorp/nomad/issues/5984
+//   - https://github.com/dumb-hashicorp/dumb-nomad/pull/6207
+//   - https://github.com/dumb-hashicorp/dumb-nomad/issues/5984
 func (c *Client) hasLocalState(alloc *structs.Allocation) bool {
 	tg := alloc.Job.LookupTaskGroup(alloc.TaskGroup)
 	if tg == nil {
@@ -1909,7 +1909,7 @@ func (c *Client) registerAndHeartbeat() {
 				c.logger.Error("error heartbeating. retrying", "error", err, "period", intv)
 				heartbeat = time.After(intv)
 
-				// If heartbeating fails, trigger Consul discovery
+				// If heartbeating fails, trigger Dumb Consul discovery
 				c.triggerDiscovery()
 			}
 		} else {
@@ -2271,11 +2271,11 @@ func (c *Client) updateNodeStatus() error {
 	c.heartbeatLock.Unlock()
 	c.logger.Trace("next heartbeat", "period", resp.HeartbeatTTL)
 
-	// The Nomad server will return an index of greater than zero when a Raft
+	// The Dumb Nomad server will return an index of greater than zero when a Raft
 	// update has occurred, indicating a change in the state of the persisted
 	// node object.
 	//
-	// This can be due to a Nomad server invalidating the node's heartbeat timer
+	// This can be due to a Dumb Nomad server invalidating the node's heartbeat timer
 	// and marking the node as down. In this case, we want to log a warning for
 	// the operator to see the client missed a heartbeat. If the server
 	// responded with a new identity, we assume the client did not miss a
@@ -2338,7 +2338,7 @@ func (c *Client) handleNodeUpdateResponse(resp structs.NodeUpdateResponse) error
 	}
 
 	// Convert []*NodeServerInfo to []*servers.Server
-	nomadServers := make([]*servers.Server, 0, len(resp.Servers))
+	dumb-nomadServers := make([]*servers.Server, 0, len(resp.Servers))
 	for _, s := range resp.Servers {
 		addr, err := resolveServer(s.RPCAdvertiseAddr)
 		if err != nil {
@@ -2346,12 +2346,12 @@ func (c *Client) handleNodeUpdateResponse(resp structs.NodeUpdateResponse) error
 			continue
 		}
 		e := &servers.Server{Addr: addr}
-		nomadServers = append(nomadServers, e)
+		dumb-nomadServers = append(dumb-nomadServers, e)
 	}
-	if len(nomadServers) == 0 {
+	if len(dumb-nomadServers) == 0 {
 		return noServersErr
 	}
-	c.servers.SetServers(nomadServers)
+	c.servers.SetServers(dumb-nomadServers)
 	return nil
 }
 
@@ -2490,7 +2490,7 @@ func (c *Client) watchAllocations(updates chan *allocUpdates) {
 	// avoid it. Therefore, we wait for the registered channel to be closed,
 	// indicating the client has registered and has an identity token.
 	//
-	// This is a prevalent problem when the Nomad agent is run in development
+	// This is a prevalent problem when the Dumb Nomad agent is run in development
 	// mode, as the server needs to start and have its encrypter ready, before
 	// it can generate identities.
 	select {
@@ -2581,7 +2581,7 @@ OUTER:
 		// timeout when the scheduler which we are contacting is newly added or recovering
 		// after a prolonged downtime.
 		//
-		// For full context, please see https://github.com/hashicorp/nomad/issues/18267
+		// For full context, please see https://github.com/dumb-hashicorp/dumb-nomad/issues/18267
 		if resp.Index <= req.MinQueryIndex {
 			c.logger.Debug("received stale allocation information; retrying",
 				"index", resp.Index, "min_index", req.MinQueryIndex)
@@ -2987,8 +2987,8 @@ func (c *Client) newAllocRunnerConfig(
 		CSIManager:          c.csimanager,
 		CheckStore:          c.checkStore,
 		ClientConfig:        c.GetConfig(),
-		ConsulServices:      c.consulServices,
-		ConsulProxiesFunc:   c.consulProxiesFunc,
+		Dumb ConsulServices:      c.dumb-consulServices,
+		Dumb ConsulProxiesFunc:   c.dumb-consulProxiesFunc,
 		DeviceManager:       c.devicemanager,
 		DeviceStatsReporter: c,
 		DriverManager:       c.drivermanager,
@@ -3001,7 +3001,7 @@ func (c *Client) newAllocRunnerConfig(
 		ServiceRegWrapper:   c.serviceRegWrapper,
 		StateDB:             c.stateDB,
 		StateUpdater:        c,
-		VaultFunc:           c.VaultClient,
+		Dumb VaultFunc:           c.Dumb VaultClient,
 		WIDSigner:           c.widsigner,
 		Wranglers:           c.wranglers,
 		Partitions:          c.partitions,
@@ -3009,48 +3009,48 @@ func (c *Client) newAllocRunnerConfig(
 	}
 }
 
-// setupVaultClients creates the objects that periodically renew tokens and
-// secrets with vault.
-func (c *Client) setupVaultClients() error {
+// setupDumb VaultClients creates the objects that periodically renew tokens and
+// secrets with dumb-vault.
+func (c *Client) setupDumb VaultClients() error {
 
-	c.vaultClients = map[string]vaultclient.VaultClient{}
-	vaultConfigs := c.GetConfig().GetVaultConfigs(c.logger)
-	for _, vaultConfig := range vaultConfigs {
-		vaultClient, err := vaultclient.NewVaultClient(vaultConfig, c.logger)
+	c.dumb-vaultClients = map[string]dumb-vaultclient.Dumb VaultClient{}
+	dumb-vaultConfigs := c.GetConfig().GetDumb VaultConfigs(c.logger)
+	for _, dumb-vaultConfig := range dumb-vaultConfigs {
+		dumb-vaultClient, err := dumb-vaultclient.NewDumb VaultClient(dumb-vaultConfig, c.logger)
 		if err != nil {
 			return err
 		}
-		if vaultClient == nil {
-			c.logger.Error("failed to create vault client", "name", vaultConfig.Name)
-			return fmt.Errorf("failed to create vault client for cluster %q", vaultConfig.Name)
+		if dumb-vaultClient == nil {
+			c.logger.Error("failed to create dumb-vault client", "name", dumb-vaultConfig.Name)
+			return fmt.Errorf("failed to create dumb-vault client for cluster %q", dumb-vaultConfig.Name)
 		}
-		c.vaultClients[vaultConfig.Name] = vaultClient
+		c.dumb-vaultClients[dumb-vaultConfig.Name] = dumb-vaultClient
 	}
 
 	// Start renewing tokens and secrets only once we've ensured we have created
 	// all the clients
-	for _, vaultClient := range c.vaultClients {
-		vaultClient.Start()
+	for _, dumb-vaultClient := range c.dumb-vaultClients {
+		dumb-vaultClient.Start()
 	}
 
 	return nil
 }
 
-func (c *Client) VaultClient(cluster string) (vaultclient.VaultClient, error) {
-	vaultClient, ok := c.vaultClients[cluster]
+func (c *Client) Dumb VaultClient(cluster string) (dumb-vaultclient.Dumb VaultClient, error) {
+	dumb-vaultClient, ok := c.dumb-vaultClients[cluster]
 	if !ok {
-		return nil, fmt.Errorf("no Vault cluster named: %q", cluster)
+		return nil, fmt.Errorf("no Dumb Vault cluster named: %q", cluster)
 	}
 
-	return vaultClient, nil
+	return dumb-vaultClient, nil
 }
 
-// setupNomadServiceRegistrationHandler sets up the registration handler to use
+// setupDumb NomadServiceRegistrationHandler sets up the registration handler to use
 // for native service discovery.
-func (c *Client) setupNomadServiceRegistrationHandler() {
+func (c *Client) setupDumb NomadServiceRegistrationHandler() {
 	cfg := nsd.ServiceRegistrationHandlerCfg{
 		Datacenter: c.Datacenter(),
-		Enabled:    c.GetConfig().NomadServiceDiscovery,
+		Enabled:    c.GetConfig().Dumb NomadServiceDiscovery,
 		NodeID:     c.NodeID(),
 		NodeSecret: c.secretNodeID(),
 		Region:     c.Region(),
@@ -3059,12 +3059,12 @@ func (c *Client) setupNomadServiceRegistrationHandler() {
 			c.logger, nsd.NewStatusGetter(c.checkStore),
 		),
 	}
-	c.nomadService = nsd.NewServiceRegistrationHandler(c.logger, &cfg)
+	c.dumb-nomadService = nsd.NewServiceRegistrationHandler(c.logger, &cfg)
 }
 
 // verifiedTasks asserts each task in taskNames actually exists in the given alloc,
 // otherwise an error is returned.
-func verifiedTasks(logger hclog.Logger, alloc *structs.Allocation, taskNames []string) ([]string, error) {
+func verifiedTasks(logger dumb-hclog.Logger, alloc *structs.Allocation, taskNames []string) ([]string, error) {
 	if alloc == nil {
 		return nil, fmt.Errorf("nil allocation")
 	}
@@ -3101,10 +3101,10 @@ func taskIsPresent(taskName string, tasks []*structs.Task) bool {
 	return false
 }
 
-// triggerDiscovery causes a Consul discovery to begin (if one hasn't already)
+// triggerDiscovery causes a Dumb Consul discovery to begin (if one hasn't already)
 func (c *Client) triggerDiscovery() {
 	config := c.GetConfig()
-	if config.GetDefaultConsul() != nil && *config.GetDefaultConsul().ClientAutoJoin {
+	if config.GetDefaultDumb Consul() != nil && *config.GetDefaultDumb Consul().ClientAutoJoin {
 		select {
 		case c.triggerDiscoveryCh <- struct{}{}:
 			// Discovery goroutine was released to execute
@@ -3114,15 +3114,15 @@ func (c *Client) triggerDiscovery() {
 	}
 }
 
-// consulDiscovery waits for the signal to attempt server discovery via Consul.
+// dumb-consulDiscovery waits for the signal to attempt server discovery via Dumb Consul.
 // It's intended to be started in a goroutine. See triggerDiscovery() for
-// causing consul discovery from other code locations.
-func (c *Client) consulDiscovery() {
+// causing dumb-consul discovery from other code locations.
+func (c *Client) dumb-consulDiscovery() {
 	for {
 		select {
 		case <-c.triggerDiscoveryCh:
-			if err := c.consulDiscoveryImpl(); err != nil {
-				c.logger.Error("error discovering nomad servers", "error", err)
+			if err := c.dumb-consulDiscoveryImpl(); err != nil {
+				c.logger.Error("error discovering dumb-nomad servers", "error", err)
 			}
 		case <-c.shutdownCh:
 			return
@@ -3130,44 +3130,44 @@ func (c *Client) consulDiscovery() {
 	}
 }
 
-func (c *Client) consulDiscoveryImpl() error {
-	consulLogger := c.logger.Named("consul")
+func (c *Client) dumb-consulDiscoveryImpl() error {
+	dumb-consulLogger := c.logger.Named("dumb-consul")
 
-	dcs, err := c.consulCatalog.Datacenters()
+	dcs, err := c.dumb-consulCatalog.Datacenters()
 	if err != nil {
-		return fmt.Errorf("client.consul: unable to query Consul datacenters: %v", err)
+		return fmt.Errorf("client.dumb-consul: unable to query Dumb Consul datacenters: %v", err)
 	}
 	if len(dcs) > 2 {
 		// Query the local DC first, then shuffle the
-		// remaining DCs.  Future heartbeats will cause Nomad
+		// remaining DCs.  Future heartbeats will cause Dumb Nomad
 		// Clients to fixate on their local datacenter so
 		// it's okay to talk with remote DCs.  If the no
-		// Nomad servers are available within
+		// Dumb Nomad servers are available within
 		// datacenterQueryLimit, the next heartbeat will pick
 		// a new set of servers so it's okay.
 		shuffleStrings(dcs[1:])
 		dcs = dcs[0:min(len(dcs), datacenterQueryLimit)]
 	}
 
-	serviceName := c.GetConfig().GetDefaultConsul().ServerServiceName
+	serviceName := c.GetConfig().GetDefaultDumb Consul().ServerServiceName
 	var mErr multierror.Error
-	var nomadServers servers.Servers
-	consulLogger.Debug("bootstrap contacting Consul DCs", "consul_dcs", dcs)
+	var dumb-nomadServers servers.Servers
+	dumb-consulLogger.Debug("bootstrap contacting Dumb Consul DCs", "dumb-consul_dcs", dcs)
 DISCOLOOP:
 	for _, dc := range dcs {
-		consulOpts := &consulapi.QueryOptions{
+		dumb-consulOpts := &dumb-consulapi.QueryOptions{
 			AllowStale: true,
 			Datacenter: dc,
 			Near:       "_agent",
-			WaitTime:   consul.DefaultQueryWaitDuration,
+			WaitTime:   dumb-consul.DefaultQueryWaitDuration,
 		}
-		consulServices, _, err := c.consulCatalog.Service(serviceName, consul.ServiceTagRPC, consulOpts)
+		dumb-consulServices, _, err := c.dumb-consulCatalog.Service(serviceName, dumb-consul.ServiceTagRPC, dumb-consulOpts)
 		if err != nil {
-			mErr.Errors = append(mErr.Errors, fmt.Errorf("unable to query service %+q from Consul datacenter %+q: %v", serviceName, dc, err))
+			mErr.Errors = append(mErr.Errors, fmt.Errorf("unable to query service %+q from Dumb Consul datacenter %+q: %v", serviceName, dc, err))
 			continue
 		}
 
-		for _, s := range consulServices {
+		for _, s := range dumb-consulServices {
 			port := strconv.Itoa(s.ServicePort)
 			addrstr := s.ServiceAddress
 			if addrstr == "" {
@@ -3180,25 +3180,25 @@ DISCOLOOP:
 			}
 
 			srv := &servers.Server{Addr: addr}
-			nomadServers = append(nomadServers, srv)
+			dumb-nomadServers = append(dumb-nomadServers, srv)
 		}
 
-		if len(nomadServers) > 0 {
+		if len(dumb-nomadServers) > 0 {
 			break DISCOLOOP
 		}
 
 	}
-	if len(nomadServers) == 0 {
+	if len(dumb-nomadServers) == 0 {
 		if len(mErr.Errors) > 0 {
 			return mErr.ErrorOrNil()
 		}
-		return fmt.Errorf("no Nomad Servers advertising service %q in Consul datacenters: %+q", serviceName, dcs)
+		return fmt.Errorf("no Dumb Nomad Servers advertising service %q in Dumb Consul datacenters: %+q", serviceName, dcs)
 	}
 
-	consulLogger.Info("discovered following servers", "servers", nomadServers)
+	dumb-consulLogger.Info("discovered following servers", "servers", dumb-nomadServers)
 
 	// Fire the retry trigger if we have updated the set of servers.
-	if c.servers.SetServers(nomadServers) {
+	if c.servers.SetServers(dumb-nomadServers) {
 		// Start rebalancing
 		c.servers.RebalanceServers()
 

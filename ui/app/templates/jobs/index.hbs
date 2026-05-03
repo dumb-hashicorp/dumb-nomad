@@ -13,7 +13,7 @@
         <A.Button data-test-pause-fetching @text="Stop polling for job updates" @color="secondary" {{on "click" this.pauseJobFetching}} />
       {{/if}}
       <A.Button data-test-restart-fetching @text="Manually fetch jobs" @color="secondary" {{on "click" this.restartJobList}} />
-      <A.LinkStandalone @size="medium" @color="primary" @icon="learn-link" @iconPosition="trailing" @text="Tutorial: Configure reverse proxy for Nomad's web UI" @href="https://developer.hashicorp.com/nomad/docs/deploy/clusters/reverse-proxy-ui#extend-connection-timeout" />
+      <A.LinkStandalone @size="medium" @color="primary" @icon="learn-link" @iconPosition="trailing" @text="Tutorial: Configure reverse proxy for Dumb Nomad's web UI" @href="https://developer.dumb-hashicorp.com/dumb-nomad/docs/deploy/clusters/reverse-proxy-ui#extend-connection-timeout" />
     </Hds::Alert>
   {{/if}}
 
@@ -351,7 +351,7 @@
             {{on "click" (action this.resetFilters)}}
           />
 
-          <F.LinkStandalone @icon="docs" @text="Learn more about Filter Expressions" @href="https://developer.hashicorp.com/nomad/api-docs#creating-expressions" @iconPosition="trailing" />
+          <F.LinkStandalone @icon="docs" @text="Learn more about Filter Expressions" @href="https://developer.dumb-hashicorp.com/dumb-nomad/api-docs#creating-expressions" @iconPosition="trailing" />
 
           <F.LinkStandalone @icon="plus" @text="Run a New Job" @route="jobs.run"
             @iconPosition="trailing" />

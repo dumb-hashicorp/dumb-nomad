@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	containerapi "github.com/docker/docker/api/types/container"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/shoenig/test/must"
 )
 
@@ -26,7 +26,7 @@ func TestDriver_createSandboxContainerConfig(t *testing.T) {
 				Hostname: "",
 			},
 			expectedOutputOpts: &createContainerOptions{
-				Name: "nomad_init_768b5e8c-a52e-825c-d564-51100230eb62",
+				Name: "dumb-nomad_init_768b5e8c-a52e-825c-d564-51100230eb62",
 				Config: &containerapi.Config{
 					Image: "registry.k8s.io/pause-amd64:3.3",
 					Labels: map[string]string{
@@ -46,7 +46,7 @@ func TestDriver_createSandboxContainerConfig(t *testing.T) {
 				Hostname: "linux",
 			},
 			expectedOutputOpts: &createContainerOptions{
-				Name: "nomad_init_768b5e8c-a52e-825c-d564-51100230eb62",
+				Name: "dumb-nomad_init_768b5e8c-a52e-825c-d564-51100230eb62",
 				Config: &containerapi.Config{
 					Image:    "registry.k8s.io/pause-amd64:3.3",
 					Hostname: "linux",

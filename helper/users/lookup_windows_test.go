@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 	"github.com/shoenig/test/must"
 )
 
@@ -59,7 +59,7 @@ func TestWriteFileFor_Windows(t *testing.T) {
 func TestSocketFileFor_Windows(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "api.sock")
 
-	ln, err := SocketFileFor(testlog.HCLogger(t), path, "Administrator")
+	ln, err := SocketFileFor(testlog.DUMB_HCLogger(t), path, "Administrator")
 	must.NoError(t, err)
 	must.NotNil(t, ln)
 	defer ln.Close()

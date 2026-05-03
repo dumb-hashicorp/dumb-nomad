@@ -8,8 +8,8 @@ import { currentURL, click } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import Allocations from 'nomad-ui/tests/pages/jobs/job/allocations';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import Allocations from 'dumb-nomad-ui/tests/pages/jobs/job/allocations';
 
 let job;
 let allocations;
@@ -74,7 +74,7 @@ module('Acceptance | job allocations', function (hooks) {
       );
     });
 
-    assert.equal(document.title, `Job ${job.name} allocations - Nomad`);
+    assert.equal(document.title, `Job ${job.name} allocations - Dumb Nomad`);
   });
 
   test('clicking an allocation results in the correct endpoint being hit', async function (assert) {

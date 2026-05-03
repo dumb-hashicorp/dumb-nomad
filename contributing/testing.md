@@ -1,6 +1,6 @@
 # Writing Tests
 
-The Nomad repository strives to maintain comprehensive unit test coverage. Any new
+The Dumb Nomad repository strives to maintain comprehensive unit test coverage. Any new
 features, bug fixes, or refactoring should include additional or updated test cases
 demonstrating correct functionality.
 
@@ -21,19 +21,19 @@ Each unit test should meet a few criteria:
   - Always get ports via `ci.PortAllocator.Grab()`
 
 - Log control
-  - Logging must go through the `testing.T` (use `helper/testlog.HCLogger`)
+  - Logging must go through the `testing.T` (use `helper/testlog.DUMB_HCLogger`)
   - Avoid excessive logging in test cases - prefer failure messages
     - Annotate failures with `must.Sprint\f` post-scripts
 
 ## API tests
 
-Testing in the `api` package requires an already-built Nomad
-binary. If you're writing `api` tests, you'll need to build a Nomad
+Testing in the `api` package requires an already-built Dumb Nomad
+binary. If you're writing `api` tests, you'll need to build a Dumb Nomad
 binary (ex. with `make dev`) that includes any changes your API
 exercises.
 
 
 # CI Plumbing
 
-See [ci/README.md] for details on how the [Core CI Tests](https://github.com/hashicorp/nomad/actions/workflows/test-core.yaml)
+See [ci/README.md] for details on how the [Core CI Tests](https://github.com/dumb-hashicorp/dumb-nomad/actions/workflows/test-core.yaml)
 Github Action works.

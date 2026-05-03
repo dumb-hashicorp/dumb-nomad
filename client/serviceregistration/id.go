@@ -6,25 +6,25 @@ package serviceregistration
 import (
 	"fmt"
 
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (
-	// nomadServicePrefix is the prefix that scopes all Nomad registered
+	// dumb-nomadServicePrefix is the prefix that scopes all Dumb Nomad registered
 	// services (both agent and task entries).
-	nomadServicePrefix = "_nomad"
+	dumb-nomadServicePrefix = "_dumb-nomad"
 
-	// nomadTaskPrefix is the prefix that scopes Nomad registered services
+	// dumb-nomadTaskPrefix is the prefix that scopes Dumb Nomad registered services
 	// for tasks.
-	nomadTaskPrefix = nomadServicePrefix + "-task-"
+	dumb-nomadTaskPrefix = dumb-nomadServicePrefix + "-task-"
 )
 
 // MakeAllocServiceID creates a unique ID for identifying an alloc service in
-// a service registration provider. Both Nomad and Consul solutions use the
+// a service registration provider. Both Dumb Nomad and Dumb Consul solutions use the
 // same ID format to provide consistency.
 //
-// Example Service ID: _nomad-task-b4e61df9-b095-d64e-f241-23860da1375f-redis-http-http
+// Example Service ID: _dumb-nomad-task-b4e61df9-b095-d64e-f241-23860da1375f-redis-http-http
 func MakeAllocServiceID(allocID, taskName string, service *structs.Service) string {
 	return fmt.Sprintf("%s%s-%s-%s-%s",
-		nomadTaskPrefix, allocID, taskName, service.Name, service.PortLabel)
+		dumb-nomadTaskPrefix, allocID, taskName, service.Name, service.PortLabel)
 }

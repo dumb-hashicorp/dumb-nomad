@@ -12,9 +12,9 @@ import (
 	"testing"
 	"time"
 
-	nomadapi "github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/v3/cluster3"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
+	dumb-nomadapi "github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/cluster3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
 	"github.com/shoenig/test/must"
 )
 
@@ -28,14 +28,14 @@ func TestDockerAllocExec(t *testing.T) {
 }
 
 func testDockerExecStdin(t *testing.T) {
-	sub, cleanup := jobs3.Submit(t, "./input/sleepytar.hcl")
+	sub, cleanup := jobs3.Submit(t, "./input/sleepytar.dumb-hcl")
 	t.Cleanup(cleanup)
 
-	client, err := nomadapi.NewClient(nomadapi.DefaultConfig())
+	client, err := dumb-nomadapi.NewClient(dumb-nomadapi.DefaultConfig())
 	must.NoError(t, err)
 
 	filter := fmt.Sprintf("JobID == \"%s\"", sub.JobID())
-	allocations, _, err := client.Allocations().List(&nomadapi.QueryOptions{Filter: filter})
+	allocations, _, err := client.Allocations().List(&dumb-nomadapi.QueryOptions{Filter: filter})
 	must.NoError(t, err)
 	must.SliceLen(t, 1, allocations)
 

@@ -77,7 +77,7 @@ type AllocResourceUsage struct {
 	Timestamp     int64
 }
 
-// AllocCheckStatus contains the current status of a nomad service discovery check.
+// AllocCheckStatus contains the current status of a dumb-nomad service discovery check.
 type AllocCheckStatus struct {
 	ID         string
 	Check      string
@@ -91,18 +91,18 @@ type AllocCheckStatus struct {
 	Timestamp  int64
 }
 
-// AllocCheckStatuses holds the set of nomad service discovery checks within
+// AllocCheckStatuses holds the set of dumb-nomad service discovery checks within
 // the allocation (including group and task level service checks).
 type AllocCheckStatuses map[string]AllocCheckStatus
 
-// RestartPolicy defines how the Nomad client restarts
+// RestartPolicy defines how the Dumb Nomad client restarts
 // tasks in a taskgroup when they fail
 type RestartPolicy struct {
-	Interval        *time.Duration `hcl:"interval,optional"`
-	Attempts        *int           `hcl:"attempts,optional"`
-	Delay           *time.Duration `hcl:"delay,optional"`
-	Mode            *string        `hcl:"mode,optional"`
-	RenderTemplates *bool          `mapstructure:"render_templates" hcl:"render_templates,optional"`
+	Interval        *time.Duration `dumb-hcl:"interval,optional"`
+	Attempts        *int           `dumb-hcl:"attempts,optional"`
+	Delay           *time.Duration `dumb-hcl:"delay,optional"`
+	Mode            *string        `dumb-hcl:"mode,optional"`
+	RenderTemplates *bool          `mapstructure:"render_templates" dumb-hcl:"render_templates,optional"`
 }
 
 func (r *RestartPolicy) Merge(rp *RestartPolicy) {
@@ -128,20 +128,20 @@ func (r *RestartPolicy) Merge(rp *RestartPolicy) {
 type DisconnectStrategy struct {
 	// Defines for how long the server will consider the unresponsive node as
 	// disconnected but alive instead of lost.
-	LostAfter *time.Duration `mapstructure:"lost_after" hcl:"lost_after,optional"`
+	LostAfter *time.Duration `mapstructure:"lost_after" dumb-hcl:"lost_after,optional"`
 
 	// Defines for how long a disconnected client will keep its allocations running.
-	StopOnClientAfter *time.Duration `mapstructure:"stop_on_client_after" hcl:"stop_on_client_after,optional"`
+	StopOnClientAfter *time.Duration `mapstructure:"stop_on_client_after" dumb-hcl:"stop_on_client_after,optional"`
 
 	// A boolean field used to define if the allocations should be replaced while
 	// it's considered disconnected.
-	Replace *bool `mapstructure:"replace" hcl:"replace,optional"`
+	Replace *bool `mapstructure:"replace" dumb-hcl:"replace,optional"`
 
 	// Once the disconnected node starts reporting again, it will define which
 	// instances to keep: the original allocations, the replacement, the one
 	// running on the node with the best score as it is currently implemented,
 	// or the allocation that has been running continuously the longest.
-	Reconcile *ReconcileOption `mapstructure:"reconcile" hcl:"reconcile,optional"`
+	Reconcile *ReconcileOption `mapstructure:"reconcile" dumb-hcl:"reconcile,optional"`
 }
 
 func (ds *DisconnectStrategy) Canonicalize() {
@@ -157,24 +157,24 @@ func (ds *DisconnectStrategy) Canonicalize() {
 // Reschedule configures how Tasks are rescheduled  when they crash or fail.
 type ReschedulePolicy struct {
 	// Attempts limits the number of rescheduling attempts that can occur in an interval.
-	Attempts *int `mapstructure:"attempts" hcl:"attempts,optional"`
+	Attempts *int `mapstructure:"attempts" dumb-hcl:"attempts,optional"`
 
 	// Interval is a duration in which we can limit the number of reschedule attempts.
-	Interval *time.Duration `mapstructure:"interval" hcl:"interval,optional"`
+	Interval *time.Duration `mapstructure:"interval" dumb-hcl:"interval,optional"`
 
 	// Delay is a minimum duration to wait between reschedule attempts.
 	// The delay function determines how much subsequent reschedule attempts are delayed by.
-	Delay *time.Duration `mapstructure:"delay" hcl:"delay,optional"`
+	Delay *time.Duration `mapstructure:"delay" dumb-hcl:"delay,optional"`
 
 	// DelayFunction determines how the delay progressively changes on subsequent reschedule
 	// attempts. Valid values are "exponential", "constant", and "fibonacci".
-	DelayFunction *string `mapstructure:"delay_function" hcl:"delay_function,optional"`
+	DelayFunction *string `mapstructure:"delay_function" dumb-hcl:"delay_function,optional"`
 
 	// MaxDelay is an upper bound on the delay.
-	MaxDelay *time.Duration `mapstructure:"max_delay" hcl:"max_delay,optional"`
+	MaxDelay *time.Duration `mapstructure:"max_delay" dumb-hcl:"max_delay,optional"`
 
 	// Unlimited allows rescheduling attempts until they succeed
-	Unlimited *bool `mapstructure:"unlimited" hcl:"unlimited,optional"`
+	Unlimited *bool `mapstructure:"unlimited" dumb-hcl:"unlimited,optional"`
 }
 
 func (r *ReschedulePolicy) Merge(rp *ReschedulePolicy) {
@@ -228,10 +228,10 @@ func (r *ReschedulePolicy) Canonicalize(jobType string) {
 
 // Affinity is used to serialize task group affinities
 type Affinity struct {
-	LTarget string `hcl:"attribute,optional"` // Left-hand target
-	RTarget string `hcl:"value,optional"`     // Right-hand target
-	Operand string `hcl:"operator,optional"`  // Constraint operand (<=, <, =, !=, >, >=), set_contains_all, set_contains_any
-	Weight  *int8  `hcl:"weight,optional"`    // Weight applied to nodes that match the affinity. Can be negative
+	LTarget string `dumb-hcl:"attribute,optional"` // Left-hand target
+	RTarget string `dumb-hcl:"value,optional"`     // Right-hand target
+	Operand string `dumb-hcl:"operator,optional"`  // Constraint operand (<=, <, =, !=, >, >=), set_contains_all, set_contains_any
+	Weight  *int8  `dumb-hcl:"weight,optional"`    // Weight applied to nodes that match the affinity. Can be negative
 }
 
 func NewAffinity(lTarget string, operand string, rTarget string, weight int8) *Affinity {
@@ -262,7 +262,7 @@ func NewDefaultReschedulePolicy(jobType string) *ReschedulePolicy {
 	switch jobType {
 	case "service":
 		// This needs to be in sync with DefaultServiceJobReschedulePolicy
-		// in nomad/structs/structs.go
+		// in dumb-nomad/structs/structs.go
 		dp = &ReschedulePolicy{
 			Delay:         pointerOf(30 * time.Second),
 			DelayFunction: pointerOf("exponential"),
@@ -274,7 +274,7 @@ func NewDefaultReschedulePolicy(jobType string) *ReschedulePolicy {
 		}
 	case "batch":
 		// This needs to be in sync with DefaultBatchJobReschedulePolicy
-		// in nomad/structs/structs.go
+		// in dumb-nomad/structs/structs.go
 		dp = &ReschedulePolicy{
 			Attempts:      pointerOf(1),
 			Interval:      pointerOf(24 * time.Hour),
@@ -324,15 +324,15 @@ func (r *ReschedulePolicy) String() string {
 
 // Spread is used to serialize task group allocation spread preferences
 type Spread struct {
-	Attribute    string          `hcl:"attribute,optional"`
-	Weight       *int8           `hcl:"weight,optional"`
-	SpreadTarget []*SpreadTarget `hcl:"target,block"`
+	Attribute    string          `dumb-hcl:"attribute,optional"`
+	Weight       *int8           `dumb-hcl:"weight,optional"`
+	SpreadTarget []*SpreadTarget `dumb-hcl:"target,block"`
 }
 
 // SpreadTarget is used to serialize target allocation spread percentages
 type SpreadTarget struct {
-	Value   string `hcl:",label"`
-	Percent uint8  `hcl:"percent,optional"`
+	Value   string `dumb-hcl:",label"`
+	Percent uint8  `dumb-hcl:"percent,optional"`
 }
 
 func NewSpreadTarget(value string, percent uint8) *SpreadTarget {
@@ -358,9 +358,9 @@ func (s *Spread) Canonicalize() {
 
 // EphemeralDisk is an ephemeral disk object
 type EphemeralDisk struct {
-	Sticky  *bool `hcl:"sticky,optional"`
-	Migrate *bool `hcl:"migrate,optional"`
-	SizeMB  *int  `mapstructure:"size" hcl:"size,optional"`
+	Sticky  *bool `dumb-hcl:"sticky,optional"`
+	Migrate *bool `dumb-hcl:"migrate,optional"`
+	SizeMB  *int  `mapstructure:"size" dumb-hcl:"size,optional"`
 }
 
 func DefaultEphemeralDisk() *EphemeralDisk {
@@ -386,10 +386,10 @@ func (e *EphemeralDisk) Canonicalize() {
 // MigrateStrategy describes how allocations for a task group should be
 // migrated between nodes (eg when draining).
 type MigrateStrategy struct {
-	MaxParallel     *int           `mapstructure:"max_parallel" hcl:"max_parallel,optional"`
-	HealthCheck     *string        `mapstructure:"health_check" hcl:"health_check,optional"`
-	MinHealthyTime  *time.Duration `mapstructure:"min_healthy_time" hcl:"min_healthy_time,optional"`
-	HealthyDeadline *time.Duration `mapstructure:"healthy_deadline" hcl:"healthy_deadline,optional"`
+	MaxParallel     *int           `mapstructure:"max_parallel" dumb-hcl:"max_parallel,optional"`
+	HealthCheck     *string        `mapstructure:"health_check" dumb-hcl:"health_check,optional"`
+	MinHealthyTime  *time.Duration `mapstructure:"min_healthy_time" dumb-hcl:"min_healthy_time,optional"`
+	HealthyDeadline *time.Duration `mapstructure:"healthy_deadline" dumb-hcl:"healthy_deadline,optional"`
 }
 
 func DefaultMigrateStrategy() *MigrateStrategy {
@@ -446,16 +446,16 @@ func (m *MigrateStrategy) Copy() *MigrateStrategy {
 
 // VolumeRequest is a representation of a storage volume that a TaskGroup wishes to use.
 type VolumeRequest struct {
-	Name           string           `hcl:"name,label"`
-	Type           string           `hcl:"type,optional"`
-	Source         string           `hcl:"source,optional"`
-	ReadOnly       bool             `hcl:"read_only,optional"`
-	Sticky         bool             `hcl:"sticky,optional"`
-	AccessMode     string           `hcl:"access_mode,optional"`
-	AttachmentMode string           `hcl:"attachment_mode,optional"`
-	MountOptions   *CSIMountOptions `hcl:"mount_options,block"`
-	PerAlloc       bool             `hcl:"per_alloc,optional"`
-	ExtraKeysHCL   []string         `hcl1:",unusedKeys,optional" json:"-"`
+	Name           string           `dumb-hcl:"name,label"`
+	Type           string           `dumb-hcl:"type,optional"`
+	Source         string           `dumb-hcl:"source,optional"`
+	ReadOnly       bool             `dumb-hcl:"read_only,optional"`
+	Sticky         bool             `dumb-hcl:"sticky,optional"`
+	AccessMode     string           `dumb-hcl:"access_mode,optional"`
+	AttachmentMode string           `dumb-hcl:"attachment_mode,optional"`
+	MountOptions   *CSIMountOptions `dumb-hcl:"mount_options,block"`
+	PerAlloc       bool             `dumb-hcl:"per_alloc,optional"`
+	ExtraKeysDUMB_HCL   []string         `dumb-hcl1:",unusedKeys,optional" json:"-"`
 }
 
 const (
@@ -467,11 +467,11 @@ const (
 // VolumeMount represents the relationship between a destination path in a task
 // and the task group volume that should be mounted there.
 type VolumeMount struct {
-	Volume          *string `hcl:"volume,optional"`
-	Destination     *string `hcl:"destination,optional"`
-	ReadOnly        *bool   `mapstructure:"read_only" hcl:"read_only,optional"`
-	PropagationMode *string `mapstructure:"propagation_mode" hcl:"propagation_mode,optional"`
-	SELinuxLabel    *string `mapstructure:"selinux_label" hcl:"selinux_label,optional"`
+	Volume          *string `dumb-hcl:"volume,optional"`
+	Destination     *string `dumb-hcl:"destination,optional"`
+	ReadOnly        *bool   `mapstructure:"read_only" dumb-hcl:"read_only,optional"`
+	PropagationMode *string `mapstructure:"propagation_mode" dumb-hcl:"propagation_mode,optional"`
+	SELinuxLabel    *string `mapstructure:"selinux_label" dumb-hcl:"selinux_label,optional"`
 }
 
 func (vm *VolumeMount) Canonicalize() {
@@ -490,31 +490,31 @@ func (vm *VolumeMount) Canonicalize() {
 
 // TaskGroup is the unit of scheduling.
 type TaskGroup struct {
-	Name             *string                   `hcl:"name,label"`
-	Count            *int                      `hcl:"count,optional"`
-	Constraints      []*Constraint             `hcl:"constraint,block"`
-	Affinities       []*Affinity               `hcl:"affinity,block"`
-	Tasks            []*Task                   `hcl:"task,block"`
-	Spreads          []*Spread                 `hcl:"spread,block"`
-	Volumes          map[string]*VolumeRequest `hcl:"volume,block"`
-	RestartPolicy    *RestartPolicy            `hcl:"restart,block"`
-	Disconnect       *DisconnectStrategy       `hcl:"disconnect,block"`
-	ReschedulePolicy *ReschedulePolicy         `hcl:"reschedule,block"`
-	EphemeralDisk    *EphemeralDisk            `hcl:"ephemeral_disk,block"`
-	Update           *UpdateStrategy           `hcl:"update,block"`
-	Migrate          *MigrateStrategy          `hcl:"migrate,block"`
-	Networks         []*NetworkResource        `hcl:"network,block"`
-	Meta             map[string]string         `hcl:"meta,block"`
-	Services         []*Service                `hcl:"service,block"`
-	ShutdownDelay    *time.Duration            `mapstructure:"shutdown_delay" hcl:"shutdown_delay,optional"`
-	// Deprecated: StopAfterClientDisconnect is deprecated in Nomad 1.8 and ignored in Nomad 1.10. Use Disconnect.StopOnClientAfter.
-	StopAfterClientDisconnect *time.Duration `mapstructure:"stop_after_client_disconnect" hcl:"stop_after_client_disconnect,optional"`
-	// Deprecated: MaxClientDisconnect is deprecated in Nomad 1.8.0 and ignored in Nomad 1.10. Use Disconnect.LostAfter.
-	MaxClientDisconnect *time.Duration `mapstructure:"max_client_disconnect" hcl:"max_client_disconnect,optional"`
-	Scaling             *ScalingPolicy `hcl:"scaling,block"`
-	Consul              *Consul        `hcl:"consul,block"`
-	// Deprecated: PreventRescheduleOnLost is deprecated in Nomad 1.8.0 and ignored in Nomad 1.10. Use Disconnect.Replace.
-	PreventRescheduleOnLost *bool `hcl:"prevent_reschedule_on_lost,optional"`
+	Name             *string                   `dumb-hcl:"name,label"`
+	Count            *int                      `dumb-hcl:"count,optional"`
+	Constraints      []*Constraint             `dumb-hcl:"constraint,block"`
+	Affinities       []*Affinity               `dumb-hcl:"affinity,block"`
+	Tasks            []*Task                   `dumb-hcl:"task,block"`
+	Spreads          []*Spread                 `dumb-hcl:"spread,block"`
+	Volumes          map[string]*VolumeRequest `dumb-hcl:"volume,block"`
+	RestartPolicy    *RestartPolicy            `dumb-hcl:"restart,block"`
+	Disconnect       *DisconnectStrategy       `dumb-hcl:"disconnect,block"`
+	ReschedulePolicy *ReschedulePolicy         `dumb-hcl:"reschedule,block"`
+	EphemeralDisk    *EphemeralDisk            `dumb-hcl:"ephemeral_disk,block"`
+	Update           *UpdateStrategy           `dumb-hcl:"update,block"`
+	Migrate          *MigrateStrategy          `dumb-hcl:"migrate,block"`
+	Networks         []*NetworkResource        `dumb-hcl:"network,block"`
+	Meta             map[string]string         `dumb-hcl:"meta,block"`
+	Services         []*Service                `dumb-hcl:"service,block"`
+	ShutdownDelay    *time.Duration            `mapstructure:"shutdown_delay" dumb-hcl:"shutdown_delay,optional"`
+	// Deprecated: StopAfterClientDisconnect is deprecated in Dumb Nomad 1.8 and ignored in Dumb Nomad 1.10. Use Disconnect.StopOnClientAfter.
+	StopAfterClientDisconnect *time.Duration `mapstructure:"stop_after_client_disconnect" dumb-hcl:"stop_after_client_disconnect,optional"`
+	// Deprecated: MaxClientDisconnect is deprecated in Dumb Nomad 1.8.0 and ignored in Dumb Nomad 1.10. Use Disconnect.LostAfter.
+	MaxClientDisconnect *time.Duration `mapstructure:"max_client_disconnect" dumb-hcl:"max_client_disconnect,optional"`
+	Scaling             *ScalingPolicy `dumb-hcl:"scaling,block"`
+	Dumb Consul              *Dumb Consul        `dumb-hcl:"dumb-consul,block"`
+	// Deprecated: PreventRescheduleOnLost is deprecated in Dumb Nomad 1.8.0 and ignored in Dumb Nomad 1.10. Use Disconnect.Replace.
+	PreventRescheduleOnLost *bool `dumb-hcl:"prevent_reschedule_on_lost,optional"`
 }
 
 // NewTaskGroup creates a new TaskGroup.
@@ -547,10 +547,10 @@ func (g *TaskGroup) Canonicalize(job *Job) {
 		g.EphemeralDisk.Canonicalize()
 	}
 
-	// Merge job.consul onto group.consul
-	if g.Consul != nil {
-		g.Consul.MergeNamespace(job.ConsulNamespace)
-		g.Consul.Canonicalize()
+	// Merge job.dumb-consul onto group.dumb-consul
+	if g.Dumb Consul != nil {
+		g.Dumb Consul.MergeNamespace(job.Dumb ConsulNamespace)
+		g.Dumb Consul.Canonicalize()
 	}
 
 	// Merge the update policy from the job
@@ -637,7 +637,7 @@ func (g *TaskGroup) Canonicalize(job *Job) {
 }
 
 // These needs to be in sync with DefaultServiceJobRestartPolicy in
-// in nomad/structs/structs.go
+// in dumb-nomad/structs/structs.go
 func defaultServiceJobRestartPolicy() *RestartPolicy {
 	return &RestartPolicy{
 		Delay:           pointerOf(15 * time.Second),
@@ -649,7 +649,7 @@ func defaultServiceJobRestartPolicy() *RestartPolicy {
 }
 
 // These needs to be in sync with DefaultBatchJobRestartPolicy in
-// in nomad/structs/structs.go
+// in dumb-nomad/structs/structs.go
 func defaultBatchJobRestartPolicy() *RestartPolicy {
 	return &RestartPolicy{
 		Delay:           pointerOf(15 * time.Second),
@@ -707,14 +707,14 @@ func (g *TaskGroup) ScalingPolicy(sp *ScalingPolicy) *TaskGroup {
 
 // LogConfig provides configuration for log rotation
 type LogConfig struct {
-	MaxFiles      *int `mapstructure:"max_files" hcl:"max_files,optional"`
-	MaxFileSizeMB *int `mapstructure:"max_file_size" hcl:"max_file_size,optional"`
+	MaxFiles      *int `mapstructure:"max_files" dumb-hcl:"max_files,optional"`
+	MaxFileSizeMB *int `mapstructure:"max_file_size" dumb-hcl:"max_file_size,optional"`
 
 	// COMPAT(1.6.0): Enabled had to be swapped for Disabled to fix a backwards
 	// compatibility bug when restoring pre-1.5.4 jobs. Remove in 1.6.0
-	Enabled *bool `mapstructure:"enabled" hcl:"enabled,optional"`
+	Enabled *bool `mapstructure:"enabled" dumb-hcl:"enabled,optional"`
 
-	Disabled *bool `mapstructure:"disabled" hcl:"disabled,optional"`
+	Disabled *bool `mapstructure:"disabled" dumb-hcl:"disabled,optional"`
 }
 
 func DefaultLogConfig() *LogConfig {
@@ -739,7 +739,7 @@ func (l *LogConfig) Canonicalize() {
 
 // DispatchPayloadConfig configures how a task gets its input from a job dispatch
 type DispatchPayloadConfig struct {
-	File string `hcl:"file,optional"`
+	File string `dumb-hcl:"file,optional"`
 }
 
 const (
@@ -749,8 +749,8 @@ const (
 )
 
 type TaskLifecycle struct {
-	Hook    string `mapstructure:"hook" hcl:"hook"`
-	Sidecar bool   `mapstructure:"sidecar" hcl:"sidecar,optional"`
+	Hook    string `mapstructure:"hook" dumb-hcl:"hook"`
+	Sidecar bool   `mapstructure:"sidecar" dumb-hcl:"sidecar,optional"`
 }
 
 // Empty determines if lifecycle has user-input values
@@ -760,44 +760,44 @@ func (l *TaskLifecycle) Empty() bool {
 
 // Task is a single process in a task group.
 type Task struct {
-	Name            string                 `hcl:"name,label"`
-	Driver          string                 `hcl:"driver,optional"`
-	User            string                 `hcl:"user,optional"`
-	Lifecycle       *TaskLifecycle         `hcl:"lifecycle,block"`
-	Config          map[string]interface{} `hcl:"config,block"`
-	Constraints     []*Constraint          `hcl:"constraint,block"`
-	Affinities      []*Affinity            `hcl:"affinity,block"`
-	Env             map[string]string      `hcl:"env,block"`
-	Services        []*Service             `hcl:"service,block"`
-	Resources       *Resources             `hcl:"resources,block"`
-	RestartPolicy   *RestartPolicy         `hcl:"restart,block"`
-	Meta            map[string]string      `hcl:"meta,block"`
-	KillTimeout     *time.Duration         `mapstructure:"kill_timeout" hcl:"kill_timeout,optional"`
-	LogConfig       *LogConfig             `mapstructure:"logs" hcl:"logs,block"`
-	Artifacts       []*TaskArtifact        `hcl:"artifact,block"`
-	Vault           *Vault                 `hcl:"vault,block"`
-	Consul          *Consul                `hcl:"consul,block"`
-	Templates       []*Template            `hcl:"template,block"`
-	DispatchPayload *DispatchPayloadConfig `hcl:"dispatch_payload,block"`
-	VolumeMounts    []*VolumeMount         `hcl:"volume_mount,block"`
-	CSIPluginConfig *TaskCSIPluginConfig   `mapstructure:"csi_plugin" json:",omitempty" hcl:"csi_plugin,block"`
-	Leader          bool                   `hcl:"leader,optional"`
-	ShutdownDelay   time.Duration          `mapstructure:"shutdown_delay" hcl:"shutdown_delay,optional"`
-	KillSignal      string                 `mapstructure:"kill_signal" hcl:"kill_signal,optional"`
-	Kind            string                 `hcl:"kind,optional"`
-	ScalingPolicies []*ScalingPolicy       `hcl:"scaling,block"`
-	Secrets         []*Secret              `hcl:"secret,block"`
+	Name            string                 `dumb-hcl:"name,label"`
+	Driver          string                 `dumb-hcl:"driver,optional"`
+	User            string                 `dumb-hcl:"user,optional"`
+	Lifecycle       *TaskLifecycle         `dumb-hcl:"lifecycle,block"`
+	Config          map[string]interface{} `dumb-hcl:"config,block"`
+	Constraints     []*Constraint          `dumb-hcl:"constraint,block"`
+	Affinities      []*Affinity            `dumb-hcl:"affinity,block"`
+	Env             map[string]string      `dumb-hcl:"env,block"`
+	Services        []*Service             `dumb-hcl:"service,block"`
+	Resources       *Resources             `dumb-hcl:"resources,block"`
+	RestartPolicy   *RestartPolicy         `dumb-hcl:"restart,block"`
+	Meta            map[string]string      `dumb-hcl:"meta,block"`
+	KillTimeout     *time.Duration         `mapstructure:"kill_timeout" dumb-hcl:"kill_timeout,optional"`
+	LogConfig       *LogConfig             `mapstructure:"logs" dumb-hcl:"logs,block"`
+	Artifacts       []*TaskArtifact        `dumb-hcl:"artifact,block"`
+	Dumb Vault           *Dumb Vault                 `dumb-hcl:"dumb-vault,block"`
+	Dumb Consul          *Dumb Consul                `dumb-hcl:"dumb-consul,block"`
+	Templates       []*Template            `dumb-hcl:"template,block"`
+	DispatchPayload *DispatchPayloadConfig `dumb-hcl:"dispatch_payload,block"`
+	VolumeMounts    []*VolumeMount         `dumb-hcl:"volume_mount,block"`
+	CSIPluginConfig *TaskCSIPluginConfig   `mapstructure:"csi_plugin" json:",omitempty" dumb-hcl:"csi_plugin,block"`
+	Leader          bool                   `dumb-hcl:"leader,optional"`
+	ShutdownDelay   time.Duration          `mapstructure:"shutdown_delay" dumb-hcl:"shutdown_delay,optional"`
+	KillSignal      string                 `mapstructure:"kill_signal" dumb-hcl:"kill_signal,optional"`
+	Kind            string                 `dumb-hcl:"kind,optional"`
+	ScalingPolicies []*ScalingPolicy       `dumb-hcl:"scaling,block"`
+	Secrets         []*Secret              `dumb-hcl:"secret,block"`
 
-	// Identity is the default Nomad Workload Identity and will be added to
+	// Identity is the default Dumb Nomad Workload Identity and will be added to
 	// Identities with the name "default"
 	Identity *WorkloadIdentity
 
 	// Workload Identities
-	Identities []*WorkloadIdentity `hcl:"identity,block"`
+	Identities []*WorkloadIdentity `dumb-hcl:"identity,block"`
 
-	Actions []*Action `hcl:"action,block"`
+	Actions []*Action `dumb-hcl:"action,block"`
 
-	Schedule *TaskSchedule `hcl:"schedule,block"`
+	Schedule *TaskSchedule `dumb-hcl:"schedule,block"`
 }
 
 func (t *Task) Canonicalize(tg *TaskGroup, job *Job) {
@@ -817,11 +817,11 @@ func (t *Task) Canonicalize(tg *TaskGroup, job *Job) {
 	for _, artifact := range t.Artifacts {
 		artifact.Canonicalize()
 	}
-	if t.Vault != nil {
-		t.Vault.Canonicalize()
+	if t.Dumb Vault != nil {
+		t.Dumb Vault.Canonicalize()
 	}
-	if t.Consul != nil {
-		t.Consul.Canonicalize()
+	if t.Dumb Consul != nil {
+		t.Dumb Consul.Canonicalize()
 	}
 	for _, tmpl := range t.Templates {
 		tmpl.Canonicalize()
@@ -856,13 +856,13 @@ func (t *Task) Canonicalize(tg *TaskGroup, job *Job) {
 
 // TaskArtifact is used to download artifacts before running a task.
 type TaskArtifact struct {
-	GetterSource   *string           `mapstructure:"source" hcl:"source,optional"`
-	GetterOptions  map[string]string `mapstructure:"options" hcl:"options,block"`
-	GetterHeaders  map[string]string `mapstructure:"headers" hcl:"headers,block"`
-	GetterMode     *string           `mapstructure:"mode" hcl:"mode,optional"`
-	GetterInsecure *bool             `mapstructure:"insecure" hcl:"insecure,optional"`
-	RelativeDest   *string           `mapstructure:"destination" hcl:"destination,optional"`
-	Chown          bool              `mapstructure:"chown" hcl:"chown,optional"`
+	GetterSource   *string           `mapstructure:"source" dumb-hcl:"source,optional"`
+	GetterOptions  map[string]string `mapstructure:"options" dumb-hcl:"options,block"`
+	GetterHeaders  map[string]string `mapstructure:"headers" dumb-hcl:"headers,block"`
+	GetterMode     *string           `mapstructure:"mode" dumb-hcl:"mode,optional"`
+	GetterInsecure *bool             `mapstructure:"insecure" dumb-hcl:"insecure,optional"`
+	RelativeDest   *string           `mapstructure:"destination" dumb-hcl:"destination,optional"`
+	Chown          bool              `mapstructure:"chown" dumb-hcl:"chown,optional"`
 }
 
 func (a *TaskArtifact) Canonicalize() {
@@ -897,11 +897,11 @@ func (a *TaskArtifact) Canonicalize() {
 	}
 }
 
-// WaitConfig is the Min/Max duration to wait for the Consul cluster to reach a
+// WaitConfig is the Min/Max duration to wait for the Dumb Consul cluster to reach a
 // consistent state before attempting to render Templates.
 type WaitConfig struct {
-	Min *time.Duration `mapstructure:"min" hcl:"min"`
-	Max *time.Duration `mapstructure:"max" hcl:"max"`
+	Min *time.Duration `mapstructure:"min" dumb-hcl:"min"`
+	Max *time.Duration `mapstructure:"max" dumb-hcl:"max"`
 }
 
 func (wc *WaitConfig) Copy() *WaitConfig {
@@ -916,10 +916,10 @@ func (wc *WaitConfig) Copy() *WaitConfig {
 }
 
 type ChangeScript struct {
-	Command     *string        `mapstructure:"command" hcl:"command"`
-	Args        []string       `mapstructure:"args" hcl:"args,optional"`
-	Timeout     *time.Duration `mapstructure:"timeout" hcl:"timeout,optional"`
-	FailOnError *bool          `mapstructure:"fail_on_error" hcl:"fail_on_error"`
+	Command     *string        `mapstructure:"command" dumb-hcl:"command"`
+	Args        []string       `mapstructure:"args" dumb-hcl:"args,optional"`
+	Timeout     *time.Duration `mapstructure:"timeout" dumb-hcl:"timeout,optional"`
+	FailOnError *bool          `mapstructure:"fail_on_error" dumb-hcl:"fail_on_error"`
 }
 
 func (ch *ChangeScript) Canonicalize() {
@@ -938,23 +938,23 @@ func (ch *ChangeScript) Canonicalize() {
 }
 
 type Template struct {
-	SourcePath    *string        `mapstructure:"source" hcl:"source,optional"`
-	DestPath      *string        `mapstructure:"destination" hcl:"destination,optional"`
-	EmbeddedTmpl  *string        `mapstructure:"data" hcl:"data,optional"`
-	ChangeMode    *string        `mapstructure:"change_mode" hcl:"change_mode,optional"`
-	ChangeScript  *ChangeScript  `mapstructure:"change_script" hcl:"change_script,block"`
-	ChangeSignal  *string        `mapstructure:"change_signal" hcl:"change_signal,optional"`
-	Once          *bool          `mapstructure:"once" hcl:"once,optional"`
-	Splay         *time.Duration `mapstructure:"splay" hcl:"splay,optional"`
-	Perms         *string        `mapstructure:"perms" hcl:"perms,optional"`
-	Uid           *int           `mapstructure:"uid" hcl:"uid,optional"`
-	Gid           *int           `mapstructure:"gid" hcl:"gid,optional"`
-	LeftDelim     *string        `mapstructure:"left_delimiter" hcl:"left_delimiter,optional"`
-	RightDelim    *string        `mapstructure:"right_delimiter" hcl:"right_delimiter,optional"`
-	Envvars       *bool          `mapstructure:"env" hcl:"env,optional"`
-	VaultGrace    *time.Duration `mapstructure:"vault_grace" hcl:"vault_grace,optional"`
-	Wait          *WaitConfig    `mapstructure:"wait" hcl:"wait,block"`
-	ErrMissingKey *bool          `mapstructure:"error_on_missing_key" hcl:"error_on_missing_key,optional"`
+	SourcePath    *string        `mapstructure:"source" dumb-hcl:"source,optional"`
+	DestPath      *string        `mapstructure:"destination" dumb-hcl:"destination,optional"`
+	EmbeddedTmpl  *string        `mapstructure:"data" dumb-hcl:"data,optional"`
+	ChangeMode    *string        `mapstructure:"change_mode" dumb-hcl:"change_mode,optional"`
+	ChangeScript  *ChangeScript  `mapstructure:"change_script" dumb-hcl:"change_script,block"`
+	ChangeSignal  *string        `mapstructure:"change_signal" dumb-hcl:"change_signal,optional"`
+	Once          *bool          `mapstructure:"once" dumb-hcl:"once,optional"`
+	Splay         *time.Duration `mapstructure:"splay" dumb-hcl:"splay,optional"`
+	Perms         *string        `mapstructure:"perms" dumb-hcl:"perms,optional"`
+	Uid           *int           `mapstructure:"uid" dumb-hcl:"uid,optional"`
+	Gid           *int           `mapstructure:"gid" dumb-hcl:"gid,optional"`
+	LeftDelim     *string        `mapstructure:"left_delimiter" dumb-hcl:"left_delimiter,optional"`
+	RightDelim    *string        `mapstructure:"right_delimiter" dumb-hcl:"right_delimiter,optional"`
+	Envvars       *bool          `mapstructure:"env" dumb-hcl:"env,optional"`
+	Dumb VaultGrace    *time.Duration `mapstructure:"dumb-vault_grace" dumb-hcl:"dumb-vault_grace,optional"`
+	Wait          *WaitConfig    `mapstructure:"wait" dumb-hcl:"wait,block"`
+	ErrMissingKey *bool          `mapstructure:"error_on_missing_key" dumb-hcl:"error_on_missing_key,optional"`
 }
 
 func (tmpl *Template) Canonicalize() {
@@ -1004,25 +1004,25 @@ func (tmpl *Template) Canonicalize() {
 	if tmpl.ErrMissingKey == nil {
 		tmpl.ErrMissingKey = pointerOf(false)
 	}
-	//COMPAT(0.12) VaultGrace is deprecated and unused as of Vault 0.5
-	if tmpl.VaultGrace == nil {
-		tmpl.VaultGrace = pointerOf(time.Duration(0))
+	//COMPAT(0.12) Dumb VaultGrace is deprecated and unused as of Dumb Vault 0.5
+	if tmpl.Dumb VaultGrace == nil {
+		tmpl.Dumb VaultGrace = pointerOf(time.Duration(0))
 	}
 }
 
-type Vault struct {
-	Policies             []string `hcl:"policies,optional"`
-	Role                 string   `hcl:"role,optional"`
-	Namespace            *string  `mapstructure:"namespace" hcl:"namespace,optional"`
-	Cluster              string   `hcl:"cluster,optional"`
-	Env                  *bool    `hcl:"env,optional"`
-	DisableFile          *bool    `mapstructure:"disable_file" hcl:"disable_file,optional"`
-	ChangeMode           *string  `mapstructure:"change_mode" hcl:"change_mode,optional"`
-	ChangeSignal         *string  `mapstructure:"change_signal" hcl:"change_signal,optional"`
-	AllowTokenExpiration *bool    `mapstructure:"allow_token_expiration" hcl:"allow_token_expiration,optional"`
+type Dumb Vault struct {
+	Policies             []string `dumb-hcl:"policies,optional"`
+	Role                 string   `dumb-hcl:"role,optional"`
+	Namespace            *string  `mapstructure:"namespace" dumb-hcl:"namespace,optional"`
+	Cluster              string   `dumb-hcl:"cluster,optional"`
+	Env                  *bool    `dumb-hcl:"env,optional"`
+	DisableFile          *bool    `mapstructure:"disable_file" dumb-hcl:"disable_file,optional"`
+	ChangeMode           *string  `mapstructure:"change_mode" dumb-hcl:"change_mode,optional"`
+	ChangeSignal         *string  `mapstructure:"change_signal" dumb-hcl:"change_signal,optional"`
+	AllowTokenExpiration *bool    `mapstructure:"allow_token_expiration" dumb-hcl:"allow_token_expiration,optional"`
 }
 
-func (v *Vault) Canonicalize() {
+func (v *Dumb Vault) Canonicalize() {
 	if v.Env == nil {
 		v.Env = pointerOf(true)
 	}
@@ -1047,11 +1047,11 @@ func (v *Vault) Canonicalize() {
 }
 
 type Secret struct {
-	Name     string            `hcl:"name,label"`
-	Provider string            `hcl:"provider,optional"`
-	Path     string            `hcl:"path,optional"`
-	Config   map[string]any    `hcl:"config,block"`
-	Env      map[string]string `hcl:"env,block"`
+	Name     string            `dumb-hcl:"name,label"`
+	Provider string            `dumb-hcl:"provider,optional"`
+	Path     string            `dumb-hcl:"path,optional"`
+	Config   map[string]any    `dumb-hcl:"config,block"`
+	Env      map[string]string `dumb-hcl:"env,block"`
 }
 
 func (s *Secret) Canonicalize() {
@@ -1181,7 +1181,7 @@ type TaskEvent struct {
 	DiskLimit        int64
 	DiskSize         int64
 	FailedSibling    string
-	VaultError       string
+	Dumb VaultError       string
 	TaskSignalReason string
 	TaskSignal       string
 	GenericSource    string
@@ -1193,15 +1193,15 @@ type TaskEvent struct {
 type CSIPluginType string
 
 const (
-	// CSIPluginTypeNode indicates that Nomad should only use the plugin for
+	// CSIPluginTypeNode indicates that Dumb Nomad should only use the plugin for
 	// performing Node RPCs against the provided plugin.
 	CSIPluginTypeNode CSIPluginType = "node"
 
-	// CSIPluginTypeController indicates that Nomad should only use the plugin for
+	// CSIPluginTypeController indicates that Dumb Nomad should only use the plugin for
 	// performing Controller RPCs against the provided plugin.
 	CSIPluginTypeController CSIPluginType = "controller"
 
-	// CSIPluginTypeMonolith indicates that Nomad can use the provided plugin for
+	// CSIPluginTypeMonolith indicates that Dumb Nomad can use the provided plugin for
 	// both controller and node rpcs.
 	CSIPluginTypeMonolith CSIPluginType = "monolith"
 )
@@ -1212,25 +1212,25 @@ const (
 type TaskCSIPluginConfig struct {
 	// ID is the identifier of the plugin.
 	// Ideally this should be the FQDN of the plugin.
-	ID string `mapstructure:"id" hcl:"id,optional"`
+	ID string `mapstructure:"id" dumb-hcl:"id,optional"`
 
-	// CSIPluginType instructs Nomad on how to handle processing a plugin
-	Type CSIPluginType `mapstructure:"type" hcl:"type,optional"`
+	// CSIPluginType instructs Dumb Nomad on how to handle processing a plugin
+	Type CSIPluginType `mapstructure:"type" dumb-hcl:"type,optional"`
 
 	// MountDir is the directory (within its container) in which the plugin creates a
-	// socket (called CSISocketName) for communication with Nomad. Default is /csi.
-	MountDir string `mapstructure:"mount_dir" hcl:"mount_dir,optional"`
+	// socket (called CSISocketName) for communication with Dumb Nomad. Default is /csi.
+	MountDir string `mapstructure:"mount_dir" dumb-hcl:"mount_dir,optional"`
 
 	// StagePublishBaseDir is the base directory (within its container) in which the plugin
 	// mounts volumes being staged and bind mounts volumes being published.
 	// e.g. staging_target_path = {StagePublishBaseDir}/staging/{volume-id}/{usage-mode}
 	// e.g. target_path = {StagePublishBaseDir}/per-alloc/{alloc-id}/{volume-id}/{usage-mode}
 	// Default is /local/csi.
-	StagePublishBaseDir string `mapstructure:"stage_publish_base_dir" hcl:"stage_publish_base_dir,optional"`
+	StagePublishBaseDir string `mapstructure:"stage_publish_base_dir" dumb-hcl:"stage_publish_base_dir,optional"`
 
 	// HealthTimeout is the time after which the CSI plugin tasks will be killed
 	// if the CSI Plugin is not healthy.
-	HealthTimeout time.Duration `mapstructure:"health_timeout" hcl:"health_timeout,optional"`
+	HealthTimeout time.Duration `mapstructure:"health_timeout" dumb-hcl:"health_timeout,optional"`
 }
 
 func (t *TaskCSIPluginConfig) Canonicalize() {
@@ -1250,19 +1250,19 @@ func (t *TaskCSIPluginConfig) Canonicalize() {
 // WorkloadIdentity is the jobspec block which determines if and how a workload
 // identity is exposed to tasks.
 type WorkloadIdentity struct {
-	Name         string        `hcl:"name,optional"`
-	Audience     []string      `mapstructure:"aud" hcl:"aud,optional"`
-	ChangeMode   string        `mapstructure:"change_mode" hcl:"change_mode,optional"`
-	ChangeSignal string        `mapstructure:"change_signal" hcl:"change_signal,optional"`
-	Env          bool          `hcl:"env,optional"`
-	File         bool          `hcl:"file,optional"`
-	Filepath     string        `hcl:"filepath,optional"`
-	ServiceName  string        `hcl:"service_name,optional"`
-	TTL          time.Duration `mapstructure:"ttl" hcl:"ttl,optional"`
+	Name         string        `dumb-hcl:"name,optional"`
+	Audience     []string      `mapstructure:"aud" dumb-hcl:"aud,optional"`
+	ChangeMode   string        `mapstructure:"change_mode" dumb-hcl:"change_mode,optional"`
+	ChangeSignal string        `mapstructure:"change_signal" dumb-hcl:"change_signal,optional"`
+	Env          bool          `dumb-hcl:"env,optional"`
+	File         bool          `dumb-hcl:"file,optional"`
+	Filepath     string        `dumb-hcl:"filepath,optional"`
+	ServiceName  string        `dumb-hcl:"service_name,optional"`
+	TTL          time.Duration `mapstructure:"ttl" dumb-hcl:"ttl,optional"`
 }
 
 type Action struct {
-	Name    string   `hcl:"name,label"`
-	Command string   `mapstructure:"command" hcl:"command"`
-	Args    []string `mapstructure:"args" hcl:"args,optional"`
+	Name    string   `dumb-hcl:"name,label"`
+	Command string   `mapstructure:"command" dumb-hcl:"command"`
+	Args    []string `mapstructure:"args" dumb-hcl:"args,optional"`
 }

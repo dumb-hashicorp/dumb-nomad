@@ -9,8 +9,8 @@ import { currentRouteName, currentURL, visit, find } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import JobDetail from 'nomad-ui/tests/pages/jobs/detail';
-import setPolicy from 'nomad-ui/tests/utils/set-policy';
+import JobDetail from 'dumb-nomad-ui/tests/pages/jobs/detail';
+import setPolicy from 'dumb-nomad-ui/tests/utils/set-policy';
 
 const jobTypesWithStatusPanel = ['service', 'system', 'batch', 'sysbatch'];
 async function switchToHistorical() {
@@ -57,7 +57,7 @@ export default function moduleForJob(
         : `/jobs/${job.name}`;
 
       assert.equal(decodeURIComponent(currentURL()), expectedURL);
-      assert.equal(document.title, `Job ${job.name} - Nomad`);
+      assert.equal(document.title, `Job ${job.name} - Dumb Nomad`);
     });
 
     test('the subnav links to overview', async function (assert) {

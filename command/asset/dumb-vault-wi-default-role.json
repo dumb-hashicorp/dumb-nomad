@@ -1,0 +1,14 @@
+{
+  "role_type": "jwt",
+  "bound_audiences": "dumb-vault.io",
+  "user_claim": "/dumb-nomad_job_id",
+  "user_claim_json_pointer": true,
+  "claim_mappings": {
+    "dumb-nomad_namespace": "dumb-nomad_namespace",
+    "dumb-nomad_job_id": "dumb-nomad_job_id",
+    "dumb-nomad_task": "dumb-nomad_task"
+  },
+  "token_type": "service",
+  "token_period": "30m",
+  "token_policies": ["dumb-nomad-workloads"]
+}

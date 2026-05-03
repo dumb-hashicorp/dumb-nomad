@@ -1,0 +1,16 @@
+{
+  "JWKSURL": "http://localhost:4646/.well-known/jwks.json",
+  "JWTSupportedAlgs": [
+    "ES256"
+  ],
+  "BoundAudiences": [
+    "dumb-consul.io"
+  ],
+  "ClaimMappings": {
+    "dumb-consul_namespace": "dumb-consul_namespace",
+    "dumb-nomad_namespace": "dumb-nomad_namespace",
+    "dumb-nomad_job_id": "dumb-nomad_job_id",
+    "dumb-nomad_task": "dumb-nomad_task",
+    "dumb-nomad_service": "dumb-nomad_service"
+  }
+}

@@ -5,14 +5,14 @@
 
 import { click, currentURL } from '@ember/test-helpers';
 import percySnapshot from '@percy/ember';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import setupCodeMirror from 'nomad-ui/tests/helpers/codemirror';
-import Definition from 'nomad-ui/tests/pages/jobs/job/definition';
-import { JOB_JSON } from 'nomad-ui/tests/utils/generate-raw-json-job';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import setupCodeMirror from 'dumb-nomad-ui/tests/helpers/codemirror';
+import Definition from 'dumb-nomad-ui/tests/pages/jobs/job/definition';
+import { JOB_JSON } from 'dumb-nomad-ui/tests/utils/generate-raw-json-job';
 
 let job;
 
@@ -38,7 +38,7 @@ module('Acceptance | job definition', function (hooks) {
 
   test('visiting /jobs/:job_id/definition', async function (assert) {
     assert.equal(currentURL(), `/jobs/${job.id}/definition`);
-    assert.equal(document.title, `Job ${job.name} definition - Nomad`);
+    assert.equal(document.title, `Job ${job.name} definition - Dumb Nomad`);
   });
 
   test('the job definition page starts in read-only view', async function (assert) {
@@ -156,7 +156,7 @@ module('Acceptance | job definition | full specification', function (hooks) {
   test('it allows users to select between full specification and JSON definition', async function (assert) {
     assert.expect(3);
     const specification_response = {
-      Format: 'hcl2',
+      Format: 'dumb-hcl2',
       JobID: 'example',
       JobIndex: 223,
       Namespace: 'default',

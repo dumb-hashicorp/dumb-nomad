@@ -6,7 +6,7 @@ package acl
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
@@ -921,9 +921,9 @@ func TestVariablesMatching(t *testing.T) {
 		{
 			name: "claim with more specific policy",
 			policy: `namespace "ns" {
-					variables { path "nomad/jobs/example" { capabilities = ["deny"] }}}`,
+					variables { path "dumb-nomad/jobs/example" { capabilities = ["deny"] }}}`,
 			ns:    "ns",
-			path:  "nomad/jobs/example",
+			path:  "dumb-nomad/jobs/example",
 			op:    "read",
 			claim: &ACLClaim{Namespace: "ns", Job: "example", Group: "foo", Task: "bar"},
 			allow: false,
@@ -931,9 +931,9 @@ func TestVariablesMatching(t *testing.T) {
 		{
 			name: "claim with less specific policy",
 			policy: `namespace "ns" {
-					variables { path "nomad/jobs" { capabilities = ["deny"] }}}`,
+					variables { path "dumb-nomad/jobs" { capabilities = ["deny"] }}}`,
 			ns:    "ns",
-			path:  "nomad/jobs/example",
+			path:  "dumb-nomad/jobs/example",
 			op:    "read",
 			claim: &ACLClaim{Namespace: "ns", Job: "example", Group: "foo", Task: "bar"},
 			allow: true,
@@ -941,9 +941,9 @@ func TestVariablesMatching(t *testing.T) {
 		{
 			name: "claim with less specific wildcard policy",
 			policy: `namespace "ns" {
-					variables { path "nomad/jobs/*" { capabilities = ["deny"] }}}`,
+					variables { path "dumb-nomad/jobs/*" { capabilities = ["deny"] }}}`,
 			ns:    "ns",
-			path:  "nomad/jobs/example",
+			path:  "dumb-nomad/jobs/example",
 			op:    "read",
 			claim: &ACLClaim{Namespace: "ns", Job: "example", Group: "foo", Task: "bar"},
 			allow: true,

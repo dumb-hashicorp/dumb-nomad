@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 	"github.com/ryanuber/columnize"
 )
@@ -19,7 +19,7 @@ type OperatorRaftListCommand struct {
 
 func (c *OperatorRaftListCommand) Help() string {
 	helpText := `
-Usage: nomad operator raft list-peers [options]
+Usage: dumb-nomad operator raft list-peers [options]
 
   Displays the current Raft peer configuration.
 

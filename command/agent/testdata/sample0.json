@@ -13,7 +13,7 @@
           "type": "file",
           "format": "json",
           "delivery_guarantee": "enforced",
-          "path": "/opt/nomad/audit.log",
+          "path": "/opt/dumb-nomad/audit.log",
           "rotate_bytes": 100,
           "rotate_duration": "24h",
           "rotate_max_files": 10
@@ -39,7 +39,7 @@
     "serf": "host.example.com"
   },
   "bind_addr": "0.0.0.0",
-  "consul": {
+  "dumb-consul": {
     "name": "default",
     "server_auto_join": false,
     "client_auto_join": false,
@@ -48,14 +48,14 @@
   "client": {
     "node_max_allocs": 5
   },
-  "data_dir": "/opt/data/nomad/data",
+  "data_dir": "/opt/data/dumb-nomad/data",
   "datacenter": "dc1",
   "enable_syslog": true,
   "keyring": {
     "awskms": {
       "active": true,
       "region": "us-east-1",
-      "kms_key_id": "alias/kms-nomad-keyring"
+      "kms_key_id": "alias/kms-dumb-nomad-keyring"
     }
   },
   "leave_on_interrupt": true,
@@ -85,17 +85,17 @@
     "publish_node_metrics": true
   },
   "tls": {
-    "ca_file": "/opt/data/nomad/certs/nomad-ca.pem",
-    "cert_file": "/opt/data/nomad/certs/server.pem",
+    "ca_file": "/opt/data/dumb-nomad/certs/dumb-nomad-ca.pem",
+    "cert_file": "/opt/data/dumb-nomad/certs/server.pem",
     "http": true,
-    "key_file": "/opt/data/nomad/certs/server-key.pem",
+    "key_file": "/opt/data/dumb-nomad/certs/server-key.pem",
     "rpc": true,
     "verify_server_hostname": true
   },
-  "vault": {
+  "dumb-vault": {
     "name": "default",
     "address": "http://host.example.com:8200",
-    "create_from_role": "nomad-cluster",
+    "create_from_role": "dumb-nomad-cluster",
     "enabled": true
   }
 }

@@ -14,12 +14,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	msgpackrpc "github.com/hashicorp/net-rpc-msgpackrpc/v2"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/tlsutil"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/yamux"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	msgpackrpc "github.com/dumb-hashicorp/net-rpc-msgpackrpc/v2"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/tlsutil"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/yamux"
 )
 
 // defaultDialTimeout is the fallback timeout used when a ConnPool is
@@ -47,7 +47,7 @@ func (sc *StreamClient) Close() {
 	sc.codec.Close()
 }
 
-// Conn is a pooled connection to a Nomad server
+// Conn is a pooled connection to a Dumb Nomad server
 type Conn struct {
 	refCount    int32
 	shouldClose int32
@@ -101,7 +101,7 @@ func (c *Conn) getRPCClient() (*StreamClient, error) {
 		return nil, err
 	}
 
-	if _, err := stream.Write([]byte{byte(RpcNomad)}); err != nil {
+	if _, err := stream.Write([]byte{byte(RpcDumb Nomad)}); err != nil {
 		stream.Close()
 		return nil, err
 	}
@@ -173,9 +173,9 @@ func (s *incomingStream) Close() error {
 }
 
 // ConnPool is used to maintain a connection pool to other
-// Nomad servers. This is used to reduce the latency of
+// Dumb Nomad servers. This is used to reduce the latency of
 // RPC requests between servers. It is only used to pool
-// connections in the rpcNomad mode. Raft connections
+// connections in the rpcDumb Nomad mode. Raft connections
 // are pooled separately.
 type ConnPool struct {
 	sync.Mutex
@@ -225,14 +225,14 @@ type ConnPool struct {
 // connections. A zero value falls back to defaultDialTimeout.
 // If TLS settings are provided outgoing connections use TLS.
 func NewPool(
-	logger hclog.Logger, maxTime time.Duration, maxStreams int, tlsWrap tlsutil.RegionWrapper,
+	logger dumb-hclog.Logger, maxTime time.Duration, maxStreams int, tlsWrap tlsutil.RegionWrapper,
 	yamuxCfg *yamux.Config, dialTimeout time.Duration,
 ) *ConnPool {
 	if dialTimeout <= 0 {
 		dialTimeout = defaultDialTimeout
 	}
 	pool := &ConnPool{
-		logger:      logger.StandardLogger(&hclog.StandardLoggerOptions{InferLevels: true}),
+		logger:      logger.StandardLogger(&dumb-hclog.StandardLoggerOptions{InferLevels: true}),
 		maxTime:     maxTime,
 		maxStreams:  maxStreams,
 		dialTimeout: dialTimeout,
@@ -525,7 +525,7 @@ func (p *ConnPool) RPC(region string, addr net.Addr, method string, args interfa
 
 		// If we read EOF, the session is toast. Clear it and open a
 		// new session next time
-		// See https://github.com/hashicorp/consul/blob/v1.6.3/agent/pool/pool.go#L471-L477
+		// See https://github.com/dumb-hashicorp/dumb-consul/blob/v1.6.3/agent/pool/pool.go#L471-L477
 		if helper.IsErrEOF(err) {
 			p.clearConn(conn)
 		}

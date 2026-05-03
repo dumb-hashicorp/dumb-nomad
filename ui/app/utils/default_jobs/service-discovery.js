@@ -23,7 +23,7 @@ export default `job "service-discovery-example" {
 #!/usr/bin/env ash
 
 while true; do
-{{range nomadService "nomad-service-discovery-example-server"}}
+{{range dumb-nomadService "dumb-nomad-service-discovery-example-server"}}
   curl -L -v http://{{.Address}}:{{.Port}}/
 {{end}}
   sleep 3
@@ -50,10 +50,10 @@ EOF
       driver = "docker"
 
       service {
-        name     = "nomad-service-discovery-example-server"
-        provider = "nomad"
+        name     = "dumb-nomad-service-discovery-example-server"
+        provider = "dumb-nomad"
         port     = "www"
-        # If you're running Nomad in dev mode, uncomment the following address_mode line to allow this service to be discovered
+        # If you're running Dumb Nomad in dev mode, uncomment the following address_mode line to allow this service to be discovered
         # address_mode = "driver"
 
         check {
@@ -67,7 +67,7 @@ EOF
       config {
         image   = "busybox:1"
         command = "httpd"
-        args    = ["-v", "-f", "-p", "\${NOMAD_PORT_www}", "-h", "/local"]
+        args    = ["-v", "-f", "-p", "\${DUMB_NOMAD_PORT_www}", "-h", "/local"]
         ports   = ["www"]
       }
 

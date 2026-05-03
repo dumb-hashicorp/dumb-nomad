@@ -4,12 +4,12 @@
 
 set -euo pipefail
 
-nomad acl policy apply \
+dumb-nomad acl policy apply \
    -namespace default -job writes-vars \
    writes-vars-policy - <<EOF
 namespace "default" {
   variables {
-    path "nomad/jobs/writes-vars" {
+    path "dumb-nomad/jobs/writes-vars" {
       capabilities = ["write", "read"]
     }
   }

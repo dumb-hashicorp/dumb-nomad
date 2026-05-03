@@ -9,14 +9,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allochealth"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks/checkstore"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allochealth"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks/checkstore"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // healthSetter is able to set/clear alloc health.
@@ -32,15 +32,15 @@ type healthSetter interface {
 }
 
 // allocHealthWatcherHook is responsible for watching an allocation's task
-// status and (optionally) Consul health check status to determine if the
+// status and (optionally) Dumb Consul health check status to determine if the
 // allocation is healthy or unhealthy. Used by deployments and migrations.
 type allocHealthWatcherHook struct {
 	healthSetter healthSetter
 
-	// consul client used to monitor Consul service health checks
-	consul serviceregistration.Handler
+	// dumb-consul client used to monitor Dumb Consul service health checks
+	dumb-consul serviceregistration.Handler
 
-	// checkStore is used to monitor Nomad service health checks
+	// checkStore is used to monitor Dumb Nomad service health checks
 	checkStore checkstore.Shim
 
 	// listener is given to trackers to listen for alloc updates and closed
@@ -72,15 +72,15 @@ type allocHealthWatcherHook struct {
 	// hold hookLock to access.
 	isDeploy bool
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 func newAllocHealthWatcherHook(
-	logger hclog.Logger,
+	logger dumb-hclog.Logger,
 	alloc *structs.Allocation,
 	hs healthSetter,
 	listener *cstructs.AllocListener,
-	consul serviceregistration.Handler,
+	dumb-consul serviceregistration.Handler,
 	checkStore checkstore.Shim,
 ) interfaces.RunnerHook {
 
@@ -100,7 +100,7 @@ func newAllocHealthWatcherHook(
 		alloc:        alloc,
 		cancelFn:     func() {}, // initialize to prevent nil func panics
 		watchDone:    closedDone,
-		consul:       consul,
+		dumb-consul:       dumb-consul,
 		checkStore:   checkStore,
 		healthSetter: hs,
 		listener:     listener,
@@ -158,7 +158,7 @@ func (h *allocHealthWatcherHook) init(allocEnv *taskenv.TaskEnv) error {
 	h.logger.Trace("watching", "deadline", deadline, "checks", useChecks, "min_healthy_time", minHealthyTime)
 	// Create a new tracker, start it, and watch for health results.
 	tracker := allochealth.NewTracker(
-		ctx, h.logger, h.alloc, h.listener, allocEnv, h.consul, h.checkStore, minHealthyTime, useChecks,
+		ctx, h.logger, h.alloc, h.listener, allocEnv, h.dumb-consul, h.checkStore, minHealthyTime, useChecks,
 	)
 	tracker.Start()
 

@@ -9,11 +9,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	nomadapi "github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
-	"github.com/hashicorp/nomad/e2e/v3/volumes3"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	dumb-nomadapi "github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/volumes3"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
@@ -24,16 +24,16 @@ import (
 func TestDynamicHostVolumes_CreateWorkflow(t *testing.T) {
 
 	start := time.Now()
-	nomad := e2eutil.NomadClient(t)
-	e2eutil.WaitForLeader(t, nomad)
-	e2eutil.WaitForNodesReady(t, nomad, 1)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
+	e2eutil.WaitForLeader(t, dumb-nomad)
+	e2eutil.WaitForNodesReady(t, dumb-nomad, 1)
 
-	_, cleanupVol := volumes3.Create(t, "input/volume-create.nomad.hcl",
-		volumes3.WithClient(nomad))
+	_, cleanupVol := volumes3.Create(t, "input/volume-create.dumb-nomad.dumb-hcl",
+		volumes3.WithClient(dumb-nomad))
 	t.Cleanup(cleanupVol)
 
 	t.Logf("[%v] submitting mounter job", time.Since(start))
-	_, cleanupJob := jobs3.Submit(t, "./input/mount-created.nomad.hcl")
+	_, cleanupJob := jobs3.Submit(t, "./input/mount-created.dumb-nomad.dumb-hcl")
 	t.Cleanup(cleanupJob)
 	t.Logf("[%v] test complete, cleaning up", time.Since(start))
 }
@@ -44,25 +44,25 @@ func TestDynamicHostVolumes_CreateWorkflow(t *testing.T) {
 func TestDynamicHostVolumes_RegisterWorkflow(t *testing.T) {
 
 	start := time.Now()
-	nomad := e2eutil.NomadClient(t)
-	e2eutil.WaitForLeader(t, nomad)
-	e2eutil.WaitForNodesReady(t, nomad, 1)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
+	e2eutil.WaitForLeader(t, dumb-nomad)
+	e2eutil.WaitForNodesReady(t, dumb-nomad, 1)
 
-	submitted, cleanup := jobs3.Submit(t, "./input/register-volumes.nomad.hcl",
+	submitted, cleanup := jobs3.Submit(t, "./input/register-volumes.dumb-nomad.dumb-hcl",
 		jobs3.Dispatcher(),
 	)
 	t.Cleanup(cleanup)
 	t.Logf("[%v] register job %q created", time.Since(start), submitted.JobID())
 
 	_, err := e2eutil.Command(
-		"nomad", "acl", "policy", "apply",
+		"dumb-nomad", "acl", "policy", "apply",
 		"-namespace", "default", "-job", submitted.JobID(),
-		"register-volumes-policy", "./input/register-volumes.policy.hcl")
+		"register-volumes-policy", "./input/register-volumes.policy.dumb-hcl")
 	must.NoError(t, err)
 	t.Logf("[%v] ACL policy for job %q created", time.Since(start), submitted.JobID())
 
 	t.Cleanup(func() {
-		_, err := nomad.ACLPolicies().Delete("register-volumes-policy", nil)
+		_, err := dumb-nomad.ACLPolicies().Delete("register-volumes-policy", nil)
 		test.NoError(t, err)
 	})
 
@@ -88,7 +88,7 @@ func TestDynamicHostVolumes_RegisterWorkflow(t *testing.T) {
 			must.NotEq(t, "", jobID,
 				must.Sprintf("invalid dispatched jobs output: %v", dispatches))
 
-			allocs, _, err := nomad.Jobs().Allocations(jobID, true, nil)
+			allocs, _, err := dumb-nomad.Jobs().Allocations(jobID, true, nil)
 			if len(allocs) == 0 || allocs[0].ClientStatus != "complete" {
 				out, _ := e2eutil.AllocLogs(allocs[0].ID, "default", e2eutil.LogsStdErr)
 				return fmt.Errorf("allocation status was %q. logs: %s",
@@ -102,7 +102,7 @@ func TestDynamicHostVolumes_RegisterWorkflow(t *testing.T) {
 		wait.Gap(50*time.Millisecond),
 	))
 
-	out, err := e2eutil.Command("nomad", "volume", "status", "-verbose", "-type", "host")
+	out, err := e2eutil.Command("dumb-nomad", "volume", "status", "-verbose", "-type", "host")
 	must.NoError(t, err)
 
 	section, err := e2eutil.GetSection(out, "Dynamic Host Volumes")
@@ -121,13 +121,13 @@ func TestDynamicHostVolumes_RegisterWorkflow(t *testing.T) {
 	must.NotEq(t, "", volID, must.Sprintf("volume was not registered: %s", out))
 
 	t.Cleanup(func() {
-		_, err := e2eutil.Command("nomad", "volume", "delete", "-type", "host", volID)
+		_, err := e2eutil.Command("dumb-nomad", "volume", "delete", "-type", "host", volID)
 		must.NoError(t, err)
 	})
 
 	must.Wait(t, wait.InitialSuccess(
 		wait.ErrorFunc(func() error {
-			node, _, err := nomad.Nodes().Info(nodeID, nil)
+			node, _, err := dumb-nomad.Nodes().Info(nodeID, nil)
 			if err != nil {
 				return err
 			}
@@ -135,7 +135,7 @@ func TestDynamicHostVolumes_RegisterWorkflow(t *testing.T) {
 			if !ok {
 				return fmt.Errorf("node %q did not fingerprint volume %q", nodeID, volID)
 			}
-			vol, _, err := nomad.HostVolumes().Get(volID, nil)
+			vol, _, err := dumb-nomad.HostVolumes().Get(volID, nil)
 			if err != nil {
 				return err
 			}
@@ -151,7 +151,7 @@ func TestDynamicHostVolumes_RegisterWorkflow(t *testing.T) {
 	))
 
 	t.Logf("[%v] submitting mounter job", time.Since(start))
-	_, cleanup2 := jobs3.Submit(t, "./input/mount-registered.nomad.hcl")
+	_, cleanup2 := jobs3.Submit(t, "./input/mount-registered.dumb-nomad.dumb-hcl")
 	t.Cleanup(cleanup2)
 	t.Logf("[%v] test complete, cleaning up", time.Since(start))
 }
@@ -162,19 +162,19 @@ func TestDynamicHostVolumes_RegisterWorkflow(t *testing.T) {
 func TestDynamicHostVolumes_StickyVolumes(t *testing.T) {
 
 	start := time.Now()
-	nomad := e2eutil.NomadClient(t)
-	e2eutil.WaitForLeader(t, nomad)
-	e2eutil.WaitForNodesReady(t, nomad, 2)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
+	e2eutil.WaitForLeader(t, dumb-nomad)
+	e2eutil.WaitForNodesReady(t, dumb-nomad, 2)
 
 	// TODO: if we create # of volumes == # of nodes, we can make test flakes
 	// stand out more easily
 
-	vol1Sub, cleanup1 := volumes3.Create(t, "input/volume-sticky.nomad.hcl",
-		volumes3.WithClient(nomad))
+	vol1Sub, cleanup1 := volumes3.Create(t, "input/volume-sticky.dumb-nomad.dumb-hcl",
+		volumes3.WithClient(dumb-nomad))
 	t.Cleanup(cleanup1)
 
-	vol2Sub, cleanup2 := volumes3.Create(t, "input/volume-sticky.nomad.hcl",
-		volumes3.WithClient(nomad))
+	vol2Sub, cleanup2 := volumes3.Create(t, "input/volume-sticky.dumb-nomad.dumb-hcl",
+		volumes3.WithClient(dumb-nomad))
 	t.Cleanup(cleanup2)
 
 	nodeToVolMap := map[string]string{
@@ -183,11 +183,11 @@ func TestDynamicHostVolumes_StickyVolumes(t *testing.T) {
 	}
 
 	t.Logf("[%v] submitting sticky volume mounter job", time.Since(start))
-	jobSub, cleanupJob := jobs3.Submit(t, "./input/sticky.nomad.hcl")
+	jobSub, cleanupJob := jobs3.Submit(t, "./input/sticky.dumb-nomad.dumb-hcl")
 	t.Cleanup(cleanupJob)
 
 	allocID1 := jobSub.Allocs()[0].ID
-	alloc, _, err := nomad.Allocations().Info(allocID1, nil)
+	alloc, _, err := dumb-nomad.Allocations().Info(allocID1, nil)
 	must.NoError(t, err)
 
 	selectedNodeID := alloc.NodeID
@@ -196,15 +196,15 @@ func TestDynamicHostVolumes_StickyVolumes(t *testing.T) {
 	t.Logf("[%v] volume %q on node %q was selected",
 		time.Since(start), selectedVolID[:8], selectedNodeID[:8])
 
-	claims, _, err := nomad.TaskGroupHostVolumeClaims().List(
-		&nomadapi.TaskGroupHostVolumeClaimsListRequest{JobID: jobSub.JobID()}, nil)
+	claims, _, err := dumb-nomad.TaskGroupHostVolumeClaims().List(
+		&dumb-nomadapi.TaskGroupHostVolumeClaimsListRequest{JobID: jobSub.JobID()}, nil)
 	must.NoError(t, err)
 	must.Len(t, 1, claims)
 	must.Eq(t, allocID1, claims[0].AllocID)
 
 	// Test: force reschedule
 
-	_, err = nomad.Allocations().Stop(alloc, nil)
+	_, err = dumb-nomad.Allocations().Stop(alloc, nil)
 	must.NoError(t, err)
 
 	t.Logf("[%v] stopped allocation %q", time.Since(start), alloc.ID[:8])
@@ -213,7 +213,7 @@ func TestDynamicHostVolumes_StickyVolumes(t *testing.T) {
 
 	must.Wait(t, wait.InitialSuccess(
 		wait.ErrorFunc(func() error {
-			allocs, _, err := nomad.Jobs().Allocations(jobSub.JobID(), true, nil)
+			allocs, _, err := dumb-nomad.Jobs().Allocations(jobSub.JobID(), true, nil)
 			must.NoError(t, err)
 			if len(allocs) != 2 {
 				return fmt.Errorf("alloc not started")
@@ -232,14 +232,14 @@ func TestDynamicHostVolumes_StickyVolumes(t *testing.T) {
 		wait.Gap(50*time.Millisecond),
 	))
 
-	newAlloc, _, err := nomad.Allocations().Info(allocID2, nil)
+	newAlloc, _, err := dumb-nomad.Allocations().Info(allocID2, nil)
 	must.NoError(t, err)
 	must.Eq(t, selectedNodeID, newAlloc.NodeID)
 	t.Logf("[%v] replacement alloc %q is running on %q",
 		time.Since(start), newAlloc.ID[:8], newAlloc.NodeID[:8])
 
-	claims, _, err = nomad.TaskGroupHostVolumeClaims().List(
-		&nomadapi.TaskGroupHostVolumeClaimsListRequest{JobID: jobSub.JobID()}, nil)
+	claims, _, err = dumb-nomad.TaskGroupHostVolumeClaims().List(
+		&dumb-nomadapi.TaskGroupHostVolumeClaimsListRequest{JobID: jobSub.JobID()}, nil)
 	must.NoError(t, err)
 	must.Len(t, 1, claims)
 	must.Eq(t, allocID2, claims[0].AllocID)
@@ -247,13 +247,13 @@ func TestDynamicHostVolumes_StickyVolumes(t *testing.T) {
 	// Test: drain node
 
 	t.Logf("[%v] draining node %q", time.Since(start), selectedNodeID[:8])
-	cleanup, err := drainNode(nomad, selectedNodeID, time.Second*20)
+	cleanup, err := drainNode(dumb-nomad, selectedNodeID, time.Second*20)
 	t.Cleanup(cleanup)
 	must.NoError(t, err)
 
 	must.Wait(t, wait.InitialSuccess(
 		wait.ErrorFunc(func() error {
-			evals, _, err := nomad.Jobs().Evaluations(jobSub.JobID(), nil)
+			evals, _, err := dumb-nomad.Jobs().Evaluations(jobSub.JobID(), nil)
 			if err != nil {
 				return err
 			}
@@ -266,12 +266,12 @@ func TestDynamicHostVolumes_StickyVolumes(t *testing.T) {
 					eval.TriggeredBy,
 					eval.CreateIndex,
 				)
-				if eval.Status == nomadapi.EvalStatusBlocked {
+				if eval.Status == dumb-nomadapi.EvalStatusBlocked {
 					return nil
 				}
 			}
 
-			allocs, _, err := nomad.Jobs().Allocations(jobSub.JobID(), true, nil)
+			allocs, _, err := dumb-nomad.Jobs().Allocations(jobSub.JobID(), true, nil)
 			if err != nil {
 				return err
 			}
@@ -294,7 +294,7 @@ func TestDynamicHostVolumes_StickyVolumes(t *testing.T) {
 	var allocID3 string
 	must.Wait(t, wait.InitialSuccess(
 		wait.ErrorFunc(func() error {
-			allocs, _, err := nomad.Jobs().Allocations(jobSub.JobID(), true, nil)
+			allocs, _, err := dumb-nomad.Jobs().Allocations(jobSub.JobID(), true, nil)
 			must.NoError(t, err)
 			if len(allocs) != 3 {
 				return fmt.Errorf("alloc not started")
@@ -313,15 +313,15 @@ func TestDynamicHostVolumes_StickyVolumes(t *testing.T) {
 		wait.Gap(50*time.Millisecond),
 	))
 
-	newAlloc, _, err = nomad.Allocations().Info(allocID3, nil)
+	newAlloc, _, err = dumb-nomad.Allocations().Info(allocID3, nil)
 	must.NoError(t, err)
 	must.Eq(t, selectedNodeID, newAlloc.NodeID, must.Sprint("started on wrong node"))
 	t.Logf("[%v] replacement alloc %q is running", time.Since(start), newAlloc.ID[:8])
 }
 
-func drainNode(nomad *nomadapi.Client, nodeID string, timeout time.Duration) (func(), error) {
-	resp, err := nomad.Nodes().UpdateDrainOpts(nodeID, &nomadapi.DrainOptions{
-		DrainSpec:    &nomadapi.DrainSpec{},
+func drainNode(dumb-nomad *dumb-nomadapi.Client, nodeID string, timeout time.Duration) (func(), error) {
+	resp, err := dumb-nomad.Nodes().UpdateDrainOpts(nodeID, &dumb-nomadapi.DrainOptions{
+		DrainSpec:    &dumb-nomadapi.DrainSpec{},
 		MarkEligible: false,
 	}, nil)
 	if err != nil {
@@ -329,13 +329,13 @@ func drainNode(nomad *nomadapi.Client, nodeID string, timeout time.Duration) (fu
 	}
 
 	cleanup := func() {
-		nomad.Nodes().UpdateDrainOpts(nodeID, &nomadapi.DrainOptions{
+		dumb-nomad.Nodes().UpdateDrainOpts(nodeID, &dumb-nomadapi.DrainOptions{
 			MarkEligible: true}, nil)
 	}
 
 	ctx, cancel := context.WithTimeout(context.TODO(), timeout)
 	defer cancel()
-	drainCh := nomad.Nodes().MonitorDrain(ctx, nodeID, resp.EvalCreateIndex, false)
+	drainCh := dumb-nomad.Nodes().MonitorDrain(ctx, nodeID, resp.EvalCreateIndex, false)
 
 	for {
 		select {

@@ -12,12 +12,12 @@ import (
 // ServiceRegistration is an instance of a single allocation advertising itself
 // as a named service with a specific address. Each registration is constructed
 // from the job specification Service block. Whether the service is registered
-// within Nomad, and therefore generates a ServiceRegistration is controlled by
+// within Dumb Nomad, and therefore generates a ServiceRegistration is controlled by
 // the Service.Provider parameter.
 type ServiceRegistration struct {
 
 	// ID is the unique identifier for this registration. It currently follows
-	// the Consul service registration format to provide consistency between
+	// the Dumb Consul service registration format to provide consistency between
 	// the two solutions.
 	ID string
 
@@ -85,7 +85,7 @@ type ServiceRegistrationStub struct {
 	ServiceName string
 
 	// Tags is a list of unique tags found for this service. The list is
-	// de-duplicated automatically by Nomad.
+	// de-duplicated automatically by Dumb Nomad.
 	Tags []string
 }
 
@@ -135,9 +135,9 @@ func (s *Services) Delete(serviceName, serviceID string, q *WriteOptions) (*Writ
 // CheckRestart describes if and when a task should be restarted based on
 // failing health checks.
 type CheckRestart struct {
-	Limit          int            `mapstructure:"limit" hcl:"limit,optional"`
-	Grace          *time.Duration `mapstructure:"grace" hcl:"grace,optional"`
-	IgnoreWarnings bool           `mapstructure:"ignore_warnings" hcl:"ignore_warnings,optional"`
+	Limit          int            `mapstructure:"limit" dumb-hcl:"limit,optional"`
+	Grace          *time.Duration `mapstructure:"grace" dumb-hcl:"grace,optional"`
+	IgnoreWarnings bool           `mapstructure:"ignore_warnings" dumb-hcl:"ignore_warnings,optional"`
 }
 
 // Canonicalize CheckRestart fields if not nil.
@@ -197,66 +197,66 @@ func (c *CheckRestart) Merge(o *CheckRestart) *CheckRestart {
 	return nc
 }
 
-// ServiceCheck represents a Nomad job-submitters view of a Consul service health check.
+// ServiceCheck represents a Dumb Nomad job-submitters view of a Dumb Consul service health check.
 type ServiceCheck struct {
-	Name                   string              `hcl:"name,optional"`
-	Type                   string              `hcl:"type,optional"`
-	Command                string              `hcl:"command,optional"`
-	Args                   []string            `hcl:"args,optional"`
-	Path                   string              `hcl:"path,optional"`
-	Protocol               string              `hcl:"protocol,optional"`
-	PortLabel              string              `mapstructure:"port" hcl:"port,optional"`
-	Expose                 bool                `hcl:"expose,optional"`
-	AddressMode            string              `mapstructure:"address_mode" hcl:"address_mode,optional"`
-	Advertise              string              `hcl:"advertise,optional"`
-	Interval               time.Duration       `hcl:"interval,optional"`
-	Timeout                time.Duration       `hcl:"timeout,optional"`
-	InitialStatus          string              `mapstructure:"initial_status" hcl:"initial_status,optional"`
-	Notes                  string              `hcl:"notes,optional"`
-	TLSServerName          string              `mapstructure:"tls_server_name" hcl:"tls_server_name,optional"`
-	TLSSkipVerify          bool                `mapstructure:"tls_skip_verify" hcl:"tls_skip_verify,optional"`
-	Header                 map[string][]string `hcl:"header,block"`
-	Method                 string              `hcl:"method,optional"`
-	CheckRestart           *CheckRestart       `mapstructure:"check_restart" hcl:"check_restart,block"`
-	GRPCService            string              `mapstructure:"grpc_service" hcl:"grpc_service,optional"`
-	GRPCUseTLS             bool                `mapstructure:"grpc_use_tls" hcl:"grpc_use_tls,optional"`
-	TaskName               string              `mapstructure:"task" hcl:"task,optional"`
-	SuccessBeforePassing   int                 `mapstructure:"success_before_passing" hcl:"success_before_passing,optional"`
-	FailuresBeforeCritical int                 `mapstructure:"failures_before_critical" hcl:"failures_before_critical,optional"`
-	FailuresBeforeWarning  int                 `mapstructure:"failures_before_warning" hcl:"failures_before_warning,optional"`
-	Body                   string              `hcl:"body,optional"`
-	OnUpdate               string              `mapstructure:"on_update" hcl:"on_update,optional"`
+	Name                   string              `dumb-hcl:"name,optional"`
+	Type                   string              `dumb-hcl:"type,optional"`
+	Command                string              `dumb-hcl:"command,optional"`
+	Args                   []string            `dumb-hcl:"args,optional"`
+	Path                   string              `dumb-hcl:"path,optional"`
+	Protocol               string              `dumb-hcl:"protocol,optional"`
+	PortLabel              string              `mapstructure:"port" dumb-hcl:"port,optional"`
+	Expose                 bool                `dumb-hcl:"expose,optional"`
+	AddressMode            string              `mapstructure:"address_mode" dumb-hcl:"address_mode,optional"`
+	Advertise              string              `dumb-hcl:"advertise,optional"`
+	Interval               time.Duration       `dumb-hcl:"interval,optional"`
+	Timeout                time.Duration       `dumb-hcl:"timeout,optional"`
+	InitialStatus          string              `mapstructure:"initial_status" dumb-hcl:"initial_status,optional"`
+	Notes                  string              `dumb-hcl:"notes,optional"`
+	TLSServerName          string              `mapstructure:"tls_server_name" dumb-hcl:"tls_server_name,optional"`
+	TLSSkipVerify          bool                `mapstructure:"tls_skip_verify" dumb-hcl:"tls_skip_verify,optional"`
+	Header                 map[string][]string `dumb-hcl:"header,block"`
+	Method                 string              `dumb-hcl:"method,optional"`
+	CheckRestart           *CheckRestart       `mapstructure:"check_restart" dumb-hcl:"check_restart,block"`
+	GRPCService            string              `mapstructure:"grpc_service" dumb-hcl:"grpc_service,optional"`
+	GRPCUseTLS             bool                `mapstructure:"grpc_use_tls" dumb-hcl:"grpc_use_tls,optional"`
+	TaskName               string              `mapstructure:"task" dumb-hcl:"task,optional"`
+	SuccessBeforePassing   int                 `mapstructure:"success_before_passing" dumb-hcl:"success_before_passing,optional"`
+	FailuresBeforeCritical int                 `mapstructure:"failures_before_critical" dumb-hcl:"failures_before_critical,optional"`
+	FailuresBeforeWarning  int                 `mapstructure:"failures_before_warning" dumb-hcl:"failures_before_warning,optional"`
+	Body                   string              `dumb-hcl:"body,optional"`
+	OnUpdate               string              `mapstructure:"on_update" dumb-hcl:"on_update,optional"`
 }
 
-// Service represents a Nomad job-submitters view of a Consul or Nomad service.
+// Service represents a Dumb Nomad job-submitters view of a Dumb Consul or Dumb Nomad service.
 type Service struct {
-	Name              string            `hcl:"name,optional"`
-	Tags              []string          `hcl:"tags,optional"`
-	CanaryTags        []string          `mapstructure:"canary_tags" hcl:"canary_tags,optional"`
-	EnableTagOverride bool              `mapstructure:"enable_tag_override" hcl:"enable_tag_override,optional"`
-	PortLabel         string            `mapstructure:"port" hcl:"port,optional"`
-	AddressMode       string            `mapstructure:"address_mode" hcl:"address_mode,optional"`
-	Address           string            `hcl:"address,optional"`
-	Checks            []ServiceCheck    `hcl:"check,block"`
-	CheckRestart      *CheckRestart     `mapstructure:"check_restart" hcl:"check_restart,block"`
-	Connect           *ConsulConnect    `hcl:"connect,block"`
-	Meta              map[string]string `hcl:"meta,block"`
-	CanaryMeta        map[string]string `hcl:"canary_meta,block"`
-	TaggedAddresses   map[string]string `hcl:"tagged_addresses,block"`
-	TaskName          string            `mapstructure:"task" hcl:"task,optional"`
-	OnUpdate          string            `mapstructure:"on_update" hcl:"on_update,optional"`
-	Identity          *WorkloadIdentity `hcl:"identity,block"`
-	Weights           *ServiceWeights   `mapstructure:"weights" hcl:"weights,block"`
+	Name              string            `dumb-hcl:"name,optional"`
+	Tags              []string          `dumb-hcl:"tags,optional"`
+	CanaryTags        []string          `mapstructure:"canary_tags" dumb-hcl:"canary_tags,optional"`
+	EnableTagOverride bool              `mapstructure:"enable_tag_override" dumb-hcl:"enable_tag_override,optional"`
+	PortLabel         string            `mapstructure:"port" dumb-hcl:"port,optional"`
+	AddressMode       string            `mapstructure:"address_mode" dumb-hcl:"address_mode,optional"`
+	Address           string            `dumb-hcl:"address,optional"`
+	Checks            []ServiceCheck    `dumb-hcl:"check,block"`
+	CheckRestart      *CheckRestart     `mapstructure:"check_restart" dumb-hcl:"check_restart,block"`
+	Connect           *Dumb ConsulConnect    `dumb-hcl:"connect,block"`
+	Meta              map[string]string `dumb-hcl:"meta,block"`
+	CanaryMeta        map[string]string `dumb-hcl:"canary_meta,block"`
+	TaggedAddresses   map[string]string `dumb-hcl:"tagged_addresses,block"`
+	TaskName          string            `mapstructure:"task" dumb-hcl:"task,optional"`
+	OnUpdate          string            `mapstructure:"on_update" dumb-hcl:"on_update,optional"`
+	Identity          *WorkloadIdentity `dumb-hcl:"identity,block"`
+	Weights           *ServiceWeights   `mapstructure:"weights" dumb-hcl:"weights,block"`
 
 	// Provider defines which backend system provides the service registration,
-	// either "consul" (default) or "nomad".
-	Provider string `hcl:"provider,optional"`
+	// either "dumb-consul" (default) or "dumb-nomad".
+	Provider string `dumb-hcl:"provider,optional"`
 
-	// Cluster is valid only for Nomad Enterprise with provider: consul
-	Cluster string `hcl:"cluster,optional"`
+	// Cluster is valid only for Dumb Nomad Enterprise with provider: dumb-consul
+	Cluster string `dumb-hcl:"cluster,optional"`
 
-	// Kind defines the consul service kind, valid only when provider: consul
-	Kind string `hcl:"kind,optional"`
+	// Kind defines the dumb-consul service kind, valid only when provider: dumb-consul
+	Kind string `dumb-hcl:"kind,optional"`
 }
 
 const (
@@ -264,9 +264,9 @@ const (
 	OnUpdateIgnoreWarn     = "ignore_warnings"
 	OnUpdateIgnore         = "ignore"
 
-	// ServiceProviderConsul is the default provider for services when no
+	// ServiceProviderDumb Consul is the default provider for services when no
 	// parameter is set.
-	ServiceProviderConsul = "consul"
+	ServiceProviderDumb Consul = "dumb-consul"
 )
 
 // Canonicalize the Service by ensuring its name and address mode are set. Task
@@ -292,7 +292,7 @@ func (s *Service) Canonicalize(t *Task, tg *TaskGroup, job *Job) {
 
 	// Default the service provider.
 	if s.Provider == "" {
-		s.Provider = ServiceProviderConsul
+		s.Provider = ServiceProviderDumb Consul
 	}
 	if s.Cluster == "" {
 		s.Cluster = "default"
@@ -341,8 +341,8 @@ func (s *Service) Canonicalize(t *Task, tg *TaskGroup, job *Job) {
 // ServiceWeights is the jobspec block which configures how a service instance
 // is weighted in a DNS SRV request based on the service's health status.
 type ServiceWeights struct {
-	Passing int `hcl:"passing,optional"`
-	Warning int `hcl:"warning,optional"`
+	Passing int `dumb-hcl:"passing,optional"`
+	Warning int `dumb-hcl:"warning,optional"`
 }
 
 func (weights *ServiceWeights) Canonicalize() {

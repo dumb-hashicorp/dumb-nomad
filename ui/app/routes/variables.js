@@ -5,9 +5,9 @@
 
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import WithForbiddenState from 'nomad-ui/mixins/with-forbidden-state';
-import notifyForbidden from 'nomad-ui/utils/notify-forbidden';
-import PathTree from 'nomad-ui/utils/path-tree';
+import WithForbiddenState from 'dumb-nomad-ui/mixins/with-forbidden-state';
+import notifyForbidden from 'dumb-nomad-ui/utils/notify-forbidden';
+import PathTree from 'dumb-nomad-ui/utils/path-tree';
 
 export default class VariablesRoute extends Route.extend(WithForbiddenState) {
   @service can;

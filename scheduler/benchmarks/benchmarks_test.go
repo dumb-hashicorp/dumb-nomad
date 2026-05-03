@@ -10,19 +10,19 @@ import (
 
 	"github.com/shoenig/test/must"
 
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/scheduler"
-	"github.com/hashicorp/nomad/scheduler/tests"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/tests"
 )
 
 // BenchmarkSchedulerExample is an example of how to write a one-off
-// benchmark for the Nomad scheduler. The starting state for your
+// benchmark for the Dumb Nomad scheduler. The starting state for your
 // implementation will depend on the following environment variables:
 //
-//   - NOMAD_BENCHMARK_DATADIR: path to data directory
-//   - NOMAD_BENCHMARK_SNAPSHOT: path to raft snapshot
+//   - DUMB_NOMAD_BENCHMARK_DATADIR: path to data directory
+//   - DUMB_NOMAD_BENCHMARK_SNAPSHOT: path to raft snapshot
 //   - neither: empty starting state
 //
 // You can run a profile for this benchmark with the usual -cpuprofile

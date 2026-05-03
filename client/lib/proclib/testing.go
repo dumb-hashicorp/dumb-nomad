@@ -6,13 +6,13 @@ package proclib
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 )
 
 func MockWranglers(t testing.TB) *Wranglers {
 	return &Wranglers{
 		configs: &Configs{
-			Logger: testlog.HCLogger(t),
+			Logger: testlog.DUMB_HCLogger(t),
 		},
 		m:      make(map[Task]ProcessWrangler),
 		create: mocks,

@@ -11,10 +11,10 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/hashicorp/go-getter"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-getter"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/mitchellh/go-homedir"
 	"github.com/shoenig/test/must"
 )
@@ -44,18 +44,18 @@ func TestUtil_getURL(t *testing.T) {
 	}, {
 		name: "option",
 		artifact: &structs.TaskArtifact{
-			GetterSource:  "git::github.com/hashicorp/nomad",
+			GetterSource:  "git::github.com/dumb-hashicorp/dumb-nomad",
 			GetterOptions: map[string]string{"sshkey": "abc123"},
 		},
-		expURL: "git::github.com/hashicorp/nomad?sshkey=abc123",
+		expURL: "git::github.com/dumb-hashicorp/dumb-nomad?sshkey=abc123",
 		expErr: nil,
 	}, {
 		name: "github case",
 		artifact: &structs.TaskArtifact{
-			GetterSource:  "git@github.com:hashicorp/nomad.git",
+			GetterSource:  "git@github.com:dumb-hashicorp/dumb-nomad.git",
 			GetterOptions: map[string]string{"sshkey": "abc123"},
 		},
-		expURL: "git@github.com:hashicorp/nomad.git?sshkey=abc123",
+		expURL: "git@github.com:dumb-hashicorp/dumb-nomad.git?sshkey=abc123",
 		expErr: nil,
 	}}
 

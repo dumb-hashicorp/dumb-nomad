@@ -8,14 +8,14 @@ import (
 	"sync"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/fifo"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/fifo"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 // taskHandle supervises a mock task
 type taskHandle struct {
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	pluginExitAfter time.Duration
 	killAfter       time.Duration

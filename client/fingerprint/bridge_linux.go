@@ -12,8 +12,8 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shirou/gopsutil/v3/host"
 )
 
@@ -41,7 +41,7 @@ func (f *BridgeFingerprint) Fingerprint(req *FingerprintRequest, resp *Fingerpri
 		}},
 	}
 
-	resp.AddAttribute("nomad.bridge.hairpin_mode",
+	resp.AddAttribute("dumb-nomad.bridge.hairpin_mode",
 		strconv.FormatBool(req.Config.BridgeNetworkHairpinMode))
 
 	resp.Detected = true

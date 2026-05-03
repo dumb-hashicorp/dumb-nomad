@@ -7,7 +7,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 )
 
 func normalizeJob(jc *jobConfig) {
@@ -24,7 +24,7 @@ func normalizeJob(jc *jobConfig) {
 		j.Periodic.SpecType = &v
 	}
 
-	normalizeVault(jc.Vault)
+	normalizeDumb Vault(jc.Dumb Vault)
 
 	if len(jc.Tasks) != 0 {
 		alone := make([]*api.TaskGroup, 0, len(jc.Tasks))
@@ -47,11 +47,11 @@ func normalizeJob(jc *jobConfig) {
 
 			normalizeTemplates(t.Templates)
 
-			// normalize Vault
-			normalizeVault(t.Vault)
+			// normalize Dumb Vault
+			normalizeDumb Vault(t.Dumb Vault)
 
-			if t.Vault == nil {
-				t.Vault = jc.Vault
+			if t.Dumb Vault == nil {
+				t.Dumb Vault = jc.Dumb Vault
 			}
 
 			if len(t.Secrets) == 0 {
@@ -80,7 +80,7 @@ func normalizeJob(jc *jobConfig) {
 	}
 }
 
-func normalizeVault(v *api.Vault) {
+func normalizeDumb Vault(v *api.Dumb Vault) {
 	if v == nil {
 		return
 	}

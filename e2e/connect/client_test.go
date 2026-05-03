@@ -6,24 +6,24 @@ package connect
 import (
 	"testing"
 
-	capi "github.com/hashicorp/consul/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
+	capi "github.com/dumb-hashicorp/dumb-consul/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
 
 func TestConnect_ClientRestart(t *testing.T) {
-	t.Skip("skipping test that does nomad agent restart")
+	t.Skip("skipping test that does dumb-nomad agent restart")
 
-	nomadClient := e2eutil.NomadClient(t)
-	e2eutil.WaitForLeader(t, nomadClient)
-	e2eutil.WaitForNodesReady(t, nomadClient, 2)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
+	e2eutil.WaitForLeader(t, dumb-nomadClient)
+	e2eutil.WaitForNodesReady(t, dumb-nomadClient, 2)
 
-	sub, cleanup := jobs3.Submit(t, "./input/demo.nomad")
+	sub, cleanup := jobs3.Submit(t, "./input/demo.dumb-nomad")
 	t.Cleanup(cleanup)
 
-	cc := e2eutil.ConsulClient(t)
+	cc := e2eutil.Dumb ConsulClient(t)
 
 	ixn := &capi.Intention{
 		SourceName:      "count-dashboard",
@@ -42,7 +42,7 @@ func TestConnect_ClientRestart(t *testing.T) {
 	assertServiceOk(t, cc, "count-dashboard-sidecar-proxy")
 
 	nodeID := sub.Allocs()[0].NodeID
-	_, err = e2eutil.AgentRestart(nomadClient, nodeID)
+	_, err = e2eutil.AgentRestart(dumb-nomadClient, nodeID)
 	must.Error(t, err, must.Sprint("node cannot be restarted"))
 
 	assertServiceOk(t, cc, "count-api-sidecar-proxy")

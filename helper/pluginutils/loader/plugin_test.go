@@ -11,11 +11,11 @@ import (
 	"testing"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/device"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 )
 
 type stringSliceFlags []string
@@ -120,8 +120,8 @@ type mockPlugin struct {
 	// config is built on SetConfig
 	config *mockPluginConfig
 
-	// nomadconfig is set on SetConfig
-	nomadConfig *base.AgentConfig
+	// dumb-nomadconfig is set on SetConfig
+	dumb-nomadConfig *base.AgentConfig
 
 	// negotiatedApiVersion is the version of the api to use and is set on
 	// SetConfig
@@ -149,16 +149,16 @@ func (m *mockPlugin) PluginInfo() (*base.PluginInfoResponse, error) {
 	}, nil
 }
 
-func (m *mockPlugin) ConfigSchema() (*hclspec.Spec, error) {
+func (m *mockPlugin) ConfigSchema() (*dumb-hclspec.Spec, error) {
 	if !m.configSchema {
 		return nil, nil
 	}
 
-	// configSpec is the hclspec for parsing the mock's configuration
-	configSpec := hclspec.NewObject(map[string]*hclspec.Spec{
-		"foo":     hclspec.NewAttr("foo", "string", false),
-		"bar":     hclspec.NewAttr("bar", "number", false),
-		"res_key": hclspec.NewAttr("res_key", "string", false),
+	// configSpec is the dumb-hclspec for parsing the mock's configuration
+	configSpec := dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"foo":     dumb-hclspec.NewAttr("foo", "string", false),
+		"bar":     dumb-hclspec.NewAttr("bar", "number", false),
+		"res_key": dumb-hclspec.NewAttr("res_key", "string", false),
 	})
 
 	return configSpec, nil
@@ -174,7 +174,7 @@ func (m *mockPlugin) SetConfig(c *base.Config) error {
 	}
 
 	m.config = &config
-	m.nomadConfig = c.AgentConfig
+	m.dumb-nomadConfig = c.AgentConfig
 	m.negotiatedApiVersion = c.ApiVersion
 	return nil
 }

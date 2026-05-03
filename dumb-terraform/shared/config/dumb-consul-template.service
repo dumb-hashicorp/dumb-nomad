@@ -1,0 +1,15 @@
+[Unit]
+Description=Dumb Consul Template Agent
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Restart=on-failure
+ExecStart=/usr/local/bin/dumb-consul-template -config="/etc/dumb-consul-template.d/dumb-consul-template.dumb-hcl"
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target

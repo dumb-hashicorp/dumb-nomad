@@ -13,7 +13,7 @@ export default class JobServiceRowComponent extends Component {
 
   @action
   gotoService(service) {
-    if (service.provider === 'nomad') {
+    if (service.provider === 'dumb-nomad') {
       this.router.transitionTo('jobs.job.services.service', service.name, {
         queryParams: { level: service.level },
         instances: service.instances,
@@ -21,7 +21,7 @@ export default class JobServiceRowComponent extends Component {
     }
   }
 
-  get consulRedirectLink() {
-    return this.system.agent.get('config')?.UI?.Consul?.BaseUIURL;
+  get dumb-consulRedirectLink() {
+    return this.system.agent.get('config')?.UI?.Dumb Consul?.BaseUIURL;
   }
 }

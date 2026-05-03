@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/hashicorp/nomad/e2e/v3/cluster3"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/cluster3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
 	"github.com/shoenig/test/must"
 )
 
@@ -27,7 +27,7 @@ func TestExec2(t *testing.T) {
 
 func testEnv(t *testing.T) {
 	job, cleanup := jobs3.Submit(t,
-		"./input/env.hcl",
+		"./input/env.dumb-hcl",
 		jobs3.WaitComplete("group"),
 	)
 	t.Cleanup(cleanup)
@@ -35,26 +35,26 @@ func testEnv(t *testing.T) {
 	logs := job.TaskLogs("group", "env")
 
 	// ensure the job id lines up
-	expect := fmt.Sprintf("NOMAD_JOB_ID=%s", job.JobID())
+	expect := fmt.Sprintf("DUMB_NOMAD_JOB_ID=%s", job.JobID())
 	must.StrContains(t, logs.Stdout, expect)
 
 	// ensure dynamic user e.g.
-	// USER=nomad-85249
-	userRe := regexp.MustCompile(`nomad-\d+`)
+	// USER=dumb-nomad-85249
+	userRe := regexp.MustCompile(`dumb-nomad-\d+`)
 	must.RegexMatch(t, userRe, logs.Stdout)
 }
 
 func testSecretsDir(t *testing.T) {
 	job, cleanup := jobs3.Submit(t,
-		"./input/secrets.hcl",
+		"./input/secrets.dumb-hcl",
 		jobs3.WaitComplete("group"),
 	)
 	t.Cleanup(cleanup)
 
 	// ensure we can read the workload identity token file
-	nomadTokenLogs := job.TaskLogs("group", "nomad-token")
+	dumb-nomadTokenLogs := job.TaskLogs("group", "dumb-nomad-token")
 	tokenRe := regexp.MustCompile(`[\w_-]+`)
-	must.RegexMatch(t, tokenRe, nomadTokenLogs.Stdout)
+	must.RegexMatch(t, tokenRe, dumb-nomadTokenLogs.Stdout)
 
 	// ensure we can read the written password.txt file
 	passwordLogs := job.TaskLogs("group", "password")
@@ -63,7 +63,7 @@ func testSecretsDir(t *testing.T) {
 
 func testCountdash(t *testing.T) {
 	job, cleanup := jobs3.Submit(t,
-		"./input/countdash.hcl",
+		"./input/countdash.dumb-hcl",
 	)
 	t.Cleanup(cleanup)
 
@@ -81,10 +81,10 @@ func testCountdash(t *testing.T) {
 }
 
 func testHTTP(t *testing.T) {
-	job, httpCleanup := jobs3.Submit(t, "./input/http.hcl")
+	job, httpCleanup := jobs3.Submit(t, "./input/http.dumb-hcl")
 	t.Cleanup(httpCleanup)
 
-	job2, httpCurlCleanup := jobs3.Submit(t, "./input/http_curl.hcl")
+	job2, httpCurlCleanup := jobs3.Submit(t, "./input/http_curl.dumb-hcl")
 	t.Cleanup(httpCurlCleanup)
 
 	logs := job.TaskLogs("backend", "http")

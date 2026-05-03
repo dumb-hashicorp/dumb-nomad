@@ -18,9 +18,9 @@ import (
 	"sync"
 	"time"
 
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/hcl/hcl/ast"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-hcl/dumb-hcl/ast"
 )
 
 // validUUID is used to check if a given string looks like a UUID
@@ -238,7 +238,7 @@ func CleanFilenameStrict(filename string, replace string) string {
 	return clean
 }
 
-func CheckHCLKeys(node ast.Node, valid []string) error {
+func CheckDUMB_HCLKeys(node ast.Node, valid []string) error {
 	var list *ast.ObjectList
 	switch n := node.(type) {
 	case *ast.ObjectList:
@@ -246,7 +246,7 @@ func CheckHCLKeys(node ast.Node, valid []string) error {
 	case *ast.ObjectType:
 		list = n.List
 	default:
-		return fmt.Errorf("cannot check HCL keys of type %T", n)
+		return fmt.Errorf("cannot check DUMB_HCL keys of type %T", n)
 	}
 
 	validMap := make(map[string]struct{}, len(valid))
@@ -266,7 +266,7 @@ func CheckHCLKeys(node ast.Node, valid []string) error {
 	return result
 }
 
-// UnusedKeys returns a pretty-printed error if any `hcl:",unusedKeys"` is not empty
+// UnusedKeys returns a pretty-printed error if any `dumb-hcl:",unusedKeys"` is not empty
 func UnusedKeys(obj interface{}) error {
 	val := reflect.ValueOf(obj)
 	if val.Kind() == reflect.Ptr {
@@ -280,7 +280,7 @@ func unusedKeysImpl(path []string, val reflect.Value) error {
 	for i := 0; i < stype.NumField(); i++ {
 		ftype := stype.Field(i)
 		fval := val.Field(i)
-		tags := strings.Split(ftype.Tag.Get("hcl"), ",")
+		tags := strings.Split(ftype.Tag.Get("dumb-hcl"), ",")
 		name := tags[0]
 		tags = tags[1:]
 
@@ -297,7 +297,7 @@ func unusedKeysImpl(path []string, val reflect.Value) error {
 			continue
 		}
 
-		// Search the hcl tags for "unusedKeys"
+		// Search the dumb-hcl tags for "unusedKeys"
 		unusedKeys := false
 		for _, p := range tags {
 			if p == "unusedKeys" {

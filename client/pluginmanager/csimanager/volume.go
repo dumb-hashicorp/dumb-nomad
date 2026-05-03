@@ -15,11 +15,11 @@ import (
 	"time"
 
 	grpc_retry "github.com/grpc-ecosystem/go-grpc-middleware/retry"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/helper/mount"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/csi"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/mount"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi"
 )
 
 var _ VolumeManager = &volumeManager{}
@@ -38,14 +38,14 @@ const (
 // volumes are stored by an enriched volume usage struct as the CSI Spec requires
 // slightly different usage based on the given usage model.
 type volumeManager struct {
-	logger  hclog.Logger
+	logger  dumb-hclog.Logger
 	eventer TriggerNodeEvent
 	plugin  csi.CSIPlugin
 
 	usageTracker *volumeUsageTracker
 
 	// mountRoot is the root of where plugin directories and mounts may be created
-	// e.g /opt/nomad.d/statedir/csi/my-csi-plugin/
+	// e.g /opt/dumb-nomad.d/statedir/csi/my-csi-plugin/
 	mountRoot string
 
 	// containerMountPoint is the location _inside_ the plugin container that the
@@ -56,7 +56,7 @@ type volumeManager struct {
 	// calls NodeStageVolume and NodeUnstageVolume RPCs during setup and teardown
 	requiresStaging bool
 
-	// externalNodeID is the identity of a given nomad client as observed by the
+	// externalNodeID is the identity of a given dumb-nomad client as observed by the
 	// storage provider (ex. a hostname, VM instance ID, etc.)
 	externalNodeID string
 
@@ -64,7 +64,7 @@ type volumeManager struct {
 	inFlightLock sync.Mutex
 }
 
-func newVolumeManager(logger hclog.Logger, eventer TriggerNodeEvent, plugin csi.CSIPlugin, rootDir, containerRootDir string, requiresStaging bool, externalID string) *volumeManager {
+func newVolumeManager(logger dumb-hclog.Logger, eventer TriggerNodeEvent, plugin csi.CSIPlugin, rootDir, containerRootDir string, requiresStaging bool, externalID string) *volumeManager {
 
 	return &volumeManager{
 		logger:              logger.Named("volume_manager"),
@@ -112,7 +112,7 @@ func (v *volumeManager) MountVolume(ctx context.Context,
 func (v *volumeManager) mountVolumeImpl(ctx context.Context, vol *structs.CSIVolume, alloc *structs.Allocation, usage *UsageOptions, publishContext map[string]string) (mountInfo *MountInfo, err error) {
 
 	logger := v.logger.With("volume_id", vol.ID, "alloc_id", alloc.ID)
-	ctx = hclog.WithContext(ctx, logger)
+	ctx = dumb-hclog.WithContext(ctx, logger)
 
 	// Claim before we stage/publish to prevent interleaved Unmount for another
 	// alloc from unstaging between stage/publish steps below
@@ -147,7 +147,7 @@ func (v *volumeManager) mountVolumeImpl(ctx context.Context, vol *structs.CSIVol
 // the STAGE_UNSTAGE_VOLUME capability it MUST be called once-per-volume for a
 // given usage mode before the volume can be NodePublish-ed.
 func (v *volumeManager) stageVolume(ctx context.Context, vol *structs.CSIVolume, usage *UsageOptions, publishContext map[string]string) error {
-	logger := hclog.FromContext(ctx)
+	logger := dumb-hclog.FromContext(ctx)
 	logger.Trace("Preparing volume staging environment")
 	hostStagingPath, isMount, err := v.ensureStagingDir(vol, usage)
 	if err != nil {
@@ -186,7 +186,7 @@ func (v *volumeManager) stageVolume(ctx context.Context, vol *structs.CSIVolume,
 }
 
 func (v *volumeManager) publishVolume(ctx context.Context, vol *structs.CSIVolume, alloc *structs.Allocation, usage *UsageOptions, publishContext map[string]string) (*MountInfo, error) {
-	logger := hclog.FromContext(ctx)
+	logger := dumb-hclog.FromContext(ctx)
 	var pluginStagingPath string
 	if v.requiresStaging {
 		pluginStagingPath = v.stagingDirForVolume(v.containerMountPoint, vol.Namespace, vol.ID, usage)
@@ -241,7 +241,7 @@ func (v *volumeManager) UnmountVolume(ctx context.Context,
 func (v *volumeManager) unmountVolumeImpl(ctx context.Context, volNS, volID, remoteID, allocID string, usage *UsageOptions) error {
 
 	logger := v.logger.With("volume_id", volID, "ns", volNS, "alloc_id", allocID)
-	ctx = hclog.WithContext(ctx, logger)
+	ctx = dumb-hclog.WithContext(ctx, logger)
 	logger.Trace("unmounting volume")
 
 	err := v.unpublishVolume(ctx, volID, remoteID, allocID, usage)
@@ -278,7 +278,7 @@ func (v *volumeManager) unmountVolumeImpl(ctx context.Context, volNS, volID, rem
 func (v *volumeManager) unpublishVolume(ctx context.Context, volID, remoteID, allocID string, usage *UsageOptions) error {
 	pluginTargetPath := v.targetForVolume(v.containerMountPoint, volID, allocID, usage)
 
-	logger := hclog.FromContext(ctx)
+	logger := dumb-hclog.FromContext(ctx)
 	logger.Trace("unpublishing volume", "plugin_target_path", pluginTargetPath)
 
 	// CSI NodeUnpublishVolume errors for timeout, codes.Unavailable and
@@ -321,7 +321,7 @@ func (v *volumeManager) unpublishVolume(ctx context.Context, volID, remoteID, al
 // It is safe to call multiple times and a plugin is required to return OK if
 // the volume has been unstaged or was never staged on the node.
 func (v *volumeManager) unstageVolume(ctx context.Context, volNS, volID, remoteID string, usage *UsageOptions) error {
-	logger := hclog.FromContext(ctx)
+	logger := dumb-hclog.FromContext(ctx)
 
 	// This is the staging path inside the container, which we pass to the
 	// plugin to perform unstaging
@@ -436,7 +436,7 @@ func (v *volumeManager) targetForVolume(root string, volID, allocID string, usag
 func (v *volumeManager) ensureStagingDir(vol *structs.CSIVolume, usage *UsageOptions) (string, bool, error) {
 	hostStagingPath := v.stagingDirForVolume(v.mountRoot, vol.Namespace, vol.ID, usage)
 
-	// Make the staging path, owned by the Nomad User
+	// Make the staging path, owned by the Dumb Nomad User
 	if err := os.MkdirAll(hostStagingPath, 0700); err != nil && !os.IsExist(err) {
 		return "", false, fmt.Errorf("failed to create staging directory for volume (%s): %v", vol.ID, err)
 
@@ -461,7 +461,7 @@ func (v *volumeManager) ensureStagingDir(vol *structs.CSIVolume, usage *UsageOpt
 func (v *volumeManager) ensureAllocDir(vol *structs.CSIVolume, alloc *structs.Allocation, usage *UsageOptions) (string, bool, error) {
 	allocPath := v.allocDirForVolume(v.mountRoot, vol.ID, alloc.ID)
 
-	// Make the alloc path, owned by the Nomad User
+	// Make the alloc path, owned by the Dumb Nomad User
 	if err := os.MkdirAll(allocPath, 0700); err != nil && !os.IsExist(err) {
 		return "", false, fmt.Errorf("failed to create allocation directory for volume (%s): %v", vol.ID, err)
 	}

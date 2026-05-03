@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/helper/users/dynamic"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users/dynamic"
 )
 
 const (
@@ -23,14 +23,14 @@ const (
 // while this task is running.
 type dynamicUsersHook struct {
 	shutdownCtx context.Context
-	logger      hclog.Logger
+	logger      dumb-hclog.Logger
 	usable      bool
 
 	lock *sync.Mutex
 	pool dynamic.Pool
 }
 
-func newDynamicUsersHook(ctx context.Context, usable bool, logger hclog.Logger, pool dynamic.Pool) *dynamicUsersHook {
+func newDynamicUsersHook(ctx context.Context, usable bool, logger dumb-hclog.Logger, pool dynamic.Pool) *dynamicUsersHook {
 	return &dynamicUsersHook{
 		shutdownCtx: ctx,
 		logger:      logger.Named(dynamicUsersHookName),

@@ -1,7 +1,7 @@
 {
-    "CN": "example.nomad",
+    "CN": "example.dumb-nomad",
     "hosts": [
-        "example.nomad"
+        "example.dumb-nomad"
     ],
     "key": {
         "algo": "ecdsa",
@@ -12,7 +12,7 @@
             "C": "US",
             "ST": "CA",
             "L": "San Francisco",
-	    "OU": "Nomad Demo"
+	    "OU": "Dumb Nomad Demo"
         }
     ]
 }

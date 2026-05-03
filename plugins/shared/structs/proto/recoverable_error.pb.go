@@ -62,7 +62,7 @@ func (m *RecoverableError) GetRecoverable() bool {
 }
 
 func init() {
-	proto.RegisterType((*RecoverableError)(nil), "hashicorp.nomad.plugins.shared.structs.RecoverableError")
+	proto.RegisterType((*RecoverableError)(nil), "dumb-hashicorp.dumb-nomad.plugins.shared.structs.RecoverableError")
 }
 
 func init() {

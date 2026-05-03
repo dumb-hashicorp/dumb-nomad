@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 // ensure interface satisfaction
@@ -18,15 +18,15 @@ type VolumeClaimCommand struct {
 
 func (c *VolumeClaimCommand) Help() string {
 	helpText := `
-Usage: nomad volume claim <subcommand> [options]
+Usage: dumb-nomad volume claim <subcommand> [options]
 
   volume claim groups commands that interact with volumes claims.
 
   List existing volume claims:
-      $ nomad volume claim list
+      $ dumb-nomad volume claim list
 
   Delete an existing volume claim:
-      $ nomad volume claim delete <id>
+      $ dumb-nomad volume claim delete <id>
 
   Please see the individual subcommand help for detailed usage information.
 `

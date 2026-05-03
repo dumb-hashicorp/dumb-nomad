@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/posener/complete"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 )
 
 // Ensure ScalingPolicyInfoCommand satisfies the cli.Command interface.
@@ -25,7 +25,7 @@ type ScalingPolicyInfoCommand struct {
 // Help satisfies the cli.Command Help function.
 func (s *ScalingPolicyInfoCommand) Help() string {
 	helpText := `
-Usage: nomad scaling policy info [options] <policy_id>
+Usage: dumb-nomad scaling policy info [options] <policy_id>
 
   Info is used to read the specified scaling policy.
 
@@ -52,7 +52,7 @@ Policy Info Options:
 
 // Synopsis satisfies the cli.Command Synopsis function.
 func (s *ScalingPolicyInfoCommand) Synopsis() string {
-	return "Display an individual Nomad scaling policy"
+	return "Display an individual Dumb Nomad scaling policy"
 }
 
 func (s *ScalingPolicyInfoCommand) AutocompleteFlags() complete.Flags {

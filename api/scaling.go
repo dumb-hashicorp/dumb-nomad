@@ -68,13 +68,13 @@ type ScalingRequest struct {
 
 // ScalingPolicy is the user-specified API object for an autoscaling policy
 type ScalingPolicy struct {
-	/* fields set by user in HCL config */
+	/* fields set by user in DUMB_HCL config */
 
-	Min     *int64                 `hcl:"min,optional"`
-	Max     *int64                 `hcl:"max,optional"`
-	Policy  map[string]interface{} `hcl:"policy,block"`
-	Enabled *bool                  `hcl:"enabled,optional"`
-	Type    string                 `hcl:"type,optional"`
+	Min     *int64                 `dumb-hcl:"min,optional"`
+	Max     *int64                 `dumb-hcl:"max,optional"`
+	Policy  map[string]interface{} `dumb-hcl:"policy,block"`
+	Enabled *bool                  `dumb-hcl:"enabled,optional"`
+	Type    string                 `dumb-hcl:"type,optional"`
 
 	/* fields set by server */
 

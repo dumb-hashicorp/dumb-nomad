@@ -7,7 +7,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/nomad/client/commonplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/client/commonplugins"
 )
 
 type ExternalPluginProvider struct {

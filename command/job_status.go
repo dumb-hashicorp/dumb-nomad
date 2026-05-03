@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -45,7 +45,7 @@ type JobJson struct {
 
 func (c *JobStatusCommand) Help() string {
 	helpText := `
-Usage: nomad job status [options] <job>
+Usage: dumb-nomad job status [options] <job>
 
   Display status information about a job. If no job ID is given, a list of all
   known jobs will be displayed.
@@ -801,7 +801,7 @@ func (c *JobStatusCommand) outputFailedPlacements(failedEval *api.Evaluation) {
 	}
 
 	if len(sorted) > maxFailedTGs {
-		trunc := fmt.Sprintf("\nPlacement failures truncated. To see remainder run:\nnomad eval-status %s", failedEval.ID)
+		trunc := fmt.Sprintf("\nPlacement failures truncated. To see remainder run:\ndumb-nomad eval-status %s", failedEval.ID)
 		c.Ui.Output(trunc)
 	}
 }

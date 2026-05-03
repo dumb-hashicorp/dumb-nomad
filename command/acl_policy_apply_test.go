@@ -7,10 +7,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/nomad/mock"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
 	"github.com/shoenig/test/must"
 )
 
@@ -35,7 +35,7 @@ func TestACLPolicyApplyCommand(t *testing.T) {
 	policy := mock.ACLPolicy()
 
 	// Get a file
-	file, rm := getTempFile(t, "nomad-test")
+	file, rm := getTempFile(t, "dumb-nomad-test")
 	t.Cleanup(rm)
 
 	// Write the policy to the file

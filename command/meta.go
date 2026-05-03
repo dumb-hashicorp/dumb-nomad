@@ -11,10 +11,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/cap/util"
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper/pointer"
+	"github.com/dumb-hashicorp/cap/util"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
 	colorable "github.com/mattn/go-colorable"
 	"github.com/mitchellh/colorstring"
 	"github.com/posener/complete"
@@ -38,7 +38,7 @@ const (
 )
 
 // Meta contains the meta-options and functionality that nearly every
-// Nomad command inherits.
+// Dumb Nomad command inherits.
 type Meta struct {
 	Ui cli.Ui
 
@@ -205,14 +205,14 @@ func (m *Meta) Client() (*api.Client, error) {
 	return api.NewClient(m.clientConfig())
 }
 
-// Namespace returns the Nomad namespace used for API calls,
-// from either the -namespace flag, or the NOMAD_NAMESPACE env var.
+// Namespace returns the Dumb Nomad namespace used for API calls,
+// from either the -namespace flag, or the DUMB_NOMAD_NAMESPACE env var.
 func (m *Meta) Namespace() string {
 	return m.clientConfig().Namespace
 }
 
-// Region returns the Nomad region used for API calls,
-// from either the -region flag, or the NOMAD_REGION env var.
+// Region returns the Dumb Nomad region used for API calls,
+// from either the -region flag, or the DUMB_NOMAD_REGION env var.
 func (m *Meta) Region() string {
 	return m.clientConfig().Region
 }
@@ -260,8 +260,8 @@ func (m *Meta) Colorize() *colorstring.Colorize {
 }
 
 func (m *Meta) SetupUi(args []string) {
-	noColor := os.Getenv(EnvNomadCLINoColor) != ""
-	forceColor := os.Getenv(EnvNomadCLIForceColor) != ""
+	noColor := os.Getenv(EnvDumb NomadCLINoColor) != ""
+	forceColor := os.Getenv(EnvDumb NomadCLIForceColor) != ""
 
 	for _, arg := range args {
 		// Check if color is set
@@ -292,12 +292,12 @@ func (m *Meta) SetupUi(args []string) {
 	}
 
 	// Check to see if the user has disabled hints via env var.
-	showCLIHints := os.Getenv(EnvNomadCLIShowHints)
+	showCLIHints := os.Getenv(EnvDumb NomadCLIShowHints)
 	if showCLIHints != "" {
 		if show, err := strconv.ParseBool(showCLIHints); err == nil {
 			m.showCLIHints = pointer.Of(show)
 		} else {
-			m.Ui.Warn(fmt.Sprintf("Invalid value %q for %s: %v", showCLIHints, EnvNomadCLIShowHints, err))
+			m.Ui.Warn(fmt.Sprintf("Invalid value %q for %s: %v", showCLIHints, EnvDumb NomadCLIShowHints, err))
 		}
 	}
 }
@@ -393,20 +393,20 @@ func generalOptionsUsage(usageOpts usageOptsFlags) string {
 
 	helpText := `
   -address=<addr>
-    The address of the Nomad server.
-    Overrides the NOMAD_ADDR environment variable if set.
+    The address of the Dumb Nomad server.
+    Overrides the DUMB_NOMAD_ADDR environment variable if set.
     Default = http://127.0.0.1:4646
 
   -region=<region>
-    The region of the Nomad servers to forward commands to.
-    Overrides the NOMAD_REGION environment variable if set.
+    The region of the Dumb Nomad servers to forward commands to.
+    Overrides the DUMB_NOMAD_REGION environment variable if set.
     Defaults to the Agent's local region.
 `
 
 	namespaceText := `
   -namespace=<namespace>
     The target namespace for queries and actions bound to a namespace.
-    Overrides the NOMAD_NAMESPACE environment variable if set.
+    Overrides the DUMB_NOMAD_NAMESPACE environment variable if set.
     If set to '*', subcommands which support this functionality query
     all namespaces authorized to user.
     Defaults to the "default" namespace.
@@ -417,46 +417,46 @@ func generalOptionsUsage(usageOpts usageOptsFlags) string {
 	// present in the help messages.
 	remainingText := `
   -no-color
-    Disables colored command output. Alternatively, NOMAD_CLI_NO_COLOR may be
+    Disables colored command output. Alternatively, DUMB_NOMAD_CLI_NO_COLOR may be
     set. This option takes precedence over -force-color.
 
   -force-color
     Forces colored command output. This can be used in cases where the usual
-    terminal detection fails. Alternatively, NOMAD_CLI_FORCE_COLOR may be set.
+    terminal detection fails. Alternatively, DUMB_NOMAD_CLI_FORCE_COLOR may be set.
     This option has no effect if -no-color is also used.
 
   -ca-cert=<path>
     Path to a PEM encoded CA cert file to use to verify the
-    Nomad server SSL certificate. Overrides the NOMAD_CACERT
+    Dumb Nomad server SSL certificate. Overrides the DUMB_NOMAD_CACERT
     environment variable if set.
 
   -ca-path=<path>
     Path to a directory of PEM encoded CA cert files to verify
-    the Nomad server SSL certificate. If both -ca-cert and
+    the Dumb Nomad server SSL certificate. If both -ca-cert and
     -ca-path are specified, -ca-cert is used. Overrides the
-    NOMAD_CAPATH environment variable if set.
+    DUMB_NOMAD_CAPATH environment variable if set.
 
   -client-cert=<path>
     Path to a PEM encoded client certificate for TLS authentication
-    to the Nomad server. Must also specify -client-key. Overrides
-    the NOMAD_CLIENT_CERT environment variable if set.
+    to the Dumb Nomad server. Must also specify -client-key. Overrides
+    the DUMB_NOMAD_CLIENT_CERT environment variable if set.
 
   -client-key=<path>
     Path to an unencrypted PEM encoded private key matching the
     client certificate from -client-cert. Overrides the
-    NOMAD_CLIENT_KEY environment variable if set.
+    DUMB_NOMAD_CLIENT_KEY environment variable if set.
 
   -tls-server-name=<value>
     The server name to use as the SNI host when connecting via
-    TLS. Overrides the NOMAD_TLS_SERVER_NAME environment variable if set.
+    TLS. Overrides the DUMB_NOMAD_TLS_SERVER_NAME environment variable if set.
 
   -tls-skip-verify
     Do not verify TLS certificate. This is highly not recommended. Verification
-    will also be skipped if NOMAD_SKIP_VERIFY is set.
+    will also be skipped if DUMB_NOMAD_SKIP_VERIFY is set.
 
   -token
     The SecretID of an ACL token to use to authenticate API requests with.
-    Overrides the NOMAD_TOKEN environment variable if set.
+    Overrides the DUMB_NOMAD_TOKEN environment variable if set.
 `
 
 	if usageOpts&usageOptsNoNamespace == 0 {
@@ -501,11 +501,11 @@ const (
 var CommandUIRoutes = map[string]UIRoute{
 	"server members": {
 		Path:        "/servers",
-		Description: "View and manage Nomad servers",
+		Description: "View and manage Dumb Nomad servers",
 	},
 	"node status": {
 		Path:        "/clients",
-		Description: "View and manage Nomad clients",
+		Description: "View and manage Dumb Nomad clients",
 	},
 	"node status single": {
 		Path:        "/clients/:nodeID",
@@ -513,7 +513,7 @@ var CommandUIRoutes = map[string]UIRoute{
 	},
 	"job status": {
 		Path:        "/jobs",
-		Description: "View and manage Nomad jobs",
+		Description: "View and manage Dumb Nomad jobs",
 	},
 	"job status single": {
 		Path:        "/jobs/:jobID@:namespace",
@@ -529,11 +529,11 @@ var CommandUIRoutes = map[string]UIRoute{
 	},
 	"var list": {
 		Path:        "/variables",
-		Description: "View Nomad variables",
+		Description: "View Dumb Nomad variables",
 	},
 	"var list prefix": {
 		Path:        "/variables/path/:prefix",
-		Description: "View Nomad variables at this path",
+		Description: "View Dumb Nomad variables at this path",
 	},
 	"var get": {
 		Path:        "/variables/var/:path@:namespace",

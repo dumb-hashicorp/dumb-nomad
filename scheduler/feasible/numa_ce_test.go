@@ -6,10 +6,10 @@ package feasible
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 

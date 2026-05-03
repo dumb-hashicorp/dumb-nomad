@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-import compactPath from 'nomad-ui/utils/compact-path';
-import pathTree from 'nomad-ui/utils/path-tree';
+import compactPath from 'dumb-nomad-ui/utils/compact-path';
+import pathTree from 'dumb-nomad-ui/utils/path-tree';
 import { module, test } from 'qunit';
 
 const PATHSTRINGS = [

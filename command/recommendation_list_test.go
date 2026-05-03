@@ -7,10 +7,10 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -35,7 +35,7 @@ func TestRecommendationListCommand_Run(t *testing.T) {
 		must.StrContains(t, out, "No recommendations found")
 	} else {
 		must.One(t, code)
-		must.StrContains(t, ui.ErrorWriter.String(), "Nomad Enterprise only endpoint")
+		must.StrContains(t, ui.ErrorWriter.String(), "Dumb Nomad Enterprise only endpoint")
 	}
 
 	// Register a test job to write a recommendation against.
@@ -59,7 +59,7 @@ func TestRecommendationListCommand_Run(t *testing.T) {
 	if srv.Enterprise {
 		must.NoError(t, err)
 	} else {
-		must.ErrorContains(t, err, "Nomad Enterprise only endpoint")
+		must.ErrorContains(t, err, "Dumb Nomad Enterprise only endpoint")
 	}
 
 	// Perform a new list which should yield results.
@@ -76,7 +76,7 @@ func TestRecommendationListCommand_Run(t *testing.T) {
 		must.StrContains(t, out, "CPU")
 	} else {
 		must.One(t, code)
-		must.StrContains(t, ui.ErrorWriter.String(), "Nomad Enterprise only endpoint")
+		must.StrContains(t, ui.ErrorWriter.String(), "Dumb Nomad Enterprise only endpoint")
 	}
 }
 

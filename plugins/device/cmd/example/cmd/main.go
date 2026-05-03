@@ -4,10 +4,10 @@
 package main
 
 import (
-	log "github.com/hashicorp/go-hclog"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
 
-	"github.com/hashicorp/nomad/plugins"
-	"github.com/hashicorp/nomad/plugins/device/cmd/example"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device/cmd/example"
 )
 
 func main() {

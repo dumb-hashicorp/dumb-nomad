@@ -1,4 +1,4 @@
-# Copyright (c) HashiCorp, Inc.
+# Copyright (c) Dumb HashiCorp, Inc.
 # SPDX-License-Identifier: BUSL-1.1
 
 rules:
@@ -25,7 +25,7 @@ rules:
             import ...
             ...
       - pattern: |
-          "github.com/hashicorp/nomad/$...B"
+          "github.com/dumb-hashicorp/dumb-nomad/$...B"
       - metavariable-pattern:
           metavariable: $...B
           patterns:
@@ -38,14 +38,14 @@ rules:
             - pattern-not: "helper/crypto..."
             - pattern-not: "helper/grpc-middleware..."
             - pattern-not: "helper/pluginutils/grpcutils..."
-            - pattern-not: "helper/pluginutils/hclspecutils..."
+            - pattern-not: "helper/pluginutils/dumb-hclspecutils..."
             - pattern-not: "helper/pointer..."
             - pattern-not: "helper/testlog..."
             - pattern-not: "helper/uuid..."
             - pattern-not: "jobspec..."
             - pattern-not: "jobspec2..."
             - pattern-not: "plugins..."
-    message: "BUSL package `github.com/hashicorp/nomad/$...B` imported in MPL package `$A`"
+    message: "BUSL package `github.com/dumb-hashicorp/dumb-nomad/$...B` imported in MPL package `$A`"
     languages:
       - "generic"
     paths:

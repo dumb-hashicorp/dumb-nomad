@@ -17,9 +17,9 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	ctestutil "github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	ctestutil "github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 	"github.com/shoenig/test/must"
 )
 
@@ -68,7 +68,7 @@ func TestPrevAlloc_StreamAllocDir_Ok(t *testing.T) {
 	dir1 := t.TempDir()
 
 	rc := io.NopCloser(buf)
-	prevAlloc := &remotePrevAlloc{logger: testlog.HCLogger(t)}
+	prevAlloc := &remotePrevAlloc{logger: testlog.DUMB_HCLogger(t)}
 	err = prevAlloc.streamAllocDir(context.Background(), rc, dir1)
 	must.NoError(t, err)
 
@@ -110,7 +110,7 @@ func TestPrevAlloc_StreamAllocDir_BadSymlink(t *testing.T) {
 	rc := io.NopCloser(buf)
 
 	dir1 := t.TempDir()
-	prevAlloc := &remotePrevAlloc{logger: testlog.HCLogger(t)}
+	prevAlloc := &remotePrevAlloc{logger: testlog.DUMB_HCLogger(t)}
 	err = prevAlloc.streamAllocDir(context.Background(), rc, dir1)
 	must.EqError(t, err, "archive contains symlink that escapes alloc dir")
 }
@@ -130,7 +130,7 @@ func TestPrevAlloc_StreamAllocDir_BadSymlink_Linkname(t *testing.T) {
 	}))
 
 	newDir := t.TempDir()
-	prevAlloc := &remotePrevAlloc{logger: testlog.HCLogger(t)}
+	prevAlloc := &remotePrevAlloc{logger: testlog.DUMB_HCLogger(t)}
 	err := prevAlloc.streamAllocDir(context.Background(), io.NopCloser(&buf), newDir)
 
 	must.EqError(t, err, "archive contains symlink that escapes alloc dir")
@@ -166,7 +166,7 @@ func TestPrevAlloc_StreamAllocDir_SyminkWriteAttack(t *testing.T) {
 	must.NoError(t, err)
 
 	newDir := t.TempDir()
-	prevAlloc := &remotePrevAlloc{logger: testlog.HCLogger(t)}
+	prevAlloc := &remotePrevAlloc{logger: testlog.DUMB_HCLogger(t)}
 	err = prevAlloc.streamAllocDir(context.Background(), io.NopCloser(&buf), newDir)
 
 	// No error expected

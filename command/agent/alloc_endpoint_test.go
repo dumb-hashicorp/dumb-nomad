@@ -20,16 +20,16 @@ import (
 
 	"github.com/golang/snappy"
 	"github.com/gorilla/websocket"
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
@@ -75,13 +75,13 @@ func TestHTTP_AllocsList(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -138,13 +138,13 @@ func TestHTTP_AllocsPrefixList(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -186,9 +186,9 @@ func TestHTTP_AllocQuery(t *testing.T) {
 		require.NoError(err)
 
 		// Check for the index
-		require.NotEmpty(respW.Header().Get("X-Nomad-Index"), "missing index")
-		require.Equal("true", respW.Header().Get("X-Nomad-KnownLeader"), "missing known leader")
-		require.NotEmpty(respW.Header().Get("X-Nomad-LastContact"), "missing last contact")
+		require.NotEmpty(respW.Header().Get("X-Dumb Nomad-Index"), "missing index")
+		require.Equal("true", respW.Header().Get("X-Dumb Nomad-KnownLeader"), "missing known leader")
+		require.NotEmpty(respW.Header().Get("X-Dumb Nomad-LastContact"), "missing last contact")
 
 		// Check the job
 		a := obj.(*structs.Allocation)
@@ -237,13 +237,13 @@ func TestHTTP_AllocQuery_Payload(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -418,7 +418,7 @@ func TestHTTP_AllocStop(t *testing.T) {
 			a := obj.(*structs.AllocStopResponse)
 			require.NotEmpty(a.EvalID, "missing eval")
 			require.NotEmpty(a.Index, "missing index")
-			headerIndex, _ := strconv.ParseUint(respW.Header().Get("X-Nomad-Index"), 10, 64)
+			headerIndex, _ := strconv.ParseUint(respW.Header().Get("X-Dumb Nomad-Index"), 10, 64)
 			require.Equal(a.Index, headerIndex)
 		}
 
@@ -476,7 +476,7 @@ func TestHTTP_allocServiceRegistrations(t *testing.T) {
 				require.NoError(t, err)
 
 				// Check the response.
-				require.Equal(t, "20", respW.Header().Get("X-Nomad-Index"))
+				require.Equal(t, "20", respW.Header().Get("X-Dumb Nomad-Index"))
 				require.ElementsMatch(t, []*structs.ServiceRegistration{serviceReg},
 					obj.([]*structs.ServiceRegistration))
 			},
@@ -505,7 +505,7 @@ func TestHTTP_allocServiceRegistrations(t *testing.T) {
 				require.NoError(t, err)
 
 				// Check the response.
-				require.Equal(t, "1", respW.Header().Get("X-Nomad-Index"))
+				require.Equal(t, "1", respW.Header().Get("X-Dumb Nomad-Index"))
 				require.ElementsMatch(t, []*structs.ServiceRegistration{},
 					obj.([]*structs.ServiceRegistration))
 			},
@@ -716,7 +716,7 @@ func TestHTTP_AllocSnapshot_WithMigrateToken(t *testing.T) {
 		req, err = http.NewRequest(http.MethodGet, url, nil)
 		require.Nil(err)
 
-		req.Header.Set("X-Nomad-Token", validMigrateToken)
+		req.Header.Set("X-Dumb Nomad-Token", validMigrateToken)
 
 		// Make the unauthorized request
 		respW = httptest.NewRecorder()

@@ -5,8 +5,8 @@
 
 // @ts-check
 import Route from '@ember/routing/route';
-import withForbiddenState from 'nomad-ui/mixins/with-forbidden-state';
-import WithModelErrorHandling from 'nomad-ui/mixins/with-model-error-handling';
+import withForbiddenState from 'dumb-nomad-ui/mixins/with-forbidden-state';
+import WithModelErrorHandling from 'dumb-nomad-ui/mixins/with-model-error-handling';
 import { inject as service } from '@ember/service';
 
 export default class AccessControlNamespacesAclNamespaceRoute extends Route.extend(

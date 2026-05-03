@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
-	flaghelper "github.com/hashicorp/nomad/helper/flags"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
+	flaghelper "github.com/dumb-hashicorp/dumb-nomad/helper/flags"
 	"github.com/posener/complete"
 )
 
@@ -19,7 +19,7 @@ type VolumeSnapshotDeleteCommand struct {
 
 func (c *VolumeSnapshotDeleteCommand) Help() string {
 	helpText := `
-Usage: nomad volume snapshot delete [options] <plugin id> <snapshot id>
+Usage: dumb-nomad volume snapshot delete [options] <plugin id> <snapshot id>
 
   Delete a snapshot from an external storage provider.
 

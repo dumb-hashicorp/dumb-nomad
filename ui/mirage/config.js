@@ -10,8 +10,8 @@ import { logFrames, logEncode } from './data/logs';
 import { generateDiff } from './factories/job-version';
 import { generateTaskGroupFailures } from './factories/evaluation';
 import { copy } from 'ember-copy';
-import formatHost from 'nomad-ui/utils/format-host';
-import faker from 'nomad-ui/mirage/faker';
+import formatHost from 'dumb-nomad-ui/utils/format-host';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 export function findLeader(schema, region = null) {
   let agent;
@@ -41,7 +41,7 @@ export default function () {
   this.namespace = 'v1';
   this.trackRequests = Ember.testing;
 
-  const nomadIndices = {}; // used for tracking blocking queries
+  const dumb-nomadIndices = {}; // used for tracking blocking queries
   const server = this;
   const withBlockingSupport = function (
     fn,
@@ -59,16 +59,16 @@ export default function () {
       let response = handler.apply(this, arguments);
 
       // Get and increment the appropriate index
-      nomadIndices[url] || (nomadIndices[url] = 2);
-      const index = nomadIndices[url];
-      nomadIndices[url]++;
+      dumb-nomadIndices[url] || (dumb-nomadIndices[url] = 2);
+      const index = dumb-nomadIndices[url];
+      dumb-nomadIndices[url]++;
 
       // Annotate the response with the index
       if (response instanceof Response) {
-        response.headers['x-nomad-index'] = index;
+        response.headers['x-dumb-nomad-index'] = index;
         return response;
       }
-      return new Response(200, { 'x-nomad-index': index }, response);
+      return new Response(200, { 'x-dumb-nomad-index': index }, response);
     };
   };
 
@@ -94,7 +94,7 @@ export default function () {
       if (nextToken) {
         return new Response(
           200,
-          { 'x-nomad-nexttoken': nextToken },
+          { 'x-dumb-nomad-nexttoken': nextToken },
           paginatedItems
         );
       } else {
@@ -189,11 +189,11 @@ export default function () {
             'AllAtOnce',
             'Datacenters',
             'Dispatched',
-            'ConsulToken',
-            'ConsulNamespace',
-            'VaultToken',
-            'VaultNamespace',
-            'NomadTokenID',
+            'Dumb ConsulToken',
+            'Dumb ConsulNamespace',
+            'Dumb VaultToken',
+            'Dumb VaultNamespace',
+            'Dumb NomadTokenID',
             'Stable',
             'SubmitTime',
             'CreateIndex',
@@ -361,23 +361,23 @@ export default function () {
   this.post('/jobs/parse', function (schema, req) {
     const body = JSON.parse(req.requestBody);
 
-    if (!body.JobHCL)
+    if (!body.JobDUMB_HCL)
       return new Response(
         400,
         {},
-        'JobHCL is a required field on the request payload'
+        'JobDUMB_HCL is a required field on the request payload'
       );
     if (!body.Canonicalize)
       return new Response(400, {}, 'Expected Canonicalize to be true');
 
-    // Parse the name out of the first real line of HCL to match IDs in the new job record
+    // Parse the name out of the first real line of DUMB_HCL to match IDs in the new job record
     // Regex expectation:
     //   in:  job "job-name" {
     //   out: job-name
-    const nameFromHCLBlock = /.+?"(.+?)"/;
-    const jobName = body.JobHCL.trim()
+    const nameFromDUMB_HCLBlock = /.+?"(.+?)"/;
+    const jobName = body.JobDUMB_HCL.trim()
       .split('\n')[0]
-      .match(nameFromHCLBlock)[1];
+      .match(nameFromDUMB_HCLBlock)[1];
 
     const job = server.create('job', { id: jobName });
     return new Response(200, {}, this.serialize(job));
@@ -389,7 +389,7 @@ export default function () {
       {},
       JSON.stringify({
         Source: `job "${req.params.id}" {`,
-        Format: 'hcl2',
+        Format: 'dumb-hcl2',
         VariableFlags: { X: 'x', Y: '42', Z: 'true' },
         Variables: 'var file content',
       })
@@ -597,7 +597,7 @@ export default function () {
   this.get('/nodes', function ({ nodes }, req) {
     // authorize user permissions
     const token = server.db.tokens.findBy({
-      secretId: req.requestHeaders['X-Nomad-Token'],
+      secretId: req.requestHeaders['X-Dumb Nomad-Token'],
     });
 
     if (token) {
@@ -751,7 +751,7 @@ export default function () {
   });
 
   this.get('/agent/members', function ({ agents, regions }, req) {
-    const tokenPresent = req.requestHeaders['X-Nomad-Token'];
+    const tokenPresent = req.requestHeaders['X-Dumb Nomad-Token'];
     if (!tokenPresent) {
       return new Response(403, {}, 'Forbidden');
     }
@@ -857,7 +857,7 @@ export default function () {
   });
 
   this.get('/acl/token/self', function ({ tokens }, req) {
-    const secret = req.requestHeaders['X-Nomad-Token'];
+    const secret = req.requestHeaders['X-Dumb Nomad-Token'];
     const tokenForSecret = tokens.findBy({ secretId: secret });
 
     // Return the token if it exists
@@ -888,7 +888,7 @@ export default function () {
 
   this.get('/acl/token/:id', function ({ tokens }, req) {
     const token = tokens.find(req.params.id);
-    const secret = req.requestHeaders['X-Nomad-Token'];
+    const secret = req.requestHeaders['X-Dumb Nomad-Token'];
     const tokenForSecret = tokens.findBy({ secretId: secret });
 
     // Return the token only if the request header matches the token
@@ -925,7 +925,7 @@ export default function () {
 
   this.get('/acl/policy/:id', function ({ policies, tokens }, req) {
     const policy = policies.findBy({ name: req.params.id });
-    const secret = req.requestHeaders['X-Nomad-Token'];
+    const secret = req.requestHeaders['X-Dumb Nomad-Token'];
     const tokenForSecret = tokens.findBy({ secretId: secret });
     if (req.params.id === 'anonymous') {
       if (policy) {
@@ -1452,10 +1452,10 @@ export default function () {
   //#region Variables
 
   this.get('/vars', function (schema, { queryParams: { namespace, prefix } }) {
-    if (prefix === 'nomad/job-templates') {
+    if (prefix === 'dumb-nomad/job-templates') {
       return schema.variables
         .all()
-        .filter((v) => v.path.includes('nomad/job-templates'));
+        .filter((v) => v.path.includes('dumb-nomad/job-templates'));
     }
     if (namespace && namespace !== '*') {
       return schema.variables.all().filter((v) => v.namespace === namespace);
@@ -1525,7 +1525,7 @@ export default function () {
           Check: `check-${checkIter}`,
           Group: `job-name.${frag.taskGroup?.name}[1]`,
           Output: checkOK
-            ? 'nomad: http ok'
+            ? 'dumb-nomad: http ok'
             : disasters[Math.floor(Math.random() * disasters.length)],
           Service: frag.name,
           Status: checkOK ? 'success' : 'failure',
@@ -1640,5 +1640,5 @@ function generateFailedTGAllocs(job, taskGroups) {
 }
 
 function generateWarnings() {
-  return '2 warnings:\n\n* Group "yourtask" has warnings: 1 error occurred:\n\t* Task "yourtask" has warnings: 1 error occurred:\n\t* 2 errors occurred:\n\t* Identity[vault_default] identities without an audience are insecure\n\t* Identity[vault_default] identities without an expiration are insecure\n* Task yourtask has an identity called vault_default but no vault block';
+  return '2 warnings:\n\n* Group "yourtask" has warnings: 1 error occurred:\n\t* Task "yourtask" has warnings: 1 error occurred:\n\t* 2 errors occurred:\n\t* Identity[dumb-vault_default] identities without an audience are insecure\n\t* Identity[dumb-vault_default] identities without an expiration are insecure\n* Task yourtask has an identity called dumb-vault_default but no dumb-vault block';
 }

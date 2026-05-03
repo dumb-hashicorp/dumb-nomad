@@ -10,19 +10,19 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
-	"github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
 func TestCPUFingerprint_Classic(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// create the fingerprinter
 	f := NewCPUFingerprint(logger)
@@ -63,7 +63,7 @@ func TestCPUFingerprint_OverrideCompute(t *testing.T) {
 	ci.Parallel(t)
 	testutil.MinimumCores(t, 4)
 
-	f := NewCPUFingerprint(testlog.HCLogger(t))
+	f := NewCPUFingerprint(testlog.DUMB_HCLogger(t))
 	node := &structs.Node{
 		Attributes: make(map[string]string),
 	}

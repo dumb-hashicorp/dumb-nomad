@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/require"
 )
 
@@ -221,23 +221,23 @@ func TestInterpolate_interpolateConnect(t *testing.T) {
 	}
 	env := NewTaskEnv(e, e, nil, nil, nil, "", "")
 
-	connect := &structs.ConsulConnect{
+	connect := &structs.Dumb ConsulConnect{
 		Native: false,
-		SidecarService: &structs.ConsulSidecarService{
+		SidecarService: &structs.Dumb ConsulSidecarService{
 			Tags: []string{"${tag1}", "tag2"},
 			Port: "${port1}",
-			Proxy: &structs.ConsulProxy{
+			Proxy: &structs.Dumb ConsulProxy{
 				LocalServiceAddress: "${address1}",
 				LocalServicePort:    10000,
-				Upstreams: []structs.ConsulUpstream{{
+				Upstreams: []structs.Dumb ConsulUpstream{{
 					DestinationName:  "${destination1}",
 					Datacenter:       "${datacenter1}",
 					LocalBindPort:    10001,
 					LocalBindAddress: "${localbindaddress1}",
 					Config:           map[string]any{"${config1}": 1},
 				}},
-				Expose: &structs.ConsulExposeConfig{
-					Paths: []structs.ConsulExposePath{{
+				Expose: &structs.Dumb ConsulExposeConfig{
+					Paths: []structs.Dumb ConsulExposePath{{
 						Path:          "${path1}",
 						Protocol:      "${protocol1}",
 						ListenerPort:  "${port2}",
@@ -298,11 +298,11 @@ func TestInterpolate_interpolateConnect(t *testing.T) {
 			ShutdownDelay: pointer.Of(2 * time.Second),
 			KillSignal:    "${signal1}",
 		},
-		Gateway: &structs.ConsulGateway{
-			Proxy: &structs.ConsulGatewayProxy{
+		Gateway: &structs.Dumb ConsulGateway{
+			Proxy: &structs.Dumb ConsulGatewayProxy{
 				ConnectTimeout:                  pointer.Of(3 * time.Second),
 				EnvoyGatewayBindTaggedAddresses: true,
-				EnvoyGatewayBindAddresses: map[string]*structs.ConsulGatewayBindAddress{
+				EnvoyGatewayBindAddresses: map[string]*structs.Dumb ConsulGatewayBindAddress{
 					"${bind1}": {
 						Address: "${address2}",
 						Port:    8000,
@@ -313,14 +313,14 @@ func TestInterpolate_interpolateConnect(t *testing.T) {
 					"${config3}": 4,
 				},
 			},
-			Ingress: &structs.ConsulIngressConfigEntry{
-				TLS: &structs.ConsulGatewayTLSConfig{
+			Ingress: &structs.Dumb ConsulIngressConfigEntry{
+				TLS: &structs.Dumb ConsulGatewayTLSConfig{
 					Enabled: true,
 				},
-				Listeners: []*structs.ConsulIngressListener{{
+				Listeners: []*structs.Dumb ConsulIngressListener{{
 					Protocol: "${protocol2}",
 					Port:     8001,
-					Services: []*structs.ConsulIngressService{{
+					Services: []*structs.Dumb ConsulIngressService{{
 						Name:  "${service1}",
 						Hosts: []string{"${host1}", "host2"},
 					}},
@@ -331,23 +331,23 @@ func TestInterpolate_interpolateConnect(t *testing.T) {
 
 	interpolateConnect(env, connect)
 
-	require.Equal(t, &structs.ConsulConnect{
+	require.Equal(t, &structs.Dumb ConsulConnect{
 		Native: false,
-		SidecarService: &structs.ConsulSidecarService{
+		SidecarService: &structs.Dumb ConsulSidecarService{
 			Tags: []string{"_tag1", "tag2"},
 			Port: "12345",
-			Proxy: &structs.ConsulProxy{
+			Proxy: &structs.Dumb ConsulProxy{
 				LocalServiceAddress: "1.2.3.4",
 				LocalServicePort:    10000,
-				Upstreams: []structs.ConsulUpstream{{
+				Upstreams: []structs.Dumb ConsulUpstream{{
 					DestinationName:  "_dest1",
 					Datacenter:       "_datacenter1",
 					LocalBindPort:    10001,
 					LocalBindAddress: "127.0.0.2",
 					Config:           map[string]any{"_config1": 1},
 				}},
-				Expose: &structs.ConsulExposeConfig{
-					Paths: []structs.ConsulExposePath{{
+				Expose: &structs.Dumb ConsulExposeConfig{
+					Paths: []structs.Dumb ConsulExposePath{{
 						Path:          "_path1",
 						Protocol:      "_protocol1",
 						ListenerPort:  "_port2",
@@ -408,11 +408,11 @@ func TestInterpolate_interpolateConnect(t *testing.T) {
 			ShutdownDelay: pointer.Of(2 * time.Second),
 			KillSignal:    "_signal1",
 		},
-		Gateway: &structs.ConsulGateway{
-			Proxy: &structs.ConsulGatewayProxy{
+		Gateway: &structs.Dumb ConsulGateway{
+			Proxy: &structs.Dumb ConsulGatewayProxy{
 				ConnectTimeout:                  pointer.Of(3 * time.Second),
 				EnvoyGatewayBindTaggedAddresses: true,
-				EnvoyGatewayBindAddresses: map[string]*structs.ConsulGatewayBindAddress{
+				EnvoyGatewayBindAddresses: map[string]*structs.Dumb ConsulGatewayBindAddress{
 					"_bind1": {
 						Address: "10.0.0.4",
 						Port:    8000,
@@ -423,14 +423,14 @@ func TestInterpolate_interpolateConnect(t *testing.T) {
 					"_config3": 4,
 				},
 			},
-			Ingress: &structs.ConsulIngressConfigEntry{
-				TLS: &structs.ConsulGatewayTLSConfig{
+			Ingress: &structs.Dumb ConsulIngressConfigEntry{
+				TLS: &structs.Dumb ConsulGatewayTLSConfig{
 					Enabled: true,
 				},
-				Listeners: []*structs.ConsulIngressListener{{
+				Listeners: []*structs.Dumb ConsulIngressListener{{
 					Protocol: "_protocol2",
 					Port:     8001,
-					Services: []*structs.ConsulIngressService{{
+					Services: []*structs.Dumb ConsulIngressService{{
 						Name:  "_service1",
 						Hosts: []string{"_host1", "host2"},
 					}},

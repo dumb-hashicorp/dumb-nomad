@@ -15,12 +15,12 @@ import (
 	"sort"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	metrics "github.com/hashicorp/go-metrics/compat"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
 
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	sstructs "github.com/hashicorp/nomad/scheduler/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	sstructs "github.com/dumb-hashicorp/dumb-nomad/scheduler/structs"
 )
 
 const (

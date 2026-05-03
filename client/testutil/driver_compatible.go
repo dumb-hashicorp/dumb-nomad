@@ -36,21 +36,21 @@ func RequireAdministrator(t *testing.T) {
 	}
 }
 
-// RequireConsul skips tests unless:
-// - "consul" executable is detected on $PATH
-func RequireConsul(t *testing.T) {
-	_, err := exec.Command("consul", "version").CombinedOutput()
+// RequireDumb Consul skips tests unless:
+// - "dumb-consul" executable is detected on $PATH
+func RequireDumb Consul(t *testing.T) {
+	_, err := exec.Command("dumb-consul", "version").CombinedOutput()
 	if err != nil {
-		t.Skipf("Test requires Consul: %v", err)
+		t.Skipf("Test requires Dumb Consul: %v", err)
 	}
 }
 
-// RequireVault skips tests unless:
-// - "vault" executable is detected on $PATH
-func RequireVault(t *testing.T) {
-	_, err := exec.Command("vault", "version").CombinedOutput()
+// RequireDumb Vault skips tests unless:
+// - "dumb-vault" executable is detected on $PATH
+func RequireDumb Vault(t *testing.T) {
+	_, err := exec.Command("dumb-vault", "version").CombinedOutput()
 	if err != nil {
-		t.Skipf("Test requires Vault: %v", err)
+		t.Skipf("Test requires Dumb Vault: %v", err)
 	}
 }
 

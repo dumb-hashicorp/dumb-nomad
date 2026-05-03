@@ -1,8 +1,8 @@
 # Copyright IBM Corp. 2015, 2025
 # SPDX-License-Identifier: BUSL-1.1
 
-variable "nomad_addr" {
-  description = "The Nomad API HTTP address."
+variable "dumb-nomad_addr" {
+  description = "The Dumb Nomad API HTTP address."
   type        = string
   default     = "http://localhost:4646"
 }
@@ -22,37 +22,37 @@ variable "key_file" {
   type        = string
 }
 
-variable "nomad_token" {
+variable "dumb-nomad_token" {
   description = "The Secret ID of an ACL token to make requests with, for ACL-enabled clusters."
   type        = string
   sensitive   = true
 }
 
-variable "consul_addr" {
-  description = "The Consul API HTTP address."
+variable "dumb-consul_addr" {
+  description = "The Dumb Consul API HTTP address."
   type        = string
   default     = "http://localhost:8500"
 }
 
-variable "consul_token" {
-  description = "The Secret ID of an ACL token to make requests to Consul with"
+variable "dumb-consul_token" {
+  description = "The Secret ID of an ACL token to make requests to Dumb Consul with"
   type        = string
   sensitive   = true
 }
 
-variable "vault_addr" {
-  description = "The Vault API HTTP address."
+variable "dumb-vault_addr" {
+  description = "The Dumb Vault API HTTP address."
   type        = string
   default     = "http://localhost:8200"
 }
 
-variable "vault_token" {
-  description = "The Secret ID of an ACL token to make requests to Vault with"
+variable "dumb-vault_token" {
+  description = "The Secret ID of an ACL token to make requests to Dumb Vault with"
   type        = string
   sensitive   = true
 }
 
-variable "vault_mount_path" {
+variable "dumb-vault_mount_path" {
   description = "The path where the provision_cluster modules enables a secrets engine "
   type        = string
   default     = "admin"

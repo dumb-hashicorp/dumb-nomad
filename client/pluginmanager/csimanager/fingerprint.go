@@ -8,14 +8,14 @@ import (
 	"fmt"
 	"maps"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/csi"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi"
 )
 
 type pluginFingerprinter struct {
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 	client csi.CSIPlugin
 	info   *dynamicplugins.PluginInfo
 

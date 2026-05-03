@@ -7,11 +7,11 @@
 package allocrunner
 
 import (
-	hclog "github.com/hashicorp/go-hclog"
-	clientconfig "github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/pluginmanager/drivermanager"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	clientconfig "github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 // noopNetworkManager implements the drivers.DriverNetoworkManager interface to
@@ -31,6 +31,6 @@ func newNetworkManager(alloc *structs.Allocation, driverManager drivermanager.Ma
 	return &noopNetworkManager{}, nil
 }
 
-func newNetworkConfigurator(log hclog.Logger, alloc *structs.Allocation, config *clientconfig.Config) (NetworkConfigurator, error) {
+func newNetworkConfigurator(log dumb-hclog.Logger, alloc *structs.Allocation, config *clientconfig.Config) (NetworkConfigurator, error) {
 	return &hostNetworkConfigurator{}, nil
 }

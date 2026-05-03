@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/posener/complete"
 )
 
@@ -98,7 +98,7 @@ func (o *OperatorSchedulerGetConfig) Synopsis() string {
 
 func (o *OperatorSchedulerGetConfig) Help() string {
 	helpText := `
-Usage: nomad operator scheduler get-config [options]
+Usage: dumb-nomad operator scheduler get-config [options]
 
   Displays the current scheduler configuration.
 

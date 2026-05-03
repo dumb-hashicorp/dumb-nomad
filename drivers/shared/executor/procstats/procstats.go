@@ -6,9 +6,9 @@ package procstats
 import (
 	"time"
 
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/mitchellh/go-ps"
 )
 
@@ -24,7 +24,7 @@ type ProcessID = int
 
 // ProcUsages is a map from PID to the resources that process is consuming.
 //
-// The pid type is a string because that's how Nomad wants it.
+// The pid type is a string because that's how Dumb Nomad wants it.
 type ProcUsages map[string]*drivers.ResourceUsage
 
 // A ProcessStats is anything (i.e. a task driver) that implements StatProcesses
@@ -95,7 +95,7 @@ func Aggregate(systemStats *cpustats.Tracker, procStats ProcUsages) *drivers.Tas
 // iterate every process, recursively follow its parent, and determine whether
 // executorPID is an ancestor.
 //
-// See https://github.com/hashicorp/nomad/issues/20042 as an example of what
+// See https://github.com/dumb-hashicorp/dumb-nomad/issues/20042 as an example of what
 // happens when you use syscalls to work your way from the root down to its
 // descendants.
 func list(executorPID int, processes func() ([]ps.Process, error)) set.Collection[ProcessID] {

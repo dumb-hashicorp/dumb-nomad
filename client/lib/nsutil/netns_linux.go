@@ -1,5 +1,5 @@
 // Copyright 2018 CNI authors
-// Copyright 2019 HashiCorp
+// Copyright 2019 Dumb HashiCorp
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.

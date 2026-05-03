@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
 	"github.com/stretchr/testify/require"
 )
 
@@ -19,7 +19,7 @@ import (
 func TestAllocBroadcaster_SendRecv(t *testing.T) {
 	ci.Parallel(t)
 
-	b := NewAllocBroadcaster(testlog.HCLogger(t))
+	b := NewAllocBroadcaster(testlog.DUMB_HCLogger(t))
 	defer b.Close()
 
 	// Create a listener and assert it blocks until an update
@@ -54,7 +54,7 @@ func TestAllocBroadcaster_RecvBlocks(t *testing.T) {
 	ci.Parallel(t)
 
 	alloc := mock.Alloc()
-	b := NewAllocBroadcaster(testlog.HCLogger(t))
+	b := NewAllocBroadcaster(testlog.DUMB_HCLogger(t))
 	defer b.Close()
 
 	l1 := b.Listen()
@@ -94,7 +94,7 @@ func TestAllocBroadcaster_Concurrency(t *testing.T) {
 	ci.Parallel(t)
 
 	alloc := mock.Alloc()
-	b := NewAllocBroadcaster(testlog.HCLogger(t))
+	b := NewAllocBroadcaster(testlog.DUMB_HCLogger(t))
 	defer b.Close()
 
 	errs := make(chan error, 10)
@@ -170,7 +170,7 @@ func TestAllocBroadcaster_Concurrency(t *testing.T) {
 func TestAllocBroadcaster_PrimeListener(t *testing.T) {
 	ci.Parallel(t)
 
-	b := NewAllocBroadcaster(testlog.HCLogger(t))
+	b := NewAllocBroadcaster(testlog.DUMB_HCLogger(t))
 	defer b.Close()
 
 	alloc := mock.Alloc()
@@ -194,7 +194,7 @@ func TestAllocBroadcaster_PrimeListener(t *testing.T) {
 func TestAllocBroadcaster_Closed(t *testing.T) {
 	ci.Parallel(t)
 
-	b := NewAllocBroadcaster(testlog.HCLogger(t))
+	b := NewAllocBroadcaster(testlog.DUMB_HCLogger(t))
 
 	alloc := mock.Alloc()
 

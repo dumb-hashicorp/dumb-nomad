@@ -6,12 +6,12 @@
 
 package client
 
-import hclog "github.com/hashicorp/go-hclog"
+import dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
 
 // EnterpriseClient holds information and methods for enterprise functionality
 type EnterpriseClient struct{}
 
-func newEnterpriseClient(logger hclog.Logger) *EnterpriseClient {
+func newEnterpriseClient(logger dumb-hclog.Logger) *EnterpriseClient {
 	return &EnterpriseClient{}
 }
 

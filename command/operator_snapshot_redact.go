@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/helper/raftutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/raftutil"
 	"github.com/posener/complete"
 )
 
@@ -19,7 +19,7 @@ type OperatorSnapshotRedactCommand struct {
 
 func (c *OperatorSnapshotRedactCommand) Help() string {
 	helpText := `
-Usage: nomad operator snapshot redact [options] <file>
+Usage: dumb-nomad operator snapshot redact [options] <file>
 
   Removes key material from an existing snapshot file created by the operator
   snapshot save command, when using the AEAD keyring provider. When using a KMS
@@ -46,7 +46,7 @@ func (c *OperatorSnapshotRedactCommand) AutocompleteArgs() complete.Predictor {
 }
 
 func (c *OperatorSnapshotRedactCommand) Synopsis() string {
-	return "Redacts an existing snapshot of Nomad server state"
+	return "Redacts an existing snapshot of Dumb Nomad server state"
 }
 
 func (c *OperatorSnapshotRedactCommand) Name() string { return "operator snapshot redact" }

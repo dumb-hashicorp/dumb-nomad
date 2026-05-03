@@ -17,7 +17,7 @@ export default class Service extends Fragment {
   @attr() canary_tags;
   @attr('string') onUpdate;
   @attr('string') provider;
-  @fragment('consul-connect') connect;
+  @fragment('dumb-consul-connect') connect;
   @attr() groupName;
   @attr() taskName;
   get refID() {

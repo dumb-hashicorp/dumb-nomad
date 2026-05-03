@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/raft"
-	raftboltdb "github.com/hashicorp/raft-boltdb/v2"
-	raftwal "github.com/hashicorp/raft-wal"
+	"github.com/dumb-hashicorp/raft"
+	raftboltdb "github.com/dumb-hashicorp/raft-boltdb/v2"
+	raftwal "github.com/dumb-hashicorp/raft-wal"
 	"github.com/shoenig/test/must"
 )
 

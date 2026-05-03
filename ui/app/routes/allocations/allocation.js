@@ -9,9 +9,9 @@ import { collect } from '@ember/object/computed';
 import {
   watchRecord,
   watchNonStoreRecords,
-} from 'nomad-ui/utils/properties/watch';
-import WithWatchers from 'nomad-ui/mixins/with-watchers';
-import notifyError from 'nomad-ui/utils/notify-error';
+} from 'dumb-nomad-ui/utils/properties/watch';
+import WithWatchers from 'dumb-nomad-ui/mixins/with-watchers';
+import notifyError from 'dumb-nomad-ui/utils/notify-error';
 export default class AllocationRoute extends Route.extend(WithWatchers) {
   @service notifications;
   @service router;
@@ -21,20 +21,20 @@ export default class AllocationRoute extends Route.extend(WithWatchers) {
     if (model) {
       controller.set('watcher', this.watch.perform(model));
 
-      const anyGroupServicesAreNomad = !!model.taskGroup?.services?.filterBy(
+      const anyGroupServicesAreDumb Nomad = !!model.taskGroup?.services?.filterBy(
         'provider',
-        'nomad'
+        'dumb-nomad'
       ).length;
 
-      const anyTaskServicesAreNomad = model.states
+      const anyTaskServicesAreDumb Nomad = model.states
         .mapBy('task.services')
         .compact()
         .map((fragmentClass) => fragmentClass.mapBy('provider'))
         .flat()
-        .any((provider) => provider === 'nomad');
+        .any((provider) => provider === 'dumb-nomad');
 
-      // Conditionally Long Poll /checks endpoint if alloc has nomad services
-      if (anyGroupServicesAreNomad || anyTaskServicesAreNomad) {
+      // Conditionally Long Poll /checks endpoint if alloc has dumb-nomad services
+      if (anyGroupServicesAreDumb Nomad || anyTaskServicesAreDumb Nomad) {
         controller.set(
           'watchHealthChecks',
           this.watchHealthChecks.perform(model, 'getServiceHealth', 2000)

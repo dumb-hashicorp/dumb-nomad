@@ -15,14 +15,14 @@ import (
 	"testing"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -36,7 +36,7 @@ type fakeAllocRunner struct {
 
 // newFakeAllocRunner creates a new AllocRunnerMeta. Callers must call
 // AllocDir.Destroy() when finished.
-func newFakeAllocRunner(t *testing.T, logger hclog.Logger) *fakeAllocRunner {
+func newFakeAllocRunner(t *testing.T, logger dumb-hclog.Logger) *fakeAllocRunner {
 	alloc := mock.Alloc()
 	alloc.Job.TaskGroups[0].EphemeralDisk.Sticky = true
 	alloc.Job.TaskGroups[0].EphemeralDisk.Migrate = true
@@ -64,7 +64,7 @@ func (f *fakeAllocRunner) Alloc() *structs.Allocation {
 
 // newConfig returns a new Config and cleanup func
 func newConfig(t *testing.T) (Config, func()) {
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	prevAR := newFakeAllocRunner(t, logger)
 
@@ -217,7 +217,7 @@ func TestPrevAlloc_StreamAllocDir_Error(t *testing.T) {
 	// This test only unit tests streamAllocDir so we only need a partially
 	// complete remotePrevAlloc
 	prevAlloc := &remotePrevAlloc{
-		logger:      testlog.HCLogger(t),
+		logger:      testlog.DUMB_HCLogger(t),
 		allocID:     "123",
 		prevAllocID: "abc",
 		migrate:     true,
@@ -286,7 +286,7 @@ func TestPrevAlloc_StreamAllocDir_FileEscape(t *testing.T) {
 	// This test only unit tests streamAllocDir so we only need a partially
 	// complete remotePrevAlloc
 	prevAlloc := &remotePrevAlloc{
-		logger:      testlog.HCLogger(t),
+		logger:      testlog.DUMB_HCLogger(t),
 		allocID:     "123",
 		prevAllocID: "abc",
 		migrate:     true,

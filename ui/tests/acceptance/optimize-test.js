@@ -9,14 +9,14 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { currentURL, visit } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import Response from 'ember-cli-mirage/response';
 import moment from 'moment';
-import { formatBytes, formatHertz, replaceMinus } from 'nomad-ui/utils/units';
+import { formatBytes, formatHertz, replaceMinus } from 'dumb-nomad-ui/utils/units';
 
-import Optimize from 'nomad-ui/tests/pages/optimize';
-import Layout from 'nomad-ui/tests/pages/layout';
-import JobsList from 'nomad-ui/tests/pages/jobs/list';
+import Optimize from 'dumb-nomad-ui/tests/pages/optimize';
+import Layout from 'dumb-nomad-ui/tests/pages/layout';
+import JobsList from 'dumb-nomad-ui/tests/pages/jobs/list';
 import collapseWhitespace from '../helpers/collapse-whitespace';
 
 let managementToken, clientToken;
@@ -65,7 +65,7 @@ module('Acceptance | optimize', function (hooks) {
     clientToken = server.create('token');
 
     window.localStorage.clear();
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
   });
 
   test('it passes an accessibility audit', async function (assert) {
@@ -419,7 +419,7 @@ module('Acceptance | optimize', function (hooks) {
   });
 
   test('it redirects to jobs and hides the gutter link when the token lacks permissions', async function (assert) {
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
     await Optimize.visit();
 
     assert.equal(currentURL(), '/jobs');
@@ -449,7 +449,7 @@ module('Acceptance | optimize search and facets', function (hooks) {
     managementToken = server.create('token');
 
     window.localStorage.clear();
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
   });
 
   test('search field narrows summary table results, changes the active summary if it no longer matches, and displays a no matches message when there are none', async function (assert) {

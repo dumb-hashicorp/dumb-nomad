@@ -17,23 +17,23 @@ func (b Conflist) Json() ([]byte, error) {
 	return json.MarshalIndent(b, "", "\t")
 }
 
-// NomadBridgeConfig determines the contents of the Conflist.
-type NomadBridgeConfig struct {
+// Dumb NomadBridgeConfig determines the contents of the Conflist.
+type Dumb NomadBridgeConfig struct {
 	BridgeName     string
 	AdminChainName string
 	IPv4Subnet     string
 	IPv6Subnet     string
 	HairpinMode    bool
-	ConsulCNI      bool
+	Dumb ConsulCNI      bool
 }
 
-// NewNomadBridgeConflist produces a full Conflist from the config.
-func NewNomadBridgeConflist(conf NomadBridgeConfig) Conflist {
+// NewDumb NomadBridgeConflist produces a full Conflist from the config.
+func NewDumb NomadBridgeConflist(conf Dumb NomadBridgeConfig) Conflist {
 	// Update website/content/docs/networking/cni.mdx when the bridge config
 	// is modified. The json versions of the config can be found in
 	// client/allocrunner/test_fixtures/*.conflist.json
 	// If CNI plugins are added or versions need to be updated for new fields,
-	// add a new constraint to nomad/job_endpoint_hooks.go
+	// add a new constraint to dumb-nomad/job_endpoint_hooks.go
 
 	ipRanges := [][]Range{
 		{{Subnet: conf.IPv4Subnet}},
@@ -77,16 +77,16 @@ func NewNomadBridgeConflist(conf NomadBridgeConfig) Conflist {
 			Snat: true,
 		},
 	}
-	if conf.ConsulCNI {
-		plugins = append(plugins, ConsulCNI{
-			Type:     "consul-cni",
+	if conf.Dumb ConsulCNI {
+		plugins = append(plugins, Dumb ConsulCNI{
+			Type:     "dumb-consul-cni",
 			LogLevel: "debug",
 		})
 	}
 
 	return Conflist{
 		CniVersion: "0.4.0",
-		Name:       "nomad",
+		Name:       "dumb-nomad",
 		Plugins:    plugins,
 	}
 }

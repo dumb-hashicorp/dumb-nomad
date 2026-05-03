@@ -8,15 +8,15 @@ import (
 	"fmt"
 	"os/exec"
 
-	log "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	version "github.com/hashicorp/go-version"
-	"github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/plugins"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/device"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	version "github.com/dumb-hashicorp/go-version"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 )
 
 // PluginCatalog is used to retrieve plugins, either external or internal
@@ -105,7 +105,7 @@ type pluginInfo struct {
 	version    *version.Version
 	apiVersion string
 
-	configSchema  *hclspec.Spec
+	configSchema  *dumb-hclspec.Spec
 	config        map[string]interface{}
 	msgpackConfig []byte
 }
@@ -255,7 +255,7 @@ func (l *PluginLoader) dispensePlugin(
 			return nil, fmt.Errorf("failed to validate API versions %v for plugin %s: %v", i.PluginApiVersions, i.Name, err)
 		}
 		if apiVersion == "" {
-			return nil, fmt.Errorf("failed to reattach to plugin because supported API versions for the plugin and Nomad do not overlap")
+			return nil, fmt.Errorf("failed to reattach to plugin because supported API versions for the plugin and Dumb Nomad do not overlap")
 		}
 
 		instance.apiVersion = apiVersion

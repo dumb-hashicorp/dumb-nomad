@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -18,9 +18,9 @@ type VolumeDetachCommand struct {
 
 func (c *VolumeDetachCommand) Help() string {
 	helpText := `
-Usage: nomad volume detach [options] <vol id> <node id>
+Usage: dumb-nomad volume detach [options] <vol id> <node id>
 
-  Detach a volume from a Nomad client.
+  Detach a volume from a Dumb Nomad client.
 
   When ACLs are enabled, this command requires a token with the
   'csi-write-volume' and 'csi-read-volume' capabilities for the volume's

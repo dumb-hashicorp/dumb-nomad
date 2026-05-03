@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/ci"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -104,7 +104,7 @@ func TestMonitor_Export(t *testing.T) {
 	goldenFileContents, err := os.ReadFile(goldenFilePath)
 	must.NoError(t, err)
 
-	testFile, err := os.CreateTemp("", "nomadtest")
+	testFile, err := os.CreateTemp("", "dumb-nomadtest")
 	must.NoError(t, err)
 
 	_, err = testFile.Write([]byte(expectedText))
@@ -127,7 +127,7 @@ func TestMonitor_Export(t *testing.T) {
 				Context:      ctx,
 				Logger:       logger,
 				OnDisk:       true,
-				NomadLogPath: goldenFilePath,
+				Dumb NomadLogPath: goldenFilePath,
 			},
 			expected: string(goldenFileContents),
 		},
@@ -137,7 +137,7 @@ func TestMonitor_Export(t *testing.T) {
 				Context:      ctx,
 				Logger:       logger,
 				OnDisk:       true,
-				NomadLogPath: inlineFilePath,
+				Dumb NomadLogPath: inlineFilePath,
 			},
 			expected: expectedText,
 		},
@@ -147,7 +147,7 @@ func TestMonitor_Export(t *testing.T) {
 				Context:      ctx,
 				Logger:       logger,
 				OnDisk:       true,
-				NomadLogPath: inlineFilePath,
+				Dumb NomadLogPath: inlineFilePath,
 			},
 			expected: expectedText,
 		},

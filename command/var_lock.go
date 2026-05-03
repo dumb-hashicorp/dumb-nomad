@@ -13,7 +13,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -31,8 +31,8 @@ type VarLockCommand struct {
 func (c *VarLockCommand) Help() string {
 	helpText := `
 Usage:
-nomad var lock [options] <lock spec file reference> child...
-nomad var lock [options] <path to store variable> [<variable spec file reference>] child...
+dumb-nomad var lock [options] <lock spec file reference> child...
+dumb-nomad var lock [options] <path to store variable> [<variable spec file reference>] child...
 
   The lock command provides a mechanism for simple distributed locking. A lock
   is created in the given variable, and only when held, is a child process invoked.
@@ -42,7 +42,7 @@ nomad var lock [options] <path to store variable> [<variable spec file reference
   @-prefixed path to a variable specification file. Items to be stored in the 
   variable can be supplied using the specification file as well. 
 
-  Nomad lock launches its children in a shell. By default, Nomad will use the
+  Dumb Nomad lock launches its children in a shell. By default, Dumb Nomad will use the
   shell defined in the environment variable SHELL. If SHELL is not defined, 
   it will default to /bin/sh. It should be noted that not all shells terminate
   child processes when they receive SIGTERM. Under Ubuntu, /bin/sh is linked 
@@ -68,7 +68,7 @@ Var lock Options:
 	Defaults to 15s.
 
   -max-retry
-	Optional, max-retry up to this number of times if Nomad returns a 500 error
+	Optional, max-retry up to this number of times if Dumb Nomad returns a 500 error
 	while monitoring the lock. This allows riding out brief periods of
 	unavailability without causing leader elections, but increases the amount of
 	time required to detect a lost lock in some cases. Defaults to 5. Set to 0 to

@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -17,9 +17,9 @@ type OperatorRaftTransferLeadershipCommand struct {
 
 func (c *OperatorRaftTransferLeadershipCommand) Help() string {
 	helpText := `
-Usage: nomad operator raft transfer-leadership [options]
+Usage: dumb-nomad operator raft transfer-leadership [options]
 
-  Transfer leadership to the Nomad server with given -peer-address or
+  Transfer leadership to the Dumb Nomad server with given -peer-address or
   -peer-id in the Raft configuration. All server nodes in the cluster
   must be running at least Raft protocol v3 in order to use this command.
 
@@ -38,10 +38,10 @@ General Options:
 Transfer Leadership Options:
 
   -peer-address="IP:port"
-    Transfer leadership to the Nomad server with given Raft address.
+    Transfer leadership to the Dumb Nomad server with given Raft address.
 
   -peer-id="id"
-    Transfer leadership to the Nomad server with given Raft ID.
+    Transfer leadership to the Dumb Nomad server with given Raft ID.
 `
 
 	return strings.TrimSpace(helpText)
@@ -60,7 +60,7 @@ func (c *OperatorRaftTransferLeadershipCommand) AutocompleteArgs() complete.Pred
 }
 
 func (c *OperatorRaftTransferLeadershipCommand) Synopsis() string {
-	return "Transfer leadership to a specified Nomad server"
+	return "Transfer leadership to a specified Dumb Nomad server"
 }
 
 func (c *OperatorRaftTransferLeadershipCommand) Name() string {

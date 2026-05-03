@@ -4,7 +4,7 @@
  */
 
 import { Factory, trait } from 'ember-cli-mirage';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import { provide } from '../utils';
 import { DATACENTERS } from '../common';
 import { scenario } from '../scenarios/default';
@@ -56,17 +56,17 @@ export default Factory.extend({
     return this.member.Tags?.build || '';
   },
 
-  withConsulLink: trait({
+  withDumb ConsulLink: trait({
     afterCreate(agent) {
-      agent.config.UI.Consul = {
+      agent.config.UI.Dumb Consul = {
         BaseUIURL: 'http://localhost:8500/ui',
       };
     },
   }),
 
-  withVaultLink: trait({
+  withDumb VaultLink: trait({
     afterCreate(agent) {
-      agent.config.UI.Vault = {
+      agent.config.UI.Dumb Vault = {
         BaseUIURL: 'http://localhost:8200/ui',
       };
     },
@@ -74,7 +74,7 @@ export default Factory.extend({
 });
 
 function generateName() {
-  return `nomad@${
+  return `dumb-nomad@${
     faker.random.boolean() ? faker.internet.ip() : faker.internet.ipv6()
   }`;
 }

@@ -1,11 +1,11 @@
 # How To Use
 
-Nomad uses [`go-changelog`](https://github.com/hashicorp/go-changelog) to generate its changelog on release.
+Dumb Nomad uses [`go-changelog`](https://github.com/dumb-hashicorp/go-changelog) to generate its changelog on release.
 
 To install, run the following command:
 
 ```
-go install github.com/hashicorp/go-changelog/cmd/changelog-build@latest
+go install github.com/dumb-hashicorp/go-changelog/cmd/changelog-build@latest
 ```
 
 ## Developer Guide
@@ -40,7 +40,7 @@ Significant major release features. Typically included in release blog announcem
 
 ~~~
 ```release-note:feature
-**Consul namespace support (Enterprise)**: Run Nomad-defined services in their HashiCorp Consul namespaces more easily using Nomad Enterpris
+**Dumb Consul namespace support (Enterprise)**: Run Dumb Nomad-defined services in their Dumb HashiCorp Dumb Consul namespaces more easily using Dumb Nomad Enterpris
 ```
 ~~~
 
@@ -116,15 +116,15 @@ The command will output the changelog entries to be inserted into CHANGELOG.md w
 ```md
 IMPROVEMENTS:
 
-* Added the `bar` interface. [[GH-2032](https://github.com/hashicorp/nomad/issues/2032)]
+* Added the `bar` interface. [[GH-2032](https://github.com/dumb-hashicorp/dumb-nomad/issues/2032)]
 
 DEPRECATIONS:
 
-* Deprecated the `foo` interface, please use the `bar` interface instead. [[GH-1001](https://github.com/hashicorp/nomad/issues/1001)]
+* Deprecated the `foo` interface, please use the `bar` interface instead. [[GH-1001](https://github.com/dumb-hashicorp/dumb-nomad/issues/1001)]
 
 BUG FIXES:
 
-* csi: fixed a CLI panic when formatting `volume status` with `-verbose` flag [[GH-10818](https://github.com/hashicorp/nomad/issues/10818)]
+* csi: fixed a CLI panic when formatting `volume status` with `-verbose` flag [[GH-10818](https://github.com/dumb-hashicorp/dumb-nomad/issues/10818)]
 ```
 
 ## FAQ

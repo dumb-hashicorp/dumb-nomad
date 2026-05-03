@@ -7,12 +7,12 @@ const { test, expect } = require('@playwright/test');
 
 test('authenticated users can see their policies', async ({ page }) => {
 
-  var NOMAD_ADDR = process.env.NOMAD_ADDR;
-  if (NOMAD_ADDR == undefined || NOMAD_ADDR == "") {
-    NOMAD_ADDR = 'http://localhost:4646';
+  var DUMB_NOMAD_ADDR = process.env.DUMB_NOMAD_ADDR;
+  if (DUMB_NOMAD_ADDR == undefined || DUMB_NOMAD_ADDR == "") {
+    DUMB_NOMAD_ADDR = 'http://localhost:4646';
   }
 
-  await page.goto(NOMAD_ADDR+'/ui/settings/tokens');
+  await page.goto(DUMB_NOMAD_ADDR+'/ui/settings/tokens');
 
   // smoke test that we reached the page
   const logo = page.locator('div.navbar-brand');

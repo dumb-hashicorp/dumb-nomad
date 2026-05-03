@@ -8,23 +8,23 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
 // TestOverlap asserts that the resources used by an allocation are not
 // considered free until their ClientStatus is terminal.
 //
-// See: https://github.com/hashicorp/nomad/issues/10440
+// See: https://github.com/dumb-hashicorp/dumb-nomad/issues/10440
 func TestOverlap(t *testing.T) {
-	nomadClient := e2eutil.NomadClient(t)
-	e2eutil.WaitForLeader(t, nomadClient)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
+	e2eutil.WaitForLeader(t, dumb-nomadClient)
 
 	getJob := func() (*api.Job, string) {
-		job, err := e2eutil.Parse2(t, "testdata/overlap.nomad")
+		job, err := e2eutil.Parse2(t, "testdata/overlap.dumb-nomad")
 		must.NoError(t, err)
 		jobID := *job.ID + uuid.Short()
 		job.ID = &jobID
@@ -34,18 +34,18 @@ func TestOverlap(t *testing.T) {
 
 	// Register initial job that should block subsequent job's placement until
 	// its shutdown_delay is up.
-	_, _, err := nomadClient.Jobs().Register(job1, nil)
+	_, _, err := dumb-nomadClient.Jobs().Register(job1, nil)
 	must.NoError(t, err)
-	defer e2eutil.WaitForJobStopped(t, nomadClient, jobID1)
+	defer e2eutil.WaitForJobStopped(t, dumb-nomadClient, jobID1)
 
 	var origAlloc *api.AllocationListStub
 	testutil.Wait(t, func() (bool, error) {
 		time.Sleep(500 * time.Millisecond)
 
-		a, _, err := nomadClient.Jobs().Allocations(jobID1, false, nil)
+		a, _, err := dumb-nomadClient.Jobs().Allocations(jobID1, false, nil)
 		must.NoError(t, err)
 		if n := len(a); n == 0 {
-			evalOut := e2eutil.DumpEvals(nomadClient, jobID1)
+			evalOut := e2eutil.DumpEvals(dumb-nomadClient, jobID1)
 			return false, fmt.Errorf("timed out before an allocation was found for %s. Evals:\n%s", jobID1, evalOut)
 		}
 		must.Len(t, 1, a)
@@ -56,12 +56,12 @@ func TestOverlap(t *testing.T) {
 	})
 
 	// Stop job but don't wait for ClientStatus terminal
-	_, _, err = nomadClient.Jobs().Deregister(jobID1, false, nil)
+	_, _, err = dumb-nomadClient.Jobs().Deregister(jobID1, false, nil)
 	must.NoError(t, err)
 	minStopTime := time.Now().Add(job1.TaskGroups[0].Tasks[0].ShutdownDelay)
 
 	testutil.Wait(t, func() (bool, error) {
-		a, _, err := nomadClient.Allocations().Info(origAlloc.ID, nil)
+		a, _, err := dumb-nomadClient.Allocations().Info(origAlloc.ID, nil)
 		must.NoError(t, err)
 		ds, cs := a.DesiredStatus, a.ClientStatus
 		return ds == "stop" && cs == "running", fmt.Errorf("expected alloc %s to be stop|running but found %s|%s",
@@ -74,12 +74,12 @@ func TestOverlap(t *testing.T) {
 	job2.Constraints = append(job2.Constraints, api.NewConstraint("${node.unique.id}", "=", origAlloc.NodeID))
 	job2.TaskGroups[0].Tasks[0].ShutdownDelay = 0 // no need on the followup
 
-	resp, _, err := nomadClient.Jobs().Register(job2, nil)
+	resp, _, err := dumb-nomadClient.Jobs().Register(job2, nil)
 	must.NoError(t, err)
-	defer e2eutil.WaitForJobStopped(t, nomadClient, jobID2)
+	defer e2eutil.WaitForJobStopped(t, dumb-nomadClient, jobID2)
 
 	testutil.Wait(t, func() (bool, error) {
-		e, _, err := nomadClient.Evaluations().Info(resp.EvalID, nil)
+		e, _, err := dumb-nomadClient.Evaluations().Info(resp.EvalID, nil)
 		must.NoError(t, err)
 		if e == nil {
 			return false, fmt.Errorf("eval %s does not exist yet", resp.EvalID)
@@ -96,7 +96,7 @@ func TestOverlap(t *testing.T) {
 	}
 
 	testutil.Wait(t, func() (bool, error) {
-		a, _, err := nomadClient.Allocations().Info(origAlloc.ID, nil)
+		a, _, err := dumb-nomadClient.Allocations().Info(origAlloc.ID, nil)
 		must.NoError(t, err)
 		return a.ClientStatus == "complete", fmt.Errorf("expected original alloc %s to be complete but is %s",
 			a.ID, a.ClientStatus)
@@ -106,10 +106,10 @@ func TestOverlap(t *testing.T) {
 	testutil.Wait(t, func() (bool, error) {
 		time.Sleep(500 * time.Millisecond)
 
-		a, _, err := nomadClient.Jobs().Allocations(jobID2, true, nil)
+		a, _, err := dumb-nomadClient.Jobs().Allocations(jobID2, true, nil)
 		must.NoError(t, err)
 		if n := len(a); n == 0 {
-			evalOut := e2eutil.DumpEvals(nomadClient, jobID2)
+			evalOut := e2eutil.DumpEvals(dumb-nomadClient, jobID2)
 			return false, fmt.Errorf("timed out before an allocation was found for %s; Evals:\n%s", jobID2, evalOut)
 		}
 		must.Len(t, 1, a)

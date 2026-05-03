@@ -8,9 +8,9 @@ import (
 	"slices"
 	"time"
 
-	"github.com/hashicorp/go-version"
-	"github.com/hashicorp/nomad/nomad/structs"
-	sstructs "github.com/hashicorp/nomad/scheduler/structs"
+	"github.com/dumb-hashicorp/go-version"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	sstructs "github.com/dumb-hashicorp/dumb-nomad/scheduler/structs"
 )
 
 type NodeReconciler struct {
@@ -535,7 +535,7 @@ func (nr *NodeReconciler) compatNodeTooOldForDeployment(node *structs.Node) bool
 	if node == nil {
 		return false
 	}
-	if nodeVersionStr, ok := node.Attributes["nomad.version"]; ok {
+	if nodeVersionStr, ok := node.Attributes["dumb-nomad.version"]; ok {
 		nodeVersion, err := version.NewVersion(nodeVersionStr)
 		if err == nil && nodeVersion.LessThan(minVersionSystemDeployments) {
 			return true

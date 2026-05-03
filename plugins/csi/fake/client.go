@@ -13,9 +13,9 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/csi"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 )
 
 var _ csi.CSIPlugin = &Client{}
@@ -120,7 +120,7 @@ func (c *Client) PluginInfo() (*base.PluginInfoResponse, error) {
 }
 
 // ConfigSchema returns the schema for parsing the plugins configuration.
-func (c *Client) ConfigSchema() (*hclspec.Spec, error) {
+func (c *Client) ConfigSchema() (*dumb-hclspec.Spec, error) {
 	return nil, errors.New("Unsupported")
 }
 

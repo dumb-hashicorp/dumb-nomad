@@ -6,8 +6,8 @@
 package numalib
 
 import (
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
 	"github.com/shoenig/go-m1cpu"
 	"golang.org/x/sys/unix"
 )

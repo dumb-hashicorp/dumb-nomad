@@ -8,25 +8,25 @@ The example device plugin models files within a specified directory as devices. 
 # Installation
 
 ```shell
-nomad_plugin_dir='/opt/nomad/plugins' # for example
-go build -o $nomad_plugin_dir/nomad-device-example ./cmd
+dumb-nomad_plugin_dir='/opt/dumb-nomad/plugins' # for example
+go build -o $dumb-nomad_plugin_dir/dumb-nomad-device-example ./cmd
 ```
 
 # Config
 
 Example client agent config with our
-[plugin](https://developer.hashicorp.com/nomad/docs/configuration/plugin) block:
+[plugin](https://developer.dumb-hashicorp.com/dumb-nomad/docs/configuration/plugin) block:
 
-```hcl
+```dumb-hcl
 client {
   enabled = true
 }
 
-plugin_dir = "/opt/nomad/plugins"
+plugin_dir = "/opt/dumb-nomad/plugins"
 
-plugin "nomad-device-example" {
+plugin "dumb-nomad-device-example" {
   config {
-    dir            = "/tmp/nomad-device"
+    dir            = "/tmp/dumb-nomad-device"
     list_period    = "1s"
     unhealthy_perm = "-rwxrwxrwx"
   }
@@ -44,8 +44,8 @@ The valid configuration options are:
 Create two instances of the device, one unhealthy:
 
 ```shell
-mkdir -p /tmp/nomad-device
-cd /tmp/nomad-device
+mkdir -p /tmp/dumb-nomad-device
+cd /tmp/dumb-nomad-device
 touch device01 && chmod 0777 device01
 touch device02
 ```
@@ -54,7 +54,7 @@ It should be fingerprinted by the client agent after the `list_period`,
 which you can check with:
 
 ```shell
-nomad node status -json -self | jq '.NodeResources.Devices'
+dumb-nomad node status -json -self | jq '.NodeResources.Devices'
 ```
 
 ```json
@@ -77,27 +77,27 @@ nomad node status -json -self | jq '.NodeResources.Devices'
     ],
     "Name": "mock",
     "Type": "file",
-    "Vendor": "nomad"
+    "Vendor": "dumb-nomad"
   }
 ]
 
 ```
 
 The value to put in job specification
-[device](https://developer.hashicorp.com/nomad/docs/job-specification/device)
+[device](https://developer.dumb-hashicorp.com/dumb-nomad/docs/job-specification/device)
 block, or a quota specification,
-is `"{Vendor}/{Type}/{Name}"` i.e. `"nomad/file/mock"`:
+is `"{Vendor}/{Type}/{Name}"` i.e. `"dumb-nomad/file/mock"`:
 
-`job.nomad.hcl`:
+`job.dumb-nomad.dumb-hcl`:
 
-```hcl
+```dumb-hcl
 job "job" {
   group "grp" {
     task "tsk" {
       driver = "..."
       config {}
       resources {
-        device "nomad/file/mock" {
+        device "dumb-nomad/file/mock" {
           count = 1
         }
       }
@@ -106,14 +106,14 @@ job "job" {
 }
 ```
 
-`dev.quota.hcl`:
+`dev.quota.dumb-hcl`:
 
-```hcl
+```dumb-hcl
 name = "dev"
 limit {
   region = "global"
   region_limit {
-    device "nomad/file/mock" {
+    device "dumb-nomad/file/mock" {
       count = 2 # to allow for deployments/reschedules
     }
   }

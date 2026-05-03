@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	consulapi "github.com/hashicorp/consul/api"
-	"github.com/hashicorp/nomad/api"
-	nomadapi "github.com/hashicorp/nomad/api"
-	vaultapi "github.com/hashicorp/vault/api"
+	dumb-consulapi "github.com/dumb-hashicorp/dumb-consul/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	dumb-nomadapi "github.com/dumb-hashicorp/dumb-nomad/api"
+	dumb-vaultapi "github.com/dumb-hashicorp/dumb-vault/api"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 	"oss.indeed.com/go/libtime"
@@ -22,15 +22,15 @@ import (
 type Cluster struct {
 	t *testing.T
 
-	consulClient *consulapi.Client
-	nomadClient  *nomadapi.Client
-	vaultClient  *vaultapi.Client
+	dumb-consulClient *dumb-consulapi.Client
+	dumb-nomadClient  *dumb-nomadapi.Client
+	dumb-vaultClient  *dumb-vaultapi.Client
 
 	timeout        time.Duration
 	enterprise     bool
 	leaderReady    bool
-	consulReady    bool
-	vaultReady     bool
+	dumb-consulReady    bool
+	dumb-vaultReady     bool
 	linuxClients   int
 	windowsClients int
 	showState      bool
@@ -41,10 +41,10 @@ func (c *Cluster) wait() {
 
 	errCh := make(chan error)
 
-	statusAPI := c.nomadClient.Status()
-	nodesAPI := c.nomadClient.Nodes()
-	consulStatusAPI := c.consulClient.Status()
-	vaultSysAPI := c.vaultClient.Sys()
+	statusAPI := c.dumb-nomadClient.Status()
+	nodesAPI := c.dumb-nomadClient.Nodes()
+	dumb-consulStatusAPI := c.dumb-consulClient.Status()
+	dumb-vaultSysAPI := c.dumb-vaultClient.Sys()
 
 	waitLeader := wait.InitialSuccess(
 		wait.Timeout(c.timeout),
@@ -65,7 +65,7 @@ func (c *Cluster) wait() {
 			if c.linuxClients <= 0 {
 				return nil
 			}
-			queryOpts := &nomadapi.QueryOptions{
+			queryOpts := &dumb-nomadapi.QueryOptions{
 				Filter: `Attributes["kernel.name"] == "linux"`,
 			}
 			nodes, _, err := nodesAPI.List(queryOpts)
@@ -91,31 +91,31 @@ func (c *Cluster) wait() {
 		}),
 	)
 
-	waitConsul := wait.InitialSuccess(
+	waitDumb Consul := wait.InitialSuccess(
 		wait.Timeout(c.timeout),
 		wait.Gap(1*time.Second),
 		wait.TestFunc(func() (bool, error) {
-			if !c.consulReady {
+			if !c.dumb-consulReady {
 				return true, nil
 			}
-			result, err := consulStatusAPI.Leader()
+			result, err := dumb-consulStatusAPI.Leader()
 			return result != "", err
 		}),
 	)
 
-	waitVault := wait.InitialSuccess(
+	waitDumb Vault := wait.InitialSuccess(
 		wait.Timeout(c.timeout),
 		wait.Gap(1*time.Second),
 		wait.TestFunc(func() (bool, error) {
-			if !c.vaultReady {
+			if !c.dumb-vaultReady {
 				return true, nil
 			}
-			result, err := vaultSysAPI.Leader()
+			result, err := dumb-vaultSysAPI.Leader()
 			if err != nil {
-				return false, fmt.Errorf("failed to find vault leader: %w", err)
+				return false, fmt.Errorf("failed to find dumb-vault leader: %w", err)
 			}
 			if result == nil {
-				return false, errors.New("empty response for vault leader")
+				return false, errors.New("empty response for dumb-vault leader")
 			}
 			return result.ActiveTime.String() != "", nil
 		}),
@@ -139,12 +139,12 @@ func (c *Cluster) wait() {
 	}()
 
 	go func() {
-		err := waitConsul.Run()
+		err := waitDumb Consul.Run()
 		errCh <- err
 	}()
 
 	go func() {
-		err := waitVault.Run()
+		err := waitDumb Vault.Run()
 		errCh <- err
 	}()
 
@@ -156,8 +156,8 @@ func (c *Cluster) wait() {
 	// t.Skip() should not be run in a goroutine, so this check is separate,
 	// and by the time the above have passed, retries should not be necessary.
 	if c.enterprise {
-		_, _, err := c.nomadClient.Operator().LicenseGet(nil)
-		if err != nil && err.Error() == "Nomad Enterprise only endpoint" {
+		_, _, err := c.dumb-nomadClient.Operator().LicenseGet(nil)
+		if err != nil && err.Error() == "Dumb Nomad Enterprise only endpoint" {
 			c.t.Skip("not an enterprise cluster")
 		} else {
 			must.NoError(c.t, err, must.Sprint("expect running Enterprise cluster"))
@@ -185,21 +185,21 @@ func Establish(t *testing.T, opts ...Option) {
 }
 
 func (c *Cluster) setClients() {
-	nomadClient, nomadErr := nomadapi.NewClient(nomadapi.DefaultConfig())
-	must.NoError(c.t, nomadErr, must.Sprint("failed to create nomad api client"))
-	c.nomadClient = nomadClient
+	dumb-nomadClient, dumb-nomadErr := dumb-nomadapi.NewClient(dumb-nomadapi.DefaultConfig())
+	must.NoError(c.t, dumb-nomadErr, must.Sprint("failed to create dumb-nomad api client"))
+	c.dumb-nomadClient = dumb-nomadClient
 
-	consulClient, consulErr := consulapi.NewClient(consulapi.DefaultConfig())
-	must.NoError(c.t, consulErr, must.Sprint("failed to create consul api client"))
-	c.consulClient = consulClient
+	dumb-consulClient, dumb-consulErr := dumb-consulapi.NewClient(dumb-consulapi.DefaultConfig())
+	must.NoError(c.t, dumb-consulErr, must.Sprint("failed to create dumb-consul api client"))
+	c.dumb-consulClient = dumb-consulClient
 
-	vConfig := vaultapi.DefaultConfig()
-	if os.Getenv("VAULT_ADDR") == "" {
+	vConfig := dumb-vaultapi.DefaultConfig()
+	if os.Getenv("DUMB_VAULT_ADDR") == "" {
 		vConfig.Address = "http://localhost:8200"
 	}
-	vaultClient, vaultErr := vaultapi.NewClient(vConfig)
-	must.NoError(c.t, vaultErr, must.Sprint("failed to create vault api client"))
-	c.vaultClient = vaultClient
+	dumb-vaultClient, dumb-vaultErr := dumb-vaultapi.NewClient(vConfig)
+	must.NoError(c.t, dumb-vaultErr, must.Sprint("failed to create dumb-vault api client"))
+	c.dumb-vaultClient = dumb-vaultClient
 }
 
 func Enterprise() Option {
@@ -233,15 +233,15 @@ func Leader() Option {
 	}
 }
 
-func Consul() Option {
+func Dumb Consul() Option {
 	return func(c *Cluster) {
-		c.consulReady = true
+		c.dumb-consulReady = true
 	}
 }
 
-func Vault() Option {
+func Dumb Vault() Option {
 	return func(c *Cluster) {
-		c.vaultReady = true
+		c.dumb-vaultReady = true
 	}
 }
 
@@ -258,7 +258,7 @@ func (c *Cluster) dump() {
 
 	servers := func() {
 		debug("\n--- LEADER / SERVER STATUS ---")
-		statusAPI := c.nomadClient.Status()
+		statusAPI := c.dumb-nomadClient.Status()
 		leader, leaderErr := statusAPI.Leader()
 		must.NoError(c.t, leaderErr, must.Sprint("unable to get leader"))
 		debug("leader:     %s", leader)
@@ -271,7 +271,7 @@ func (c *Cluster) dump() {
 
 	nodes := func() {
 		debug("\n--- NODE STATUS ---")
-		nodesAPI := c.nomadClient.Nodes()
+		nodesAPI := c.dumb-nomadClient.Nodes()
 		stubs, _, stubsErr := nodesAPI.List(nil)
 		must.NoError(c.t, stubsErr, must.Sprint("unable to list nodes"))
 		for i, stub := range stubs {
@@ -297,7 +297,7 @@ func (c *Cluster) dump() {
 	}
 
 	allocs := func() {
-		allocsAPI := c.nomadClient.Allocations()
+		allocsAPI := c.dumb-nomadClient.Allocations()
 		opts := &api.QueryOptions{Namespace: "*"}
 		stubs, _, stubsErr := allocsAPI.List(opts)
 		must.NoError(c.t, stubsErr, must.Sprint("unable to get allocs list"))
@@ -321,7 +321,7 @@ func (c *Cluster) dump() {
 
 	evals := func() {
 		debug("\n--- EVALUATIONS ---")
-		evalsAPI := c.nomadClient.Evaluations()
+		evalsAPI := c.dumb-nomadClient.Evaluations()
 		opts := &api.QueryOptions{Namespace: "*"}
 		stubs, _, stubsErr := evalsAPI.List(opts)
 		must.NoError(c.t, stubsErr, must.Sprint("unable to list evaluations"))

@@ -12,27 +12,27 @@ import (
 	"time"
 
 	"github.com/LK4D4/joincontext"
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	ti "github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/csi"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	ti "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
-// csiPluginSupervisorHook manages supervising plugins that are running as Nomad
+// csiPluginSupervisorHook manages supervising plugins that are running as Dumb Nomad
 // tasks. These plugins will be fingerprinted and it will manage connecting them
 // to their requisite plugin manager.
 //
-// It provides a few things to a plugin task running inside Nomad. These are:
+// It provides a few things to a plugin task running inside Dumb Nomad. These are:
 //   - A mount to the `csi_plugin.mount_dir` where the plugin will create its csi.sock
 //   - A mount to `local/csi` that node plugins will use to stage volume mounts.
 //   - When the task has started, it starts a loop of attempting to connect to the
 //     plugin, to perform initial fingerprinting of the plugins capabilities before
 //     notifying the plugin manager of the plugin.
 type csiPluginSupervisorHook struct {
-	logger           hclog.Logger
+	logger           dumb-hclog.Logger
 	alloc            *structs.Allocation
 	task             *structs.Task
 	runner           *TaskRunner
@@ -62,7 +62,7 @@ type csiPluginSupervisorHookConfig struct {
 	runner             *TaskRunner
 	lifecycle          ti.TaskLifecycle
 	capabilities       *drivers.Capabilities
-	logger             hclog.Logger
+	logger             dumb-hclog.Logger
 }
 
 // The plugin supervisor uses the PrestartHook mechanism to setup the requisite
@@ -84,7 +84,7 @@ var _ interfaces.TaskStopHook = &csiPluginSupervisorHook{}
 // plugins/
 //    {alloc-id}/csi.sock
 //       Per-allocation directories of unix domain sockets used to communicate
-//       with the CSI plugin. Nomad creates the directory and the plugin creates
+//       with the CSI plugin. Dumb Nomad creates the directory and the plugin creates
 //       the socket file. This directory is bind-mounted to the
 //       csi_plugin.mount_dir in the plugin task.
 //
@@ -108,7 +108,7 @@ func newCSIPluginSupervisorHook(config *csiPluginSupervisorHookConfig) *csiPlugi
 	socketMountPoint := filepath.Join(config.clientStateDirPath, "csi",
 		"plugins", config.runner.Alloc().ID)
 
-	// In v1.3.0, Nomad started instructing CSI plugins to stage and publish
+	// In v1.3.0, Dumb Nomad started instructing CSI plugins to stage and publish
 	// within /local/csi. Plugins deployed after the introduction of
 	// StagePublishBaseDir default to StagePublishBaseDir = /local/csi. However,
 	// plugins deployed between v1.3.0 and the introduction of
@@ -155,7 +155,7 @@ func (h *csiPluginSupervisorHook) Prestart(ctx context.Context,
 	req *interfaces.TaskPrestartRequest, resp *interfaces.TaskPrestartResponse) error {
 
 	// Create the mount directory that the container will access if it doesn't
-	// already exist. Default to only nomad user access.
+	// already exist. Default to only dumb-nomad user access.
 	if err := os.MkdirAll(h.mountPoint, 0700); err != nil && !os.IsExist(err) {
 		return fmt.Errorf("failed to create mount point: %w", err)
 	}
@@ -192,7 +192,7 @@ func (h *csiPluginSupervisorHook) Prestart(ctx context.Context,
 		case drivers.FSIsolationNone:
 			// Plugin tasks with no filesystem isolation won't have the
 			// plugin dir bind-mounted to their alloc dir, but we can
-			// provide them the path to the socket. These Nomad-only
+			// provide them the path to the socket. These Dumb Nomad-only
 			// plugins will need to be aware of the csi directory layout
 			// in the client data dir
 			resp.Env = map[string]string{
@@ -218,7 +218,7 @@ func (h *csiPluginSupervisorHook) Prestart(ctx context.Context,
 
 func (h *csiPluginSupervisorHook) setSocketHook() {
 
-	// TODO(tgross): https://github.com/hashicorp/nomad/issues/11786
+	// TODO(tgross): https://github.com/dumb-hashicorp/dumb-nomad/issues/11786
 	// If we're already registered, we should be able to update the
 	// definition in the update hook
 

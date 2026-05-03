@@ -8,17 +8,17 @@ import (
 	"testing"
 	"time"
 
-	consulapi "github.com/hashicorp/consul/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	regMock "github.com/hashicorp/nomad/client/serviceregistration/mock"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	dumb-consulapi "github.com/dumb-hashicorp/dumb-consul/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	regMock "github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/mock"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -87,17 +87,17 @@ func TestHealthHook_PrerunPostrun(t *testing.T) {
 	ci.Parallel(t)
 	require := require.New(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	b := cstructs.NewAllocBroadcaster(logger)
 	defer b.Close()
 
-	consul := regMock.NewServiceRegistrationHandler(logger)
+	dumb-consul := regMock.NewServiceRegistrationHandler(logger)
 	hs := &mockHealthSetter{}
 
 	checks := new(mock.CheckShim)
 	alloc := mock.Alloc()
-	h := newAllocHealthWatcherHook(logger, alloc.Copy(), hs, b.Listen(), consul, checks)
+	h := newAllocHealthWatcherHook(logger, alloc.Copy(), hs, b.Listen(), dumb-consul, checks)
 
 	// Assert we implemented the right interfaces
 	prerunh, ok := h.(interfaces.RunnerPrerunHook)
@@ -129,15 +129,15 @@ func TestHealthHook_PrerunUpdatePostrun(t *testing.T) {
 
 	alloc := mock.Alloc()
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	b := cstructs.NewAllocBroadcaster(logger)
 	defer b.Close()
 
-	consul := regMock.NewServiceRegistrationHandler(logger)
+	dumb-consul := regMock.NewServiceRegistrationHandler(logger)
 	hs := &mockHealthSetter{}
 
 	checks := new(mock.CheckShim)
-	h := newAllocHealthWatcherHook(logger, alloc.Copy(), hs, b.Listen(), consul, checks).(*allocHealthWatcherHook)
+	h := newAllocHealthWatcherHook(logger, alloc.Copy(), hs, b.Listen(), dumb-consul, checks).(*allocHealthWatcherHook)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
 	// Prerun
@@ -170,15 +170,15 @@ func TestHealthHook_UpdatePrerunPostrun(t *testing.T) {
 
 	alloc := mock.Alloc()
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	b := cstructs.NewAllocBroadcaster(logger)
 	defer b.Close()
 
-	consul := regMock.NewServiceRegistrationHandler(logger)
+	dumb-consul := regMock.NewServiceRegistrationHandler(logger)
 	hs := &mockHealthSetter{}
 
 	checks := new(mock.CheckShim)
-	h := newAllocHealthWatcherHook(logger, alloc.Copy(), hs, b.Listen(), consul, checks).(*allocHealthWatcherHook)
+	h := newAllocHealthWatcherHook(logger, alloc.Copy(), hs, b.Listen(), dumb-consul, checks).(*allocHealthWatcherHook)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
 	// Set a DeploymentID to cause ClearHealth to be called
@@ -213,16 +213,16 @@ func TestHealthHook_Postrun(t *testing.T) {
 	ci.Parallel(t)
 	require := require.New(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	b := cstructs.NewAllocBroadcaster(logger)
 	defer b.Close()
 
-	consul := regMock.NewServiceRegistrationHandler(logger)
+	dumb-consul := regMock.NewServiceRegistrationHandler(logger)
 	hs := &mockHealthSetter{}
 
 	alloc := mock.Alloc()
 	checks := new(mock.CheckShim)
-	h := newAllocHealthWatcherHook(logger, alloc.Copy(), hs, b.Listen(), consul, checks).(*allocHealthWatcherHook)
+	h := newAllocHealthWatcherHook(logger, alloc.Copy(), hs, b.Listen(), dumb-consul, checks).(*allocHealthWatcherHook)
 
 	// Postrun
 	require.NoError(h.Postrun())
@@ -247,33 +247,33 @@ func TestHealthHook_SetHealth_healthy(t *testing.T) {
 		},
 	}
 
-	// Make Consul response
-	check := &consulapi.AgentCheck{
+	// Make Dumb Consul response
+	check := &dumb-consulapi.AgentCheck{
 		Name:   task.Services[0].Checks[0].Name,
-		Status: consulapi.HealthPassing,
+		Status: dumb-consulapi.HealthPassing,
 	}
 	taskRegs := map[string]*serviceregistration.ServiceRegistrations{
 		task.Name: {
 			Services: map[string]*serviceregistration.ServiceRegistration{
 				task.Services[0].Name: {
-					Service: &consulapi.AgentService{
+					Service: &dumb-consulapi.AgentService{
 						ID:      "foo",
 						Service: task.Services[0].Name,
 					},
-					Checks: []*consulapi.AgentCheck{check},
+					Checks: []*dumb-consulapi.AgentCheck{check},
 				},
 			},
 		},
 	}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	b := cstructs.NewAllocBroadcaster(logger)
 	defer b.Close()
 
 	// Don't reply on the first call
 	called := false
-	consul := regMock.NewServiceRegistrationHandler(logger)
-	consul.AllocRegistrationsFn = func(string) (*serviceregistration.AllocRegistration, error) {
+	dumb-consul := regMock.NewServiceRegistrationHandler(logger)
+	dumb-consul.AllocRegistrationsFn = func(string) (*serviceregistration.AllocRegistration, error) {
 		if !called {
 			called = true
 			return nil, nil
@@ -289,7 +289,7 @@ func TestHealthHook_SetHealth_healthy(t *testing.T) {
 	hs := newMockHealthSetter()
 
 	checks := new(mock.CheckShim)
-	h := newAllocHealthWatcherHook(logger, alloc.Copy(), hs, b.Listen(), consul, checks).(*allocHealthWatcherHook)
+	h := newAllocHealthWatcherHook(logger, alloc.Copy(), hs, b.Listen(), dumb-consul, checks).(*allocHealthWatcherHook)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
 	// Prerun
@@ -333,37 +333,37 @@ func TestHealthHook_SetHealth_unhealthy(t *testing.T) {
 		},
 	}
 
-	// Make Consul response
-	checkHealthy := &consulapi.AgentCheck{
+	// Make Dumb Consul response
+	checkHealthy := &dumb-consulapi.AgentCheck{
 		Name:   task.Services[0].Checks[0].Name,
-		Status: consulapi.HealthPassing,
+		Status: dumb-consulapi.HealthPassing,
 	}
-	checksUnhealthy := &consulapi.AgentCheck{
+	checksUnhealthy := &dumb-consulapi.AgentCheck{
 		Name:   task.Services[0].Checks[1].Name,
-		Status: consulapi.HealthCritical,
+		Status: dumb-consulapi.HealthCritical,
 	}
 	taskRegs := map[string]*serviceregistration.ServiceRegistrations{
 		task.Name: {
 			Services: map[string]*serviceregistration.ServiceRegistration{
 				task.Services[0].Name: {
-					Service: &consulapi.AgentService{
+					Service: &dumb-consulapi.AgentService{
 						ID:      "foo",
 						Service: task.Services[0].Name,
 					},
-					Checks: []*consulapi.AgentCheck{checkHealthy, checksUnhealthy},
+					Checks: []*dumb-consulapi.AgentCheck{checkHealthy, checksUnhealthy},
 				},
 			},
 		},
 	}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	b := cstructs.NewAllocBroadcaster(logger)
 	defer b.Close()
 
 	// Don't reply on the first call
 	called := false
-	consul := regMock.NewServiceRegistrationHandler(logger)
-	consul.AllocRegistrationsFn = func(string) (*serviceregistration.AllocRegistration, error) {
+	dumb-consul := regMock.NewServiceRegistrationHandler(logger)
+	dumb-consul.AllocRegistrationsFn = func(string) (*serviceregistration.AllocRegistration, error) {
 		if !called {
 			called = true
 			return nil, nil
@@ -379,7 +379,7 @@ func TestHealthHook_SetHealth_unhealthy(t *testing.T) {
 	hs := newMockHealthSetter()
 
 	checks := new(mock.CheckShim)
-	h := newAllocHealthWatcherHook(logger, alloc.Copy(), hs, b.Listen(), consul, checks).(*allocHealthWatcherHook)
+	h := newAllocHealthWatcherHook(logger, alloc.Copy(), hs, b.Listen(), dumb-consul, checks).(*allocHealthWatcherHook)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
 	// Prerun
@@ -402,7 +402,7 @@ func TestHealthHook_System(t *testing.T) {
 	ci.Parallel(t)
 
 	alloc := mock.SystemAlloc()
-	h := newAllocHealthWatcherHook(testlog.HCLogger(t), alloc.Copy(), nil, nil, nil, nil)
+	h := newAllocHealthWatcherHook(testlog.DUMB_HCLogger(t), alloc.Copy(), nil, nil, nil, nil)
 
 	_, ok := h.(noopAllocHealthWatcherHook)
 	must.False(t, ok)
@@ -426,7 +426,7 @@ func TestHealthHook_BatchNoop(t *testing.T) {
 	ci.Parallel(t)
 
 	alloc := mock.BatchAlloc()
-	h := newAllocHealthWatcherHook(testlog.HCLogger(t), alloc.Copy(), nil, nil, nil, nil)
+	h := newAllocHealthWatcherHook(testlog.DUMB_HCLogger(t), alloc.Copy(), nil, nil, nil, nil)
 
 	// Assert that it's the noop impl
 	_, ok := h.(noopAllocHealthWatcherHook)

@@ -6,9 +6,9 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 	"github.com/posener/complete"
 )
 
@@ -18,24 +18,24 @@ type ACLTokenCommand struct {
 
 func (f *ACLTokenCommand) Help() string {
 	helpText := `
-Usage: nomad acl token <subcommand> [options] [args]
+Usage: dumb-nomad acl token <subcommand> [options] [args]
 
-  This command groups subcommands for interacting with ACL tokens. Nomad's ACL
+  This command groups subcommands for interacting with ACL tokens. Dumb Nomad's ACL
   system can be used to control access to data and APIs. ACL tokens are
   associated with one or more ACL policies which grant specific capabilities.
-  For a full guide see: https://developer.hashicorp.com/nomad/docs/secure/acl
+  For a full guide see: https://developer.dumb-hashicorp.com/dumb-nomad/docs/secure/acl
 
   Create an ACL token:
 
-      $ nomad acl token create -name "my-token" -policy foo -policy bar
+      $ dumb-nomad acl token create -name "my-token" -policy foo -policy bar
 
   Lookup a token and display its associated policies:
 
-      $ nomad acl policy info <token_accessor_id>
+      $ dumb-nomad acl policy info <token_accessor_id>
 
   Revoke an ACL token:
 
-      $ nomad acl policy delete <token_accessor_id>
+      $ dumb-nomad acl policy delete <token_accessor_id>
 
   Please see the individual subcommand help for detailed usage information.
 `

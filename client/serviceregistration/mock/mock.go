@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
 )
 
 // Ensure that the mock handler implements the service registration handler
@@ -19,7 +19,7 @@ var _ serviceregistration.Handler = (*ServiceRegistrationHandler)(nil)
 // ServiceRegistrationHandler is the mock implementation of the
 // serviceregistration.Handler interface and can be used for testing.
 type ServiceRegistrationHandler struct {
-	log hclog.Logger
+	log dumb-hclog.Logger
 
 	// ops tracks the requested operations by the caller during the entire
 	// lifecycle of the ServiceRegistrationHandler. The mutex should be used
@@ -34,7 +34,7 @@ type ServiceRegistrationHandler struct {
 
 // NewServiceRegistrationHandler returns a ready to use
 // ServiceRegistrationHandler for testing.
-func NewServiceRegistrationHandler(log hclog.Logger) *ServiceRegistrationHandler {
+func NewServiceRegistrationHandler(log dumb-hclog.Logger) *ServiceRegistrationHandler {
 	return &ServiceRegistrationHandler{
 		ops: make([]Operation, 0, 20),
 		log: log.Named("mock_service_registration"),
@@ -117,7 +117,7 @@ func newOperation(op, allocID, name string) Operation {
 	case "add", "remove", "update", "alloc_registrations",
 		"add_group", "remove_group", "update_group", "update_ttl":
 	default:
-		panic(fmt.Errorf("invalid consul op: %s", op))
+		panic(fmt.Errorf("invalid dumb-consul op: %s", op))
 	}
 	return Operation{
 		Op:         op,

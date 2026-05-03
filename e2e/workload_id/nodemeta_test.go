@@ -8,11 +8,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/jobspec2"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/jobspec2"
 	"github.com/shoenig/test/must"
 )
 
@@ -20,10 +20,10 @@ import (
 // API. Bundled with Workload Identity as it is expected to be most used by
 // jobs via Task API + Workload Identity.
 func TestDynamicNodeMetadata(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 
-	e2eutil.WaitForLeader(t, nomad)
-	e2eutil.WaitForNodesReady(t, nomad, 1)
+	e2eutil.WaitForLeader(t, dumb-nomad)
+	e2eutil.WaitForNodesReady(t, dumb-nomad, 1)
 
 	t.Run("testDynamicNodeMetadata", testDynamicNodeMetadata)
 }
@@ -31,15 +31,15 @@ func TestDynamicNodeMetadata(t *testing.T) {
 // testDynamicNodeMetadata dynamically updates metadata on a node, schedules a
 // job using that metadata, and has the job update that metadata.
 func testDynamicNodeMetadata(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 
-	nodes, err := e2eutil.ListLinuxClientNodes(nomad)
+	nodes, err := e2eutil.ListLinuxClientNodes(dumb-nomad)
 	must.NoError(t, err)
 	if len(nodes) == 0 {
 		t.Skip("requires at least 1 linux node")
 	}
 
-	node, _, err := nomad.Nodes().Info(nodes[0], nil)
+	node, _, err := dumb-nomad.Nodes().Info(nodes[0], nil)
 	must.NoError(t, err)
 
 	keyFoo := "foo-" + uuid.Short()
@@ -55,7 +55,7 @@ func testDynamicNodeMetadata(t *testing.T) {
 	t.Logf("test config: job=%s node=%s foo=%s empty=%s unset=%s",
 		jobID, node.ID, keyFoo, keyEmpty, keyUnset)
 
-	path := "./input/node-meta.nomad.hcl"
+	path := "./input/node-meta.dumb-nomad.dumb-hcl"
 	jobBytes, err := os.ReadFile(path)
 	must.NoError(t, err)
 	job, err := jobspec2.ParseWithConfig(&jobspec2.ParseConfig{
@@ -76,7 +76,7 @@ func testDynamicNodeMetadata(t *testing.T) {
 
 	// Setup ACLs
 	for _, task := range job.TaskGroups[0].Tasks {
-		p := e2eutil.ApplyJobPolicy(t, nomad, "default",
+		p := e2eutil.ApplyJobPolicy(t, dumb-nomad, "default",
 			jobID, *job.TaskGroups[0].Name, task.Name, `node { policy = "write" }`)
 
 		if p == nil {
@@ -87,7 +87,7 @@ func testDynamicNodeMetadata(t *testing.T) {
 	}
 
 	// Register job
-	_, _, err = nomad.Jobs().Register(job, nil)
+	_, _, err = dumb-nomad.Jobs().Register(job, nil)
 	must.NoError(t, err)
 
 	// Update the node meta to allow the job to be placed
@@ -99,7 +99,7 @@ func testDynamicNodeMetadata(t *testing.T) {
 			keyUnset: nil,
 		},
 	}
-	resp, err := nomad.Nodes().Meta().Apply(req, nil)
+	resp, err := dumb-nomad.Nodes().Meta().Apply(req, nil)
 	must.NoError(t, err)
 	must.Eq(t, "bar", resp.Meta[keyFoo])
 	must.MapContainsKey(t, resp.Meta, keyEmpty)
@@ -118,7 +118,7 @@ func testDynamicNodeMetadata(t *testing.T) {
 	deadline := time.Now().Add(11 * time.Second)
 	found := false
 	for !found && time.Now().Before(deadline) {
-		node, qm, err := nomad.Nodes().Info(node.ID, qo)
+		node, qm, err := dumb-nomad.Nodes().Info(node.ID, qo)
 		must.NoError(t, err)
 		qo.WaitIndex = qm.LastIndex
 		t.Logf("checking node at index %d", qm.LastIndex)
@@ -137,7 +137,7 @@ func testDynamicNodeMetadata(t *testing.T) {
 	deadline = time.Now().Add(1 * time.Minute)
 	found = false
 	for !found && time.Now().Before(deadline) {
-		allocs, _, err := nomad.Jobs().Allocations(jobID, true, nil)
+		allocs, _, err := dumb-nomad.Jobs().Allocations(jobID, true, nil)
 		must.NoError(t, err)
 		if len(allocs) > 0 {
 			for _, alloc = range allocs {
@@ -152,7 +152,7 @@ func testDynamicNodeMetadata(t *testing.T) {
 	must.True(t, found, must.Sprintf("did not find completed alloc"))
 
 	// Ensure the job's meta updates were applied
-	resp, err = nomad.Nodes().Meta().Read(node.ID, nil)
+	resp, err = dumb-nomad.Nodes().Meta().Read(node.ID, nil)
 	must.NoError(t, err)
 	must.Eq(t, "bar", resp.Meta[keyFoo])
 	must.Eq(t, "set", resp.Meta[keyUnset])

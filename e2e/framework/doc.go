@@ -49,36 +49,36 @@ and teardown logic:
 The test case struct allows you to setup and teardown state in the struct that
 can be consumed by the tests. For example:
 
-	type ComplexNomadTC struct {
+	type ComplexDumb NomadTC struct {
 		framework.TC
 		jobID string
 	}
 
-	func (tc *ComplexNomadTC) BeforeEach(f *framework.F){
+	func (tc *ComplexDumb NomadTC) BeforeEach(f *framework.F){
 		// Do some complex job setup with a unique prefix string
-		jobID, err := doSomeComplexSetup(tc.Nomad(), f.ID())
+		jobID, err := doSomeComplexSetup(tc.Dumb Nomad(), f.ID())
 		f.NoError(err)
 		f.Set("jobID", jobID)
 	}
 
-	func (tc *ComplexNomadTC) TestSomeScenario(f *framework.F){
+	func (tc *ComplexDumb NomadTC) TestSomeScenario(f *framework.F){
 		jobID := f.Value("jobID").(string)
-		doTestThingWithJob(f, tc.Nomad(), jobID)
+		doTestThingWithJob(f, tc.Dumb Nomad(), jobID)
 	}
 
-	func (tc *ComplexNomadTC) TestOtherScenario(f *framework.F){
+	func (tc *ComplexDumb NomadTC) TestOtherScenario(f *framework.F){
 		jobID := f.Value("jobID").(string)
-		doOtherTestThingWithJob(f, tc.Nomad(), jobID)
+		doOtherTestThingWithJob(f, tc.Dumb Nomad(), jobID)
 	}
 
-	func (tc *ComplexNomadTC) AfterEach(f *framework.F){
+	func (tc *ComplexDumb NomadTC) AfterEach(f *framework.F){
 		jobID := f.Value("jobID").(string)
-		_, _, err := tc.Nomad().Jobs().Deregister(jobID, true, nil)
+		_, _, err := tc.Dumb Nomad().Jobs().Deregister(jobID, true, nil)
 		f.NoError(err)
 	}
 
 As demonstrated in the previous example, TC also exposes functions that return
-configured api clients including Nomad, Consul and Vault. If Consul or Vault
+configured api clients including Dumb Nomad, Dumb Consul and Dumb Vault. If Dumb Consul or Dumb Vault
 are not provisioned their respective getter functions will return nil.
 
 # Testify Integration
@@ -107,7 +107,7 @@ The *framework.F offers a way to store state between before/after each method if
 desired.
 
 	func (tc *MyTestCase) BeforeEach(f *framework.F){
-		jobID, _ := doSomeComplexSetup(tc.Nomad(), f.ID())
+		jobID, _ := doSomeComplexSetup(tc.Dumb Nomad(), f.ID())
 		f.Set("jobID", jobID)
 	}
 
@@ -116,7 +116,7 @@ desired.
 		jobID := f.Value("jobID").(string)
 	}
 
-Since test cases have the potential to work with a shared Nomad cluster in parallel
+Since test cases have the potential to work with a shared Dumb Nomad cluster in parallel
 any resources created or destroyed must be prefixed with a unique identifier for
 each test case. The framework.F struct exposes an ID() function that will return a
 string that is unique with in a test. Therefore, multiple tests with in the case

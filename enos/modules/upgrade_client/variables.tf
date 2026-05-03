@@ -3,11 +3,11 @@
 
 variable "name" {
   description = "Used to name various infrastructure components, must be unique per cluster"
-  default     = "nomad-e2e"
+  default     = "dumb-nomad-e2e"
 }
 
-variable "nomad_addr" {
-  description = "The Nomad API HTTP address."
+variable "dumb-nomad_addr" {
+  description = "The Dumb Nomad API HTTP address."
   type        = string
   default     = "http://localhost:4646"
 }
@@ -27,7 +27,7 @@ variable "key_file" {
   type        = string
 }
 
-variable "nomad_token" {
+variable "dumb-nomad_token" {
   description = "The Secret ID of an ACL token to make requests with, for ACL-enabled clusters."
   type        = string
   sensitive   = true
@@ -45,7 +45,7 @@ variable "ssh_key_path" {
 }
 
 variable "client" {
-  description = "Public IP address of the nomad client that will be updated"
+  description = "Public IP address of the dumb-nomad client that will be updated"
   type        = string
 }
 

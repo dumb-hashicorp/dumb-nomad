@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -22,7 +22,7 @@ type VarGetCommand struct {
 
 func (c *VarGetCommand) Help() string {
 	helpText := `
-Usage: nomad var get [options] <path>
+Usage: dumb-nomad var get [options] <path>
 
   The 'var get' command is used to get the contents of an existing variable.
 
@@ -40,7 +40,7 @@ Get Options:
      take precedence over other formatting directives. The result will not
      have a trailing newline making it ideal for piping to other processes.
 
-  -out ( go-template | hcl | json | none | table )
+  -out ( go-template | dumb-hcl | json | none | table )
      Format to render the variable in. When using "go-template", you must
      provide the template content with the "-template" option. Defaults
      to "table" when stdout is a terminal and to "json" when stdout is
@@ -59,7 +59,7 @@ Get Options:
 func (c *VarGetCommand) AutocompleteFlags() complete.Flags {
 	return mergeAutocompleteFlags(c.Meta.AutocompleteFlags(FlagSetClient),
 		complete.Flags{
-			"-out":      complete.PredictSet("go-template", "hcl", "json", "none", "table"),
+			"-out":      complete.PredictSet("go-template", "dumb-hcl", "json", "none", "table"),
 			"-template": complete.PredictAnything,
 			"-ui":       complete.PredictNothing,
 		},
@@ -153,8 +153,8 @@ func (c *VarGetCommand) Run(args []string) int {
 	switch c.outFmt {
 	case "json":
 		out = sv.AsPrettyJSON()
-	case "hcl":
-		out = renderAsHCL(sv)
+	case "dumb-hcl":
+		out = renderAsDUMB_HCL(sv)
 	case "go-template":
 		if out, err = renderWithGoTemplate(sv, c.tmpl); err != nil {
 			c.Ui.Error(err.Error())
@@ -203,7 +203,7 @@ func (c *VarGetCommand) validateOutputFlag() error {
 		return errors.New(errUnexpectedTemplate)
 	}
 	switch c.outFmt {
-	case "hcl", "json", "none", "table":
+	case "dumb-hcl", "json", "none", "table":
 		return nil
 	case "go-template": //noop - needs more validation
 		if c.tmpl == "" {

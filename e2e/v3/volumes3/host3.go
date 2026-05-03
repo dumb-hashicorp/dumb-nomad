@@ -12,9 +12,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	nomadapi "github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/v3/util3"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	dumb-nomadapi "github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/util3"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 )
@@ -24,12 +24,12 @@ import (
 type VolumeSubmission struct {
 	t *testing.T
 
-	nomadClient *nomadapi.Client
+	dumb-nomadClient *dumb-nomadapi.Client
 
 	// inputs
 	namespace string
 	filename  string
-	waitState nomadapi.HostVolumeState
+	waitState dumb-nomadapi.HostVolumeState
 
 	// behaviors
 	noCleanup bool
@@ -52,7 +52,7 @@ func Create(t *testing.T, filename string, opts ...Option) (*VolumeSubmission, C
 		t:         t,
 		namespace: api.DefaultNamespace,
 		filename:  filename,
-		waitState: nomadapi.HostVolumeStateReady,
+		waitState: dumb-nomadapi.HostVolumeStateReady,
 		timeout:   10 * time.Second,
 	}
 
@@ -79,20 +79,20 @@ func (sub *VolumeSubmission) NodeID() string {
 }
 
 // Get fetches the api.HostVolume from the server for further examination
-func (sub *VolumeSubmission) Get() *nomadapi.HostVolume {
-	vol, _, err := sub.nomadClient.HostVolumes().Get(sub.volID,
+func (sub *VolumeSubmission) Get() *dumb-nomadapi.HostVolume {
+	vol, _, err := sub.dumb-nomadClient.HostVolumes().Get(sub.volID,
 		&api.QueryOptions{Namespace: sub.namespace})
 	must.NoError(sub.t, err)
 	return vol
 }
 
 func (sub *VolumeSubmission) setClient() {
-	if sub.nomadClient != nil {
+	if sub.dumb-nomadClient != nil {
 		return
 	}
-	nomadClient, err := nomadapi.NewClient(nomadapi.DefaultConfig())
-	must.NoError(sub.t, err, must.Sprint("failed to create nomad API client"))
-	sub.nomadClient = nomadClient
+	dumb-nomadClient, err := dumb-nomadapi.NewClient(dumb-nomadapi.DefaultConfig())
+	must.NoError(sub.t, err, must.Sprint("failed to create dumb-nomad API client"))
+	sub.dumb-nomadClient = dumb-nomadClient
 }
 
 func (sub *VolumeSubmission) run(start time.Time) {
@@ -101,7 +101,7 @@ func (sub *VolumeSubmission) run(start time.Time) {
 	defer cancel()
 
 	bytes, err := exec.CommandContext(ctx,
-		"nomad", "volume", "create",
+		"dumb-nomad", "volume", "create",
 		"-namespace", sub.namespace,
 		"-detach", sub.filename).CombinedOutput()
 	must.NoError(sub.t, err, must.Sprint("error creating volume"))
@@ -116,7 +116,7 @@ func (sub *VolumeSubmission) waits(start time.Time) {
 	sub.t.Helper()
 	must.Wait(sub.t, wait.InitialSuccess(
 		wait.ErrorFunc(func() error {
-			vol, _, err := sub.nomadClient.HostVolumes().Get(sub.volID,
+			vol, _, err := sub.dumb-nomadClient.HostVolumes().Get(sub.volID,
 				&api.QueryOptions{Namespace: sub.namespace})
 			if err != nil {
 				return err
@@ -130,8 +130,8 @@ func (sub *VolumeSubmission) waits(start time.Time) {
 			// if we're waiting for the volume to be ready, let's also verify
 			// that it's correctly fingerprinted on the node
 			switch sub.waitState {
-			case nomadapi.HostVolumeStateReady:
-				node, _, err := sub.nomadClient.Nodes().Info(sub.nodeID, nil)
+			case dumb-nomadapi.HostVolumeStateReady:
+				node, _, err := sub.dumb-nomadClient.Nodes().Info(sub.nodeID, nil)
 				if err != nil {
 					return err
 				}
@@ -152,7 +152,7 @@ func (sub *VolumeSubmission) waits(start time.Time) {
 }
 
 func (sub *VolumeSubmission) cleanup() {
-	if os.Getenv("NOMAD_TEST_SKIPCLEANUP") == "1" {
+	if os.Getenv("DUMB_NOMAD_TEST_SKIPCLEANUP") == "1" {
 		return
 	}
 	if sub.noCleanup {
@@ -168,7 +168,7 @@ func (sub *VolumeSubmission) cleanup() {
 
 	sub.logf("deleting volume %q", sub.volID)
 	err := exec.CommandContext(ctx,
-		"nomad", "volume", "delete",
+		"dumb-nomad", "volume", "delete",
 		"-type", "host", "-namespace", sub.namespace, sub.volID).Run()
 	must.NoError(sub.t, err)
 }
@@ -178,11 +178,11 @@ func (sub *VolumeSubmission) logf(msg string, args ...any) {
 	util3.Log3(sub.t, sub.verbose, msg, args...)
 }
 
-// WithClient forces the submission to use the Nomad API client passed from the
+// WithClient forces the submission to use the Dumb Nomad API client passed from the
 // calling test
-func WithClient(client *nomadapi.Client) Option {
+func WithClient(client *dumb-nomadapi.Client) Option {
 	return func(sub *VolumeSubmission) {
-		sub.nomadClient = client
+		sub.dumb-nomadClient = client
 	}
 }
 

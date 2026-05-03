@@ -6,13 +6,13 @@ package allocrunner
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/testutils"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
@@ -86,7 +86,7 @@ func TestNetworkHook_Prerun_Postrun_group(t *testing.T) {
 		expectedStatus: mock.AllocNetworkStatus(),
 	}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	hook := newNetworkHook(logger, setter, alloc, nm, &hostNetworkConfigurator{}, statusSetter)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
@@ -130,7 +130,7 @@ func TestNetworkHook_Prerun_Postrun_host(t *testing.T) {
 		expectedStatus: nil,
 	}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	hook := newNetworkHook(logger, setter, alloc, nm, &hostNetworkConfigurator{}, statusSetter)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 

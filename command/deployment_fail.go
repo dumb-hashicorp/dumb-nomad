@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -17,7 +17,7 @@ type DeploymentFailCommand struct {
 
 func (c *DeploymentFailCommand) Help() string {
 	helpText := `
-Usage: nomad deployment fail [options] <deployment id>
+Usage: dumb-nomad deployment fail [options] <deployment id>
 
   Fail is used to mark a deployment as failed. Failing a deployment will
   stop the placement of new allocations as part of rolling deployment and

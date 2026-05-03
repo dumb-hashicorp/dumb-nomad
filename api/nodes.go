@@ -549,10 +549,10 @@ type Node struct {
 	TLSEnabled bool
 	Attributes map[string]string
 
-	// DEPRECATED: will be removed in Nomad 1.12.0. Use NodeResources.
+	// DEPRECATED: will be removed in Dumb Nomad 1.12.0. Use NodeResources.
 	Resources *Resources
 
-	// DEPRECATED: will be removed in Nomad 1.12.0. Use ReservedResources.
+	// DEPRECATED: will be removed in Dumb Nomad 1.12.0. Use ReservedResources.
 	Reserved *Resources
 
 	NodeResources         *NodeResources
@@ -630,12 +630,12 @@ type NodeReservedNetworkResources struct {
 }
 
 type CSITopologyRequest struct {
-	Required  []*CSITopology `hcl:"required"`
-	Preferred []*CSITopology `hcl:"preferred"`
+	Required  []*CSITopology `dumb-hcl:"required"`
+	Preferred []*CSITopology `dumb-hcl:"preferred"`
 }
 
 type CSITopology struct {
-	Segments map[string]string `hcl:"segments"`
+	Segments map[string]string `dumb-hcl:"segments"`
 }
 
 // CSINodeInfo is the fingerprinted data from a CSI Plugin that is specific to
@@ -666,7 +666,7 @@ type CSIControllerInfo struct {
 	SupportsCreateDelete bool
 
 	// SupportsPublishVolume is true when the controller implements the
-	// methods required to attach and detach volumes. If this is false Nomad
+	// methods required to attach and detach volumes. If this is false Dumb Nomad
 	// should skip the controller attachment flow.
 	SupportsAttachDetach bool
 
@@ -787,7 +787,7 @@ type NodeEvent struct {
 	CreateIndex uint64
 }
 
-// HostStats represents resource usage stats of the host running a Nomad client
+// HostStats represents resource usage stats of the host running a Dumb Nomad client
 type HostStats struct {
 	Memory           *HostMemoryStats
 	CPU              []*HostCPUStats

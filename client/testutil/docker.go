@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	docker "github.com/docker/docker/client"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 )
 
 // DockerIsConnected checks to see if a docker daemon is available (local or remote)

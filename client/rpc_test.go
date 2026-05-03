@@ -8,12 +8,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/structs"
-	sconfig "github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	sconfig "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -22,7 +22,7 @@ func TestRpc_streamingRpcConn_badEndpoint(t *testing.T) {
 	ci.Parallel(t)
 	require := require.New(t)
 
-	s1, cleanupS1 := nomad.TestServer(t, nil)
+	s1, cleanupS1 := dumb-nomad.TestServer(t, nil)
 	defer cleanupS1()
 	testutil.WaitForLeader(t, s1.RPC)
 
@@ -61,12 +61,12 @@ func TestRpc_streamingRpcConn_badEndpoint_TLS(t *testing.T) {
 	require := require.New(t)
 
 	const (
-		cafile        = "../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		fooservercert = "../helper/tlsutil/testdata/regionFoo-server-nomad.pem"
-		fooserverkey  = "../helper/tlsutil/testdata/regionFoo-server-nomad-key.pem"
+		cafile        = "../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		fooservercert = "../helper/tlsutil/testdata/regionFoo-server-dumb-nomad.pem"
+		fooserverkey  = "../helper/tlsutil/testdata/regionFoo-server-dumb-nomad-key.pem"
 	)
 
-	s1, cleanupS1 := nomad.TestServer(t, func(c *nomad.Config) {
+	s1, cleanupS1 := dumb-nomad.TestServer(t, func(c *dumb-nomad.Config) {
 		c.Region = "regionFoo"
 		c.BootstrapExpect = 1
 		c.TLSConfig = &sconfig.TLSConfig{
@@ -203,7 +203,7 @@ func TestRpc_RetryBlockTime(t *testing.T) {
 	rpcHoldTimeout := 5 * time.Second
 	unblockTimeout := 7 * time.Second
 
-	srv, cleanupSrv := nomad.TestServer(t, func(c *nomad.Config) {
+	srv, cleanupSrv := dumb-nomad.TestServer(t, func(c *dumb-nomad.Config) {
 		c.NumSchedulers = 0
 		c.BootstrapExpect = 3 // we intentionally don't want a leader
 	})

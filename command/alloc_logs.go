@@ -13,9 +13,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
-	"github.com/hashicorp/nomad/command/ui"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/command/ui"
 	"github.com/posener/complete"
 )
 
@@ -31,8 +31,8 @@ type AllocLogsCommand struct {
 
 func (l *AllocLogsCommand) Help() string {
 	helpText := `
-Usage: nomad alloc logs [options] <allocation> <task>
-Alias: nomad logs
+Usage: dumb-nomad alloc logs [options] <allocation> <task>
+Alias: dumb-nomad logs
 
   Streams the stdout/stderr of the given allocation and task.
 
@@ -83,8 +83,8 @@ Logs Specific Options:
   -c
     Sets the tail location in number of bytes relative to the end of the logs.
 
-  Note that the -no-color option applies to Nomad's own output. If the task's
-  logs include terminal escape sequences for color codes, Nomad will not
+  Note that the -no-color option applies to Dumb Nomad's own output. If the task's
+  logs include terminal escape sequences for color codes, Dumb Nomad will not
   remove them.
 `
 

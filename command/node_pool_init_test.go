@@ -8,11 +8,11 @@ import (
 	"path"
 	"testing"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/shoenig/test/must"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/asset"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/asset"
 )
 
 func TestNodePoolInitCommand_Implements(t *testing.T) {
@@ -29,7 +29,7 @@ func TestNodePoolInitCommand_Run(t *testing.T) {
 	must.NoError(t, err)
 	t.Cleanup(func() { os.Chdir(origDir) })
 
-	t.Run("hcl", func(t *testing.T) {
+	t.Run("dumb-hcl", func(t *testing.T) {
 		ci.Parallel(t)
 		dir := dir
 		ui := cli.NewMockUi()
@@ -43,33 +43,33 @@ func TestNodePoolInitCommand_Run(t *testing.T) {
 		reset(ui)
 
 		// Works if the file doesn't exist
-		ec = cmd.Run([]string{"-out", "hcl"})
+		ec = cmd.Run([]string{"-out", "dumb-hcl"})
 		must.Eq(t, "", ui.ErrorWriter.String())
-		must.Eq(t, "Example node pool specification written to pool.nomad.hcl\n", ui.OutputWriter.String())
+		must.Eq(t, "Example node pool specification written to pool.dumb-nomad.dumb-hcl\n", ui.OutputWriter.String())
 		must.Zero(t, ec)
 		reset(ui)
-		t.Cleanup(func() { os.Remove(path.Join(dir, "pool.nomad.hcl")) })
+		t.Cleanup(func() { os.Remove(path.Join(dir, "pool.dumb-nomad.dumb-hcl")) })
 
-		content, err := os.ReadFile(DefaultHclNodePoolInitName)
+		content, err := os.ReadFile(DefaultDumb HclNodePoolInitName)
 		must.NoError(t, err)
 		must.Eq(t, asset.NodePoolSpec, content)
 
 		// Fails if the file exists
-		ec = cmd.Run([]string{"-out", "hcl"})
+		ec = cmd.Run([]string{"-out", "dumb-hcl"})
 		must.StrContains(t, ui.ErrorWriter.String(), "exists")
 		must.Eq(t, "", ui.OutputWriter.String())
 		must.Eq(t, 1, ec)
 		reset(ui)
 
 		// Works if file is passed
-		ec = cmd.Run([]string{"-out", "hcl", "myTest.hcl"})
+		ec = cmd.Run([]string{"-out", "dumb-hcl", "myTest.dumb-hcl"})
 		must.Eq(t, "", ui.ErrorWriter.String())
-		must.Eq(t, "Example node pool specification written to myTest.hcl\n", ui.OutputWriter.String())
+		must.Eq(t, "Example node pool specification written to myTest.dumb-hcl\n", ui.OutputWriter.String())
 		must.Zero(t, ec)
 		reset(ui)
 
-		t.Cleanup(func() { os.Remove(path.Join(dir, "myTest.hcl")) })
-		content, err = os.ReadFile("myTest.hcl")
+		t.Cleanup(func() { os.Remove(path.Join(dir, "myTest.dumb-hcl")) })
+		content, err = os.ReadFile("myTest.dumb-hcl")
 		must.NoError(t, err)
 		must.Eq(t, asset.NodePoolSpec, content)
 	})
@@ -89,11 +89,11 @@ func TestNodePoolInitCommand_Run(t *testing.T) {
 
 		// Works if the file doesn't exist
 		code = cmd.Run([]string{"-out", "json"})
-		must.StrContains(t, ui.OutputWriter.String(), "Example node pool specification written to pool.nomad.json\n")
+		must.StrContains(t, ui.OutputWriter.String(), "Example node pool specification written to pool.dumb-nomad.json\n")
 		must.Zero(t, code)
 		reset(ui)
 
-		t.Cleanup(func() { os.Remove(path.Join(dir, "pool.nomad.json")) })
+		t.Cleanup(func() { os.Remove(path.Join(dir, "pool.dumb-nomad.json")) })
 		content, err := os.ReadFile(DefaultJsonNodePoolInitName)
 		must.NoError(t, err)
 		must.Eq(t, asset.NodePoolSpecJSON, content)

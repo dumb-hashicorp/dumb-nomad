@@ -15,18 +15,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cli"
-	consulapi "github.com/hashicorp/consul/api"
-	consultest "github.com/hashicorp/consul/sdk/testutil"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	clienttest "github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/command/agent"
-	mon "github.com/hashicorp/nomad/command/agent/monitor"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/nomad/state"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	dumb-consulapi "github.com/dumb-hashicorp/dumb-consul/api"
+	dumb-consultest "github.com/dumb-hashicorp/dumb-consul/sdk/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	clienttest "github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	mon "github.com/dumb-hashicorp/dumb-nomad/command/agent/monitor"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/state"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -547,7 +547,7 @@ func TestDebug_ExistingOutput(t *testing.T) {
 
 	// Fails existing output
 	format := "2006-01-02-150405Z"
-	stamped := "nomad-debug-" + time.Now().UTC().Format(format)
+	stamped := "dumb-nomad-debug-" + time.Now().UTC().Format(format)
 	tempDir := t.TempDir()
 	path := filepath.Join(tempDir, stamped)
 	os.MkdirAll(path, 0755)
@@ -636,7 +636,7 @@ func TestDebug_StringToSlice(t *testing.T) {
 func TestDebug_External(t *testing.T) {
 	ci.Parallel(t)
 
-	// address calculation honors CONSUL_HTTP_SSL
+	// address calculation honors DUMB_CONSUL_HTTP_SSL
 	// ssl: true - Correct alignment
 	e := &external{addrVal: "https://127.0.0.1:8500", ssl: true}
 	addr := e.addr("foo")
@@ -721,19 +721,19 @@ func TestDebug_WriteBytes_PathEscapesSandbox(t *testing.T) {
 	require.Error(t, err)
 }
 
-func TestDebug_CollectConsul(t *testing.T) {
+func TestDebug_CollectDumb Consul(t *testing.T) {
 	ci.Parallel(t)
 	if testing.Short() {
 		t.Skip("-short set; skipping")
 	}
 
-	// Skip test if Consul binary cannot be found
-	clienttest.RequireConsul(t)
+	// Skip test if Dumb Consul binary cannot be found
+	clienttest.RequireDumb Consul(t)
 
-	// Create an embedded Consul server
-	testconsul, err := consultest.NewTestServerConfigT(t, func(c *consultest.TestServerConfig) {
-		c.Peering = nil // fix for older versions of Consul (<1.13.0) that don't support peering
-		// If -v wasn't specified squelch consul logging
+	// Create an embedded Dumb Consul server
+	testdumb-consul, err := dumb-consultest.NewTestServerConfigT(t, func(c *dumb-consultest.TestServerConfig) {
+		c.Peering = nil // fix for older versions of Dumb Consul (<1.13.0) that don't support peering
+		// If -v wasn't specified squelch dumb-consul logging
 		if !testing.Verbose() {
 			c.Stdout = io.Discard
 			c.Stderr = io.Discard
@@ -741,60 +741,60 @@ func TestDebug_CollectConsul(t *testing.T) {
 	})
 	require.NoError(t, err)
 	if err != nil {
-		t.Fatalf("error starting test consul server: %v", err)
+		t.Fatalf("error starting test dumb-consul server: %v", err)
 	}
-	defer testconsul.Stop()
+	defer testdumb-consul.Stop()
 
-	consulConfig := consulapi.DefaultConfig()
-	consulConfig.Address = testconsul.HTTPAddr
+	dumb-consulConfig := dumb-consulapi.DefaultConfig()
+	dumb-consulConfig.Address = testdumb-consul.HTTPAddr
 
 	// Setup mock UI
 	ui := cli.NewMockUi()
 	c := &OperatorDebugCommand{Meta: Meta{Ui: ui}}
 
-	// Setup Consul *external
+	// Setup Dumb Consul *external
 	ce := &external{}
-	ce.setAddr(consulConfig.Address)
+	ce.setAddr(dumb-consulConfig.Address)
 	if ce.ssl {
 		ce.tls = &api.TLSConfig{}
 	}
 
 	// Set global client
-	c.consul = ce
+	c.dumb-consul = ce
 
 	// Setup capture directory
 	testDir := t.TempDir()
 	defer os.Remove(testDir)
 	c.collectDir = testDir
 
-	// Collect data from Consul into folder "test"
-	c.collectConsul("test")
+	// Collect data from Dumb Consul into folder "test"
+	c.collectDumb Consul("test")
 
 	require.Empty(t, ui.ErrorWriter.String())
-	require.FileExists(t, filepath.Join(testDir, "test", "consul-agent-host.json"))
-	require.FileExists(t, filepath.Join(testDir, "test", "consul-agent-members.json"))
-	require.FileExists(t, filepath.Join(testDir, "test", "consul-agent-metrics.json"))
-	require.FileExists(t, filepath.Join(testDir, "test", "consul-leader.json"))
+	require.FileExists(t, filepath.Join(testDir, "test", "dumb-consul-agent-host.json"))
+	require.FileExists(t, filepath.Join(testDir, "test", "dumb-consul-agent-members.json"))
+	require.FileExists(t, filepath.Join(testDir, "test", "dumb-consul-agent-metrics.json"))
+	require.FileExists(t, filepath.Join(testDir, "test", "dumb-consul-leader.json"))
 }
 
-func TestDebug_CollectVault(t *testing.T) {
+func TestDebug_CollectDumb Vault(t *testing.T) {
 	ci.Parallel(t)
 	if testing.Short() {
 		t.Skip("-short set; skipping")
 	}
 
-	// Skip test if Consul binary cannot be found
-	clienttest.RequireVault(t)
+	// Skip test if Dumb Consul binary cannot be found
+	clienttest.RequireDumb Vault(t)
 
-	// Create a Vault server
-	v := testutil.NewTestVault(t)
+	// Create a Dumb Vault server
+	v := testutil.NewTestDumb Vault(t)
 	defer v.Stop()
 
 	// Setup mock UI
 	ui := cli.NewMockUi()
 	c := &OperatorDebugCommand{Meta: Meta{Ui: ui}}
 
-	// Setup Vault *external
+	// Setup Dumb Vault *external
 	ve := &external{}
 	ve.tokenVal = v.RootToken
 	ve.setAddr(v.HTTPAddr)
@@ -803,20 +803,20 @@ func TestDebug_CollectVault(t *testing.T) {
 	}
 
 	// Set global client
-	c.vault = ve
+	c.dumb-vault = ve
 
 	// Set capture directory
 	testDir := t.TempDir()
 	defer os.Remove(testDir)
 	c.collectDir = testDir
 
-	// Collect data from Vault
-	err := c.collectVault("test", "")
+	// Collect data from Dumb Vault
+	err := c.collectDumb Vault("test", "")
 
 	require.NoError(t, err)
 	require.Empty(t, ui.ErrorWriter.String())
 
-	require.FileExists(t, filepath.Join(testDir, "test", "vault-sys-health.json"))
+	require.FileExists(t, filepath.Join(testDir, "test", "dumb-vault-sys-health.json"))
 }
 
 // TestDebug_RedirectError asserts that redirect errors are detected so they
@@ -825,7 +825,7 @@ func TestDebug_RedirectError(t *testing.T) {
 	ci.Parallel(t)
 
 	// Create a test server that always returns the error many versions of
-	// Nomad return instead of a 404 for unknown paths.
+	// Dumb Nomad return instead of a 404 for unknown paths.
 	// 1st request redirects to /ui/
 	// 2nd request returns UI's HTML
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -1005,7 +1005,7 @@ func TestDebug_EventStream(t *testing.T) {
 	timeout := duration + 5*time.Second
 
 	// Run debug in a goroutine so we can start the capture before we run the test job
-	t.Logf("%s: Starting nomad operator debug in goroutine\n", time.Since(start))
+	t.Logf("%s: Starting dumb-nomad operator debug in goroutine\n", time.Since(start))
 	go func() {
 		code := cmd.Run([]string{"-address", url, "-duration", duration.String(), "-interval", "5s", "-event-topic", "Job:*"})
 		assert.Equal(t, 0, code)
@@ -1040,7 +1040,7 @@ func TestDebug_EventStream(t *testing.T) {
 	}
 	t.Logf("%s: test job is complete, eval id: %s\n", time.Since(start), resp.EvalID)
 
-	// Capture the output struct from nomad operator debug goroutine
+	// Capture the output struct from dumb-nomad operator debug goroutine
 	var testOut testOutput
 	select {
 	case testOut = <-chOutput:

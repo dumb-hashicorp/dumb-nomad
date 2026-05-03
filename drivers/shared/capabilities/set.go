@@ -17,10 +17,10 @@ var null = nothing{}
 // operations, taking care of name normalization, and sentinel value expansions.
 //
 // Linux capabilities can be expressed in multiple ways when working with docker
-// and/or executor, along with Nomad configuration.
+// and/or executor, along with Dumb Nomad configuration.
 //
 // Capability names may be upper or lower case, and may or may not be prefixed
-// with "CAP_" or "cap_". On top of that, Nomad interprets the special name "all"
+// with "CAP_" or "cap_". On top of that, Dumb Nomad interprets the special name "all"
 // and "ALL" to mean "all capabilities supported by the operating system".
 type Set struct {
 	data map[string]nothing

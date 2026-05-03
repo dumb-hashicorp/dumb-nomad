@@ -2,16 +2,16 @@
 // SPDX-License-Identifier: MPL-2.0
 
 syntax = "proto3";
-package hashicorp.nomad.plugins.drivers.proto;
+package dumb-hashicorp.dumb-nomad.plugins.drivers.proto;
 option go_package = "proto";
 
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
-import "plugins/shared/hclspec/hcl_spec.proto";
+import "plugins/shared/dumb-hclspec/dumb-hcl_spec.proto";
 import "plugins/shared/structs/proto/attribute.proto";
 
-// Driver service defines RPCs used to communicate with a nomad runtime driver.
+// Driver service defines RPCs used to communicate with a dumb-nomad runtime driver.
 // Some rpcs may not be implemented by the driver based on it's capabilities.
 service Driver {
 
@@ -82,7 +82,7 @@ service Driver {
     rpc ExecTaskStreaming(stream ExecTaskStreamingRequest) returns (stream ExecTaskStreamingResponse) {}
 
     // CreateNetwork is implemented when the driver needs to create the network
-    // namespace instead of allowing the Nomad client to do.
+    // namespace instead of allowing the Dumb Nomad client to do.
     rpc CreateNetwork(CreateNetworkRequest) returns (CreateNetworkResponse) {}
 
     // DestroyNetwork destroys a previously created network. This rpc is only
@@ -95,7 +95,7 @@ message TaskConfigSchemaRequest {}
 message TaskConfigSchemaResponse {
 
     // Spec is the configuration schema for the job driver config block
-    hashicorp.nomad.plugins.shared.hclspec.Spec spec = 1;
+    dumb-hashicorp.dumb-nomad.plugins.shared.dumb-hclspec.Spec spec = 1;
 }
 
 message CapabilitiesRequest {}
@@ -114,9 +114,9 @@ message FingerprintRequest {}
 message FingerprintResponse {
 
 
-    // Attributes are key/value pairs that annotate the nomad client and can be
+    // Attributes are key/value pairs that annotate the dumb-nomad client and can be
     // used in scheduling constraints and affinities.
-    map<string, hashicorp.nomad.plugins.shared.structs.Attribute> attributes = 1;
+    map<string, dumb-hashicorp.dumb-nomad.plugins.shared.structs.Attribute> attributes = 1;
 
     enum HealthState {
         UNDETECTED = 0;
@@ -393,7 +393,7 @@ message DriverCapabilities {
     // MountConfigs indicates whether the driver supports mount configurations.
     MountConfigs mount_configs = 6;
 
-    // previous remote_tasks field no longer used by nomad clients
+    // previous remote_tasks field no longer used by dumb-nomad clients
     reserved 7;
     reserved "remote_tasks";
 
@@ -402,7 +402,7 @@ message DriverCapabilities {
     bool disable_log_collection = 8;
 
     // dynamic_workload_users indicates the task is capable of using UID/GID
-    // assigned from the Nomad client as user credentials for the task.
+    // assigned from the Dumb Nomad client as user credentials for the task.
     bool dynamic_workload_users = 9;
 }
 
@@ -573,7 +573,7 @@ message LinuxResources {
     // CpusetCpus constrains the allowed set of logical CPUs. Default: "" (not specified)
     // This field exists to support drivers which can't set a cgroup path.
     string cpuset_cpus = 6;
-    // Previously cpuset_mems fields never set by the Nomad client
+    // Previously cpuset_mems fields never set by the Dumb Nomad client
     reserved 7;
     reserved "cpuset_mems";
     // CpusetCgroup is the path to the cpuset cgroup managed by the client
@@ -630,7 +630,7 @@ enum TaskState {
 message TaskHandle {
 
     // Version is used by the driver to version the DriverState schema.
-    // Version 0 is reserved by Nomad and should not be used.
+    // Version 0 is reserved by Dumb Nomad and should not be used.
     int32 version = 1;
 
     // Config is the TaskConfig for the task

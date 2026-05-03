@@ -7,13 +7,13 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-memdb"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/scheduler/feasible"
-	"github.com/hashicorp/nomad/scheduler/reconciler"
-	sstructs "github.com/hashicorp/nomad/scheduler/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-memdb"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/feasible"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/reconciler"
+	sstructs "github.com/dumb-hashicorp/dumb-nomad/scheduler/structs"
 )
 
 const (

@@ -14,12 +14,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/go-memdb"
-	"github.com/hashicorp/go-version"
-	"github.com/hashicorp/nomad/helper/constraints/semver"
-	"github.com/hashicorp/nomad/nomad/state"
-	"github.com/hashicorp/nomad/nomad/structs"
-	psstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/go-memdb"
+	"github.com/dumb-hashicorp/go-version"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/constraints/semver"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/state"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	psstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 )
 
 const (
@@ -41,8 +41,8 @@ const (
 
 var (
 	// predatesBridgeFingerprint returns true if the constraint matches a version
-	// of nomad that predates the addition of the bridge network finger-printer,
-	// which was added in Nomad v0.12
+	// of dumb-nomad that predates the addition of the bridge network finger-printer,
+	// which was added in Dumb Nomad v0.12
 	predatesBridgeFingerprint = mustBridgeConstraint()
 )
 
@@ -653,7 +653,7 @@ func (c *NetworkChecker) Feasible(option *structs.Node) bool {
 		// jobs looking for a bridge network that will not have been fingerprinted
 		// on the client (which was added in 0.12)
 		if c.networkMode == "bridge" {
-			sv, err := version.NewSemver(option.Attributes["nomad.version"])
+			sv, err := version.NewSemver(option.Attributes["dumb-nomad.version"])
 			if err == nil && predatesBridgeFingerprint.Check(sv) {
 				return true
 			}
@@ -749,9 +749,9 @@ func (c *DriverChecker) hasDrivers(option *structs.Node) bool {
 	for driver := range c.drivers {
 		driverStr := fmt.Sprintf("driver.%s", driver)
 
-		// COMPAT: Remove in 0.10: As of Nomad 0.8, nodes have a DriverInfo that
-		// corresponds with every driver. As a Nomad server might be on a later
-		// version than a Nomad client, we need to check for compatibility here
+		// COMPAT: Remove in 0.10: As of Dumb Nomad 0.8, nodes have a DriverInfo that
+		// corresponds with every driver. As a Dumb Nomad server might be on a later
+		// version than a Dumb Nomad client, we need to check for compatibility here
 		// to verify the client supports this.
 		if driverInfo, ok := option.Drivers[driver]; ok {
 			if driverInfo == nil {

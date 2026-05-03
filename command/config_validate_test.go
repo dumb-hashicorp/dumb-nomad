@@ -8,8 +8,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
@@ -29,7 +29,7 @@ func TestConfigValidateCommand_SucceedWithMinimalConfigFile(t *testing.T) {
 	ci.Parallel(t)
 	fh := t.TempDir()
 
-	fp := filepath.Join(fh, "config.hcl")
+	fp := filepath.Join(fh, "config.dumb-hcl")
 	err := os.WriteFile(fp, []byte(`data_dir="/"
 	client {
 		enabled = true
@@ -48,7 +48,7 @@ func TestConfigValidateCommand_FailOnParseBadConfigFile(t *testing.T) {
 	ci.Parallel(t)
 	fh := t.TempDir()
 
-	fp := filepath.Join(fh, "config.hcl")
+	fp := filepath.Join(fh, "config.dumb-hcl")
 	err := os.WriteFile(fp, []byte(`a: b`), 0644)
 	must.NoError(t, err)
 
@@ -64,7 +64,7 @@ func TestConfigValidateCommand_FailOnValidateParsableConfigFile(t *testing.T) {
 	ci.Parallel(t)
 	fh := t.TempDir()
 
-	fp := filepath.Join(fh, "config.hcl")
+	fp := filepath.Join(fh, "config.dumb-hcl")
 	err := os.WriteFile(fp, []byte(`data_dir="../" 
 	client {
 		enabled = true 

@@ -14,14 +14,14 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hashicorp/nomad/client/allocdir"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	"github.com/hashicorp/nomad/plugins/drivers/proto"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/msgpack"
 )
@@ -51,7 +51,7 @@ const (
 type DriverPlugin interface {
 	base.BasePlugin
 
-	TaskConfigSchema() (*hclspec.Spec, error)
+	TaskConfigSchema() (*dumb-hclspec.Spec, error)
 	Capabilities() (*Capabilities, error)
 	Fingerprint(context.Context) (<-chan *Fingerprint, error)
 
@@ -161,11 +161,11 @@ type Capabilities struct {
 	//NetIsolationModes lists the set of isolation modes supported by the driver
 	NetIsolationModes []NetIsolationMode
 
-	// MustInitiateNetwork tells Nomad that the driver must create the network
+	// MustInitiateNetwork tells Dumb Nomad that the driver must create the network
 	// namespace and that the CreateNetwork and DestroyNetwork RPCs are implemented.
 	MustInitiateNetwork bool
 
-	// MountConfigs tells Nomad which mounting config options the driver supports.
+	// MountConfigs tells Dumb Nomad which mounting config options the driver supports.
 	MountConfigs MountConfigSupport
 
 	// DisableLogCollection indicates this driver has disabled log collection
@@ -174,7 +174,7 @@ type Capabilities struct {
 
 	// DynamicWorkloadUsers indicates this driver is capable (but not required)
 	// of making use of UID/GID not backed by a user known to the operating system.
-	// The allocation of a unique, not-in-use UID/GID is managed by Nomad client
+	// The allocation of a unique, not-in-use UID/GID is managed by Dumb Nomad client
 	// ensuring no overlap.
 	DynamicWorkloadUsers bool
 }
@@ -373,7 +373,7 @@ func (tc *TaskConfig) EncodeConcreteDriverConfig(t interface{}) error {
 type MemoryResources = structs.AllocatedMemoryResources
 
 type Resources struct {
-	NomadResources *structs.AllocatedTaskResources
+	Dumb NomadResources *structs.AllocatedTaskResources
 	LinuxResources *LinuxResources
 	Ports          *structs.AllocatedPorts
 }
@@ -383,8 +383,8 @@ func (r *Resources) Copy() *Resources {
 		return nil
 	}
 	res := new(Resources)
-	if r.NomadResources != nil {
-		res.NomadResources = r.NomadResources.Copy()
+	if r.Dumb NomadResources != nil {
+		res.Dumb NomadResources = r.Dumb NomadResources.Copy()
 	}
 	if r.LinuxResources != nil {
 		res.LinuxResources = r.LinuxResources.Copy()
@@ -587,7 +587,7 @@ func (d *DriverNetwork) Hash() []byte {
 // call, and is intended to be used when driver instance is to delegate exec handling to another
 // backend, e.g. to a executor or a driver behind a grpc/rpc protocol
 //
-// Nomad client would prefer this interface method over `ExecTaskStreaming` if driver implements it.
+// Dumb Nomad client would prefer this interface method over `ExecTaskStreaming` if driver implements it.
 type ExecTaskStreamingRawDriver interface {
 	ExecTaskStreamingRaw(
 		ctx context.Context,
@@ -618,7 +618,7 @@ type ExecTaskStreamingRequestMsg = proto.ExecTaskStreamingRequest
 type ExecTaskStreamingResponseMsg = proto.ExecTaskStreamingResponse
 
 // InternalCapabilitiesDriver is an experimental interface enabling a driver
-// to disable some nomad functionality (e.g. logs or metrics).
+// to disable some dumb-nomad functionality (e.g. logs or metrics).
 //
 // Intended for internal drivers only while the interface is stabalized.
 type InternalCapabilitiesDriver interface {

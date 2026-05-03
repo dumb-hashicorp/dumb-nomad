@@ -6,7 +6,7 @@
 import Ember from 'ember';
 import moment from 'moment';
 import { Factory, trait } from 'ember-cli-mirage';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import { provide, pickOne } from '../utils';
 import { generateResources } from '../common';
 

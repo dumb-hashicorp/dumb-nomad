@@ -7,9 +7,9 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
@@ -46,5 +46,5 @@ func TestOperatorSchedulerGetConfig_Run(t *testing.T) {
 
 	// Test an unsupported flag.
 	must.One(t, c.Run([]string{"-address=" + addr, "-yaml"}))
-	must.StrContains(t, ui.OutputWriter.String(), "Usage: nomad operator scheduler get-config")
+	must.StrContains(t, ui.OutputWriter.String(), "Usage: dumb-nomad operator scheduler get-config")
 }

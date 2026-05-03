@@ -9,21 +9,21 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/version"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/version"
 	colorable "github.com/mattn/go-colorable"
 )
 
 const (
-	// EnvNomadCLINoColor is an env var that toggles colored UI output.
-	EnvNomadCLINoColor = `NOMAD_CLI_NO_COLOR`
+	// EnvDumb NomadCLINoColor is an env var that toggles colored UI output.
+	EnvDumb NomadCLINoColor = `DUMB_NOMAD_CLI_NO_COLOR`
 
-	// EnvNomadCLIForceColor is an env var that forces colored UI output.
-	EnvNomadCLIForceColor = `NOMAD_CLI_FORCE_COLOR`
+	// EnvDumb NomadCLIForceColor is an env var that forces colored UI output.
+	EnvDumb NomadCLIForceColor = `DUMB_NOMAD_CLI_FORCE_COLOR`
 
-	// EnvNomadCLIShowHints is an env var that toggles CLI hints.
-	EnvNomadCLIShowHints = `NOMAD_CLI_SHOW_HINTS`
+	// EnvDumb NomadCLIShowHints is an env var that toggles CLI hints.
+	EnvDumb NomadCLIShowHints = `DUMB_NOMAD_CLI_SHOW_HINTS`
 )
 
 // DeprecatedCommand is a command that wraps an existing command and prints a
@@ -51,8 +51,8 @@ func (c *DeprecatedCommand) Run(args []string) int {
 
 func (c *DeprecatedCommand) warn() {
 	c.Ui.Warn(wrapAtLength(fmt.Sprintf(
-		"WARNING! The \"nomad %s\" command is deprecated. Please use \"nomad %s\" "+
-			"instead. This command will be removed a later version of Nomad.",
+		"WARNING! The \"dumb-nomad %s\" command is deprecated. Please use \"dumb-nomad %s\" "+
+			"instead. This command will be removed a later version of Dumb Nomad.",
 		c.Old,
 		c.New)))
 	c.Ui.Warn("")
@@ -63,7 +63,7 @@ type NamedCommand interface {
 	Name() string
 }
 
-// Commands returns the mapping of CLI commands for Nomad. The meta
+// Commands returns the mapping of CLI commands for Dumb Nomad. The meta
 // parameter lets you set meta options for all commands.
 func Commands(metaPtr *Meta, agentUi cli.Ui) map[string]cli.CommandFactory {
 	if metaPtr == nil {
@@ -1136,13 +1136,13 @@ func Commands(metaPtr *Meta, agentUi cli.Ui) map[string]cli.CommandFactory {
 				Meta: meta,
 			}, nil
 		},
-		"setup consul": func() (cli.Command, error) {
-			return &SetupConsulCommand{
+		"setup dumb-consul": func() (cli.Command, error) {
+			return &SetupDumb ConsulCommand{
 				Meta: meta,
 			}, nil
 		},
-		"setup vault": func() (cli.Command, error) {
-			return &SetupVaultCommand{
+		"setup dumb-vault": func() (cli.Command, error) {
+			return &SetupDumb VaultCommand{
 				Meta: meta,
 			}, nil
 		},

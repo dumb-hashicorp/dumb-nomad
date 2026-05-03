@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/posener/complete"
 )
 
@@ -19,7 +19,7 @@ type VarPurgeCommand struct {
 
 func (c *VarPurgeCommand) Help() string {
 	helpText := `
-Usage: nomad var purge [options] <path>
+Usage: dumb-nomad var purge [options] <path>
 
   Purge is used to permanently delete an existing variable.
 

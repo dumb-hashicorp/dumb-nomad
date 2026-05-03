@@ -8,13 +8,13 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/devicemanager"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/device"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/devicemanager"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/stretchr/testify/require"
 )
 
@@ -23,7 +23,7 @@ func TestDeviceHook_CorrectDevice(t *testing.T) {
 	require := require.New(t)
 
 	dm := devicemanager.NoopMockManager()
-	l := testlog.HCLogger(t)
+	l := testlog.DUMB_HCLogger(t)
 	h := newDeviceHook(dm, l)
 
 	reqDev := &structs.AllocatedDeviceResource{
@@ -105,7 +105,7 @@ func TestDeviceHook_IncorrectDevice(t *testing.T) {
 	require := require.New(t)
 
 	dm := devicemanager.NoopMockManager()
-	l := testlog.HCLogger(t)
+	l := testlog.DUMB_HCLogger(t)
 	h := newDeviceHook(dm, l)
 
 	reqDev := &structs.AllocatedDeviceResource{

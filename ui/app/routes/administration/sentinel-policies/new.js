@@ -5,7 +5,7 @@
 
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import TEMPLATES from 'nomad-ui/utils/default-sentinel-policy-templates';
+import TEMPLATES from 'dumb-nomad-ui/utils/default-sentinel-policy-templates';
 
 export default class NewRoute extends Route {
   @service store;

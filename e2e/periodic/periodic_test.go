@@ -8,15 +8,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 )
 
 func TestPeriodicDispatch_Basic(t *testing.T) {
 
-	sub, cleanup := jobs3.Submit(t, "input/simple.nomad", jobs3.Dispatcher())
+	sub, cleanup := jobs3.Submit(t, "input/simple.dumb-nomad", jobs3.Dispatcher())
 	t.Cleanup(cleanup)
 
 	// force dispatch and wait for the dispatched job to finish

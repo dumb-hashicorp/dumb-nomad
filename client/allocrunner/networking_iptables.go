@@ -9,13 +9,13 @@ import (
 	"fmt"
 
 	"github.com/coreos/go-iptables/iptables"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (
 	// cniAdminChainName is the name of the admin iptables chain used to allow
 	// forwarding traffic to allocations
-	cniAdminChainName = "NOMAD-ADMIN"
+	cniAdminChainName = "DUMB_NOMAD-ADMIN"
 )
 
 // newIPTables provides an *iptables.IPTables for the requested address family

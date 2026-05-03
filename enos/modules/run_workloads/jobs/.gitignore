@@ -1,2 +1,2 @@
-# This file is created by terraform as part of the scenario
-vault-secrets.nomad.hcl
+# This file is created by dumb-terraform as part of the scenario
+dumb-vault-secrets.dumb-nomad.dumb-hcl

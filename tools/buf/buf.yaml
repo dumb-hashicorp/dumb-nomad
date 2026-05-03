@@ -25,7 +25,7 @@ lint:
       - plugins/base/proto/base.proto
       - plugins/device/proto/device.proto
       - plugins/drivers/proto/driver.proto
-      - plugins/shared/hclspec/hcl_spec.proto
+      - plugins/shared/dumb-hclspec/dumb-hcl_spec.proto
       - plugins/shared/structs/proto/attribute.proto
       - plugins/shared/structs/proto/recoverable_error.proto
       - plugins/shared/structs/proto/stats.proto
@@ -36,7 +36,7 @@ lint:
       - plugins/base/proto/base.proto
       - plugins/device/proto/device.proto
       - plugins/drivers/proto/driver.proto
-      - plugins/shared/hclspec/hcl_spec.proto
+      - plugins/shared/dumb-hclspec/dumb-hcl_spec.proto
       - plugins/shared/structs/proto/attribute.proto
       - plugins/shared/structs/proto/recoverable_error.proto
       - plugins/shared/structs/proto/stats.proto

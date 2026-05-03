@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/shoenig/test/must"
 )
 
@@ -23,7 +23,7 @@ var (
 // Expirations are timing based which makes this test sensitive to timing
 // problems when running the E2E suite.
 //
-// When running the test, the Nomad server ACL config must have the
+// When running the test, the Dumb Nomad server ACL config must have the
 // token_min_expiration_ttl value set to minTokenExpiryDur. The
 // token_min_expiration_ttl value must be set to maxTokenExpiryDur if this
 // value differs from the default. This is so we can test expired tokens,
@@ -31,13 +31,13 @@ var (
 // related aspects.
 func testACLTokenExpiration(t *testing.T) {
 
-	nomadClient := e2eutil.NomadClient(t)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
 
 	// Create and defer the Cleanup process. This is used to remove all
 	// resources created by this test and covers situations where the test
 	// fails or during normal running.
 	cleanUpProcess := NewCleanup()
-	defer cleanUpProcess.Run(t, nomadClient)
+	defer cleanUpProcess.Run(t, dumb-nomadClient)
 
 	// Create an ACL policy which will be assigned to the created ACL tokens.
 	customNamespacePolicy := api.ACLPolicy{
@@ -45,7 +45,7 @@ func testACLTokenExpiration(t *testing.T) {
 		Description: "E2E ACL Role Testing",
 		Rules:       `namespace "default" {policy = "read"}`,
 	}
-	_, err := nomadClient.ACLPolicies().Upsert(&customNamespacePolicy, nil)
+	_, err := dumb-nomadClient.ACLPolicies().Upsert(&customNamespacePolicy, nil)
 	must.NoError(t, err)
 
 	cleanUpProcess.Add(customNamespacePolicy.Name, ACLPolicyTestResourceType)
@@ -62,7 +62,7 @@ func testACLTokenExpiration(t *testing.T) {
 		Policies:      []string{customNamespacePolicy.Name},
 		ExpirationTTL: minTokenExpiryDur / 2,
 	}
-	aclTokenCreateResp, _, err := nomadClient.ACLTokens().Create(&tokenTTLLow, nil)
+	aclTokenCreateResp, _, err := dumb-nomadClient.ACLTokens().Create(&tokenTTLLow, nil)
 	must.ErrorContains(t, err, fmt.Sprintf(
 		"expiration time cannot be less than %s in the future", minTokenExpiryDur))
 	must.Nil(t, aclTokenCreateResp)
@@ -75,7 +75,7 @@ func testACLTokenExpiration(t *testing.T) {
 		Policies:      []string{customNamespacePolicy.Name},
 		ExpirationTTL: 8766 * time.Hour,
 	}
-	aclTokenCreateResp, _, err = nomadClient.ACLTokens().Create(&tokenTTLHigh, nil)
+	aclTokenCreateResp, _, err = dumb-nomadClient.ACLTokens().Create(&tokenTTLHigh, nil)
 	must.ErrorContains(t, err, fmt.Sprintf(
 		"expiration time cannot be more than %s in the future", maxTokenExpiryDur))
 	must.Nil(t, aclTokenCreateResp)
@@ -88,7 +88,7 @@ func testACLTokenExpiration(t *testing.T) {
 		Policies:      []string{customNamespacePolicy.Name},
 		ExpirationTTL: 10 * time.Minute,
 	}
-	tokenNormalExpiryCreateResp, _, err := nomadClient.ACLTokens().Create(&tokenNormalExpiry, nil)
+	tokenNormalExpiryCreateResp, _, err := dumb-nomadClient.ACLTokens().Create(&tokenNormalExpiry, nil)
 	must.NoError(t, err)
 	must.NotNil(t, tokenNormalExpiryCreateResp)
 	must.Eq(t,
@@ -101,7 +101,7 @@ func testACLTokenExpiration(t *testing.T) {
 	// the default namespace.
 	defaultNSQueryMeta.AuthToken = tokenNormalExpiryCreateResp.SecretID
 
-	jobListResp, _, err := nomadClient.Jobs().List(&defaultNSQueryMeta)
+	jobListResp, _, err := dumb-nomadClient.Jobs().List(&defaultNSQueryMeta)
 	must.NoError(t, err)
 
 	// Create an ACL token with the lowest expiry TTL possible, so it will
@@ -112,7 +112,7 @@ func testACLTokenExpiration(t *testing.T) {
 		Policies:      []string{customNamespacePolicy.Name},
 		ExpirationTTL: minTokenExpiryDur,
 	}
-	tokenQuickExpiryCreateResp, _, err := nomadClient.ACLTokens().Create(&tokenQuickExpiry, nil)
+	tokenQuickExpiryCreateResp, _, err := dumb-nomadClient.ACLTokens().Create(&tokenQuickExpiry, nil)
 	must.NoError(t, err)
 	must.NotNil(t, tokenQuickExpiryCreateResp)
 	must.Eq(t,
@@ -128,7 +128,7 @@ func testACLTokenExpiration(t *testing.T) {
 	// token.
 	defaultNSQueryMeta.AuthToken = tokenQuickExpiryCreateResp.SecretID
 
-	jobListResp, _, err = nomadClient.Jobs().List(&defaultNSQueryMeta)
+	jobListResp, _, err = dumb-nomadClient.Jobs().List(&defaultNSQueryMeta)
 	must.ErrorContains(t, err, "Permission denied")
 	must.Nil(t, jobListResp)
 
@@ -137,7 +137,7 @@ func testACLTokenExpiration(t *testing.T) {
 	// List the tokens to ensure the output correctly shows the token
 	// expiration. Other tests may have left tokens in state, so do not perform
 	// a length check.
-	tokenListResp, _, err := nomadClient.ACLTokens().List(nil)
+	tokenListResp, _, err := dumb-nomadClient.ACLTokens().List(nil)
 	must.NoError(t, err)
 
 	var quickExpiryFound, normalExpiryFound bool
@@ -160,10 +160,10 @@ func testACLTokenExpiration(t *testing.T) {
 
 	// Ensure we can manually delete unexpired tokens and that they are
 	// immediately removed from state.
-	_, err = nomadClient.ACLTokens().Delete(tokenNormalExpiryCreateResp.AccessorID, nil)
+	_, err = dumb-nomadClient.ACLTokens().Delete(tokenNormalExpiryCreateResp.AccessorID, nil)
 	must.NoError(t, err)
 
-	tokenNormalExpiryReadResp, _, err := nomadClient.ACLTokens().Info(tokenNormalExpiryCreateResp.AccessorID, nil)
+	tokenNormalExpiryReadResp, _, err := dumb-nomadClient.ACLTokens().Info(tokenNormalExpiryCreateResp.AccessorID, nil)
 	must.ErrorContains(t, err, "ACL token not found")
 	must.Nil(t, tokenNormalExpiryReadResp)
 
@@ -175,13 +175,13 @@ func testACLTokenExpiration(t *testing.T) {
 // policy assignments.
 func testACLTokenRolePolicyAssignment(t *testing.T) {
 
-	nomadClient := e2eutil.NomadClient(t)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
 
 	// Create and defer the Cleanup process. This is used to remove all
 	// resources created by this test and covers situations where the test
 	// fails or during normal running.
 	cleanUpProcess := NewCleanup()
-	defer cleanUpProcess.Run(t, nomadClient)
+	defer cleanUpProcess.Run(t, dumb-nomadClient)
 
 	// Create two ACL policies which will be used throughout this test. One
 	// grants read access to the default namespace, the other grants read
@@ -191,7 +191,7 @@ func testACLTokenRolePolicyAssignment(t *testing.T) {
 		Description: "E2E ACL Role Testing",
 		Rules:       `namespace "default" {policy = "read"}`,
 	}
-	_, err := nomadClient.ACLPolicies().Upsert(&defaultNamespacePolicy, nil)
+	_, err := dumb-nomadClient.ACLPolicies().Upsert(&defaultNamespacePolicy, nil)
 	must.NoError(t, err)
 
 	cleanUpProcess.Add(defaultNamespacePolicy.Name, ACLPolicyTestResourceType)
@@ -201,7 +201,7 @@ func testACLTokenRolePolicyAssignment(t *testing.T) {
 		Description: "E2E ACL Role Testing",
 		Rules:       `node { policy = "read" }`,
 	}
-	_, err = nomadClient.ACLPolicies().Upsert(&nodePolicy, nil)
+	_, err = dumb-nomadClient.ACLPolicies().Upsert(&nodePolicy, nil)
 	must.NoError(t, err)
 
 	cleanUpProcess.Add(nodePolicy.Name, ACLPolicyTestResourceType)
@@ -212,7 +212,7 @@ func testACLTokenRolePolicyAssignment(t *testing.T) {
 		Description: "E2E ACL Role Testing",
 		Policies:    []*api.ACLRolePolicyLink{{Name: nodePolicy.Name}},
 	}
-	aclRoleCreateResp, _, err := nomadClient.ACLRoles().Create(&aclRole, nil)
+	aclRoleCreateResp, _, err := dumb-nomadClient.ACLRoles().Create(&aclRole, nil)
 	must.NoError(t, err)
 	must.NotNil(t, aclRoleCreateResp)
 	must.NotEq(t, "", aclRoleCreateResp.ID)
@@ -226,7 +226,7 @@ func testACLTokenRolePolicyAssignment(t *testing.T) {
 		Type:     "client",
 		Policies: []string{defaultNamespacePolicy.Name},
 	}
-	aclTokenCreateResp, _, err := nomadClient.ACLTokens().Create(&token, nil)
+	aclTokenCreateResp, _, err := dumb-nomadClient.ACLTokens().Create(&token, nil)
 	must.NoError(t, err)
 	must.NotNil(t, aclTokenCreateResp)
 	must.NotEq(t, "", aclTokenCreateResp.SecretID)
@@ -236,10 +236,10 @@ func testACLTokenRolePolicyAssignment(t *testing.T) {
 	// Test that the token can read the default namespace, but that it cannot
 	// read node objects.
 	defaultNSQueryMeta := api.QueryOptions{Namespace: "default", AuthToken: aclTokenCreateResp.SecretID}
-	jobListResp, _, err := nomadClient.Jobs().List(&defaultNSQueryMeta)
+	jobListResp, _, err := dumb-nomadClient.Jobs().List(&defaultNSQueryMeta)
 	must.NoError(t, err)
 
-	nodeStubList, _, err := nomadClient.Nodes().List(&defaultNSQueryMeta)
+	nodeStubList, _, err := dumb-nomadClient.Nodes().List(&defaultNSQueryMeta)
 	must.ErrorContains(t, err, "Permission denied")
 	must.Nil(t, nodeStubList)
 
@@ -247,38 +247,38 @@ func testACLTokenRolePolicyAssignment(t *testing.T) {
 	// node objects.
 	newToken := aclTokenCreateResp
 	newToken.Roles = []*api.ACLTokenRoleLink{{ID: aclRoleCreateResp.ID}}
-	aclTokenUpdateResp, _, err := nomadClient.ACLTokens().Update(newToken, nil)
+	aclTokenUpdateResp, _, err := dumb-nomadClient.ACLTokens().Update(newToken, nil)
 	must.NoError(t, err)
 	must.Eq(t, aclTokenUpdateResp.SecretID, aclTokenCreateResp.SecretID)
 
 	// Test that the token can now read the default namespace and node objects.
-	jobListResp, _, err = nomadClient.Jobs().List(&defaultNSQueryMeta)
+	jobListResp, _, err = dumb-nomadClient.Jobs().List(&defaultNSQueryMeta)
 	must.NoError(t, err)
 
-	nodeStubList, _, err = nomadClient.Nodes().List(&defaultNSQueryMeta)
+	nodeStubList, _, err = dumb-nomadClient.Nodes().List(&defaultNSQueryMeta)
 	must.NoError(t, err)
 	must.Greater(t, 0, len(nodeStubList))
 
 	// Remove the policy assignment from the token.
 	newToken.Policies = []string{}
-	aclTokenUpdateResp, _, err = nomadClient.ACLTokens().Update(newToken, nil)
+	aclTokenUpdateResp, _, err = dumb-nomadClient.ACLTokens().Update(newToken, nil)
 	must.NoError(t, err)
 	must.Eq(t, aclTokenUpdateResp.SecretID, aclTokenCreateResp.SecretID)
 
 	// Test that the token can now only read node objects and not the default
 	// namespace.
-	jobListResp, _, err = nomadClient.Jobs().List(&defaultNSQueryMeta)
+	jobListResp, _, err = dumb-nomadClient.Jobs().List(&defaultNSQueryMeta)
 	must.ErrorContains(t, err, "Permission denied")
 	must.Nil(t, jobListResp)
 
-	nodeStubList, _, err = nomadClient.Nodes().List(&defaultNSQueryMeta)
+	nodeStubList, _, err = dumb-nomadClient.Nodes().List(&defaultNSQueryMeta)
 	must.NoError(t, err)
 	must.Greater(t, 0, len(nodeStubList))
 
 	// Try and remove the role assignment which should result in a validation
 	// error as it needs to include either a policy or role linking.
 	newToken.Roles = nil
-	aclTokenUpdateResp, _, err = nomadClient.ACLTokens().Update(newToken, nil)
+	aclTokenUpdateResp, _, err = dumb-nomadClient.ACLTokens().Update(newToken, nil)
 	must.ErrorContains(t, err, "client token missing policies or roles")
 	must.Nil(t, aclTokenUpdateResp)
 
@@ -289,7 +289,7 @@ func testACLTokenRolePolicyAssignment(t *testing.T) {
 		Policies: []string{defaultNamespacePolicy.Name},
 		Roles:    []*api.ACLTokenRoleLink{{ID: aclRoleCreateResp.ID}},
 	}
-	aclTokenCreateResp, _, err = nomadClient.ACLTokens().Create(&token, nil)
+	aclTokenCreateResp, _, err = dumb-nomadClient.ACLTokens().Create(&token, nil)
 	must.NoError(t, err)
 	must.NotNil(t, aclTokenCreateResp)
 	must.NotEq(t, "", aclTokenCreateResp.SecretID)
@@ -299,31 +299,31 @@ func testACLTokenRolePolicyAssignment(t *testing.T) {
 	// Test that the token is working as expected.
 	defaultNSQueryMeta.AuthToken = aclTokenCreateResp.SecretID
 
-	jobListResp, _, err = nomadClient.Jobs().List(&defaultNSQueryMeta)
+	jobListResp, _, err = dumb-nomadClient.Jobs().List(&defaultNSQueryMeta)
 	must.NoError(t, err)
 
-	nodeStubList, _, err = nomadClient.Nodes().List(&defaultNSQueryMeta)
+	nodeStubList, _, err = dumb-nomadClient.Nodes().List(&defaultNSQueryMeta)
 	must.NoError(t, err)
 	must.Greater(t, 0, len(nodeStubList))
 
 	// Now delete both the policy and the role from underneath the token. This
 	// differs to the graceful approaches above where the token was modified to
 	// remove the assignment.
-	_, err = nomadClient.ACLPolicies().Delete(defaultNamespacePolicy.Name, nil)
+	_, err = dumb-nomadClient.ACLPolicies().Delete(defaultNamespacePolicy.Name, nil)
 	must.NoError(t, err)
 	cleanUpProcess.Remove(defaultNamespacePolicy.Name, ACLPolicyTestResourceType)
 
-	_, err = nomadClient.ACLRoles().Delete(aclRoleCreateResp.ID, nil)
+	_, err = dumb-nomadClient.ACLRoles().Delete(aclRoleCreateResp.ID, nil)
 	must.NoError(t, err)
 	cleanUpProcess.Remove(aclRoleCreateResp.ID, ACLRoleTestResourceType)
 
 	// The token now should not have any power here; quite different to
 	// Gandalf's power over the spell on King Theoden.
-	jobListResp, _, err = nomadClient.Jobs().List(&defaultNSQueryMeta)
+	jobListResp, _, err = dumb-nomadClient.Jobs().List(&defaultNSQueryMeta)
 	must.ErrorContains(t, err, "Permission denied")
 	must.Nil(t, jobListResp)
 
-	nodeStubList, _, err = nomadClient.Nodes().List(&defaultNSQueryMeta)
+	nodeStubList, _, err = dumb-nomadClient.Nodes().List(&defaultNSQueryMeta)
 	must.ErrorContains(t, err, "Permission denied")
 	must.Nil(t, nodeStubList)
 }

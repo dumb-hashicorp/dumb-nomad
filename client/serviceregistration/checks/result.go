@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // GetCheckQuery extracts the needed info from c to actually execute the check.
@@ -77,7 +77,7 @@ func Stub(
 		ID:        id,
 		Mode:      kind,
 		Status:    structs.CheckPending,
-		Output:    "nomad: waiting to run",
+		Output:    "dumb-nomad: waiting to run",
 		Timestamp: now,
 		Group:     group,
 		Task:      task,

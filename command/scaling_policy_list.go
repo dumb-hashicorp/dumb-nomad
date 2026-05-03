@@ -8,8 +8,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -24,7 +24,7 @@ type ScalingPolicyListCommand struct {
 // Help satisfies the cli.Command Help function.
 func (s *ScalingPolicyListCommand) Help() string {
 	helpText := `
-Usage: nomad scaling policy list [options]
+Usage: dumb-nomad scaling policy list [options]
 
   List is used to list the currently configured scaling policies.
 
@@ -59,7 +59,7 @@ Policy Info Options:
 
 // Synopsis satisfies the cli.Command Synopsis function.
 func (s *ScalingPolicyListCommand) Synopsis() string {
-	return "Display all Nomad scaling policies"
+	return "Display all Dumb Nomad scaling policies"
 }
 
 func (s *ScalingPolicyListCommand) AutocompleteFlags() complete.Flags {

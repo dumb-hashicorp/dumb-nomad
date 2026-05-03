@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type JobPeriodicCommand struct {
@@ -25,13 +25,13 @@ func (f *JobPeriodicCommand) Synopsis() string {
 
 func (f *JobPeriodicCommand) Help() string {
 	helpText := `
-Usage: nomad job periodic <subcommand> [options] [args]
+Usage: dumb-nomad job periodic <subcommand> [options] [args]
 
   This command groups subcommands for interacting with periodic jobs.
 
   Force a periodic job:
 
-      $ nomad job periodic force <job_id>
+      $ dumb-nomad job periodic force <job_id>
 
   Please see the individual subcommand help for detailed usage information.
 `

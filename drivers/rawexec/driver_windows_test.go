@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	dtestutil "github.com/hashicorp/nomad/plugins/drivers/testutils"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	dtestutil "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
 	"github.com/shoenig/test/must"
 )
 
@@ -34,7 +34,7 @@ func TestRawExecDriver_ExecutorKill(t *testing.T) {
 		PluginConfig: data,
 		AgentConfig: &base.AgentConfig{
 			Driver: &base.ClientDriverConfig{
-				Topology: d.nomadConfig.Topology,
+				Topology: d.dumb-nomadConfig.Topology,
 			},
 		},
 	}

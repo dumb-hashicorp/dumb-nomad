@@ -9,12 +9,12 @@ import (
 	"sync"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	bstructs "github.com/hashicorp/nomad/plugins/base/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	bstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/base/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
-func runCommand(c Command, stdout, stderr io.WriteCloser, cancelCh <-chan struct{}, pluginExitTimer <-chan time.Time, logger hclog.Logger) *drivers.ExitResult {
+func runCommand(c Command, stdout, stderr io.WriteCloser, cancelCh <-chan struct{}, pluginExitTimer <-chan time.Time, logger dumb-hclog.Logger) *drivers.ExitResult {
 	errCh := make(chan error, 1)
 
 	var wg sync.WaitGroup
@@ -66,7 +66,7 @@ func runCommand(c Command, stdout, stderr io.WriteCloser, cancelCh <-chan struct
 
 func runCommandOutput(writer io.WriteCloser,
 	output string, outputRepeat int, repeatDuration time.Duration,
-	cancelCh <-chan struct{}, logger hclog.Logger, errCh chan error) {
+	cancelCh <-chan struct{}, logger dumb-hclog.Logger, errCh chan error) {
 
 	defer writer.Close()
 

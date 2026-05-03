@@ -8,10 +8,10 @@ import { currentURL, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import StorageList from 'nomad-ui/tests/pages/storage/list';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import StorageList from 'dumb-nomad-ui/tests/pages/storage/list';
 import percySnapshot from '@percy/ember';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 const assignWriteAlloc = (volume, alloc) => {
   volume.writeAllocs.add(alloc);
@@ -52,7 +52,7 @@ module('Acceptance | storage list', function (hooks) {
     await StorageList.visit();
 
     assert.equal(currentURL(), '/storage');
-    assert.equal(document.title, 'Storage - Nomad');
+    assert.equal(document.title, 'Storage - Dumb Nomad');
   });
 
   test('/storage/volumes should list the first page of volumes sorted by name', async function (assert) {
@@ -440,7 +440,7 @@ module('Acceptance | storage list', function (hooks) {
     });
 
     test('Pagination is adhered to when live updates happen', async function (assert) {
-      localStorage.setItem('nomadPageSize', 10);
+      localStorage.setItem('dumb-nomadPageSize', 10);
       server.createList('dynamic-host-volume', 9);
       const controller = this.owner.lookup('controller:storage.index');
 
@@ -504,7 +504,7 @@ module('Acceptance | storage list', function (hooks) {
       assert.dom('[data-test-dhv-row]').exists({ count: 1 });
 
       // cleanup
-      localStorage.removeItem('nomadPageSize');
+      localStorage.removeItem('dumb-nomadPageSize');
     });
   }
 });

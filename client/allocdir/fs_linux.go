@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	// secretMarker is the filename of the marker created so Nomad doesn't
+	// secretMarker is the filename of the marker created so Dumb Nomad doesn't
 	// try to mount the secrets tmpfs more than once
-	secretMarker = ".nomad-mount"
+	secretMarker = ".dumb-nomad-mount"
 )
 
 // linkDir bind mounts src to dst as Linux doesn't support hardlinking

@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/posener/complete"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 )
 
 // OperatorRootKeyringCommand is a Command implementation
@@ -22,7 +22,7 @@ type OperatorRootKeyringCommand struct {
 
 func (c *OperatorRootKeyringCommand) Help() string {
 	helpText := `
-Usage: nomad operator root keyring [options]
+Usage: dumb-nomad operator root keyring [options]
 
   Manages encryption keys used for storing variables and signing workload
   identities. This command may be used to examine active encryption keys
@@ -32,15 +32,15 @@ Usage: nomad operator root keyring [options]
 
   Rotate the encryption key:
 
-      $ nomad operator root keyring rotate
+      $ dumb-nomad operator root keyring rotate
 
   List all encryption key metadata:
 
-      $ nomad operator root keyring list
+      $ dumb-nomad operator root keyring list
 
   Remove an encryption key from the keyring:
 
-      $ nomad operator root keyring remove <key ID>
+      $ dumb-nomad operator root keyring remove <key ID>
 
   Please see individual subcommand help for detailed usage information.
 `

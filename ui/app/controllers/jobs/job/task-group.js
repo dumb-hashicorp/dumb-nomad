@@ -10,15 +10,15 @@ import Controller from '@ember/controller';
 import { action, computed, get } from '@ember/object';
 import { scheduleOnce } from '@ember/runloop';
 import intersection from 'lodash.intersection';
-import Sortable from 'nomad-ui/mixins/sortable';
-import Searchable from 'nomad-ui/mixins/searchable';
-import WithNamespaceResetting from 'nomad-ui/mixins/with-namespace-resetting';
+import Sortable from 'dumb-nomad-ui/mixins/sortable';
+import Searchable from 'dumb-nomad-ui/mixins/searchable';
+import WithNamespaceResetting from 'dumb-nomad-ui/mixins/with-namespace-resetting';
 import {
   serialize,
   deserializedQueryParam as selection,
-} from 'nomad-ui/utils/qp-serialize';
+} from 'dumb-nomad-ui/utils/qp-serialize';
 import classic from 'ember-classic-decorator';
-import localStorageProperty from 'nomad-ui/utils/properties/local-storage';
+import localStorageProperty from 'dumb-nomad-ui/utils/properties/local-storage';
 
 @classic
 export default class TaskGroupController extends Controller.extend(
@@ -65,7 +65,7 @@ export default class TaskGroupController extends Controller.extend(
     return ['shortId', 'name'];
   }
 
-  @localStorageProperty('nomadShowSubTasks', true) showSubTasks;
+  @localStorageProperty('dumb-nomadShowSubTasks', true) showSubTasks;
 
   @action
   toggleShowSubTasks(e) {

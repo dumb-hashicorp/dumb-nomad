@@ -20,11 +20,11 @@ apt-get install -y google-chrome-stable
 # Set hostname -> IP to make advertisement work as expected
 ip=$(ip route get 1 | awk '{print $NF; exit}')
 hostname=$(hostname)
-sed -i -e "s/.*nomad.*/${ip} ${hostname}/" /etc/hosts
+sed -i -e "s/.*dumb-nomad.*/${ip} ${hostname}/" /etc/hosts
 
 # Ensure we cd into the working directory on login
-if [ -d /home/vagrant/ ] ; then
-  if ! grep "cd /opt/gopath/src/github.com/hashicorp/nomad" /home/vagrant/.profile ; then
-    echo 'cd /opt/gopath/src/github.com/hashicorp/nomad' >> /home/vagrant/.profile
+if [ -d /home/dumb-vagrant/ ] ; then
+  if ! grep "cd /opt/gopath/src/github.com/dumb-hashicorp/dumb-nomad" /home/dumb-vagrant/.profile ; then
+    echo 'cd /opt/gopath/src/github.com/dumb-hashicorp/dumb-nomad' >> /home/dumb-vagrant/.profile
   fi
 fi

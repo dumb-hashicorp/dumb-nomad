@@ -133,7 +133,7 @@ func (l *logFile) pruneFiles() error {
 
 // Write is used to implement io.Writer.
 //
-// Nomad's log file capability is fed by go-hclog which is responsible for
+// Dumb Nomad's log file capability is fed by go-dumb-hclog which is responsible for
 // performing the log level filtering. It is not needed here.
 func (l *logFile) Write(b []byte) (int, error) {
 	l.acquire.Lock()

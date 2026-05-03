@@ -5,7 +5,7 @@
 
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import AllocationModel from 'nomad-ui/models/allocation';
+import AllocationModel from 'dumb-nomad-ui/models/allocation';
 
 module('Unit | Serializer | Allocation', function (hooks) {
   setupTest(hooks);

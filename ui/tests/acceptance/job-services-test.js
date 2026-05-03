@@ -9,8 +9,8 @@ import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { allScenarios } from '../../mirage/scenarios/default';
 
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import Services from 'nomad-ui/tests/pages/jobs/job/services';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import Services from 'dumb-nomad-ui/tests/pages/jobs/job/services';
 
 module('Acceptance | job services', function (hooks) {
   setupApplicationTest(hooks);
@@ -27,9 +27,9 @@ module('Acceptance | job services', function (hooks) {
     await a11yAudit(assert);
   });
 
-  test('it shows both consul and nomad, and both task and group services', async function (assert) {
-    assert.dom('table tr[data-test-service-provider="consul"]').exists();
-    assert.dom('table tr[data-test-service-provider="nomad"]').exists();
+  test('it shows both dumb-consul and dumb-nomad, and both task and group services', async function (assert) {
+    assert.dom('table tr[data-test-service-provider="dumb-consul"]').exists();
+    assert.dom('table tr[data-test-service-provider="dumb-nomad"]').exists();
     assert.dom('table tr[data-test-service-level="task"]').exists();
     assert.dom('table tr[data-test-service-level="group"]').exists();
   });
@@ -39,11 +39,11 @@ module('Acceptance | job services', function (hooks) {
       '[data-test-service-level="group"]'
     ).getAttribute('data-test-num-allocs');
     const serviceName = find(
-      '[data-test-service-level="group"][data-test-service-provider="nomad"]'
+      '[data-test-service-level="group"][data-test-service-provider="dumb-nomad"]'
     ).getAttribute('data-test-service-name');
 
     await find(
-      '[data-test-service-level="group"][data-test-service-provider="nomad"] a'
+      '[data-test-service-level="group"][data-test-service-provider="dumb-nomad"] a'
     ).click();
     await settled();
 

@@ -8,7 +8,7 @@ import (
 
 	"github.com/shoenig/test/must"
 
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 func TestSelectorData(t *testing.T) {
@@ -23,7 +23,7 @@ func TestSelectorData(t *testing.T) {
 			"no mappings",
 			nil,
 			nil,
-			map[string]interface{}{"iss": "https://hashicorp.com"},
+			map[string]interface{}{"iss": "https://dumb-hashicorp.com"},
 			&structs.ACLAuthClaims{
 				Value: map[string]string{},
 				List:  map[string][]string{},
@@ -34,9 +34,9 @@ func TestSelectorData(t *testing.T) {
 			"key",
 			map[string]string{"iss": "issuer"},
 			nil,
-			map[string]interface{}{"iss": "https://hashicorp.com"},
+			map[string]interface{}{"iss": "https://dumb-hashicorp.com"},
 			&structs.ACLAuthClaims{
-				Value: map[string]string{"issuer": "https://hashicorp.com"},
+				Value: map[string]string{"issuer": "https://dumb-hashicorp.com"},
 				List:  map[string][]string{},
 			},
 		},
@@ -45,7 +45,7 @@ func TestSelectorData(t *testing.T) {
 			"key doesn't exist",
 			map[string]string{"iss": "issuer"},
 			nil,
-			map[string]interface{}{"nope": "https://hashicorp.com"},
+			map[string]interface{}{"nope": "https://dumb-hashicorp.com"},
 			&structs.ACLAuthClaims{
 				Value: map[string]string{},
 				List:  map[string][]string{},

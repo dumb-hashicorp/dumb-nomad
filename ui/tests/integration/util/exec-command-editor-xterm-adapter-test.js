@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-import ExecCommandEditorXtermAdapter from 'nomad-ui/utils/classes/exec-command-editor-xterm-adapter';
+import ExecCommandEditorXtermAdapter from 'dumb-nomad-ui/utils/classes/exec-command-editor-xterm-adapter';
 import { setupRenderingTest } from 'ember-qunit';
 import { module, test } from 'qunit';
 import { render, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { Terminal } from 'xterm';
-import KEYS from 'nomad-ui/utils/keys';
+import KEYS from 'dumb-nomad-ui/utils/keys';
 
 module(
   'Integration | Utility | exec-command-editor-xterm-adapter',

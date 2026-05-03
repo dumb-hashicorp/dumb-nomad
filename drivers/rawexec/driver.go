@@ -14,20 +14,20 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hashicorp/consul-template/signals"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/drivers/shared/eventer"
-	"github.com/hashicorp/nomad/drivers/shared/executor"
-	"github.com/hashicorp/nomad/drivers/shared/validators"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclutils"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/dumb-consul-template/signals"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/eventer"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/validators"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclutils"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 	"github.com/ryanuber/go-glob"
 )
 
@@ -55,7 +55,7 @@ var (
 	// plugin catalog.
 	PluginConfig = &loader.InternalPluginConfig{
 		Config:  map[string]interface{}{},
-		Factory: func(ctx context.Context, l hclog.Logger) interface{} { return NewRawExecDriver(ctx, l) },
+		Factory: func(ctx context.Context, l dumb-hclog.Logger) interface{} { return NewRawExecDriver(ctx, l) },
 	}
 
 	errDisabledDriver = fmt.Errorf("raw_exec is disabled")
@@ -79,27 +79,27 @@ var (
 		Name:              pluginName,
 	}
 
-	// configSpec is the hcl specification returned by the ConfigSchema RPC
-	configSpec = hclspec.NewObject(map[string]*hclspec.Spec{
-		"enabled": hclspec.NewDefault(
-			hclspec.NewAttr("enabled", "bool", false),
-			hclspec.NewLiteral("false"),
+	// configSpec is the dumb-hcl specification returned by the ConfigSchema RPC
+	configSpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"enabled": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("enabled", "bool", false),
+			dumb-hclspec.NewLiteral("false"),
 		),
-		"denied_host_uids": hclspec.NewAttr("denied_host_uids", "string", false),
-		"denied_host_gids": hclspec.NewAttr("denied_host_gids", "string", false),
-		"denied_envvars":   hclspec.NewAttr("denied_envvars", "list(string)", false),
+		"denied_host_uids": dumb-hclspec.NewAttr("denied_host_uids", "string", false),
+		"denied_host_gids": dumb-hclspec.NewAttr("denied_host_gids", "string", false),
+		"denied_envvars":   dumb-hclspec.NewAttr("denied_envvars", "list(string)", false),
 	})
 
-	// taskConfigSpec is the hcl specification for the driver config section of
+	// taskConfigSpec is the dumb-hcl specification for the driver config section of
 	// a task within a job. It is returned in the TaskConfigSchema RPC
-	taskConfigSpec = hclspec.NewObject(map[string]*hclspec.Spec{
-		"command":            hclspec.NewAttr("command", "string", true),
-		"args":               hclspec.NewAttr("args", "list(string)", false),
-		"cgroup_v2_override": hclspec.NewAttr("cgroup_v2_override", "string", false),
-		"cgroup_v1_override": hclspec.NewAttr("cgroup_v1_override", "list(map(string))", false),
-		"oom_score_adj":      hclspec.NewAttr("oom_score_adj", "number", false),
-		"work_dir":           hclspec.NewAttr("work_dir", "string", false),
-		"denied_envvars":     hclspec.NewAttr("denied_envvars", "list(string)", false),
+	taskConfigSpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"command":            dumb-hclspec.NewAttr("command", "string", true),
+		"args":               dumb-hclspec.NewAttr("args", "list(string)", false),
+		"cgroup_v2_override": dumb-hclspec.NewAttr("cgroup_v2_override", "string", false),
+		"cgroup_v1_override": dumb-hclspec.NewAttr("cgroup_v1_override", "list(map(string))", false),
+		"oom_score_adj":      dumb-hclspec.NewAttr("oom_score_adj", "number", false),
+		"work_dir":           dumb-hclspec.NewAttr("work_dir", "string", false),
+		"denied_envvars":     dumb-hclspec.NewAttr("denied_envvars", "list(string)", false),
 	})
 
 	// capabilities is returned by the Capabilities RPC and indicates what
@@ -131,8 +131,8 @@ type Driver struct {
 	// config is the driver configuration set by the SetConfig RPC
 	config *Config
 
-	// nomadConfig is the client config from nomad
-	nomadConfig *base.ClientDriverConfig
+	// dumb-nomadConfig is the client config from dumb-nomad
+	dumb-nomadConfig *base.ClientDriverConfig
 
 	// tasks is the in memory datastore mapping taskIDs to driverHandles
 	tasks *taskStore
@@ -141,8 +141,8 @@ type Driver struct {
 	// coordinate shutdown
 	ctx context.Context
 
-	// logger will log to the Nomad agent
-	logger hclog.Logger
+	// logger will log to the Dumb Nomad agent
+	logger dumb-hclog.Logger
 
 	// compute contains cpu compute information
 	compute cpustats.Compute
@@ -175,7 +175,7 @@ type TaskConfig struct {
 	// become a member of.
 	//
 	// * All resource isolation guarantees are lost FOR ALL TASKS if set *
-	OverrideCgroupV1 hclutils.MapStrStr `codec:"cgroup_v1_override"`
+	OverrideCgroupV1 dumb-hclutils.MapStrStr `codec:"cgroup_v1_override"`
 
 	// OOMScoreAdj sets the oom_score_adj on Linux systems
 	OOMScoreAdj int `codec:"oom_score_adj"`
@@ -214,7 +214,7 @@ type TaskState struct {
 }
 
 // NewRawExecDriver returns a new DriverPlugin implementation
-func NewRawExecDriver(ctx context.Context, logger hclog.Logger) drivers.DriverPlugin {
+func NewRawExecDriver(ctx context.Context, logger dumb-hclog.Logger) drivers.DriverPlugin {
 	logger = logger.Named(pluginName)
 	return &Driver{
 		eventer: eventer.NewEventer(ctx, logger),
@@ -229,7 +229,7 @@ func (d *Driver) PluginInfo() (*base.PluginInfoResponse, error) {
 	return pluginInfo, nil
 }
 
-func (d *Driver) ConfigSchema() (*hclspec.Spec, error) {
+func (d *Driver) ConfigSchema() (*dumb-hclspec.Spec, error) {
 	return configSpec, nil
 }
 
@@ -254,14 +254,14 @@ func (d *Driver) SetConfig(cfg *base.Config) error {
 	d.config = &config
 
 	if cfg.AgentConfig != nil {
-		d.nomadConfig = cfg.AgentConfig.Driver
+		d.dumb-nomadConfig = cfg.AgentConfig.Driver
 		d.compute = cfg.AgentConfig.Compute()
 	}
 
 	return nil
 }
 
-func (d *Driver) TaskConfigSchema() (*hclspec.Spec, error) {
+func (d *Driver) TaskConfigSchema() (*dumb-hclspec.Spec, error) {
 	return taskConfigSpec, nil
 }
 
@@ -412,7 +412,7 @@ func (d *Driver) StartTask(cfg *drivers.TaskConfig) (*drivers.TaskHandle, *drive
 		return nil, nil, fmt.Errorf("failed driver config validation: %v", err)
 	}
 
-	d.logger.Info("starting task", "driver_cfg", hclog.Fmt("%+v", driverConfig))
+	d.logger.Info("starting task", "driver_cfg", dumb-hclog.Fmt("%+v", driverConfig))
 	handle := drivers.NewTaskHandle(taskHandleVersion)
 	handle.Config = cfg
 
@@ -424,7 +424,7 @@ func (d *Driver) StartTask(cfg *drivers.TaskConfig) (*drivers.TaskHandle, *drive
 	}
 
 	logger := d.logger.With("task_name", handle.Config.Name, "alloc_id", handle.Config.AllocID)
-	exec, pluginClient, err := executor.CreateExecutor(logger, d.nomadConfig, executorConfig)
+	exec, pluginClient, err := executor.CreateExecutor(logger, d.dumb-nomadConfig, executorConfig)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create executor: %v", err)
 	}

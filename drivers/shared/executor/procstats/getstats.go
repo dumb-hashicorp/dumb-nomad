@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/shirou/gopsutil/v3/process"
 )
 

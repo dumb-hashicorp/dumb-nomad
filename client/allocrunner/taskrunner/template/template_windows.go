@@ -6,7 +6,7 @@
 package template
 
 import (
-	"github.com/hashicorp/consul-template/renderer"
+	"github.com/dumb-hashicorp/dumb-consul-template/renderer"
 )
 
 func RenderFn(taskID, taskDir string, sandboxEnabled bool) func(*renderer.RenderInput) (*renderer.RenderResult, error) {

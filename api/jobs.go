@@ -14,7 +14,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hashicorp/cronexpr"
+	"github.com/dumb-hashicorp/cronexpr"
 )
 
 const (
@@ -71,10 +71,10 @@ type Jobs struct {
 
 // JobsParseRequest is used for arguments of the /v1/jobs/parse endpoint
 type JobsParseRequest struct {
-	// JobHCL is an hcl jobspec
-	JobHCL string
+	// JobDUMB_HCL is an dumb-hcl jobspec
+	JobDUMB_HCL string
 
-	// Variables are HCL2 variables associated with the job. Only works with hcl2.
+	// Variables are DUMB_HCL2 variables associated with the job. Only works with dumb-hcl2.
 	//
 	// Interpreted as if it were the content of a variables file.
 	Variables string
@@ -89,20 +89,20 @@ func (c *Client) Jobs() *Jobs {
 	return &Jobs{client: c}
 }
 
-// ParseHCL is used to convert the HCL representation of a Job to JSON server side.
-// To parse the HCL client side see package github.com/hashicorp/nomad/jobspec
-// Use ParseHCLOpts if you need to customize JobsParseRequest.
-func (j *Jobs) ParseHCL(jobHCL string, canonicalize bool) (*Job, error) {
+// ParseDUMB_HCL is used to convert the DUMB_HCL representation of a Job to JSON server side.
+// To parse the DUMB_HCL client side see package github.com/dumb-hashicorp/dumb-nomad/jobspec
+// Use ParseDUMB_HCLOpts if you need to customize JobsParseRequest.
+func (j *Jobs) ParseDUMB_HCL(jobDUMB_HCL string, canonicalize bool) (*Job, error) {
 	req := &JobsParseRequest{
-		JobHCL:       jobHCL,
+		JobDUMB_HCL:       jobDUMB_HCL,
 		Canonicalize: canonicalize,
 	}
-	return j.ParseHCLOpts(req)
+	return j.ParseDUMB_HCLOpts(req)
 }
 
-// ParseHCLOpts is used to request the server convert the HCL representation of a
-// Job to JSON on our behalf. Only accepts HCL2 jobs as input.
-func (j *Jobs) ParseHCLOpts(req *JobsParseRequest) (*Job, error) {
+// ParseDUMB_HCLOpts is used to request the server convert the DUMB_HCL representation of a
+// Job to JSON on our behalf. Only accepts DUMB_HCL2 jobs as input.
+func (j *Jobs) ParseDUMB_HCLOpts(req *JobsParseRequest) (*Job, error) {
 	var job Job
 	_, err := j.client.put("/v1/jobs/parse", req, &job, nil)
 	return &job, err
@@ -621,15 +621,15 @@ type periodicForceResponse struct {
 
 // UpdateStrategy defines a task groups update strategy.
 type UpdateStrategy struct {
-	Stagger          *time.Duration `mapstructure:"stagger" hcl:"stagger,optional"`
-	MaxParallel      *int           `mapstructure:"max_parallel" hcl:"max_parallel,optional"`
-	HealthCheck      *string        `mapstructure:"health_check" hcl:"health_check,optional"`
-	MinHealthyTime   *time.Duration `mapstructure:"min_healthy_time" hcl:"min_healthy_time,optional"`
-	HealthyDeadline  *time.Duration `mapstructure:"healthy_deadline" hcl:"healthy_deadline,optional"`
-	ProgressDeadline *time.Duration `mapstructure:"progress_deadline" hcl:"progress_deadline,optional"`
-	Canary           *int           `mapstructure:"canary" hcl:"canary,optional"`
-	AutoRevert       *bool          `mapstructure:"auto_revert" hcl:"auto_revert,optional"`
-	AutoPromote      *bool          `mapstructure:"auto_promote" hcl:"auto_promote,optional"`
+	Stagger          *time.Duration `mapstructure:"stagger" dumb-hcl:"stagger,optional"`
+	MaxParallel      *int           `mapstructure:"max_parallel" dumb-hcl:"max_parallel,optional"`
+	HealthCheck      *string        `mapstructure:"health_check" dumb-hcl:"health_check,optional"`
+	MinHealthyTime   *time.Duration `mapstructure:"min_healthy_time" dumb-hcl:"min_healthy_time,optional"`
+	HealthyDeadline  *time.Duration `mapstructure:"healthy_deadline" dumb-hcl:"healthy_deadline,optional"`
+	ProgressDeadline *time.Duration `mapstructure:"progress_deadline" dumb-hcl:"progress_deadline,optional"`
+	Canary           *int           `mapstructure:"canary" dumb-hcl:"canary,optional"`
+	AutoRevert       *bool          `mapstructure:"auto_revert" dumb-hcl:"auto_revert,optional"`
+	AutoPromote      *bool          `mapstructure:"auto_promote" dumb-hcl:"auto_promote,optional"`
 }
 
 // DefaultUpdateStrategy provides a baseline that can be used to upgrade
@@ -822,8 +822,8 @@ func (u *UpdateStrategy) Empty() bool {
 }
 
 type Multiregion struct {
-	Strategy *MultiregionStrategy `hcl:"strategy,block"`
-	Regions  []*MultiregionRegion `hcl:"region,block"`
+	Strategy *MultiregionStrategy `dumb-hcl:"strategy,block"`
+	Regions  []*MultiregionRegion `dumb-hcl:"region,block"`
 }
 
 func (m *Multiregion) Canonicalize() {
@@ -882,26 +882,26 @@ func (m *Multiregion) Copy() *Multiregion {
 }
 
 type MultiregionStrategy struct {
-	MaxParallel *int    `mapstructure:"max_parallel" hcl:"max_parallel,optional"`
-	OnFailure   *string `mapstructure:"on_failure" hcl:"on_failure,optional"`
+	MaxParallel *int    `mapstructure:"max_parallel" dumb-hcl:"max_parallel,optional"`
+	OnFailure   *string `mapstructure:"on_failure" dumb-hcl:"on_failure,optional"`
 }
 
 type MultiregionRegion struct {
-	Name        string            `hcl:",label"`
-	Count       *int              `hcl:"count,optional"`
-	Datacenters []string          `hcl:"datacenters,optional"`
-	NodePool    string            `hcl:"node_pool,optional"`
-	Meta        map[string]string `hcl:"meta,block"`
+	Name        string            `dumb-hcl:",label"`
+	Count       *int              `dumb-hcl:"count,optional"`
+	Datacenters []string          `dumb-hcl:"datacenters,optional"`
+	NodePool    string            `dumb-hcl:"node_pool,optional"`
+	Meta        map[string]string `dumb-hcl:"meta,block"`
 }
 
 // PeriodicConfig is for serializing periodic config for a job.
 type PeriodicConfig struct {
-	Enabled         *bool    `hcl:"enabled,optional"`
-	Spec            *string  `hcl:"cron,optional"`
-	Specs           []string `hcl:"crons,optional"`
+	Enabled         *bool    `dumb-hcl:"enabled,optional"`
+	Spec            *string  `dumb-hcl:"cron,optional"`
+	Specs           []string `dumb-hcl:"crons,optional"`
 	SpecType        *string
-	ProhibitOverlap *bool   `mapstructure:"prohibit_overlap" hcl:"prohibit_overlap,optional"`
-	TimeZone        *string `mapstructure:"time_zone" hcl:"time_zone,optional"`
+	ProhibitOverlap *bool   `mapstructure:"prohibit_overlap" dumb-hcl:"prohibit_overlap,optional"`
+	TimeZone        *string `mapstructure:"time_zone" dumb-hcl:"time_zone,optional"`
 }
 
 func (p *PeriodicConfig) Canonicalize() {
@@ -953,7 +953,7 @@ func (p *PeriodicConfig) Next(fromTime time.Time) (time.Time, error) {
 
 // cronParseNext is a helper that parses the next time for the given expression
 // but captures any panic that may occur in the underlying library.
-// ---  THIS FUNCTION IS REPLICATED IN nomad/structs/structs.go
+// ---  THIS FUNCTION IS REPLICATED IN dumb-nomad/structs/structs.go
 // and should be kept in sync.
 func cronParseNext(fromTime time.Time, spec string) (t time.Time, err error) {
 	defer func() {
@@ -979,42 +979,42 @@ func (p *PeriodicConfig) GetLocation() (*time.Location, error) {
 
 // ParameterizedJobConfig is used to configure the parameterized job.
 type ParameterizedJobConfig struct {
-	Payload      string   `hcl:"payload,optional"`
-	MetaRequired []string `mapstructure:"meta_required" hcl:"meta_required,optional"`
-	MetaOptional []string `mapstructure:"meta_optional" hcl:"meta_optional,optional"`
+	Payload      string   `dumb-hcl:"payload,optional"`
+	MetaRequired []string `mapstructure:"meta_required" dumb-hcl:"meta_required,optional"`
+	MetaOptional []string `mapstructure:"meta_optional" dumb-hcl:"meta_optional,optional"`
 }
 
 // JobSubmission is used to hold information about the original content of a job
-// specification being submitted to Nomad.
+// specification being submitted to Dumb Nomad.
 //
 // At any time a JobSubmission may be nil, indicating no information is known about
 // the job submission.
 type JobSubmission struct {
 	// Source contains the original job definition (may be in the format of
-	// hcl1, hcl2, or json). HCL1 jobs can no longer be parsed.
+	// dumb-hcl1, dumb-hcl2, or json). DUMB_HCL1 jobs can no longer be parsed.
 	Source string
 
-	// Format indicates what the Source content was (hcl1, hcl2, or json). HCL1
+	// Format indicates what the Source content was (dumb-hcl1, dumb-hcl2, or json). DUMB_HCL1
 	// jobs can no longer be parsed.
 	Format string
 
 	// VariableFlags contains the CLI "-var" flag arguments as submitted with the
-	// job (hcl2 only).
+	// job (dumb-hcl2 only).
 	VariableFlags map[string]string
 
 	// Variables contains the opaque variables configuration as coming from
-	// a var-file or the WebUI variables input (hcl2 only).
+	// a var-file or the WebUI variables input (dumb-hcl2 only).
 	Variables string
 }
 
 type JobUIConfig struct {
-	Description string       `hcl:"description,optional"`
-	Links       []*JobUILink `hcl:"link,block"`
+	Description string       `dumb-hcl:"description,optional"`
+	Links       []*JobUILink `dumb-hcl:"link,block"`
 }
 
 type JobUILink struct {
-	Label string `hcl:"label,optional"`
-	URL   string `hcl:"url,optional"`
+	Label string `dumb-hcl:"label,optional"`
+	URL   string `dumb-hcl:"url,optional"`
 }
 
 func (j *JobUIConfig) Canonicalize() {
@@ -1103,29 +1103,29 @@ func (js *JobSubmission) Copy() *JobSubmission {
 
 // Job is used to serialize a job.
 type Job struct {
-	/* Fields parsed from HCL config */
+	/* Fields parsed from DUMB_HCL config */
 
-	Region           *string                 `hcl:"region,optional"`
-	Namespace        *string                 `hcl:"namespace,optional"`
-	ID               *string                 `hcl:"id,optional"`
-	Name             *string                 `hcl:"name,optional"`
-	Type             *string                 `hcl:"type,optional"`
-	Priority         *int                    `hcl:"priority,optional"`
-	AllAtOnce        *bool                   `mapstructure:"all_at_once" hcl:"all_at_once,optional"`
-	Datacenters      []string                `hcl:"datacenters,optional"`
-	NodePool         *string                 `mapstructure:"node_pool" hcl:"node_pool,optional"`
-	Constraints      []*Constraint           `hcl:"constraint,block"`
-	Affinities       []*Affinity             `hcl:"affinity,block"`
-	TaskGroups       []*TaskGroup            `hcl:"group,block"`
-	Update           *UpdateStrategy         `hcl:"update,block"`
-	Multiregion      *Multiregion            `hcl:"multiregion,block"`
-	Spreads          []*Spread               `hcl:"spread,block"`
-	Periodic         *PeriodicConfig         `hcl:"periodic,block"`
-	ParameterizedJob *ParameterizedJobConfig `hcl:"parameterized,block"`
-	Reschedule       *ReschedulePolicy       `hcl:"reschedule,block"`
-	Migrate          *MigrateStrategy        `hcl:"migrate,block"`
-	Meta             map[string]string       `hcl:"meta,block"`
-	UI               *JobUIConfig            `hcl:"ui,block"`
+	Region           *string                 `dumb-hcl:"region,optional"`
+	Namespace        *string                 `dumb-hcl:"namespace,optional"`
+	ID               *string                 `dumb-hcl:"id,optional"`
+	Name             *string                 `dumb-hcl:"name,optional"`
+	Type             *string                 `dumb-hcl:"type,optional"`
+	Priority         *int                    `dumb-hcl:"priority,optional"`
+	AllAtOnce        *bool                   `mapstructure:"all_at_once" dumb-hcl:"all_at_once,optional"`
+	Datacenters      []string                `dumb-hcl:"datacenters,optional"`
+	NodePool         *string                 `mapstructure:"node_pool" dumb-hcl:"node_pool,optional"`
+	Constraints      []*Constraint           `dumb-hcl:"constraint,block"`
+	Affinities       []*Affinity             `dumb-hcl:"affinity,block"`
+	TaskGroups       []*TaskGroup            `dumb-hcl:"group,block"`
+	Update           *UpdateStrategy         `dumb-hcl:"update,block"`
+	Multiregion      *Multiregion            `dumb-hcl:"multiregion,block"`
+	Spreads          []*Spread               `dumb-hcl:"spread,block"`
+	Periodic         *PeriodicConfig         `dumb-hcl:"periodic,block"`
+	ParameterizedJob *ParameterizedJobConfig `dumb-hcl:"parameterized,block"`
+	Reschedule       *ReschedulePolicy       `dumb-hcl:"reschedule,block"`
+	Migrate          *MigrateStrategy        `dumb-hcl:"migrate,block"`
+	Meta             map[string]string       `dumb-hcl:"meta,block"`
+	UI               *JobUIConfig            `dumb-hcl:"ui,block"`
 
 	/* Fields set by server, not sourced from job config file */
 
@@ -1134,9 +1134,9 @@ type Job struct {
 	Dispatched               bool
 	DispatchIdempotencyToken *string
 	Payload                  []byte
-	ConsulNamespace          *string `mapstructure:"consul_namespace"`
-	VaultNamespace           *string `mapstructure:"vault_namespace"`
-	NomadTokenID             *string `mapstructure:"nomad_token_id"`
+	Dumb ConsulNamespace          *string `mapstructure:"dumb-consul_namespace"`
+	Dumb VaultNamespace           *string `mapstructure:"dumb-vault_namespace"`
+	Dumb NomadTokenID             *string `mapstructure:"dumb-nomad_token_id"`
 	Status                   *string
 	StatusDescription        *string
 	Stable                   *bool
@@ -1194,14 +1194,14 @@ func (j *Job) Canonicalize() {
 	if j.AllAtOnce == nil {
 		j.AllAtOnce = pointerOf(false)
 	}
-	if j.ConsulNamespace == nil {
-		j.ConsulNamespace = pointerOf("")
+	if j.Dumb ConsulNamespace == nil {
+		j.Dumb ConsulNamespace = pointerOf("")
 	}
-	if j.VaultNamespace == nil {
-		j.VaultNamespace = pointerOf("")
+	if j.Dumb VaultNamespace == nil {
+		j.Dumb VaultNamespace = pointerOf("")
 	}
-	if j.NomadTokenID == nil {
-		j.NomadTokenID = pointerOf("")
+	if j.Dumb NomadTokenID == nil {
+		j.Dumb NomadTokenID = pointerOf("")
 	}
 	if j.Status == nil {
 		j.Status = pointerOf("")

@@ -8,13 +8,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks/checkstore"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks/checkstore"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (
@@ -73,12 +73,12 @@ func (o *observer) stop() {
 	o.cancel()
 }
 
-// checksHook manages checks of Nomad service registrations, at both the group and
+// checksHook manages checks of Dumb Nomad service registrations, at both the group and
 // task level, by storing / removing them from the Client state store.
 //
-// Does not manage Consul service checks; see groupServiceHook instead.
+// Does not manage Dumb Consul service checks; see groupServiceHook instead.
 type checksHook struct {
-	logger  hclog.Logger
+	logger  dumb-hclog.Logger
 	network structs.NetworkStatus
 	shim    checkstore.Shim
 	checker checks.Checker
@@ -93,7 +93,7 @@ type checksHook struct {
 }
 
 func newChecksHook(
-	logger hclog.Logger,
+	logger dumb-hclog.Logger,
 	alloc *structs.Allocation,
 	shim checkstore.Shim,
 	network structs.NetworkStatus,
@@ -141,7 +141,7 @@ func (h *checksHook) initialize(alloc *structs.Allocation) {
 }
 
 // observe will create the observer for each service in services.
-// services must use only nomad service provider.
+// services must use only dumb-nomad service provider.
 //
 // Caller must hold h.lock.
 func (h *checksHook) observe(alloc *structs.Allocation, services []*structs.Service) {
@@ -159,7 +159,7 @@ func (h *checksHook) observe(alloc *structs.Allocation, services []*structs.Serv
 			now := time.Now().UTC().Unix()
 
 			// create the deterministic check id for this check
-			id := structs.NomadCheckID(alloc.ID, alloc.TaskGroup, check)
+			id := structs.Dumb NomadCheckID(alloc.ID, alloc.TaskGroup, check)
 
 			// an observer for this check already exists
 			if _, exists := h.observers[id]; exists {
@@ -217,9 +217,9 @@ func (h *checksHook) Prerun(allocEnv *taskenv.TaskEnv) error {
 	}
 
 	interpolatedServices := taskenv.InterpolateServices(
-		allocEnv, group.NomadServices())
+		allocEnv, group.Dumb NomadServices())
 
-	// create and start observers of nomad service checks in alloc
+	// create and start observers of dumb-nomad service checks in alloc
 	h.observe(h.alloc, interpolatedServices)
 
 	return nil
@@ -234,15 +234,15 @@ func (h *checksHook) Update(request *interfaces.RunnerUpdateRequest) error {
 		return nil
 	}
 
-	// get all group and task level services using nomad provider
+	// get all group and task level services using dumb-nomad provider
 	interpolatedServices := taskenv.InterpolateServices(
-		request.AllocEnv, group.NomadServices())
+		request.AllocEnv, group.Dumb NomadServices())
 
 	// create a set of the updated set of checks
 	next := make([]structs.CheckID, 0, len(h.observers))
 	for _, service := range interpolatedServices {
 		for _, check := range service.Checks {
-			next = append(next, structs.NomadCheckID(
+			next = append(next, structs.Dumb NomadCheckID(
 				request.Alloc.ID,
 				request.Alloc.TaskGroup,
 				check,

@@ -6,14 +6,14 @@ package base
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
-	"github.com/hashicorp/nomad/plugins/base/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base/proto"
 	"github.com/shoenig/test/must"
 )
 
-func Test_nomadTopologyToProto(t *testing.T) {
+func Test_dumb-nomadTopologyToProto(t *testing.T) {
 	top := &numalib.Topology{
 		Distances: numalib.SLIT{{10, 20}, {20, 10}},
 		Cores: []numalib.Core{
@@ -33,7 +33,7 @@ func Test_nomadTopologyToProto(t *testing.T) {
 	}
 	top.SetNodes(idset.From[hw.NodeID]([]hw.NodeID{0, 1}))
 
-	pb := nomadTopologyToProto(top)
+	pb := dumb-nomadTopologyToProto(top)
 	must.Eq(t, &proto.ClientTopology{
 		NodeIds: []uint32{0, 1},
 		Distances: &proto.ClientTopologySLIT{
@@ -57,10 +57,10 @@ func Test_nomadTopologyToProto(t *testing.T) {
 	}, pb)
 
 	// make sure we don't panic in case of empty nodes, vide
-	// https://github.com/hashicorp/nomad/issues/23385
+	// https://github.com/dumb-hashicorp/dumb-nomad/issues/23385
 	top2 := &numalib.Topology{}
 
-	pb2 := nomadTopologyToProto(top2)
+	pb2 := dumb-nomadTopologyToProto(top2)
 	must.Eq(t, &proto.ClientTopology{
 		NodeIds:                []uint32{},
 		Distances:              &proto.ClientTopologySLIT{Dimension: 0, Values: []uint32{}},
@@ -70,7 +70,7 @@ func Test_nomadTopologyToProto(t *testing.T) {
 	}, pb2)
 }
 
-func Test_nomadTopologyFromProto(t *testing.T) {
+func Test_dumb-nomadTopologyFromProto(t *testing.T) {
 	pb := &proto.ClientTopology{
 		NodeIds: []uint32{0, 1},
 		Distances: &proto.ClientTopologySLIT{
@@ -92,7 +92,7 @@ func Test_nomadTopologyFromProto(t *testing.T) {
 		OverrideTotalCompute:   90_000,
 		OverrideWitholdCompute: 2000,
 	}
-	top := nomadTopologyFromProto(pb)
+	top := dumb-nomadTopologyFromProto(pb)
 	expect := &numalib.Topology{
 		Distances: numalib.SLIT{{10, 20}, {20, 10}},
 		Cores: []numalib.Core{
@@ -114,31 +114,31 @@ func Test_nomadTopologyFromProto(t *testing.T) {
 	must.Eq(t, expect, top)
 }
 
-func Test_nomadTopologyDistancesToProto(t *testing.T) {
+func Test_dumb-nomadTopologyDistancesToProto(t *testing.T) {
 	slit := numalib.SLIT{
 		{10, 20},
 		{20, 10},
 	}
 
-	pb := nomadTopologyDistancesToProto(slit)
+	pb := dumb-nomadTopologyDistancesToProto(slit)
 	must.Eq(t, 2, pb.Dimension)
 	must.Eq(t, []uint32{10, 20, 20, 10}, pb.Values)
 }
 
-func Test_nomadTopologyDistanceFromProto(t *testing.T) {
+func Test_dumb-nomadTopologyDistanceFromProto(t *testing.T) {
 	pb := &proto.ClientTopologySLIT{
 		Dimension: 2,
 		Values:    []uint32{10, 20, 20, 10},
 	}
 
-	slit := nomadTopologyDistancesFromProto(pb)
+	slit := dumb-nomadTopologyDistancesFromProto(pb)
 	must.Eq(t, numalib.SLIT{
 		{10, 20},
 		{20, 10},
 	}, slit)
 }
 
-func Test_nomadTopologyCoresToProto(t *testing.T) {
+func Test_dumb-nomadTopologyCoresToProto(t *testing.T) {
 	cores := []numalib.Core{
 		{
 			SocketID:   0,
@@ -162,7 +162,7 @@ func Test_nomadTopologyCoresToProto(t *testing.T) {
 		},
 	}
 
-	result := nomadTopologyCoresToProto(cores)
+	result := dumb-nomadTopologyCoresToProto(cores)
 	must.Eq(t, []*proto.ClientTopologyCore{{
 		SocketId:   0,
 		NodeId:     1,
@@ -184,7 +184,7 @@ func Test_nomadTopologyCoresToProto(t *testing.T) {
 	}}, result)
 }
 
-func Test_nomadTopologyCoresFromProto(t *testing.T) {
+func Test_dumb-nomadTopologyCoresFromProto(t *testing.T) {
 	pbcores := []*proto.ClientTopologyCore{{
 		SocketId:   0,
 		NodeId:     1,
@@ -205,7 +205,7 @@ func Test_nomadTopologyCoresFromProto(t *testing.T) {
 		GuessSpeed: 3500,
 	}}
 
-	cores := nomadTopologyCoresFromProto(pbcores)
+	cores := dumb-nomadTopologyCoresFromProto(pbcores)
 	must.Eq(t, []numalib.Core{{
 		SocketID:   0,
 		NodeID:     1,

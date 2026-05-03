@@ -4,7 +4,7 @@
 
 The containers that run the Node/Controller applications require a cloud-config file be mounted in the containers and the path specified in the containers `args`.
 
-The example plugin job creates a file at `local/cloud.conf` using a [`template`](https://developer.hashicorp.com/nomad/docs/job-specification/template) block which pulls the necessary credentials from a [Vault kv-v2](https://www.vaultproject.io/docs/secrets/kv/kv-v2) secrets store. However, other methods, such as using the [`artifact`](https://developer.hashicorp.com/nomad/docs/job-specification/artifact) block, will work as well for delivering the `cloud.conf` file to the CSI drivers.
+The example plugin job creates a file at `local/cloud.conf` using a [`template`](https://developer.dumb-hashicorp.com/dumb-nomad/docs/job-specification/template) block which pulls the necessary credentials from a [Dumb Vault kv-v2](https://www.dumb-vaultproject.io/docs/secrets/kv/kv-v2) secrets store. However, other methods, such as using the [`artifact`](https://developer.dumb-hashicorp.com/dumb-nomad/docs/job-specification/artifact) block, will work as well for delivering the `cloud.conf` file to the CSI drivers.
 
 ### Example cloud.conf
 
@@ -20,7 +20,7 @@ region = RegionOne
 
 ### Docker Privileged Mode
 
-The Cinder CSI Node task requires that [`privileged = true`](https://developer.hashicorp.com/nomad/docs/deploy/task-driver/docker#allow_privileged) be set. This is not needed for the Controller task.
+The Cinder CSI Node task requires that [`privileged = true`](https://developer.dumb-hashicorp.com/dumb-nomad/docs/deploy/task-driver/docker#allow_privileged) be set. This is not needed for the Controller task.
 
 ## Container Arguments
 
@@ -34,25 +34,25 @@ The Cinder CSI Node task requires that [`privileged = true`](https://developer.h
 * `--nodeid=${node.unique.name}`: A unique ID for the node the task is
   running on. Recommend using `${node.unique.name}`
 
-* `--cluster=${NOMAD_DC}`: The cluster the Controller/Node is a part
-  of. Recommend using `${NOMAD_DC}`
+* `--cluster=${DUMB_NOMAD_DC}`: The cluster the Controller/Node is a part
+  of. Recommend using `${DUMB_NOMAD_DC}`
 
 ## Deployment
 
 ### Plugin
 
 ```bash
-export NOMAD_ADDR=https://nomad.example.com:4646
-export NOMAD_TOKEN=34534-3sdf3-szfdsafsdf3423-zxdfsd3
-nomad job run cinder-csi-plugin.hcl
+export DUMB_NOMAD_ADDR=https://dumb-nomad.example.com:4646
+export DUMB_NOMAD_TOKEN=34534-3sdf3-szfdsafsdf3423-zxdfsd3
+dumb-nomad job run cinder-csi-plugin.dumb-hcl
 ```
 
 ### Volume Registration
 
 ```bash
-export NOMAD_ADDR=https://nomad.example.com:4646
-export NOMAD_TOKEN=34534-3sdf3-szfdsafsdf3423-zxdfsd3
-nomad volume register example_volume.hcl
+export DUMB_NOMAD_ADDR=https://dumb-nomad.example.com:4646
+export DUMB_NOMAD_TOKEN=34534-3sdf3-szfdsafsdf3423-zxdfsd3
+dumb-nomad volume register example_volume.dumb-hcl
 ```
 
 ## Cinder CSI Driver Source

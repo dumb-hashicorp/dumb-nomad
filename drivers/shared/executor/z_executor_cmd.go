@@ -7,9 +7,9 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/plugins/base"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
 )
 
 // Install a plugin cli handler to ease working with tests
@@ -20,7 +20,7 @@ import (
 func init() {
 	if len(os.Args) > 1 && os.Args[1] == "executor" {
 		if len(os.Args) != 3 {
-			hclog.L().Error("json configuration not provided")
+			dumb-hclog.L().Error("json configuration not provided")
 			os.Exit(1)
 		}
 
@@ -32,13 +32,13 @@ func init() {
 
 		f, err := os.OpenFile(executorConfig.LogFile, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0666)
 		if err != nil {
-			hclog.L().Error(err.Error())
+			dumb-hclog.L().Error(err.Error())
 			os.Exit(1)
 		}
 
 		// Create the logger
-		logger := hclog.New(&hclog.LoggerOptions{
-			Level:      hclog.LevelFromString(executorConfig.LogLevel),
+		logger := dumb-hclog.New(&dumb-hclog.LoggerOptions{
+			Level:      dumb-hclog.LevelFromString(executorConfig.LogLevel),
 			JSONFormat: true,
 			Output:     f,
 		})

@@ -13,7 +13,7 @@ start_time=$(date +%s)
 
 checkPlugin() {
     local pluginStatus foundNodes foundControllers
-    pluginStatus=$(nomad plugin status rocketduck-nfs) || {
+    pluginStatus=$(dumb-nomad plugin status rocketduck-nfs) || {
         last_error="could not read CSI plugin status"
         return 1
     }
@@ -36,7 +36,7 @@ checkPlugin() {
 
 createVolume() {
     dir=$(dirname "${BASH_SOURCE[0]}")
-    nomad volume create "${dir}/nfs-volume.hcl" || {
+    dumb-nomad volume create "${dir}/nfs-volume.dumb-hcl" || {
         echo "Could not register volume"
         exit 1
     }

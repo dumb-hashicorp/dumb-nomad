@@ -25,11 +25,11 @@ func Self() string {
 			panic(fmt.Sprintf("failed to detect executable: %v", err))
 		}
 
-		// when running tests, we need to use the real nomad binary,
+		// when running tests, we need to use the real dumb-nomad binary,
 		// and make sure you recompile between changes!
 		if strings.HasSuffix(s, ".test") {
-			if s, err = exec.LookPath("nomad"); err != nil {
-				panic(fmt.Sprintf("failed to find nomad binary: %v", err))
+			if s, err = exec.LookPath("dumb-nomad"); err != nil {
+				panic(fmt.Sprintf("failed to find dumb-nomad binary: %v", err))
 			}
 		}
 		executable = s

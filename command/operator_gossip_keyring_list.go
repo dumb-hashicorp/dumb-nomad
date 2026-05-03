@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -20,7 +20,7 @@ type OperatorGossipKeyringListCommand struct {
 
 func (c *OperatorGossipKeyringListCommand) Help() string {
 	helpText := `
-Usage: nomad operator gossip keyring list [options]
+Usage: dumb-nomad operator gossip keyring list [options]
 
   List all gossip keys currently in use within the cluster.
 
@@ -75,7 +75,7 @@ func (c *OperatorGossipKeyringListCommand) Run(args []string) int {
 
 	client, err := c.Meta.Client()
 	if err != nil {
-		c.Ui.Error(fmt.Sprintf("Error creating nomad cli client: %s", err))
+		c.Ui.Error(fmt.Sprintf("Error creating dumb-nomad cli client: %s", err))
 		return 1
 	}
 

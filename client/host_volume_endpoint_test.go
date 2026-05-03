@@ -8,12 +8,12 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	hvm "github.com/hashicorp/nomad/client/hostvolumemanager"
-	"github.com/hashicorp/nomad/client/state"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	hvm "github.com/dumb-hashicorp/dumb-nomad/client/hostvolumemanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/shoenig/test/must"
 )
 
@@ -23,11 +23,11 @@ func TestHostVolume(t *testing.T) {
 	client, cleanup := TestClient(t, nil)
 	defer cleanup()
 
-	memdb := state.NewMemDB(testlog.HCLogger(t))
+	memdb := state.NewMemDB(testlog.DUMB_HCLogger(t))
 	client.stateDB = memdb
 
 	tmp := t.TempDir()
-	manager := hvm.NewHostVolumeManager(testlog.HCLogger(t), hvm.Config{
+	manager := hvm.NewHostVolumeManager(testlog.DUMB_HCLogger(t), hvm.Config{
 		StateMgr:       client.stateDB,
 		UpdateNodeVols: client.updateNodeFromHostVol,
 		PluginDir:      "/no/ext/plugins",
@@ -173,7 +173,7 @@ func TestHostVolume(t *testing.T) {
 
 	t.Run("error from plugin", func(t *testing.T) {
 		// "mkdir" plugin can't create a directory within a file
-		client.hostVolumeManager = hvm.NewHostVolumeManager(testlog.HCLogger(t), hvm.Config{
+		client.hostVolumeManager = hvm.NewHostVolumeManager(testlog.DUMB_HCLogger(t), hvm.Config{
 			StateMgr:       client.stateDB,
 			UpdateNodeVols: client.updateNodeFromHostVol,
 			PluginDir:      "/no/ext/plugins",

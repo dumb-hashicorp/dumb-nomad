@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	multierror "github.com/hashicorp/go-multierror"
+	multierror "github.com/dumb-hashicorp/go-multierror"
 )
 
 // unmountSpecialDirs unmounts the dev and proc file system from the chroot. No

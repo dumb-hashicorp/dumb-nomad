@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -39,7 +39,7 @@ type ACLAuthMethodUpdateCommand struct {
 // Help satisfies the cli.Command Help function.
 func (a *ACLAuthMethodUpdateCommand) Help() string {
 	helpText := `
-Usage: nomad acl auth-method update [options] <acl_auth_method_name>
+Usage: dumb-nomad acl auth-method update [options] <acl_auth_method_name>
 
   Update is used to update ACL auth methods. Use requires a management token.
 

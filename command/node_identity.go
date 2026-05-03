@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type NodeIdentityCommand struct {
@@ -15,7 +15,7 @@ type NodeIdentityCommand struct {
 
 func (n *NodeIdentityCommand) Help() string {
 	helpText := `
-Usage: nomad node identity [subcommand]
+Usage: dumb-nomad node identity [subcommand]
 
   Interact with a node's identity. All commands interact directly with a client
   and require setting the target node via its 36 character ID.

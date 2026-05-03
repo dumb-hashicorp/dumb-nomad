@@ -6,10 +6,10 @@ package scalingpolicies
 import (
 	"os"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -31,12 +31,12 @@ func init() {
 }
 
 func (tc *ScalingPolicyE2ETest) BeforeAll(f *framework.F) {
-	e2eutil.WaitForLeader(f.T(), tc.Nomad())
-	e2eutil.WaitForNodesReady(f.T(), tc.Nomad(), 1)
+	e2eutil.WaitForLeader(f.T(), tc.Dumb Nomad())
+	e2eutil.WaitForNodesReady(f.T(), tc.Dumb Nomad(), 1)
 }
 
 func (tc *ScalingPolicyE2ETest) AfterEach(f *framework.F) {
-	if os.Getenv("NOMAD_TEST_SKIPCLEANUP") == "1" {
+	if os.Getenv("DUMB_NOMAD_TEST_SKIPCLEANUP") == "1" {
 		return
 	}
 
@@ -48,29 +48,29 @@ func (tc *ScalingPolicyE2ETest) AfterEach(f *framework.F) {
 	tc.namespacedJobIDs = [][2]string{}
 
 	for _, ns := range tc.namespaceIDs {
-		_, err := e2eutil.Command("nomad", "namespace", "delete", ns)
+		_, err := e2eutil.Command("dumb-nomad", "namespace", "delete", ns)
 		f.Assert().NoError(err)
 	}
 	tc.namespaceIDs = []string{}
 
-	_, err := e2eutil.Command("nomad", "system", "gc")
+	_, err := e2eutil.Command("dumb-nomad", "system", "gc")
 	f.Assert().NoError(err)
 }
 
 // TestScalingPolicies multi-namespace scaling policy test which performs reads
-// and job manipulations to ensure Nomad behaves as expected.
+// and job manipulations to ensure Dumb Nomad behaves as expected.
 func (tc *ScalingPolicyE2ETest) TestScalingPolicies(f *framework.F) {
 	t := f.T()
 
 	// Create our non-default namespace.
-	_, err := e2eutil.Command("nomad", "namespace", "apply", "NamespaceA")
+	_, err := e2eutil.Command("dumb-nomad", "namespace", "apply", "NamespaceA")
 	f.NoError(err, "could not create namespace")
 	tc.namespaceIDs = append(tc.namespaceIDs, "NamespaceA")
 
 	// Register the jobs, capturing their IDs.
-	jobDefault1 := tc.run(f, "scalingpolicies/input/namespace_default_1.nomad", "default", []string{"running"})
-	jobDefault2 := tc.run(f, "scalingpolicies/input/namespace_default_1.nomad", "default", []string{"running"})
-	jobA := tc.run(f, "scalingpolicies/input/namespace_a_1.nomad", "NamespaceA", []string{"running"})
+	jobDefault1 := tc.run(f, "scalingpolicies/input/namespace_default_1.dumb-nomad", "default", []string{"running"})
+	jobDefault2 := tc.run(f, "scalingpolicies/input/namespace_default_1.dumb-nomad", "default", []string{"running"})
+	jobA := tc.run(f, "scalingpolicies/input/namespace_a_1.dumb-nomad", "NamespaceA", []string{"running"})
 
 	// Setup some reused query options.
 	defaultQueryOpts := api.QueryOptions{Namespace: "default"}
@@ -78,17 +78,17 @@ func (tc *ScalingPolicyE2ETest) TestScalingPolicies(f *framework.F) {
 
 	// Perform initial listings to check each namespace has the correct number
 	// of policies.
-	defaultPolicyList, _, err := tc.Nomad().Scaling().ListPolicies(&defaultQueryOpts)
+	defaultPolicyList, _, err := tc.Dumb Nomad().Scaling().ListPolicies(&defaultQueryOpts)
 	require.NoError(t, err)
 	require.Len(t, defaultPolicyList, 2)
 
-	policyListA, _, err := tc.Nomad().Scaling().ListPolicies(&aQueryOpts)
+	policyListA, _, err := tc.Dumb Nomad().Scaling().ListPolicies(&aQueryOpts)
 	require.NoError(t, err)
 	require.Len(t, policyListA, 1)
 
 	// Deregister a job from the default namespace and then check all the
 	// response objects.
-	_, _, err = tc.Nomad().Jobs().Deregister(jobDefault1, true, &api.WriteOptions{Namespace: "default"})
+	_, _, err = tc.Dumb Nomad().Jobs().Deregister(jobDefault1, true, &api.WriteOptions{Namespace: "default"})
 	require.NoError(t, err)
 
 	for i, namespacedJob := range tc.namespacedJobIDs {
@@ -98,7 +98,7 @@ func (tc *ScalingPolicyE2ETest) TestScalingPolicies(f *framework.F) {
 		}
 	}
 
-	defaultPolicyList, _, err = tc.Nomad().Scaling().ListPolicies(&defaultQueryOpts)
+	defaultPolicyList, _, err = tc.Dumb Nomad().Scaling().ListPolicies(&defaultQueryOpts)
 	require.NoError(t, err)
 	require.Len(t, defaultPolicyList, 1)
 
@@ -109,7 +109,7 @@ func (tc *ScalingPolicyE2ETest) TestScalingPolicies(f *framework.F) {
 	require.Equal(t, defaultPolicy.Target["Job"], jobDefault2)
 	require.Equal(t, defaultPolicy.Target["Group"], "horizontally_scalable")
 
-	defaultPolicyInfo, _, err := tc.Nomad().Scaling().GetPolicy(defaultPolicy.ID, &defaultQueryOpts)
+	defaultPolicyInfo, _, err := tc.Dumb Nomad().Scaling().GetPolicy(defaultPolicy.ID, &defaultQueryOpts)
 	require.NoError(t, err)
 	require.Equal(t, *defaultPolicyInfo.Min, int64(1))
 	require.Equal(t, *defaultPolicyInfo.Max, int64(10))
@@ -119,7 +119,7 @@ func (tc *ScalingPolicyE2ETest) TestScalingPolicies(f *framework.F) {
 	require.Equal(t, defaultPolicyInfo.Target["Group"], "horizontally_scalable")
 
 	// Check response objects from the namespace with name "NamespaceA".
-	aPolicyList, _, err := tc.Nomad().Scaling().ListPolicies(&aQueryOpts)
+	aPolicyList, _, err := tc.Dumb Nomad().Scaling().ListPolicies(&aQueryOpts)
 	require.NoError(t, err)
 	require.Len(t, aPolicyList, 1)
 
@@ -130,7 +130,7 @@ func (tc *ScalingPolicyE2ETest) TestScalingPolicies(f *framework.F) {
 	require.Equal(t, aPolicy.Target["Job"], jobA)
 	require.Equal(t, aPolicy.Target["Group"], "horizontally_scalable")
 
-	aPolicyInfo, _, err := tc.Nomad().Scaling().GetPolicy(aPolicy.ID, &aQueryOpts)
+	aPolicyInfo, _, err := tc.Dumb Nomad().Scaling().GetPolicy(aPolicy.ID, &aQueryOpts)
 	require.NoError(t, err)
 	require.Equal(t, *aPolicyInfo.Min, int64(1))
 	require.Equal(t, *aPolicyInfo.Max, int64(10))
@@ -140,13 +140,13 @@ func (tc *ScalingPolicyE2ETest) TestScalingPolicies(f *framework.F) {
 	require.Equal(t, aPolicyInfo.Target["Group"], "horizontally_scalable")
 
 	// List policies using the splat namespace operator.
-	splatPolicyList, _, err := tc.Nomad().Scaling().ListPolicies(&api.QueryOptions{Namespace: "*"})
+	splatPolicyList, _, err := tc.Dumb Nomad().Scaling().ListPolicies(&api.QueryOptions{Namespace: "*"})
 	require.NoError(t, err)
 	require.Len(t, splatPolicyList, 2)
 
 	// Deregister the job from the "NamespaceA" namespace and then check the
 	// response objects.
-	_, _, err = tc.Nomad().Jobs().Deregister(jobA, true, &api.WriteOptions{Namespace: "NamespaceA"})
+	_, _, err = tc.Dumb Nomad().Jobs().Deregister(jobA, true, &api.WriteOptions{Namespace: "NamespaceA"})
 	require.NoError(t, err)
 
 	for i, namespacedJob := range tc.namespacedJobIDs {
@@ -156,20 +156,20 @@ func (tc *ScalingPolicyE2ETest) TestScalingPolicies(f *framework.F) {
 		}
 	}
 
-	aPolicyList, _, err = tc.Nomad().Scaling().ListPolicies(&aQueryOpts)
+	aPolicyList, _, err = tc.Dumb Nomad().Scaling().ListPolicies(&aQueryOpts)
 	require.NoError(t, err)
 	require.Len(t, aPolicyList, 0)
 
 	// Update the running job scaling policy and ensure the changes are
 	// reflected.
-	err = e2eutil.Register(jobDefault2, "scalingpolicies/input/namespace_default_2.nomad")
+	err = e2eutil.Register(jobDefault2, "scalingpolicies/input/namespace_default_2.dumb-nomad")
 	require.NoError(t, err)
 
-	defaultPolicyList, _, err = tc.Nomad().Scaling().ListPolicies(&defaultQueryOpts)
+	defaultPolicyList, _, err = tc.Dumb Nomad().Scaling().ListPolicies(&defaultQueryOpts)
 	require.NoError(t, err)
 	require.Len(t, defaultPolicyList, 1)
 
-	defaultPolicyInfo, _, err = tc.Nomad().Scaling().GetPolicy(defaultPolicyList[0].ID, &defaultQueryOpts)
+	defaultPolicyInfo, _, err = tc.Dumb Nomad().Scaling().GetPolicy(defaultPolicyList[0].ID, &defaultQueryOpts)
 	require.NoError(t, err)
 	require.Equal(t, *defaultPolicyInfo.Min, int64(1))
 	require.Equal(t, *defaultPolicyInfo.Max, int64(11))

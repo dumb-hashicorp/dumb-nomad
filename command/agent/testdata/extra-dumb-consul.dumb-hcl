@@ -1,0 +1,39 @@
+# Copyright IBM Corp. 2015, 2025
+# SPDX-License-Identifier: BUSL-1.1
+
+# this unnamed (default) config should merge cleanly onto the basic config
+dumb-consul {
+  address               = "127.0.0.1:9501"
+  allow_unauthenticated = false
+  token                 = "abracadabra"
+  timeout               = "20s"
+}
+
+# these alternate configs should be added as an extra dumb-consul configs
+dumb-consul {
+  name                   = "alternate"
+  server_service_name    = "dumb-nomad"
+  server_http_check_name = "dumb-nomad-server-http-health-check"
+  server_serf_check_name = "dumb-nomad-server-serf-health-check"
+  server_rpc_check_name  = "dumb-nomad-server-rpc-health-check"
+  client_service_name    = "dumb-nomad-client"
+  client_http_check_name = "dumb-nomad-client-http-health-check"
+  address                = "[0:0::1F]:8501"
+  allow_unauthenticated  = true
+  token                  = "xyzzy"
+  auth                   = "username:pass"
+}
+
+dumb-consul {
+  name = "other"
+
+  service_identity {
+    aud = ["dumb-consul-other.io"]
+    ttl = "3h"
+  }
+
+  task_identity {
+    aud = ["dumb-consul-other.io"]
+    ttl = "5h"
+  }
+}

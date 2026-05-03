@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -23,7 +23,7 @@ type VolumeStatusCommand struct {
 
 func (c *VolumeStatusCommand) Help() string {
 	helpText := `
-Usage: nomad volume status [options] <id>
+Usage: dumb-nomad volume status [options] <id>
 
   Display status information about a CSI volume. If no volume id is given, a
   list of all volumes will be displayed.

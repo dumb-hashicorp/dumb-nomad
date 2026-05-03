@@ -6,7 +6,7 @@ set -euo pipefail
 
 error_exit() {
     printf 'Error: %s' "${1}"
-    ALL_ALLOCS=$(nomad alloc status -json | \
+    ALL_ALLOCS=$(dumb-nomad alloc status -json | \
                      jq -r --arg client_id "$client_id" '[.[] | select(.NodeID == $client_id)]')
     mkdir -p /tmp/artifacts
     OUT="/tmp/artifacts/allocs.json"
@@ -42,7 +42,7 @@ checkClientReady() {
     local client client_status
     echo "Checking client health for $CLIENT_IP"
 
-    client=$(nomad node status -address "https://$CLIENT_IP:4646" -self -json) || {
+    client=$(dumb-nomad node status -address "https://$CLIENT_IP:4646" -self -json) || {
         last_error="Unable to get info for node at $CLIENT_IP"
         return 1
     }
@@ -65,7 +65,7 @@ checkAllocations() {
     MISSING_ALLOCS=()
 
     for alloc in "${ALLOCS[@]}"; do
-        status=$(nomad alloc status -json "$alloc" | jq -r '.ClientStatus')
+        status=$(dumb-nomad alloc status -json "$alloc" | jq -r '.ClientStatus')
         if [[ "$status" != "running" ]]; then
             MISSING_ALLOCS["$alloc"]=1
             last_error="Some allocs were not running: ${!MISSING_ALLOCS[*]}"
@@ -90,7 +90,7 @@ done
 
 echo "Client $client_id at $CLIENT_IP is ready"
 
-# Quality: "nomad_alloc_reconnect: A GET call to /v1/allocs will return the same IDs for running allocs before and after a client upgrade on each client"
+# Quality: "dumb-nomad_alloc_reconnect: A GET call to /v1/allocs will return the same IDs for running allocs before and after a client upgrade on each client"
 
 echo "Reading allocs for client at $CLIENT_IP"
 

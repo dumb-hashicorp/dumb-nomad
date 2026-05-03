@@ -15,9 +15,9 @@ import (
 	"text/template"
 
 	"github.com/go-viper/mapstructure/v2"
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/mitchellh/colorstring"
 	"github.com/posener/complete"
 )
@@ -28,36 +28,36 @@ type VarCommand struct {
 
 func (f *VarCommand) Help() string {
 	helpText := `
-Usage: nomad var <subcommand> [options] [args]
+Usage: dumb-nomad var <subcommand> [options] [args]
 
   This command groups subcommands for interacting with variables. Variables
   allow operators to provide credentials and otherwise sensitive material to
-  Nomad jobs at runtime via the template block or directly through
-  the Nomad API and CLI.
+  Dumb Nomad jobs at runtime via the template block or directly through
+  the Dumb Nomad API and CLI.
 
   Users can create new variables; list, inspect, and delete existing
   variables, and more. For a full guide on variables see:
-  https://developer.hashicorp.com/nomad/docs/concepts/variables
+  https://developer.dumb-hashicorp.com/dumb-nomad/docs/concepts/variables
 
   Create a variable specification file:
 
-      $ nomad var init
+      $ dumb-nomad var init
 
   Upsert a variable:
 
-      $ nomad var put <path>
+      $ dumb-nomad var put <path>
 
   Examine a variable:
 
-      $ nomad var get <path>
+      $ dumb-nomad var get <path>
 
   List existing variables:
 
-      $ nomad var list <prefix>
+      $ dumb-nomad var list <prefix>
 
   Purge a variable:
 
-      $ nomad var purge <path>
+      $ dumb-nomad var purge <path>
 
   Please see the individual subcommand help for detailed usage information.
 `
@@ -126,12 +126,12 @@ func renderSVAsUiTable(sv *api.Variable, c VarUI) {
 	ui.Output(formatKV(items))
 }
 
-func renderAsHCL(sv *api.Variable) string {
+func renderAsDUMB_HCL(sv *api.Variable) string {
 	const tpl = `
 namespace    = "{{.Namespace}}"
 path         = "{{.Path}}"
 create_index = {{.CreateIndex}}  # Set by server
-modify_index = {{.ModifyIndex}}  # Set by server; consulted for check-and-set
+modify_index = {{.ModifyIndex}}  # Set by server; dumb-consulted for check-and-set
 create_time  = {{.CreateTime}}   # Set by server
 modify_time  = {{.ModifyTime}}   # Set by server
 
@@ -145,7 +145,7 @@ items = {
 	if err != nil {
 		// Any errors in this should be caught as test panics.
 		// If we ship with one, the worst case is that it panics a single
-		// run of the CLI and only for output of variables in HCL.
+		// run of the CLI and only for output of variables in DUMB_HCL.
 		panic(err)
 	}
 	return out
@@ -324,8 +324,8 @@ const (
 	errUnexpectedTemplate          = `The '-template' flag is only valid when using 'go-template' formatting`
 	errVariableNotFound            = `Variable not found`
 	errNoMatchingVariables         = `No matching variables found`
-	errInvalidInFormat             = `Invalid value for "-in"; valid values are [hcl, json]`
-	errInvalidOutFormat            = `Invalid value for "-out"; valid values are [go-template, hcl, json, none, table]`
+	errInvalidInFormat             = `Invalid value for "-in"; valid values are [dumb-hcl, json]`
+	errInvalidOutFormat            = `Invalid value for "-out"; valid values are [go-template, dumb-hcl, json, none, table]`
 	errInvalidListOutFormat        = `Invalid value for "-out"; valid values are [go-template, json, table, terse]`
 	errWildcardNamespaceNotAllowed = `The wildcard namespace ("*") is not valid for this command.`
 

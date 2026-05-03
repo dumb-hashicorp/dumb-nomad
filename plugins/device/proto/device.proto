@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 syntax = "proto3";
-package hashicorp.nomad.plugins.device;
+package dumb-hashicorp.dumb-nomad.plugins.device;
 option go_package = "proto";
 
 import "google/protobuf/timestamp.proto";
@@ -20,7 +20,7 @@ service DevicePlugin {
   // Reserve is called by the client before starting an allocation
   // that requires access to the plugin’s devices. The plugin can use
   // this to run any setup steps and provides the mounting details to 
-  // the Nomad client
+  // the Dumb Nomad client
   rpc Reserve(ReserveRequest) returns (ReserveResponse) {}
 
   // Stats returns a stream of device statistics.
@@ -54,7 +54,7 @@ message DeviceGroup {
 
   // attributes allows adding attributes to be used for constraints or
   // affinities.
-  map<string, hashicorp.nomad.plugins.shared.structs.Attribute> attributes = 5;
+  map<string, dumb-hashicorp.dumb-nomad.plugins.shared.structs.Attribute> attributes = 5;
 }
 
 // DetectedDevice is a single detected device.
@@ -79,7 +79,7 @@ message DetectedDevice {
 // DeviceLocality is used to expose HW locality information about a device.
 message DeviceLocality {
   // pci_bus_id is the PCI bus ID for the device. If reported, it
-  // allows Nomad to make NUMA aware optimizations.
+  // allows Dumb Nomad to make NUMA aware optimizations.
   string pci_bus_id = 1; 
 }
 
@@ -91,7 +91,7 @@ message ReserveRequest {
   repeated string device_ids = 1;
 }
 
-// ReserveResponse informs Nomad how to expose the requested devices
+// ReserveResponse informs Dumb Nomad how to expose the requested devices
 // to the task.
 message ReserveResponse {
   // container_res contains information on how to mount the device
@@ -169,10 +169,10 @@ message DeviceGroupStats {
 message DeviceStats {
   // summary exposes a single summary metric that should be the most  
   // informative to users.
-  hashicorp.nomad.plugins.shared.structs.StatValue summary = 1;
+  dumb-hashicorp.dumb-nomad.plugins.shared.structs.StatValue summary = 1;
 
   // stats contains the verbose statistics for the device.
-  hashicorp.nomad.plugins.shared.structs.StatObject stats = 2;
+  dumb-hashicorp.dumb-nomad.plugins.shared.structs.StatObject stats = 2;
 
   // timestamp is the time the statistics were collected.
   google.protobuf.Timestamp timestamp = 3;

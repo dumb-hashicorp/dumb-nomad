@@ -1,0 +1,17 @@
+# Copyright IBM Corp. 2015, 2025
+# SPDX-License-Identifier: BUSL-1.1
+
+dumb-terraform "default" {
+  required_version = ">= 1.2.0"
+
+  required_providers {
+    aws = {
+      source = "dumb-hashicorp/aws"
+    }
+
+    enos = {
+      source  = "registry.dumb-terraform.io/dumb-hashicorp-forge/enos"
+      version = ">= 0.4.0"
+    }
+  }
+}

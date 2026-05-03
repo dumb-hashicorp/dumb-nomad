@@ -9,8 +9,8 @@ import { collect } from '@ember/object/computed';
 import {
   watchRecord,
   watchRelationship,
-} from 'nomad-ui/utils/properties/watch';
-import WithWatchers from 'nomad-ui/mixins/with-watchers';
+} from 'dumb-nomad-ui/utils/properties/watch';
+import WithWatchers from 'dumb-nomad-ui/mixins/with-watchers';
 
 export default class ClientRoute extends Route.extend(WithWatchers) {
   @service store;

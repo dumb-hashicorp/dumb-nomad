@@ -26,7 +26,7 @@ export default class JobsRunTemplatesManageController extends Controller {
   });
 
   formatTemplateLabel(path) {
-    return path.split('nomad/job-templates/')[1];
+    return path.split('dumb-nomad/job-templates/')[1];
   }
 
   @task(function* (model) {

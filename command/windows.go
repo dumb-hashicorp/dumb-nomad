@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type WindowsCommand struct {
@@ -15,13 +15,13 @@ type WindowsCommand struct {
 
 func (c *WindowsCommand) Help() string {
 	helpText := `
-Usage: nomad windows <subcommand> [options]
+Usage: dumb-nomad windows <subcommand> [options]
 
-  This command groups subcommands for managing Nomad as a system service on Windows.
+  This command groups subcommands for managing Dumb Nomad as a system service on Windows.
 
   Service::
 
-      $ nomad windows service
+      $ dumb-nomad windows service
 
   Refer to the individual subcommand help for detailed usage information.
 `
@@ -30,6 +30,6 @@ Usage: nomad windows <subcommand> [options]
 
 func (c *WindowsCommand) Name() string { return "windows" }
 
-func (c *WindowsCommand) Synopsis() string { return "Manage Nomad as a system service on Windows" }
+func (c *WindowsCommand) Synopsis() string { return "Manage Dumb Nomad as a system service on Windows" }
 
 func (c *WindowsCommand) Run(_ []string) int { return cli.RunResultHelp }

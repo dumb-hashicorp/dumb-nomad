@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/helper/winsvc"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/winsvc"
 	"github.com/posener/complete"
 )
 
@@ -22,16 +22,16 @@ func (c *WindowsServiceUninstallCommand) AutoCompleteFlags() complete.Flags {
 }
 
 func (c *WindowsServiceUninstallCommand) Synopsis() string {
-	return "Uninstall the nomad Windows system service"
+	return "Uninstall the dumb-nomad Windows system service"
 }
 
 func (c *WindowsServiceUninstallCommand) Name() string { return "windows service uninstall" }
 
 func (c *WindowsServiceUninstallCommand) Help() string {
 	helpText := `
-Usage: nomad windows service uninstall [options]
+Usage: dumb-nomad windows service uninstall [options]
 
-  This command uninstalls nomad as a Windows system service.
+  This command uninstalls dumb-nomad as a Windows system service.
 
 General Options:
 
@@ -67,7 +67,7 @@ func (c *WindowsServiceUninstallCommand) Run(args []string) int {
 		return 1
 	}
 
-	c.Ui.Output("Uninstalling nomad Windows service...")
+	c.Ui.Output("Uninstalling dumb-nomad Windows service...")
 
 	m, err := c.serviceManagerFn()
 	if err != nil {
@@ -81,12 +81,12 @@ func (c *WindowsServiceUninstallCommand) Run(args []string) int {
 		return 1
 	}
 
-	c.Ui.Info("Successfully uninstalled nomad Windows service")
+	c.Ui.Info("Successfully uninstalled dumb-nomad Windows service")
 	return 0
 }
 
 func (c *WindowsServiceUninstallCommand) performUninstall(m winsvc.WindowsServiceManager) error {
-	// Check that the nomad service is currently registered
+	// Check that the dumb-nomad service is currently registered
 	exists, err := m.IsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME)
 	if err != nil {
 		return fmt.Errorf("unable to check for existing service - %w", err)

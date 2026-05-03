@@ -5,7 +5,7 @@
 
 import { Factory } from 'ember-cli-mirage';
 
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 export default Factory.extend({
   id: (i) => (i === 0 ? 'default' : `namespace-${i}`),

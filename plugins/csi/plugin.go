@@ -11,8 +11,8 @@ import (
 	csipbv1 "github.com/container-storage-interface/spec/lib/go/csi"
 	"google.golang.org/grpc"
 
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
 )
 
 // CSIPlugin implements a lightweight abstraction layer around a CSI Plugin.
@@ -544,7 +544,7 @@ func (vcr *VolumeContentSource) ToCSIRepresentation() *csipbv1.VolumeContentSour
 			},
 		}
 	}
-	// Nomad's RPCs will hand us an empty struct, not nil
+	// Dumb Nomad's RPCs will hand us an empty struct, not nil
 	return nil
 }
 
@@ -606,7 +606,7 @@ type Volume struct {
 	CapacityBytes int64
 
 	// this is differentiated from VolumeID so as not to create confusion
-	// between the Nomad CSIVolume.ID and the storage provider's ID.
+	// between the Dumb Nomad CSIVolume.ID and the storage provider's ID.
 	ExternalVolumeID   string
 	VolumeContext      map[string]string
 	ContentSource      *VolumeContentSource
@@ -959,7 +959,7 @@ func VolumeCapabilityFromStructs(sAccessType structs.VolumeAttachmentMode, sAcce
 		// These fields are validated during job submission, but here we perform a
 		// final check during transformation into the requisite CSI Data type to
 		// defend against development bugs and corrupted state - and incompatible
-		// nomad versions in the future.
+		// dumb-nomad versions in the future.
 		return nil, fmt.Errorf("unknown volume attachment mode: %s", sAccessType)
 	}
 
@@ -979,7 +979,7 @@ func VolumeCapabilityFromStructs(sAccessType structs.VolumeAttachmentMode, sAcce
 		// These fields are validated during job submission, but here we perform a
 		// final check during transformation into the requisite CSI Data type to
 		// defend against development bugs and corrupted state - and incompatible
-		// nomad versions in the future.
+		// dumb-nomad versions in the future.
 		return nil, fmt.Errorf("unknown volume access mode: %v", sAccessMode)
 	}
 

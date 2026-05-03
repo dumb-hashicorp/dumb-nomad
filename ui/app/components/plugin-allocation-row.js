@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-import AllocationRow from 'nomad-ui/components/allocation-row';
+import AllocationRow from 'dumb-nomad-ui/components/allocation-row';
 import classic from 'ember-classic-decorator';
 import { attributeBindings } from '@ember-decorators/component';
 

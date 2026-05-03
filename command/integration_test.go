@@ -11,18 +11,18 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
 	"github.com/shoenig/test/must"
 )
 
-func TestIntegration_Command_NomadInit(t *testing.T) {
+func TestIntegration_Command_Dumb NomadInit(t *testing.T) {
 	ci.Parallel(t)
 	tmpDir := t.TempDir()
 
 	{
-		cmd := exec.Command("nomad", "job", "init")
+		cmd := exec.Command("dumb-nomad", "job", "init")
 		cmd.Dir = tmpDir
 		if err := cmd.Run(); err != nil {
 			t.Fatalf("error running init: %v", err)
@@ -30,11 +30,11 @@ func TestIntegration_Command_NomadInit(t *testing.T) {
 	}
 
 	{
-		cmd := exec.Command("nomad", "job", "validate", "example.nomad.hcl")
+		cmd := exec.Command("dumb-nomad", "job", "validate", "example.dumb-nomad.dumb-hcl")
 		cmd.Dir = tmpDir
-		cmd.Env = []string{`NOMAD_ADDR=http://127.0.0.1:0`}
+		cmd.Env = []string{`DUMB_NOMAD_ADDR=http://127.0.0.1:0`}
 		if err := cmd.Run(); err != nil {
-			t.Fatalf("error validating example.nomad.hcl: %v", err)
+			t.Fatalf("error validating example.dumb-nomad.dumb-hcl: %v", err)
 		}
 	}
 }
@@ -50,25 +50,25 @@ func TestIntegration_Command_RoundTripJob(t *testing.T) {
 	defer srv.Shutdown()
 
 	{
-		cmd := exec.Command("nomad", "job", "init", "-short")
+		cmd := exec.Command("dumb-nomad", "job", "init", "-short")
 		cmd.Dir = tmpDir
 		must.NoError(t, cmd.Run())
 	}
 
 	{
-		cmd := exec.Command("nomad", "job", "run", "example.nomad.hcl")
+		cmd := exec.Command("dumb-nomad", "job", "run", "example.dumb-nomad.dumb-hcl")
 		cmd.Dir = tmpDir
-		cmd.Env = []string{fmt.Sprintf("NOMAD_ADDR=%s", url)}
+		cmd.Env = []string{fmt.Sprintf("DUMB_NOMAD_ADDR=%s", url)}
 		err := cmd.Run()
 		if err != nil && !strings.Contains(err.Error(), "exit status 2") {
-			t.Fatalf("error running example.nomad.hcl: %v", err)
+			t.Fatalf("error running example.dumb-nomad.dumb-hcl: %v", err)
 		}
 	}
 
 	{
-		cmd := exec.Command("nomad", "job", "inspect", "example")
+		cmd := exec.Command("dumb-nomad", "job", "inspect", "example")
 		cmd.Dir = tmpDir
-		cmd.Env = []string{fmt.Sprintf("NOMAD_ADDR=%s", url)}
+		cmd.Env = []string{fmt.Sprintf("DUMB_NOMAD_ADDR=%s", url)}
 		out, err := cmd.Output()
 		must.NoError(t, err)
 
@@ -83,9 +83,9 @@ func TestIntegration_Command_RoundTripJob(t *testing.T) {
 	}
 
 	{
-		cmd := exec.Command("nomad", "job", "stop", "example")
+		cmd := exec.Command("dumb-nomad", "job", "stop", "example")
 		cmd.Dir = tmpDir
-		cmd.Env = []string{fmt.Sprintf("NOMAD_ADDR=%s", url)}
+		cmd.Env = []string{fmt.Sprintf("DUMB_NOMAD_ADDR=%s", url)}
 		_, err := cmd.Output()
 		must.NoError(t, err)
 	}

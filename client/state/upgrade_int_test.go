@@ -13,23 +13,23 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner"
-	"github.com/hashicorp/nomad/client/allocwatcher"
-	"github.com/hashicorp/nomad/client/config"
-	clientconfig "github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/devicemanager"
-	dmstate "github.com/hashicorp/nomad/client/devicemanager/state"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/proclib"
-	"github.com/hashicorp/nomad/client/pluginmanager/drivermanager"
-	regMock "github.com/hashicorp/nomad/client/serviceregistration/mock"
-	. "github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/client/vaultclient"
-	"github.com/hashicorp/nomad/helper/boltdd"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocwatcher"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	clientconfig "github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/devicemanager"
+	dmstate "github.com/dumb-hashicorp/dumb-nomad/client/devicemanager/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/proclib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager"
+	regMock "github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/mock"
+	. "github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dumb-vaultclient"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/boltdd"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.etcd.io/bbolt"
@@ -62,7 +62,7 @@ func TestBoltStateDB_UpgradeOld_Ok(t *testing.T) {
 
 		require.NoError(t, src.Close())
 
-		dbI, err := NewBoltStateDB(testlog.HCLogger(t), dir)
+		dbI, err := NewBoltStateDB(testlog.DUMB_HCLogger(t), dir)
 		require.NoError(t, err)
 
 		db := dbI.(*BoltStateDB)
@@ -208,8 +208,8 @@ func checkUpgradedAlloc(t *testing.T, path string, db StateDB, alloc *structs.Al
 		Logger:            clientConf.Logger,
 		ClientConfig:      clientConf,
 		StateDB:           db,
-		ConsulServices:    regMock.NewServiceRegistrationHandler(clientConf.Logger),
-		VaultFunc:         vaultclient.NewMockVaultClient,
+		Dumb ConsulServices:    regMock.NewServiceRegistrationHandler(clientConf.Logger),
+		Dumb VaultFunc:         dumb-vaultclient.NewMockDumb VaultClient,
 		StateUpdater:      &allocrunner.MockStateUpdater{},
 		PrevAllocWatcher:  allocwatcher.NoopPrevAlloc{},
 		PrevAllocMigrator: allocwatcher.NoopPrevAlloc{},

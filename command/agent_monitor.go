@@ -10,9 +10,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -29,10 +29,10 @@ type MonitorCommand struct {
 
 func (c *MonitorCommand) Help() string {
 	helpText := `
-Usage: nomad monitor [options]
+Usage: dumb-nomad monitor [options]
 
-  Stream log messages of a nomad agent. The monitor command lets you
-  listen for log levels that may be filtered out of the Nomad agent. For
+  Stream log messages of a dumb-nomad agent. The monitor command lets you
+  listen for log levels that may be filtered out of the Dumb Nomad agent. For
   example your agent may only be logging at INFO level, but with the monitor
   command you can set -log-level DEBUG
 
@@ -64,7 +64,7 @@ Monitor Specific Options:
 }
 
 func (c *MonitorCommand) Synopsis() string {
-	return "Stream logs from a Nomad agent"
+	return "Stream logs from a Dumb Nomad agent"
 }
 
 func (c *MonitorCommand) Name() string { return "monitor" }

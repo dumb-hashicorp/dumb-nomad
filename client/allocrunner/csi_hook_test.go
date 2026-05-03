@@ -10,16 +10,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/state"
-	"github.com/hashicorp/nomad/client/pluginmanager/csimanager"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/csimanager"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -329,7 +329,7 @@ func TestCSIHook(t *testing.T) {
 				stubs: make(map[string]*state.CSIVolumeStub),
 			}
 
-			logger := testlog.HCLogger(t)
+			logger := testlog.DUMB_HCLogger(t)
 			hook := newCSIHook(alloc, logger, mgr, rpcer, ar, ar.res, "secret")
 			hook.minBackoffInterval = 1 * time.Millisecond
 			hook.maxBackoffInterval = 10 * time.Millisecond
@@ -401,7 +401,7 @@ func TestCSIHook_Prerun_Validation(t *testing.T) {
 	volName := "volName"
 
 	alloc := mock.Alloc()
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	volumeRequests := map[string]*structs.VolumeRequest{
 		volName: {
 			Name:           volName,

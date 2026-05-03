@@ -13,7 +13,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/raft"
+	"github.com/dumb-hashicorp/raft"
 )
 
 func TestArchive(t *testing.T) {

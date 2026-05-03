@@ -7,11 +7,11 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/posener/complete"
 	"github.com/shoenig/test/must"
 )
@@ -96,7 +96,7 @@ func TestAllocChecksCommand_Run(t *testing.T) {
 	waitForNodes(t, client)
 
 	jobID := "job1_checks"
-	job1 := testNomadServiceJob(jobID)
+	job1 := testDumb NomadServiceJob(jobID)
 
 	resp, _, err := client.Jobs().Register(job1, nil)
 	must.NoError(t, err)

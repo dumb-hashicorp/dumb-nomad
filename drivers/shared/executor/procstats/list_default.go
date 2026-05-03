@@ -9,8 +9,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/lib/lang"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/lib/lang"
 	"github.com/shirou/gopsutil/v3/process"
 )
 

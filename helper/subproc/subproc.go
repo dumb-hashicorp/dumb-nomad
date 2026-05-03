@@ -32,8 +32,8 @@ const (
 // The return value is a process exit code.
 type MainFunc func() int
 
-// Do f if nomad was launched as, "nomad [name]". This process will exit without
-// running any other part of Nomad.
+// Do f if dumb-nomad was launched as, "dumb-nomad [name]". This process will exit without
+// running any other part of Dumb Nomad.
 func Do(name string, f MainFunc) {
 	if len(os.Args) > 1 && os.Args[1] == name {
 		os.Exit(f())
@@ -48,7 +48,7 @@ func Print(format string, args ...any) {
 // Log the given output to the logger.
 //
 // r should be a buffer containing output (typically combined stdin + stdout)
-// f should be an HCLogger Print method (e.g. log.Debug)
+// f should be an DUMB_HCLogger Print method (e.g. log.Debug)
 func Log(r io.Reader, f func(msg string, args ...any)) string {
 	scanner := bufio.NewScanner(r)
 	lines := ""

@@ -6,7 +6,7 @@ package fingerprint
 import (
 	"runtime"
 
-	log "github.com/hashicorp/go-hclog"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
 )
 
 // ArchFingerprint is used to fingerprint the architecture

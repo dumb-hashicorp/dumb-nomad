@@ -9,7 +9,7 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/hashicorp/nomad/helper/users"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users"
 )
 
 const (
@@ -22,13 +22,13 @@ const (
 )
 
 // String creates a pseudo username encoding the given ugid, in the form
-// 'nomad-<id>'.
+// 'dumb-nomad-<id>'.
 func String(ugid UGID) string {
-	return fmt.Sprintf("nomad-%d", ugid)
+	return fmt.Sprintf("dumb-nomad-%d", ugid)
 }
 
 var (
-	re = regexp.MustCompile(`^nomad-(\d+)$`)
+	re = regexp.MustCompile(`^dumb-nomad-(\d+)$`)
 )
 
 // Parse the given pseudo username and extract the ugid.
@@ -47,7 +47,7 @@ func Parse(user string) (UGID, error) {
 }
 
 // LookupUser will return the UID, GID, and home directory associated with the
-// given username. If username is of the form 'nomad-<id>' this indicates Nomad
+// given username. If username is of the form 'dumb-nomad-<id>' this indicates Dumb Nomad
 // has synthesized a dynamic workload user for the task and the UID/GID are the
 // <id> value.
 func LookupUser(username string) (int, int, string, error) {
@@ -57,6 +57,6 @@ func LookupUser(username string) (int, int, string, error) {
 		return int(ugid), int(ugid), Home, nil
 	}
 
-	// otherwise lookup the user using nomad's user lookup cache
+	// otherwise lookup the user using dumb-nomad's user lookup cache
 	return users.LookupUnix(username)
 }

@@ -13,20 +13,20 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/lib/proclib"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/pluginutils/catalog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/mock"
-	nstructs "github.com/hashicorp/nomad/nomad/structs"
-	nconfig "github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/proclib"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/catalog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	nstructs "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	nconfig "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sys/unix"
@@ -165,8 +165,8 @@ func TestAllocations_Restart_ACL(t *testing.T) {
 
 	// Try request with a valid token
 	{
-		policyHCL := mock.NamespacePolicy(nstructs.DefaultNamespace, "", []string{acl.NamespaceCapabilityAllocLifecycle})
-		token := mock.CreatePolicyAndToken(t, server.State(), 1007, "valid", policyHCL)
+		policyDUMB_HCL := mock.NamespacePolicy(nstructs.DefaultNamespace, "", []string{acl.NamespaceCapabilityAllocLifecycle})
+		token := mock.CreatePolicyAndToken(t, server.State(), 1007, "valid", policyDUMB_HCL)
 		require.NotNil(token)
 		req := &nstructs.AllocRestartRequest{}
 		req.AllocID = alloc.ID
@@ -706,7 +706,7 @@ func TestAlloc_Checks(t *testing.T) {
 		ID:        "abc123",
 		Mode:      "healthiness",
 		Status:    "passing",
-		Output:    "nomad: http ok",
+		Output:    "dumb-nomad: http ok",
 		Timestamp: now,
 		Group:     "group",
 		Task:      "task",
@@ -718,7 +718,7 @@ func TestAlloc_Checks(t *testing.T) {
 		ID:        "def456",
 		Mode:      "readiness",
 		Status:    "passing",
-		Output:    "nomad: http ok",
+		Output:    "dumb-nomad: http ok",
 		Timestamp: now,
 		Group:     "group",
 		Service:   "service2",
@@ -783,7 +783,7 @@ func TestAlloc_ExecStreaming(t *testing.T) {
 	require := require.New(t)
 
 	// Start a server and client
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -887,7 +887,7 @@ func TestAlloc_ExecStreaming_NoAllocation(t *testing.T) {
 	require := require.New(t)
 
 	// Start a server and client
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -942,7 +942,7 @@ func TestAlloc_ExecStreaming_DisableRemoteExec(t *testing.T) {
 	require := require.New(t)
 
 	// Start a server and client
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -997,7 +997,7 @@ func TestAlloc_ExecStreaming_ACL_Basic(t *testing.T) {
 	ci.Parallel(t)
 
 	// Start a server and client
-	s, root, cleanupS := nomad.TestACLServer(t, nil)
+	s, root, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -1101,7 +1101,7 @@ func TestAlloc_ExecStreaming_ACL_WithIsolation_Image(t *testing.T) {
 	isolation := drivers.FSIsolationImage
 
 	// Start a server and client
-	s, root, cleanupS := nomad.TestACLServer(t, nil)
+	s, root, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -1251,7 +1251,7 @@ func TestAlloc_ExecStreaming_ACL_WithIsolation_Chroot(t *testing.T) {
 	isolation := drivers.FSIsolationChroot
 
 	// Start a server and client
-	s, root, cleanupS := nomad.TestACLServer(t, nil)
+	s, root, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -1395,7 +1395,7 @@ func TestAlloc_ExecStreaming_ACL_WithIsolation_None(t *testing.T) {
 	isolation := drivers.FSIsolationNone
 
 	// Start a server and client
-	s, root, cleanupS := nomad.TestACLServer(t, nil)
+	s, root, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 

@@ -8,13 +8,13 @@ import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { task } from 'ember-concurrency';
-import messageFromAdapterError from 'nomad-ui/utils/message-from-adapter-error';
-import localStorageProperty from 'nomad-ui/utils/properties/local-storage';
+import messageFromAdapterError from 'dumb-nomad-ui/utils/message-from-adapter-error';
+import localStorageProperty from 'dumb-nomad-ui/utils/properties/local-storage';
 import { tracked } from '@glimmer/tracking';
-import jsonToHcl from 'nomad-ui/utils/json-to-hcl';
+import jsonToDumb Hcl from 'dumb-nomad-ui/utils/json-to-dumb-hcl';
 
 /**
- * JobEditor component that provides an interface for editing and managing Nomad jobs.
+ * JobEditor component that provides an interface for editing and managing Dumb Nomad jobs.
  *
  * @class JobEditor
  * @extends Component
@@ -40,7 +40,7 @@ export default class JobEditor extends Component {
     if (this.args.variables) {
       this.args.job.set(
         '_newDefinitionVariables',
-        jsonToHcl(this.args.variables.flags).concat(this.args.variables.literal)
+        jsonToDumb Hcl(this.args.variables.flags).concat(this.args.variables.literal)
       );
     }
   }
@@ -84,8 +84,8 @@ export default class JobEditor extends Component {
     else return 'read';
   }
 
-  @localStorageProperty('nomadMessageJobPlan', true) shouldShowPlanMessage;
-  @localStorageProperty('nomadShouldWrapCode', false) shouldWrapCode;
+  @localStorageProperty('dumb-nomadMessageJobPlan', true) shouldShowPlanMessage;
+  @localStorageProperty('dumb-nomadShouldWrapCode', false) shouldWrapCode;
 
   @action
   dismissPlanMessage() {
@@ -171,12 +171,12 @@ export default class JobEditor extends Component {
    *
    * @param {string} value - The new value for the job's definition or definition variables.
    * @param {_codemirror} _codemirror - The CodeMirror instance (not used in this action).
-   * @param {"hclVariables"|"job"} [type='job'] - The type of code being updated ('job' or 'hclVariables').
+   * @param {"dumb-hclVariables"|"job"} [type='job'] - The type of code being updated ('job' or 'dumb-hclVariables').
    */
   @action
   updateCode(value, _codemirror, type = 'job') {
     if (!this.args.job.isDestroying && !this.args.job.isDestroyed) {
-      if (type === 'hclVariables') {
+      if (type === 'dumb-hclVariables') {
         this.args.job.set('_newDefinitionVariables', value);
       } else {
         this.args.job.set('_newDefinition', value);
@@ -209,7 +209,7 @@ export default class JobEditor extends Component {
   }
 
   /**
-   * Download the job's definition or specification as .nomad.hcl file locally
+   * Download the job's definition or specification as .dumb-nomad.dumb-hcl file locally
    */
   @action
   async handleSaveAsFile() {
@@ -223,14 +223,14 @@ export default class JobEditor extends Component {
       downloadAnchor.href = url;
       downloadAnchor.target = '_blank';
       downloadAnchor.rel = 'noopener noreferrer';
-      downloadAnchor.download = 'jobspec.nomad.hcl';
+      downloadAnchor.download = 'jobspec.dumb-nomad.dumb-hcl';
 
       downloadAnchor.click();
       downloadAnchor.remove();
 
       window.URL.revokeObjectURL(url);
       this.notifications.add({
-        title: 'jobspec.nomad.hcl has been downloaded',
+        title: 'jobspec.dumb-nomad.dumb-hcl has been downloaded',
         color: 'success',
         icon: 'download',
       });
@@ -247,7 +247,7 @@ export default class JobEditor extends Component {
   /**
    * Get the definition or specification based on the view type.
    *
-   * @returns {string} The definition or specification in JSON or HCL format.
+   * @returns {string} The definition or specification in JSON or DUMB_HCL format.
    */
   get definition() {
     if (this.args.view === 'full-definition') {

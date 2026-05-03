@@ -8,17 +8,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	regMock "github.com/hashicorp/nomad/client/serviceregistration/mock"
-	"github.com/hashicorp/nomad/client/serviceregistration/wrapper"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	agentconsul "github.com/hashicorp/nomad/command/agent/consul"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	regMock "github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/wrapper"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	agentdumb-consul "github.com/dumb-hashicorp/dumb-nomad/command/agent/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -30,23 +30,23 @@ func TestGroupServiceHook_NoGroupServices(t *testing.T) {
 	alloc := mock.Alloc()
 	alloc.Job.TaskGroups[0].Services = []*structs.Service{{
 		Name:      "foo",
-		Provider:  "consul",
+		Provider:  "dumb-consul",
 		PortLabel: "9999",
 	}}
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
-	consulMockClient := regMock.NewServiceRegistrationHandler(logger)
+	dumb-consulMockClient := regMock.NewServiceRegistrationHandler(logger)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
 	regWrapper := wrapper.NewHandlerWrapper(
 		logger,
-		consulMockClient,
+		dumb-consulMockClient,
 		regMock.NewServiceRegistrationHandler(logger))
 
 	h := newGroupServiceHook(groupServiceHookConfig{
 		alloc:             alloc,
 		serviceRegWrapper: regWrapper,
-		restarter:         agentconsul.NoopRestarter(),
+		restarter:         agentdumb-consul.NoopRestarter(),
 		logger:            logger,
 		hookResources:     cstructs.NewAllocHookResources(),
 	})
@@ -59,7 +59,7 @@ func TestGroupServiceHook_NoGroupServices(t *testing.T) {
 
 	must.NoError(t, h.PreTaskRestart())
 
-	ops := consulMockClient.GetOps()
+	ops := dumb-consulMockClient.GetOps()
 	must.Len(t, 4, ops)
 	must.Eq(t, "add", ops[0].Op)    // Prerun
 	must.Eq(t, "update", ops[1].Op) // Update
@@ -75,20 +75,20 @@ func TestGroupServiceHook_ShutdownDelayUpdate(t *testing.T) {
 	alloc := mock.Alloc()
 	alloc.Job.TaskGroups[0].ShutdownDelay = pointer.Of(10 * time.Second)
 
-	logger := testlog.HCLogger(t)
-	consulMockClient := regMock.NewServiceRegistrationHandler(logger)
+	logger := testlog.DUMB_HCLogger(t)
+	dumb-consulMockClient := regMock.NewServiceRegistrationHandler(logger)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
 	regWrapper := wrapper.NewHandlerWrapper(
 		logger,
-		consulMockClient,
+		dumb-consulMockClient,
 		regMock.NewServiceRegistrationHandler(logger),
 	)
 
 	h := newGroupServiceHook(groupServiceHookConfig{
 		alloc:             alloc,
 		serviceRegWrapper: regWrapper,
-		restarter:         agentconsul.NoopRestarter(),
+		restarter:         agentdumb-consul.NoopRestarter(),
 		logger:            logger,
 		hookResources:     cstructs.NewAllocHookResources(),
 	})
@@ -118,19 +118,19 @@ func TestGroupServiceHook_GroupServices(t *testing.T) {
 
 	alloc := mock.ConnectAlloc()
 	alloc.Job.Canonicalize()
-	logger := testlog.HCLogger(t)
-	consulMockClient := regMock.NewServiceRegistrationHandler(logger)
+	logger := testlog.DUMB_HCLogger(t)
+	dumb-consulMockClient := regMock.NewServiceRegistrationHandler(logger)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
 	regWrapper := wrapper.NewHandlerWrapper(
 		logger,
-		consulMockClient,
+		dumb-consulMockClient,
 		regMock.NewServiceRegistrationHandler(logger))
 
 	h := newGroupServiceHook(groupServiceHookConfig{
 		alloc:             alloc,
 		serviceRegWrapper: regWrapper,
-		restarter:         agentconsul.NoopRestarter(),
+		restarter:         agentdumb-consul.NoopRestarter(),
 		logger:            logger,
 		hookResources:     cstructs.NewAllocHookResources(),
 	})
@@ -143,7 +143,7 @@ func TestGroupServiceHook_GroupServices(t *testing.T) {
 
 	must.NoError(t, h.PreTaskRestart())
 
-	ops := consulMockClient.GetOps()
+	ops := dumb-consulMockClient.GetOps()
 	must.Len(t, 4, ops)
 	must.Eq(t, "add", ops[0].Op)    // Prerun
 	must.Eq(t, "update", ops[1].Op) // Update
@@ -185,13 +185,13 @@ func TestGroupServiceHook_GroupServicesCheckUpdates(t *testing.T) {
 		},
 	}
 	alloc.Job.Canonicalize()
-	logger := testlog.HCLogger(t)
-	consulMockClient := regMock.NewServiceRegistrationHandler(logger)
+	logger := testlog.DUMB_HCLogger(t)
+	dumb-consulMockClient := regMock.NewServiceRegistrationHandler(logger)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
 	regWrapper := wrapper.NewHandlerWrapper(
 		logger,
-		consulMockClient,
+		dumb-consulMockClient,
 		regMock.NewServiceRegistrationHandler(logger))
 
 	resources := cstructs.NewAllocHookResources()
@@ -199,15 +199,15 @@ func TestGroupServiceHook_GroupServicesCheckUpdates(t *testing.T) {
 	h := newGroupServiceHook(groupServiceHookConfig{
 		alloc:             alloc,
 		serviceRegWrapper: regWrapper,
-		restarter:         agentconsul.NoopRestarter(),
+		restarter:         agentdumb-consul.NoopRestarter(),
 		logger:            logger,
 		hookResources:     resources,
 	})
 	must.NoError(t, h.Prerun(env))
-	must.Len(t, 1, resources.GetConsulCheckIDs())
-	must.Len(t, 3, resources.GetConsulCheckIDs()[0])
-	checkID0 := resources.GetConsulCheckIDs()[0][0]
-	checkID1 := resources.GetConsulCheckIDs()[0][1]
+	must.Len(t, 1, resources.GetDumb ConsulCheckIDs())
+	must.Len(t, 3, resources.GetDumb ConsulCheckIDs()[0])
+	checkID0 := resources.GetDumb ConsulCheckIDs()[0][0]
+	checkID1 := resources.GetDumb ConsulCheckIDs()[0][1]
 
 	// change one, delete two
 	alloc.Job.TaskGroups[0].Services[0].Checks[1].Name = "one-changed"
@@ -215,46 +215,46 @@ func TestGroupServiceHook_GroupServicesCheckUpdates(t *testing.T) {
 	req := &interfaces.RunnerUpdateRequest{Alloc: alloc, AllocEnv: env}
 	must.NoError(t, h.Update(req))
 
-	must.Len(t, 1, resources.GetConsulCheckIDs())
-	must.Len(t, 2, resources.GetConsulCheckIDs()[0])
-	updatedCheckID0 := resources.GetConsulCheckIDs()[0][0]
-	updatedCheckID1 := resources.GetConsulCheckIDs()[0][1]
+	must.Len(t, 1, resources.GetDumb ConsulCheckIDs())
+	must.Len(t, 2, resources.GetDumb ConsulCheckIDs()[0])
+	updatedCheckID0 := resources.GetDumb ConsulCheckIDs()[0][0]
+	updatedCheckID1 := resources.GetDumb ConsulCheckIDs()[0][1]
 
 	must.Eq(t, checkID0, updatedCheckID0)
 	must.NotEq(t, checkID1, updatedCheckID1)
 
-	ops := consulMockClient.GetOps()
+	ops := dumb-consulMockClient.GetOps()
 	must.Len(t, 2, ops)
 	must.Eq(t, "add", ops[0].Op)    // Prerun
 	must.Eq(t, "update", ops[1].Op) // Update
 }
 
-// TestGroupServiceHook_GroupServices_Nomad asserts group service hooks with
-// group services does not error when using the Nomad provider.
-func TestGroupServiceHook_GroupServices_Nomad(t *testing.T) {
+// TestGroupServiceHook_GroupServices_Dumb Nomad asserts group service hooks with
+// group services does not error when using the Dumb Nomad provider.
+func TestGroupServiceHook_GroupServices_Dumb Nomad(t *testing.T) {
 	ci.Parallel(t)
 
-	// Create a mock alloc, and add a group service using provider Nomad.
+	// Create a mock alloc, and add a group service using provider Dumb Nomad.
 	alloc := mock.Alloc()
 	alloc.Job.TaskGroups[0].Services = []*structs.Service{
 		{
-			Name:     "nomad-provider-service",
-			Provider: structs.ServiceProviderNomad,
+			Name:     "dumb-nomad-provider-service",
+			Provider: structs.ServiceProviderDumb Nomad,
 		},
 	}
 
 	// Create our base objects and our subsequent wrapper.
-	logger := testlog.HCLogger(t)
-	consulMockClient := regMock.NewServiceRegistrationHandler(logger)
-	nomadMockClient := regMock.NewServiceRegistrationHandler(logger)
+	logger := testlog.DUMB_HCLogger(t)
+	dumb-consulMockClient := regMock.NewServiceRegistrationHandler(logger)
+	dumb-nomadMockClient := regMock.NewServiceRegistrationHandler(logger)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
-	regWrapper := wrapper.NewHandlerWrapper(logger, consulMockClient, nomadMockClient)
+	regWrapper := wrapper.NewHandlerWrapper(logger, dumb-consulMockClient, dumb-nomadMockClient)
 
 	h := newGroupServiceHook(groupServiceHookConfig{
 		alloc:             alloc,
 		serviceRegWrapper: regWrapper,
-		restarter:         agentconsul.NoopRestarter(),
+		restarter:         agentdumb-consul.NoopRestarter(),
 		logger:            logger,
 		hookResources:     cstructs.NewAllocHookResources(),
 	})
@@ -266,16 +266,16 @@ func TestGroupServiceHook_GroupServices_Nomad(t *testing.T) {
 	must.NoError(t, h.Postrun())
 	must.NoError(t, h.PreTaskRestart())
 
-	// Ensure the Nomad mock provider has the expected operations.
-	ops := nomadMockClient.GetOps()
+	// Ensure the Dumb Nomad mock provider has the expected operations.
+	ops := dumb-nomadMockClient.GetOps()
 	must.Len(t, 4, ops)
 	must.Eq(t, "add", ops[0].Op)    // Prerun
 	must.Eq(t, "update", ops[1].Op) // Update
 	must.Eq(t, "remove", ops[2].Op) // Postrun
 	must.Eq(t, "add", ops[3].Op)    // Restart -> preRun
 
-	// Ensure the Consul mock provider has zero operations.
-	must.SliceEmpty(t, consulMockClient.GetOps())
+	// Ensure the Dumb Consul mock provider has zero operations.
+	must.SliceEmpty(t, dumb-consulMockClient.GetOps())
 }
 
 // TestGroupServiceHook_Error asserts group service hooks with group
@@ -289,27 +289,27 @@ func TestGroupServiceHook_NoNetwork(t *testing.T) {
 	tg.Services = []*structs.Service{
 		{
 			Name:      "testconnect",
-			Provider:  "consul",
+			Provider:  "dumb-consul",
 			PortLabel: "9999",
-			Connect: &structs.ConsulConnect{
-				SidecarService: &structs.ConsulSidecarService{},
+			Connect: &structs.Dumb ConsulConnect{
+				SidecarService: &structs.Dumb ConsulSidecarService{},
 			},
 		},
 	}
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
-	consulMockClient := regMock.NewServiceRegistrationHandler(logger)
+	dumb-consulMockClient := regMock.NewServiceRegistrationHandler(logger)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
 	regWrapper := wrapper.NewHandlerWrapper(
 		logger,
-		consulMockClient,
+		dumb-consulMockClient,
 		regMock.NewServiceRegistrationHandler(logger))
 
 	h := newGroupServiceHook(groupServiceHookConfig{
 		alloc:             alloc,
 		serviceRegWrapper: regWrapper,
-		restarter:         agentconsul.NoopRestarter(),
+		restarter:         agentdumb-consul.NoopRestarter(),
 		logger:            logger,
 		hookResources:     cstructs.NewAllocHookResources(),
 	})
@@ -322,7 +322,7 @@ func TestGroupServiceHook_NoNetwork(t *testing.T) {
 
 	must.NoError(t, h.PreTaskRestart())
 
-	ops := consulMockClient.GetOps()
+	ops := dumb-consulMockClient.GetOps()
 	must.Len(t, 4, ops)
 	must.Eq(t, "add", ops[0].Op)    // Prerun
 	must.Eq(t, "update", ops[1].Op) // Update
@@ -340,24 +340,24 @@ func TestGroupServiceHook_getWorkloadServices(t *testing.T) {
 		{
 			Name:      "testconnect",
 			PortLabel: "9999",
-			Connect: &structs.ConsulConnect{
-				SidecarService: &structs.ConsulSidecarService{},
+			Connect: &structs.Dumb ConsulConnect{
+				SidecarService: &structs.Dumb ConsulSidecarService{},
 			},
 		},
 	}
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
-	consulMockClient := regMock.NewServiceRegistrationHandler(logger)
+	dumb-consulMockClient := regMock.NewServiceRegistrationHandler(logger)
 
 	regWrapper := wrapper.NewHandlerWrapper(
 		logger,
-		consulMockClient,
+		dumb-consulMockClient,
 		regMock.NewServiceRegistrationHandler(logger))
 
 	h := newGroupServiceHook(groupServiceHookConfig{
 		alloc:             alloc,
 		serviceRegWrapper: regWrapper,
-		restarter:         agentconsul.NoopRestarter(),
+		restarter:         agentdumb-consul.NoopRestarter(),
 		logger:            logger,
 		hookResources:     cstructs.NewAllocHookResources(),
 	})
@@ -368,7 +368,7 @@ func TestGroupServiceHook_getWorkloadServices(t *testing.T) {
 
 func TestGroupServiceHook_PreKill(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	t.Run("waits for shutdown delay", func(t *testing.T) {
 		alloc := mock.Alloc()
@@ -378,19 +378,19 @@ func TestGroupServiceHook_PreKill(t *testing.T) {
 			{
 				Name:      "testconnect",
 				PortLabel: "9999",
-				Connect: &structs.ConsulConnect{
-					SidecarService: &structs.ConsulSidecarService{},
+				Connect: &structs.Dumb ConsulConnect{
+					SidecarService: &structs.Dumb ConsulSidecarService{},
 				},
 			},
 		}
 		delay := 200 * time.Millisecond
 		tg.ShutdownDelay = &delay
 
-		consulMockClient := regMock.NewServiceRegistrationHandler(logger)
+		dumb-consulMockClient := regMock.NewServiceRegistrationHandler(logger)
 
 		regWrapper := wrapper.NewHandlerWrapper(
 			logger,
-			consulMockClient,
+			dumb-consulMockClient,
 			regMock.NewServiceRegistrationHandler(logger))
 
 		shutDownCtx, cancel := context.WithTimeout(context.Background(), delay*2)
@@ -400,7 +400,7 @@ func TestGroupServiceHook_PreKill(t *testing.T) {
 			alloc:             alloc,
 			serviceRegWrapper: regWrapper,
 			shutdownDelayCtx:  shutDownCtx,
-			restarter:         agentconsul.NoopRestarter(),
+			restarter:         agentdumb-consul.NoopRestarter(),
 			logger:            logger,
 			hookResources:     cstructs.NewAllocHookResources(),
 		})
@@ -432,23 +432,23 @@ func TestGroupServiceHook_PreKill(t *testing.T) {
 			{
 				Name:      "testconnect",
 				PortLabel: "9999",
-				Connect: &structs.ConsulConnect{
-					SidecarService: &structs.ConsulSidecarService{},
+				Connect: &structs.Dumb ConsulConnect{
+					SidecarService: &structs.Dumb ConsulSidecarService{},
 				},
 			},
 		}
 
-		consulMockClient := regMock.NewServiceRegistrationHandler(logger)
+		dumb-consulMockClient := regMock.NewServiceRegistrationHandler(logger)
 
 		regWrapper := wrapper.NewHandlerWrapper(
 			logger,
-			consulMockClient,
+			dumb-consulMockClient,
 			regMock.NewServiceRegistrationHandler(logger))
 
 		h := newGroupServiceHook(groupServiceHookConfig{
 			alloc:             alloc,
 			serviceRegWrapper: regWrapper,
-			restarter:         agentconsul.NoopRestarter(),
+			restarter:         agentdumb-consul.NoopRestarter(),
 			logger:            logger,
 			hookResources:     cstructs.NewAllocHookResources(),
 		})
@@ -477,19 +477,19 @@ func TestGroupServiceHook_PreKill(t *testing.T) {
 			{
 				Name:      "testconnect",
 				PortLabel: "9999",
-				Connect: &structs.ConsulConnect{
-					SidecarService: &structs.ConsulSidecarService{},
+				Connect: &structs.Dumb ConsulConnect{
+					SidecarService: &structs.Dumb ConsulSidecarService{},
 				},
 			},
 		}
 		delay := 500 * time.Millisecond
 		tg.ShutdownDelay = &delay
 
-		consulMockClient := regMock.NewServiceRegistrationHandler(logger)
+		dumb-consulMockClient := regMock.NewServiceRegistrationHandler(logger)
 
 		regWrapper := wrapper.NewHandlerWrapper(
 			logger,
-			consulMockClient,
+			dumb-consulMockClient,
 			regMock.NewServiceRegistrationHandler(logger))
 
 		// wait a shorter amount of time than shutdown_delay. If this triggers, the shutdown delay
@@ -500,7 +500,7 @@ func TestGroupServiceHook_PreKill(t *testing.T) {
 		h := newGroupServiceHook(groupServiceHookConfig{
 			alloc:             alloc,
 			serviceRegWrapper: regWrapper,
-			restarter:         agentconsul.NoopRestarter(),
+			restarter:         agentdumb-consul.NoopRestarter(),
 			logger:            logger,
 			hookResources:     cstructs.NewAllocHookResources(),
 		})

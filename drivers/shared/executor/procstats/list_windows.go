@@ -6,7 +6,7 @@
 package procstats
 
 import (
-	"github.com/hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/go-set/v3"
 	"github.com/mitchellh/go-ps"
 )
 

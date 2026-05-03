@@ -10,16 +10,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/commonplugins"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/commonplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 )
 
 type SecretsPluginFingerprint struct {
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
-func NewPluginsSecretsFingerprint(logger hclog.Logger) Fingerprint {
+func NewPluginsSecretsFingerprint(logger dumb-hclog.Logger) Fingerprint {
 	return &SecretsPluginFingerprint{
 		logger: logger.Named("secrets_plugins"),
 	}
@@ -28,8 +28,8 @@ func NewPluginsSecretsFingerprint(logger hclog.Logger) Fingerprint {
 func (s *SecretsPluginFingerprint) Fingerprint(request *FingerprintRequest, response *FingerprintResponse) error {
 	// Add builtin secrets providers
 	defer func() {
-		response.AddAttribute("plugins.secrets.nomad.version", "1.0.0")
-		response.AddAttribute("plugins.secrets.vault.version", "1.0.0")
+		response.AddAttribute("plugins.secrets.dumb-nomad.version", "1.0.0")
+		response.AddAttribute("plugins.secrets.dumb-vault.version", "1.0.0")
 	}()
 	response.Detected = true
 

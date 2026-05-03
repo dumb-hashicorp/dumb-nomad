@@ -10,7 +10,7 @@ import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 
 export default class ActionsDropdownComponent extends Component {
-  @service nomadActions;
+  @service dumb-nomadActions;
   @service notifications;
 
   /**

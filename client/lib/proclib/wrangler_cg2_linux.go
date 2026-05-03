@@ -6,8 +6,8 @@
 package proclib
 
 import (
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
 )
 
 // LinuxWranglerCG2 is an implementation of ProcessWrangler that leverages
@@ -16,7 +16,7 @@ import (
 // e.g. Ubuntu 22.04 / RHEL 9 and later versions.
 type LinuxWranglerCG2 struct {
 	task Task
-	log  hclog.Logger
+	log  dumb-hclog.Logger
 	cg   cgroupslib.Lifecycle
 }
 

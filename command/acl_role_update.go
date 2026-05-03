@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -30,7 +30,7 @@ type ACLRoleUpdateCommand struct {
 // Help satisfies the cli.Command Help function.
 func (a *ACLRoleUpdateCommand) Help() string {
 	helpText := `
-Usage: nomad acl role update [options] <acl_role_id>
+Usage: dumb-nomad acl role update [options] <acl_role_id>
 
   Update is used to update an existing ACL token. Requires a management token.
 

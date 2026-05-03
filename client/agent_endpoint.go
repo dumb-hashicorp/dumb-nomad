@@ -10,16 +10,16 @@ import (
 	"io"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	sframer "github.com/hashicorp/nomad/client/lib/streamframer"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/command/agent/host"
-	"github.com/hashicorp/nomad/command/agent/monitor"
-	"github.com/hashicorp/nomad/command/agent/pprof"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/nomad/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	sframer "github.com/dumb-hashicorp/dumb-nomad/client/lib/streamframer"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/host"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/monitor"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/pprof"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 type Agent struct {
@@ -216,9 +216,9 @@ func (a *Agent) monitorExport(conn io.ReadWriteCloser) {
 		return
 	}
 
-	nomadLogPath := a.c.GetConfig().LogFile
-	if args.OnDisk && nomadLogPath == "" {
-		handleStreamResultError(errors.New("No nomad log file defined"), pointer.Of(int64(400)), encoder)
+	dumb-nomadLogPath := a.c.GetConfig().LogFile
+	if args.OnDisk && dumb-nomadLogPath == "" {
+		handleStreamResultError(errors.New("No dumb-nomad log file defined"), pointer.Of(int64(400)), encoder)
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -227,7 +227,7 @@ func (a *Agent) monitorExport(conn io.ReadWriteCloser) {
 		Logger:       a.c.logger,
 		LogsSince:    args.LogsSince,
 		ServiceName:  args.ServiceName,
-		NomadLogPath: nomadLogPath,
+		Dumb NomadLogPath: dumb-nomadLogPath,
 		OnDisk:       args.OnDisk,
 		Follow:       args.Follow,
 		Context:      ctx,

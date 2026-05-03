@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -18,17 +18,17 @@ type JobTagApplyCommand struct {
 
 func (c *JobTagApplyCommand) Help() string {
 	helpText := `
-Usage: nomad job tag apply [options] <jobname>
+Usage: dumb-nomad job tag apply [options] <jobname>
 
   Save a job version to prevent it from being garbage-collected and allow it to
   be diffed and reverted by name.
 
   Example usage:
 
-    nomad job tag apply -name "My Golden Version" \
+    dumb-nomad job tag apply -name "My Golden Version" \
 		-description "The version we can roll back to if needed" <jobname>
 
-    nomad job tag apply -version 3 -name "My Golden Version" <jobname>
+    dumb-nomad job tag apply -version 3 -name "My Golden Version" <jobname>
 
   The first of the above will tag the latest version of the job, while the second
   will specifically tag version 3 of the job.

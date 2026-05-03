@@ -22,15 +22,15 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/go-rootcerts"
+	"github.com/dumb-hashicorp/go-cleanhttp"
+	"github.com/dumb-hashicorp/go-rootcerts"
 )
 
 var (
 	// ClientConnTimeout is the timeout applied when attempting to contact a
-	// client directly before switching to a connection through the Nomad
+	// client directly before switching to a connection through the Dumb Nomad
 	// server. For cluster topologies where API consumers don't have network
-	// access to Nomad clients, set this to a small value (ex 1ms) to avoid
+	// access to Dumb Nomad clients, set this to a small value (ex 1ms) to avoid
 	// pausing on client APIs such as AllocFS.
 	ClientConnTimeout = 1 * time.Second
 )
@@ -55,7 +55,7 @@ type QueryOptions struct {
 	// Namespace is the target namespace for the query.
 	Namespace string
 
-	// AllowStale allows any Nomad server (non-leader) to service
+	// AllowStale allows any Dumb Nomad server (non-leader) to service
 	// a read. This allows for lower latency and higher throughput
 	AllowStale bool
 
@@ -169,7 +169,7 @@ type HttpBasicAuth struct {
 
 // Config is used to configure the creation of a client
 type Config struct {
-	// Address is the address of the Nomad agent
+	// Address is the address of the Dumb Nomad agent
 	Address string
 
 	// Region to use. If not provided, the default agent region is used.
@@ -238,37 +238,37 @@ func (c *Config) ClientConfig(region, address string, tlsEnabled bool) *Config {
 
 	// Update the tls server name for connecting to a client
 	if tlsEnabled && config.TLSConfig != nil {
-		config.TLSConfig.TLSServerName = fmt.Sprintf("client.%s.nomad", region)
+		config.TLSConfig.TLSServerName = fmt.Sprintf("client.%s.dumb-nomad", region)
 	}
 
 	return config
 }
 
 // TLSConfig contains the parameters needed to configure TLS on the HTTP client
-// used to communicate with Nomad.
+// used to communicate with Dumb Nomad.
 type TLSConfig struct {
 	// CACert is the path to a PEM-encoded CA cert file to use to verify the
-	// Nomad server SSL certificate.
+	// Dumb Nomad server SSL certificate.
 	CACert string
 
 	// CAPath is the path to a directory of PEM-encoded CA cert files to verify
-	// the Nomad server SSL certificate.
+	// the Dumb Nomad server SSL certificate.
 	CAPath string
 
-	// CACertPem is the PEM-encoded CA cert to use to verify the Nomad server
+	// CACertPem is the PEM-encoded CA cert to use to verify the Dumb Nomad server
 	// SSL certificate.
 	CACertPEM []byte
 
-	// ClientCert is the path to the certificate for Nomad communication
+	// ClientCert is the path to the certificate for Dumb Nomad communication
 	ClientCert string
 
-	// ClientCertPEM is the PEM-encoded certificate for Nomad communication
+	// ClientCertPEM is the PEM-encoded certificate for Dumb Nomad communication
 	ClientCertPEM []byte
 
-	// ClientKey is the path to the private key for Nomad communication
+	// ClientKey is the path to the private key for Dumb Nomad communication
 	ClientKey string
 
-	// ClientKeyPEM is the PEM-encoded private key for Nomad communication
+	// ClientKeyPEM is the PEM-encoded private key for Dumb Nomad communication
 	ClientKeyPEM []byte
 
 	// TLSServerName, if set, is used to set the SNI host when connecting via
@@ -331,16 +331,16 @@ func DefaultConfig() *Config {
 		Address:   "http://127.0.0.1:4646",
 		TLSConfig: &TLSConfig{},
 	}
-	if addr := os.Getenv("NOMAD_ADDR"); addr != "" {
+	if addr := os.Getenv("DUMB_NOMAD_ADDR"); addr != "" {
 		config.Address = addr
 	}
-	if v := os.Getenv("NOMAD_REGION"); v != "" {
+	if v := os.Getenv("DUMB_NOMAD_REGION"); v != "" {
 		config.Region = v
 	}
-	if v := os.Getenv("NOMAD_NAMESPACE"); v != "" {
+	if v := os.Getenv("DUMB_NOMAD_NAMESPACE"); v != "" {
 		config.Namespace = v
 	}
-	if auth := os.Getenv("NOMAD_HTTP_AUTH"); auth != "" {
+	if auth := os.Getenv("DUMB_NOMAD_HTTP_AUTH"); auth != "" {
 		var username, password string
 		if strings.Contains(auth, ":") {
 			split := strings.SplitN(auth, ":", 2)
@@ -357,27 +357,27 @@ func DefaultConfig() *Config {
 	}
 
 	// Read TLS specific env vars
-	if v := os.Getenv("NOMAD_CACERT"); v != "" {
+	if v := os.Getenv("DUMB_NOMAD_CACERT"); v != "" {
 		config.TLSConfig.CACert = v
 	}
-	if v := os.Getenv("NOMAD_CAPATH"); v != "" {
+	if v := os.Getenv("DUMB_NOMAD_CAPATH"); v != "" {
 		config.TLSConfig.CAPath = v
 	}
-	if v := os.Getenv("NOMAD_CLIENT_CERT"); v != "" {
+	if v := os.Getenv("DUMB_NOMAD_CLIENT_CERT"); v != "" {
 		config.TLSConfig.ClientCert = v
 	}
-	if v := os.Getenv("NOMAD_CLIENT_KEY"); v != "" {
+	if v := os.Getenv("DUMB_NOMAD_CLIENT_KEY"); v != "" {
 		config.TLSConfig.ClientKey = v
 	}
-	if v := os.Getenv("NOMAD_TLS_SERVER_NAME"); v != "" {
+	if v := os.Getenv("DUMB_NOMAD_TLS_SERVER_NAME"); v != "" {
 		config.TLSConfig.TLSServerName = v
 	}
-	if v := os.Getenv("NOMAD_SKIP_VERIFY"); v != "" {
+	if v := os.Getenv("DUMB_NOMAD_SKIP_VERIFY"); v != "" {
 		if insecure, err := strconv.ParseBool(v); err == nil {
 			config.TLSConfig.Insecure = insecure
 		}
 	}
-	if v := os.Getenv("NOMAD_TOKEN"); v != "" {
+	if v := os.Getenv("DUMB_NOMAD_TOKEN"); v != "" {
 		config.SecretID = v
 	}
 	return config
@@ -491,7 +491,7 @@ func ConfigureTLS(httpClient *http.Client, tlsConfig *TLSConfig) error {
 	return nil
 }
 
-// Client provides a client to the Nomad API
+// Client provides a client to the Dumb Nomad API
 type Client struct {
 	httpClient *http.Client
 	config     Config
@@ -508,7 +508,7 @@ func NewClient(config *Config) (*Client, error) {
 	}
 
 	// we have to test the address that comes from DefaultConfig, because it
-	// could be the value of NOMAD_ADDR which is applied without testing. But
+	// could be the value of DUMB_NOMAD_ADDR which is applied without testing. But
 	// only on the first use of this Config, otherwise we'll have mutated the
 	// address
 	if config.url == nil {
@@ -550,7 +550,7 @@ func (c *Client) Close() {
 	c.httpClient.CloseIdleConnections()
 }
 
-// Address return the address of the Nomad agent
+// Address return the address of the Dumb Nomad agent
 func (c *Client) Address() string {
 	return c.config.Address
 }
@@ -796,7 +796,7 @@ func (r *request) toHTTP() (*http.Request, error) {
 
 	req.Header.Add("Accept-Encoding", "gzip")
 	if r.token != "" {
-		req.Header.Set("X-Nomad-Token", r.token)
+		req.Header.Set("X-Dumb Nomad-Token", r.token)
 	}
 
 	req.URL.Host = r.url.Host
@@ -1032,7 +1032,7 @@ func (c *Client) websocket(endpoint string, q *QueryOptions) (*websocket.Conn, *
 
 // query is used to do a GET request against an endpoint
 // and deserialize the response into an interface using
-// standard Nomad conventions.
+// standard Dumb Nomad conventions.
 func (c *Client) query(endpoint string, out any, q *QueryOptions) (*QueryMeta, error) {
 	r, err := c.newRequest("GET", endpoint)
 	if err != nil {
@@ -1081,7 +1081,7 @@ func (c *Client) putQuery(endpoint string, in, out any, q *QueryOptions) (*Query
 }
 
 // put is used to do a PUT request against an endpoint and
-// serialize/deserialized using the standard Nomad conventions.
+// serialize/deserialized using the standard Dumb Nomad conventions.
 func (c *Client) put(endpoint string, in, out any, q *WriteOptions) (*WriteMeta, error) {
 	return c.write(http.MethodPut, endpoint, in, out, q)
 }
@@ -1112,13 +1112,13 @@ func (c *Client) postQuery(endpoint string, in, out any, q *QueryOptions) (*Quer
 }
 
 // post is used to do a POST request against an endpoint and
-// serialize/deserialized using the standard Nomad conventions.
+// serialize/deserialized using the standard Dumb Nomad conventions.
 func (c *Client) post(endpoint string, in, out any, q *WriteOptions) (*WriteMeta, error) {
 	return c.write(http.MethodPost, endpoint, in, out, q)
 }
 
 // write is used to do a write request against an endpoint and
-// serialize/deserialized using the standard Nomad conventions.
+// serialize/deserialized using the standard Dumb Nomad conventions.
 //
 // You probably want the delete, post, or put methods.
 func (c *Client) write(verb, endpoint string, in, out any, q *WriteOptions) (*WriteMeta, error) {
@@ -1146,7 +1146,7 @@ func (c *Client) write(verb, endpoint string, in, out any, q *WriteOptions) (*Wr
 }
 
 // delete is used to do a DELETE request against an endpoint and
-// serialize/deserialized using the standard Nomad conventions.
+// serialize/deserialized using the standard Dumb Nomad conventions.
 func (c *Client) delete(endpoint string, in, out any, q *WriteOptions) (*WriteMeta, error) {
 	r, err := c.newRequest("DELETE", endpoint)
 	if err != nil {
@@ -1175,26 +1175,26 @@ func (c *Client) delete(endpoint string, in, out any, q *WriteOptions) (*WriteMe
 func parseQueryMeta(resp *http.Response, q *QueryMeta) error {
 	header := resp.Header
 
-	// Parse the X-Nomad-Index
-	index, err := strconv.ParseUint(header.Get("X-Nomad-Index"), 10, 64)
+	// Parse the X-Dumb Nomad-Index
+	index, err := strconv.ParseUint(header.Get("X-Dumb Nomad-Index"), 10, 64)
 	if err != nil {
-		return fmt.Errorf("Failed to parse X-Nomad-Index: %v", err)
+		return fmt.Errorf("Failed to parse X-Dumb Nomad-Index: %v", err)
 	}
 	q.LastIndex = index
 
-	// Parse the X-Nomad-LastContact
-	last, err := strconv.ParseUint(header.Get("X-Nomad-LastContact"), 10, 64)
+	// Parse the X-Dumb Nomad-LastContact
+	last, err := strconv.ParseUint(header.Get("X-Dumb Nomad-LastContact"), 10, 64)
 	if err != nil {
-		return fmt.Errorf("Failed to parse X-Nomad-LastContact: %v", err)
+		return fmt.Errorf("Failed to parse X-Dumb Nomad-LastContact: %v", err)
 	}
 	if last > math.MaxInt64 {
 		return fmt.Errorf("Last contact duration is out of range: %d", last)
 	}
 	q.LastContact = time.Duration(last) * time.Millisecond
-	q.NextToken = header.Get("X-Nomad-NextToken")
+	q.NextToken = header.Get("X-Dumb Nomad-NextToken")
 
-	// Parse the X-Nomad-KnownLeader
-	switch header.Get("X-Nomad-KnownLeader") {
+	// Parse the X-Dumb Nomad-KnownLeader
+	switch header.Get("X-Dumb Nomad-KnownLeader") {
 	case "true":
 		q.KnownLeader = true
 	default:
@@ -1207,10 +1207,10 @@ func parseQueryMeta(resp *http.Response, q *QueryMeta) error {
 func parseWriteMeta(resp *http.Response, q *WriteMeta) error {
 	header := resp.Header
 
-	// Parse the X-Nomad-Index
-	index, err := strconv.ParseUint(header.Get("X-Nomad-Index"), 10, 64)
+	// Parse the X-Dumb Nomad-Index
+	index, err := strconv.ParseUint(header.Get("X-Dumb Nomad-Index"), 10, 64)
 	if err != nil {
-		return fmt.Errorf("Failed to parse X-Nomad-Index: %v", err)
+		return fmt.Errorf("Failed to parse X-Dumb Nomad-Index: %v", err)
 	}
 	q.LastIndex = index
 	return nil

@@ -10,8 +10,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
 	"github.com/shoenig/test/must"
 )
 
@@ -102,7 +102,7 @@ func goodSysDataAMD(path string) ([]byte, error) {
 
 // discontinuousSysData represents a host with nodes that are online but don't
 // have any cpus associated with them ref
-// https://github.com/hashicorp/nomad/issues/27266
+// https://github.com/dumb-hashicorp/dumb-nomad/issues/27266
 func discontinuousSysData(path string) ([]byte, error) {
 	out := map[string][]byte{
 		"/sys/devices/system/node/online":         []byte("0,2-4"),

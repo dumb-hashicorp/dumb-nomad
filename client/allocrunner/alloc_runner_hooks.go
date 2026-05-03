@@ -7,13 +7,13 @@ import (
 	"fmt"
 	"time"
 
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	clientconfig "github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/consul"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	clientconfig "github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // allocHealthSetter is a shim to allow the alloc health watcher hook to set
@@ -111,12 +111,12 @@ func (ar *allocRunner) initRunnerHooks(config *clientconfig.Config) error {
 	ar.runnerHooks = []interfaces.RunnerHook{
 		newIdentityHook(hookLogger, ar.widmgr),
 		newAllocDirHook(hookLogger, ar.allocDir),
-		newConsulHook(consulHookConfig{
+		newDumb ConsulHook(dumb-consulHookConfig{
 			alloc:                   ar.alloc,
 			allocdir:                ar.allocDir,
 			widmgr:                  ar.widmgr,
-			consulConfigs:           ar.clientConfig.GetConsulConfigs(hookLogger),
-			consulClientConstructor: consul.NewConsulClientFactory(config),
+			dumb-consulConfigs:           ar.clientConfig.GetDumb ConsulConfigs(hookLogger),
+			dumb-consulClientConstructor: dumb-consul.NewDumb ConsulClientFactory(config),
 			hookResources:           ar.hookResources,
 			logger:                  hookLogger,
 			db:                      ar.stateDB,
@@ -124,7 +124,7 @@ func (ar *allocRunner) initRunnerHooks(config *clientconfig.Config) error {
 		newUpstreamAllocsHook(hookLogger, ar.prevAllocWatcher),
 		newDiskMigrationHook(hookLogger, ar.prevAllocMigrator, ar.allocDir),
 		newCPUPartsHook(hookLogger, ar.partitions, alloc),
-		newAllocHealthWatcherHook(hookLogger, alloc, hs, ar.Listener(), ar.consulServicesHandler, ar.checkStore),
+		newAllocHealthWatcherHook(hookLogger, alloc, hs, ar.Listener(), ar.dumb-consulServicesHandler, ar.checkStore),
 		newNetworkHook(hookLogger, ns, alloc, nm, nc, ar),
 		newGroupServiceHook(groupServiceHookConfig{
 			alloc:             alloc,
@@ -136,10 +136,10 @@ func (ar *allocRunner) initRunnerHooks(config *clientconfig.Config) error {
 			logger:            hookLogger,
 			shutdownDelayCtx:  ar.shutdownDelayCtx,
 		}),
-		newConsulGRPCSocketHook(hookLogger, alloc, ar.allocDir,
-			config.GetConsulConfigs(ar.logger), config.Node.Attributes),
-		newConsulHTTPSocketHook(hookLogger, alloc, ar.allocDir,
-			config.GetConsulConfigs(ar.logger)),
+		newDumb ConsulGRPCSocketHook(hookLogger, alloc, ar.allocDir,
+			config.GetDumb ConsulConfigs(ar.logger), config.Node.Attributes),
+		newDumb ConsulHTTPSocketHook(hookLogger, alloc, ar.allocDir,
+			config.GetDumb ConsulConfigs(ar.logger)),
 		newCSIHook(alloc, hookLogger, ar.csiManager, ar.rpcClient, ar, ar.hookResources, ar.clientConfig.Node.SecretID),
 		newChecksHook(hookLogger, alloc, ar.checkStore, ar),
 	}

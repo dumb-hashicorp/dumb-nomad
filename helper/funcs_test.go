@@ -11,8 +11,8 @@ import (
 	"sort"
 	"testing"
 
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/go-set/v3"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/go-set/v3"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -208,7 +208,7 @@ func TestCleanEnvVar(t *testing.T) {
 }
 
 func BenchmarkCleanEnvVar(b *testing.B) {
-	in := "NOMAD_ADDR_redis-cache"
+	in := "DUMB_NOMAD_ADDR_redis-cache"
 	replacement := byte('_')
 	b.SetBytes(int64(len(in)))
 	b.ReportAllocs()

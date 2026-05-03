@@ -8,10 +8,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	cconfig "github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	sconfig "github.com/hashicorp/nomad/nomad/structs/config"
+	cconfig "github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	sconfig "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
 	"github.com/shoenig/test/must"
 )
 
@@ -23,11 +23,11 @@ func TestSandbox(t *testing.T) *Sandbox {
 	defaultConfig.DecompressionFileCountLimit = pointer.Of(10)
 	ac, err := cconfig.ArtifactConfigFromAgent(defaultConfig)
 	must.NoError(t, err)
-	return New(ac, testlog.HCLogger(t))
+	return New(ac, testlog.DUMB_HCLogger(t))
 }
 
 // SetupDir creates a directory suitable for testing artifact - i.e. it is
-// owned by the user under which nomad runs.
+// owned by the user under which dumb-nomad runs.
 //
 // returns alloc_dir, task_dir
 func SetupDir(t *testing.T) (string, string) {

@@ -12,20 +12,20 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/hashicorp/consul-template/signals"
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/drivers/shared/capabilities"
-	"github.com/hashicorp/nomad/drivers/shared/eventer"
-	"github.com/hashicorp/nomad/drivers/shared/executor"
-	"github.com/hashicorp/nomad/drivers/shared/resolvconf"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	"github.com/hashicorp/nomad/plugins/drivers/utils"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/dumb-consul-template/signals"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/capabilities"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/eventer"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/resolvconf"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/utils"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 )
 
 const (
@@ -56,7 +56,7 @@ var (
 	// plugin catalog.
 	PluginConfig = &loader.InternalPluginConfig{
 		Config:  map[string]interface{}{},
-		Factory: func(ctx context.Context, l hclog.Logger) interface{} { return NewDriver(ctx, l) },
+		Factory: func(ctx context.Context, l dumb-hclog.Logger) interface{} { return NewDriver(ctx, l) },
 	}
 
 	// pluginInfo is the response returned for the PluginInfo RPC
@@ -67,38 +67,38 @@ var (
 		Name:              pluginName,
 	}
 
-	// configSpec is the hcl specification returned by the ConfigSchema RPC
-	configSpec = hclspec.NewObject(map[string]*hclspec.Spec{
-		"default_pid_mode": hclspec.NewDefault(
-			hclspec.NewAttr("default_pid_mode", "string", false),
-			hclspec.NewLiteral(`"private"`),
+	// configSpec is the dumb-hcl specification returned by the ConfigSchema RPC
+	configSpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"default_pid_mode": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("default_pid_mode", "string", false),
+			dumb-hclspec.NewLiteral(`"private"`),
 		),
-		"default_ipc_mode": hclspec.NewDefault(
-			hclspec.NewAttr("default_ipc_mode", "string", false),
-			hclspec.NewLiteral(`"private"`),
+		"default_ipc_mode": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("default_ipc_mode", "string", false),
+			dumb-hclspec.NewLiteral(`"private"`),
 		),
-		"allow_caps": hclspec.NewDefault(
-			hclspec.NewAttr("allow_caps", "list(string)", false),
-			hclspec.NewLiteral(capabilities.HCLSpecLiteral),
+		"allow_caps": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("allow_caps", "list(string)", false),
+			dumb-hclspec.NewLiteral(capabilities.DUMB_HCLSpecLiteral),
 		),
 	})
 
-	// taskConfigSpec is the hcl specification for the driver config section of
+	// taskConfigSpec is the dumb-hcl specification for the driver config section of
 	// a taskConfig within a job. It is returned in the TaskConfigSchema RPC
-	taskConfigSpec = hclspec.NewObject(map[string]*hclspec.Spec{
+	taskConfigSpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
 		// It's required for either `class` or `jar_path` to be set,
-		// but that's not expressable in hclspec.  Marking both as optional
+		// but that's not expressable in dumb-hclspec.  Marking both as optional
 		// and setting checking explicitly later
-		"class":       hclspec.NewAttr("class", "string", false),
-		"class_path":  hclspec.NewAttr("class_path", "string", false),
-		"jar_path":    hclspec.NewAttr("jar_path", "string", false),
-		"jvm_options": hclspec.NewAttr("jvm_options", "list(string)", false),
-		"args":        hclspec.NewAttr("args", "list(string)", false),
-		"pid_mode":    hclspec.NewAttr("pid_mode", "string", false),
-		"ipc_mode":    hclspec.NewAttr("ipc_mode", "string", false),
-		"cap_add":     hclspec.NewAttr("cap_add", "list(string)", false),
-		"cap_drop":    hclspec.NewAttr("cap_drop", "list(string)", false),
-		"work_dir":    hclspec.NewAttr("work_dir", "string", false),
+		"class":       dumb-hclspec.NewAttr("class", "string", false),
+		"class_path":  dumb-hclspec.NewAttr("class_path", "string", false),
+		"jar_path":    dumb-hclspec.NewAttr("jar_path", "string", false),
+		"jvm_options": dumb-hclspec.NewAttr("jvm_options", "list(string)", false),
+		"args":        dumb-hclspec.NewAttr("args", "list(string)", false),
+		"pid_mode":    dumb-hclspec.NewAttr("pid_mode", "string", false),
+		"ipc_mode":    dumb-hclspec.NewAttr("ipc_mode", "string", false),
+		"cap_add":     dumb-hclspec.NewAttr("cap_add", "list(string)", false),
+		"cap_drop":    dumb-hclspec.NewAttr("cap_drop", "list(string)", false),
+		"work_dir":    dumb-hclspec.NewAttr("work_dir", "string", false),
 	})
 
 	// driverCapabilities is returned by the Capabilities RPC and indicates what
@@ -251,14 +251,14 @@ type Driver struct {
 	// coordinate shutdown
 	ctx context.Context
 
-	// nomadConf is the client agent's configuration
-	nomadConfig *base.ClientDriverConfig
+	// dumb-nomadConf is the client agent's configuration
+	dumb-nomadConfig *base.ClientDriverConfig
 
-	// logger will log to the Nomad agent
-	logger hclog.Logger
+	// logger will log to the Dumb Nomad agent
+	logger dumb-hclog.Logger
 }
 
-func NewDriver(ctx context.Context, logger hclog.Logger) drivers.DriverPlugin {
+func NewDriver(ctx context.Context, logger dumb-hclog.Logger) drivers.DriverPlugin {
 	logger = logger.Named(pluginName)
 	return &Driver{
 		eventer: eventer.NewEventer(ctx, logger),
@@ -272,7 +272,7 @@ func (d *Driver) PluginInfo() (*base.PluginInfoResponse, error) {
 	return pluginInfo, nil
 }
 
-func (d *Driver) ConfigSchema() (*hclspec.Spec, error) {
+func (d *Driver) ConfigSchema() (*dumb-hclspec.Spec, error) {
 	return configSpec, nil
 }
 
@@ -290,12 +290,12 @@ func (d *Driver) SetConfig(cfg *base.Config) error {
 	d.config = config
 
 	if cfg != nil && cfg.AgentConfig != nil {
-		d.nomadConfig = cfg.AgentConfig.Driver
+		d.dumb-nomadConfig = cfg.AgentConfig.Driver
 	}
 	return nil
 }
 
-func (d *Driver) TaskConfigSchema() (*hclspec.Spec, error) {
+func (d *Driver) TaskConfigSchema() (*dumb-hclspec.Spec, error) {
 	return taskConfigSpec, nil
 }
 
@@ -404,7 +404,7 @@ func (d *Driver) RecoverTask(handle *drivers.TaskHandle) error {
 	execImpl, pluginClient, err := executor.ReattachToExecutor(
 		plugRC,
 		d.logger.With("task_name", handle.Config.Name, "alloc_id", handle.Config.AllocID),
-		d.nomadConfig.Topology.Compute(),
+		d.dumb-nomadConfig.Topology.Compute(),
 	)
 
 	if err != nil {
@@ -454,7 +454,7 @@ func (d *Driver) StartTask(cfg *drivers.TaskConfig) (handle *drivers.TaskHandle,
 
 	args := javaCmdArgs(driverConfig)
 
-	d.logger.Info("starting java task", "driver_cfg", hclog.Fmt("%+v", driverConfig), "args", args)
+	d.logger.Info("starting java task", "driver_cfg", dumb-hclog.Fmt("%+v", driverConfig), "args", args)
 
 	handle = drivers.NewTaskHandle(taskHandleVersion)
 	handle.Config = cfg
@@ -464,7 +464,7 @@ func (d *Driver) StartTask(cfg *drivers.TaskConfig) (handle *drivers.TaskHandle,
 		LogFile:     pluginLogFile,
 		LogLevel:    "debug",
 		FSIsolation: driverCapabilities.FSIsolation == fsisolation.Chroot,
-		Compute:     d.nomadConfig.Topology.Compute(),
+		Compute:     d.dumb-nomadConfig.Topology.Compute(),
 	}
 
 	user := cfg.User
@@ -481,7 +481,7 @@ func (d *Driver) StartTask(cfg *drivers.TaskConfig) (handle *drivers.TaskHandle,
 	}
 
 	caps, err := capabilities.Calculate(
-		capabilities.NomadDefaults(), d.config.AllowCaps, driverConfig.CapAdd, driverConfig.CapDrop,
+		capabilities.Dumb NomadDefaults(), d.config.AllowCaps, driverConfig.CapAdd, driverConfig.CapDrop,
 	)
 	if err != nil {
 		return nil, nil, err
@@ -490,7 +490,7 @@ func (d *Driver) StartTask(cfg *drivers.TaskConfig) (handle *drivers.TaskHandle,
 
 	exec, pluginClient, err := executor.CreateExecutor(
 		d.logger.With("task_name", handle.Config.Name, "alloc_id", handle.Config.AllocID),
-		d.nomadConfig, executorConfig)
+		d.dumb-nomadConfig, executorConfig)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create executor: %v", err)
 	}

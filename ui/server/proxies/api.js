@@ -16,7 +16,7 @@ module.exports = function (app, options) {
   let config = options.project.configCache.get(cacheKey);
 
   // Disable the proxy completely when Mirage is enabled. No requests to the API
-  // will be being made, and having the proxy attempt to connect to Nomad when it
+  // will be being made, and having the proxy attempt to connect to Dumb Nomad when it
   // is not running can result in socket max connections that block the livereload
   // server from reloading.
   if (config['ember-cli-mirage'].enabled !== false) {
@@ -46,7 +46,7 @@ module.exports = function (app, options) {
   });
 
   server.on('upgrade', function (req) {
-    // Set Origin header so Nomad accepts the proxied request.
+    // Set Origin header so Dumb Nomad accepts the proxied request.
     // WebSocket proxing is handled by ember-cli.
     // https://github.com/ember-cli/ember-cli/blob/v3.28.5/lib/tasks/server/middleware/proxy-server/index.js#L51
     req.headers.origin = proxyAddress;

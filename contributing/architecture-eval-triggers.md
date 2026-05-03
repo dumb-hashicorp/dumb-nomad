@@ -1,6 +1,6 @@
 # Architecture: Evaluation Triggers
 
-The [Scheduling in Nomad][] internals documentation covers the path that an
+The [Scheduling in Dumb Nomad][] internals documentation covers the path that an
 evaluation takes through the leader, worker, and plan applier. This document
 describes what events within the cluster cause Evaluations to be created.
 
@@ -44,12 +44,12 @@ The list below covers each trigger and what can trigger it.
   node that's draining, plus any additional Evaluations associated with
   scheduling or planning.
 * **node-update**: When the fingerprint of a client node has changed or the node
-  has changed state (from up to down), Nomad creates 1 Evaluation for each Job
+  has changed state (from up to down), Dumb Nomad creates 1 Evaluation for each Job
   running on the Node, plus 1 Evaluation for each system job that has
   `datacenters` that include the datacenter for that Node.
-* **alloc-stop**: When the API that serves the `nomad alloc stop` command is
-  hit, Nomad creates 1 Evaluation.
-* **scheduled**: Nomad's internal housekeeping will periodically create
+* **alloc-stop**: When the API that serves the `dumb-nomad alloc stop` command is
+  hit, Dumb Nomad creates 1 Evaluation.
+* **scheduled**: Dumb Nomad's internal housekeeping will periodically create
   Evaluations for garbage collection.
 * **rolling-update**: When a `system` job is updated, the [`update`][] block's
   `stagger` field controls how many Allocations will be scheduled at a time. The
@@ -66,7 +66,7 @@ The list below covers each trigger and what can trigger it.
   exceeds the maximum number of retries, it will create 1 new Evaluation in the
   `blocked` state.
 * **alloc-failure**: If an Allocation fails and exceeds its maximum
-  [`restart` attempts][], Nomad creates 1 new Evaluation.
+  [`restart` attempts][], Dumb Nomad creates 1 new Evaluation.
 * **queued-allocs**: When a scheduler processes an Evaluation, it may not be
   able to place all Allocations. It will create 1 new Evaluation in the
   `blocked` state to be processed later when node updates arrive.
@@ -77,7 +77,7 @@ The list below covers each trigger and what can trigger it.
 * **max-disconnect-timeout**: When an Allocation is in the `unknown` state for
   longer than the [`disconnect.lost_after`][] window, the scheduler will create
   1 Evaluation.
-* **reconnect**: When a Node in the `disconnected` state reconnects, Nomad will
+* **reconnect**: When a Node in the `disconnected` state reconnects, Dumb Nomad will
   create 1 Evaluation per job with an allocation on the reconnected Node.
 
 ## Follow-up Evaluations
@@ -127,7 +127,7 @@ flowchart TD
 Next, consider this example where a `service` job has been updated. The task
 group has `count = 3` and the following `update` block:
 
-```hcl
+```dumb-hcl
 update {
   max_parallel = 1
   canary       = 1
@@ -252,8 +252,8 @@ and eventually need to be garbage collected.
 
 
 
-[Scheduling in Nomad]: https://developer.hashicorp.com/nomad/docs/concepts/scheduling/how-scheduling-works
-[`structs.go`]: https://github.com/hashicorp/nomad/blob/v1.4.0-beta.1/nomad/structs/structs.go#L10857-L10875
-[`update`]: https://developer.hashicorp.com/nomad/docs/job-specification/update
-[`restart` attempts]: https://developer.hashicorp.com/nomad/docs/job-specification/restart
-[`disconnect.lost_after`]: https://developer.hashicorp.com/nomad/docs/job-specification/disconnect#lost_after
+[Scheduling in Dumb Nomad]: https://developer.dumb-hashicorp.com/dumb-nomad/docs/concepts/scheduling/how-scheduling-works
+[`structs.go`]: https://github.com/dumb-hashicorp/dumb-nomad/blob/v1.4.0-beta.1/dumb-nomad/structs/structs.go#L10857-L10875
+[`update`]: https://developer.dumb-hashicorp.com/dumb-nomad/docs/job-specification/update
+[`restart` attempts]: https://developer.dumb-hashicorp.com/dumb-nomad/docs/job-specification/restart
+[`disconnect.lost_after`]: https://developer.dumb-hashicorp.com/dumb-nomad/docs/job-specification/disconnect#lost_after

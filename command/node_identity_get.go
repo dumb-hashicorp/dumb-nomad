@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -23,7 +23,7 @@ type NodeIdentityGetCommand struct {
 
 func (n *NodeIdentityGetCommand) Help() string {
 	helpText := `
-Usage: nomad node identity get [options] <node_id>
+Usage: dumb-nomad node identity get [options] <node_id>
 
   Get the identity claims for a node. This command only applies to client
   agents.
@@ -108,13 +108,13 @@ func (n *NodeIdentityGetCommand) ouputClaims(claims map[string]any) int {
 		return 0
 	}
 
-	var genericClaims, nomadClaims []string
+	var genericClaims, dumb-nomadClaims []string
 
-	// Iterate through the claims and separate the generic and Nomad-specific
+	// Iterate through the claims and separate the generic and Dumb Nomad-specific
 	// claims. This will allow us to group them in the output.
 	for key := range claims {
-		if strings.HasPrefix(key, "nomad") {
-			nomadClaims = append(nomadClaims, key)
+		if strings.HasPrefix(key, "dumb-nomad") {
+			dumb-nomadClaims = append(dumb-nomadClaims, key)
 		} else {
 			genericClaims = append(genericClaims, key)
 		}
@@ -122,9 +122,9 @@ func (n *NodeIdentityGetCommand) ouputClaims(claims map[string]any) int {
 
 	// Sort the claims alphabetically for consistent output.
 	sort.Strings(genericClaims)
-	sort.Strings(nomadClaims)
+	sort.Strings(dumb-nomadClaims)
 
-	output := make([]string, len(genericClaims)+len(nomadClaims)+1)
+	output := make([]string, len(genericClaims)+len(dumb-nomadClaims)+1)
 	output[0] = "Claim Key|Claim Value"
 
 	for i, key := range genericClaims {
@@ -140,7 +140,7 @@ func (n *NodeIdentityGetCommand) ouputClaims(claims map[string]any) int {
 		}
 	}
 
-	for i, key := range nomadClaims {
+	for i, key := range dumb-nomadClaims {
 		output[i+1+len(genericClaims)] = fmt.Sprintf("%s | %s", key, claims[key])
 	}
 

@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/helper/tlsutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/tlsutil"
 	"github.com/posener/complete"
 	"github.com/ryanuber/columnize"
 )
@@ -19,7 +19,7 @@ type TLSCAInfoCommand struct {
 
 func (c *TLSCAInfoCommand) Help() string {
 	helpText := `
-Usage: nomad tls ca info <CA file>
+Usage: dumb-nomad tls ca info <CA file>
 
   Show information about a certificate authority.
 `

@@ -9,10 +9,10 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import setupCodeMirror from 'nomad-ui/tests/helpers/codemirror';
-import JobDispatch from 'nomad-ui/tests/pages/jobs/dispatch';
-import JobDetail from 'nomad-ui/tests/pages/jobs/detail';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import setupCodeMirror from 'dumb-nomad-ui/tests/helpers/codemirror';
+import JobDispatch from 'dumb-nomad-ui/tests/pages/jobs/dispatch';
+import JobDetail from 'dumb-nomad-ui/tests/pages/jobs/detail';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import { currentURL } from '@ember/test-helpers';
 
 const REQUIRED_INDICATOR = '*';
@@ -56,7 +56,7 @@ function moduleForJobDispatch(title, jobFactory) {
       managementToken = server.create('token');
       clientToken = server.create('token');
 
-      window.localStorage.nomadTokenSecret = managementToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
     });
 
     test('it passes an accessibility audit', async function (assert) {
@@ -70,7 +70,7 @@ function moduleForJobDispatch(title, jobFactory) {
     });
 
     test('the dispatch button is displayed when allowed', async function (assert) {
-      window.localStorage.nomadTokenSecret = clientToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
       const policy = server.create('policy', {
         id: 'dispatch',
@@ -97,7 +97,7 @@ function moduleForJobDispatch(title, jobFactory) {
     });
 
     test('the dispatch button is disabled when not allowed', async function (assert) {
-      window.localStorage.nomadTokenSecret = clientToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
       await JobDetail.visit({ id: `${job.id}@${namespace.name}` });
       assert.ok(JobDetail.dispatchButton.isDisabled);

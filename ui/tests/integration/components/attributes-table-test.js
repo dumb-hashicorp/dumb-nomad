@@ -7,8 +7,8 @@ import { find, findAll, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
-import PathTree from 'nomad-ui/utils/path-tree';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import PathTree from 'dumb-nomad-ui/utils/path-tree';
 
 module('Integration | Component | attributes table', function (hooks) {
   setupRenderingTest(hooks);

@@ -8,8 +8,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -19,7 +19,7 @@ type AllocPauseCommand struct {
 
 func (c *AllocPauseCommand) Help() string {
 	helpText := `
-Usage: nomad alloc pause [options] <allocation> <task>
+Usage: dumb-nomad alloc pause [options] <allocation> <task>
 
   Set the pause state of an allocation. This command is used to suspend the
   operation of a specific task.

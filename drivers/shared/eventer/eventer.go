@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 var (
@@ -41,19 +41,19 @@ type Eventer struct {
 	// ctx to allow control of event loop shutdown
 	ctx context.Context
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 type eventConsumer struct {
 	timeout time.Duration
 	ctx     context.Context
 	ch      chan *drivers.TaskEvent
-	logger  hclog.Logger
+	logger  dumb-hclog.Logger
 }
 
 // NewEventer returns an Eventer with a running event loop that can be stopped
 // by closing the given stop channel
-func NewEventer(ctx context.Context, logger hclog.Logger) *Eventer {
+func NewEventer(ctx context.Context, logger dumb-hclog.Logger) *Eventer {
 	e := &Eventer{
 		events: make(chan *drivers.TaskEvent),
 		ctx:    ctx,

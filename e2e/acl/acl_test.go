@@ -6,7 +6,7 @@ package acl
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
 )
 
 func TestACL(t *testing.T) {
@@ -15,9 +15,9 @@ func TestACL(t *testing.T) {
 	// test does not run client workload, some do perform listings of nodes. It
 	// is therefore better to wait until we have a node, so these tests can
 	// check for a non-empty node list response object.
-	nomadClient := e2eutil.NomadClient(t)
-	e2eutil.WaitForLeader(t, nomadClient)
-	e2eutil.WaitForNodesReady(t, nomadClient, 1)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
+	e2eutil.WaitForLeader(t, dumb-nomadClient)
+	e2eutil.WaitForNodesReady(t, dumb-nomadClient, 1)
 
 	// Run our test cases.
 	t.Run("TestACL_Role", testACLRole)

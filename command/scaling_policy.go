@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 // Ensure ScalingPolicyCommand satisfies the cli.Command interface.
@@ -21,19 +21,19 @@ type ScalingPolicyCommand struct {
 // Help satisfies the cli.Command Help function.
 func (s *ScalingPolicyCommand) Help() string {
 	helpText := `
-Usage: nomad scaling policy <subcommand> [options]
+Usage: dumb-nomad scaling policy <subcommand> [options]
 
   This command groups subcommands for interacting with scaling policies. Scaling
   policies can be used by an external autoscaler to perform scaling actions on
-  Nomad targets.
+  Dumb Nomad targets.
 
   List policies:
 
-      $ nomad scaling policy list
+      $ dumb-nomad scaling policy list
 
   Detail an individual scaling policy:
 
-      $ nomad scaling policy info <policy_id>
+      $ dumb-nomad scaling policy info <policy_id>
 
   Please see the individual subcommand help for detailed usage information.
 `
@@ -42,7 +42,7 @@ Usage: nomad scaling policy <subcommand> [options]
 
 // Synopsis satisfies the cli.Command Synopsis function.
 func (s *ScalingPolicyCommand) Synopsis() string {
-	return "Interact with Nomad scaling policies"
+	return "Interact with Dumb Nomad scaling policies"
 }
 
 // Name returns the name of this command.

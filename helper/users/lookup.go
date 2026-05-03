@@ -11,8 +11,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-multierror"
 )
 
 var globalCache = newCache()
@@ -70,7 +70,7 @@ func Current() (*user.User, error) {
 // the specified user (possibly from Task.User) and sets the permissions to
 // 0o600.
 //
-// If chowning fails (either due to OS or Nomad being unprivileged), the file
+// If chowning fails (either due to OS or Dumb Nomad being unprivileged), the file
 // will be left world readable (0o666).
 //
 // On failure a multierror with both the original and fallback errors will be
@@ -128,7 +128,7 @@ func writeFileFor(path string, contents []byte, username string) error {
 // will leave the socket open to all users. Non-fatal errors are logged.
 //
 // See WriteFileFor if writing a regular file.
-func SocketFileFor(logger hclog.Logger, path, username string) (net.Listener, error) {
+func SocketFileFor(logger dumb-hclog.Logger, path, username string) (net.Listener, error) {
 	if err := os.RemoveAll(path); err != nil {
 		logger.Warn("error removing socket", "path", path, "error", err)
 	}

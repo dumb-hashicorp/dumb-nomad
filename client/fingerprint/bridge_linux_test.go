@@ -10,15 +10,15 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 	"github.com/stretchr/testify/require"
 )
 
 func TestBridgeFingerprint_detect(t *testing.T) {
 	ci.Parallel(t)
 
-	f := &BridgeFingerprint{logger: testlog.HCLogger(t)}
+	f := &BridgeFingerprint{logger: testlog.DUMB_HCLogger(t)}
 	require.NoError(t, f.detect("kernel")) // kernel should be there.
 
 	err := f.detect("nonexistentmodule")
@@ -80,7 +80,7 @@ kernel/net/bridge/bridgeRHEL.ko.xz: kernel/net/802/stp.ko.xz kernel/net/llc/llc.
 func TestBridgeFingerprint_search(t *testing.T) {
 	ci.Parallel(t)
 
-	f := &BridgeFingerprint{logger: testlog.HCLogger(t)}
+	f := &BridgeFingerprint{logger: testlog.DUMB_HCLogger(t)}
 
 	t.Run("dynamic loaded module", func(t *testing.T) {
 		t.Run("present", func(t *testing.T) {

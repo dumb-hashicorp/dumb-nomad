@@ -1,7 +1,7 @@
 // Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: BUSL-1.1
 
-// Package operator_scheduler provides end-to-end tests for the Nomad operator
+// Package operator_scheduler provides end-to-end tests for the Dumb Nomad operator
 // scheduler functionality and configuration options.
 //
 // In order to run this test suite only, from the e2e directory you can trigger

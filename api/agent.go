@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-// Agent encapsulates an API client which talks to Nomad's
+// Agent encapsulates an API client which talks to Dumb Nomad's
 // agent endpoints for a specific node.
 type Agent struct {
 	client *Client
@@ -83,7 +83,7 @@ func (a *Agent) populateCache(self *AgentSelf) {
 	}
 }
 
-// NodeName is used to query the Nomad agent for its node name.
+// NodeName is used to query the Dumb Nomad agent for its node name.
 func (a *Agent) NodeName() (string, error) {
 	// Return from cache if we have it
 	if a.nodeName != "" {
@@ -560,14 +560,14 @@ type SchedulerWorkerPoolArgs struct {
 }
 
 // AgentSchedulerWorkerConfigRequest is used to provide new scheduler worker configuration
-// to a specific Nomad server. EnabledSchedulers must contain at least the `_core` scheduler
+// to a specific Dumb Nomad server. EnabledSchedulers must contain at least the `_core` scheduler
 // to be valid.
 type AgentSchedulerWorkerConfigRequest struct {
 	NumSchedulers     int      `json:"num_schedulers"`
 	EnabledSchedulers []string `json:"enabled_schedulers"`
 }
 
-// AgentSchedulerWorkerConfigResponse contains the Nomad server's current running configuration
+// AgentSchedulerWorkerConfigResponse contains the Dumb Nomad server's current running configuration
 // as well as the server's id as a convenience. This can be used to provide starting values for
 // creating an AgentSchedulerWorkerConfigRequest to make changes to the running configuration.
 type AgentSchedulerWorkerConfigResponse struct {
@@ -577,7 +577,7 @@ type AgentSchedulerWorkerConfigResponse struct {
 }
 
 // GetSchedulerWorkersInfo returns the current status of all of the scheduler workers on
-// a Nomad server.
+// a Dumb Nomad server.
 func (a *Agent) GetSchedulerWorkersInfo(q *QueryOptions) (*AgentSchedulerWorkersInfo, error) {
 	var out *AgentSchedulerWorkersInfo
 

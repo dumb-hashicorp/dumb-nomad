@@ -1,6 +1,6 @@
-# Architecture: Nomad State Store
+# Architecture: Dumb Nomad State Store
 
-Nomad server state is an in-memory state store backed by raft. All writes to
+Dumb Nomad server state is an in-memory state store backed by raft. All writes to
 state are serialized into message pack and written as raft logs. The raft logs
 are replicated from the leader to the followers. Once each follower has
 persisted the log entry and applied the entry to its in-memory state ("FSM"),
@@ -73,10 +73,10 @@ flowchart TD
     rpcLeader("RPC handler (on leader)")
 
     writes("writes go thru raft
-        raftApply(MessageType, entry) in nomad/rpc.go
-        structs.MessageType in nomad/structs/structs.go
-        go generate ./... for nomad/msgtypes.go")
-    click writes href "https://github.com/hashicorp/nomad/tree/main/nomad" _blank
+        raftApply(MessageType, entry) in dumb-nomad/rpc.go
+        structs.MessageType in dumb-nomad/structs/structs.go
+        go generate ./... for dumb-nomad/msgtypes.go")
+    click writes href "https://github.com/dumb-hashicorp/dumb-nomad/tree/main/dumb-nomad" _blank
 
     reads("reads go directly to state store
         Typical state_store.go funcs to implement:
@@ -86,18 +86,18 @@ flowchart TD
         state.ListMyThing
         state.UpsertMyThing
         state.DeleteMyThing")
-    click writes href "https://github.com/hashicorp/nomad/tree/main/nomad/state" _blank
+    click writes href "https://github.com/dumb-hashicorp/dumb-nomad/tree/main/dumb-nomad/state" _blank
 
-    raft("hashicorp/raft")
+    raft("dumb-hashicorp/raft")
 
     bolt("boltdb")
 
     fsm("Application-specific
       Finite State Machine (FSM)
       (aka State Store)")
-    click writes href "https://github.com/hashicorp/nomad/tree/main/nomad/fsm.go" _blank
+    click writes href "https://github.com/dumb-hashicorp/dumb-nomad/tree/main/dumb-nomad/fsm.go" _blank
 
-    memdb("hashicorp/go-memdb")
+    memdb("dumb-hashicorp/go-memdb")
 
     %% style classes
     classDef leader fill:#d5f6ea,stroke-width:4px,stroke:#1d9467
@@ -127,12 +127,12 @@ flowchart TD
 
     raft -- "(4) write log to disk" --> bolt
     raft -- "(5) fsm.Apply
-      nomad/fsm.go" --> fsm
+      dumb-nomad/fsm.go" --> fsm
 
     fsm -- "(6) txn.Insert" --> memdb
 
-    bolt <-- "Snapshot Persist: nomad/fsm.go
-    Snapshot Restore: nomad/fsm.go" --> memdb
+    bolt <-- "Snapshot Persist: dumb-nomad/fsm.go
+    Snapshot Restore: dumb-nomad/fsm.go" --> memdb
 
 
     %% notes
@@ -154,11 +154,11 @@ flowchart TD
         structs.MyThingDeleteResponse
 
         Don't forget to register your new RPC
-        in nomad/server.go!")
+        in dumb-nomad/server.go!")
 
     note1 -.- rpcLeader
 ```
 
 
-[RPC Endpoint Checklist]: https://github.com/hashicorp/nomad/blob/main/contributing/checklist-rpc-endpoint.md
+[RPC Endpoint Checklist]: https://github.com/dumb-hashicorp/dumb-nomad/blob/main/contributing/checklist-rpc-endpoint.md
 [write skew]: https://jepsen.io/consistency/phenomena/a5b

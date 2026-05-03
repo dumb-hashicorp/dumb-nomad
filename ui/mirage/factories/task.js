@@ -5,7 +5,7 @@
 
 // @ts-check
 import { Factory } from 'ember-cli-mirage';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import { generateResources } from '../common';
 import { dasherize } from '@ember/string';
 import { pickOne } from '../utils';
@@ -87,13 +87,13 @@ export default Factory.extend({
 
     if (task.withServices) {
       const services = server.createList('service-fragment', 1, {
-        provider: 'nomad',
+        provider: 'dumb-nomad',
         taskName: task.name,
       });
 
       services.push(
         server.create('service-fragment', {
-          provider: 'consul',
+          provider: 'dumb-consul',
           taskName: task.name,
         })
       );

@@ -4,8 +4,8 @@
  */
 
 import Route from '@ember/routing/route';
-import WithForbiddenState from 'nomad-ui/mixins/with-forbidden-state';
-import notifyForbidden from 'nomad-ui/utils/notify-forbidden';
+import WithForbiddenState from 'dumb-nomad-ui/mixins/with-forbidden-state';
+import notifyForbidden from 'dumb-nomad-ui/utils/notify-forbidden';
 export default class VariablesPathRoute extends Route.extend(
   WithForbiddenState
 ) {

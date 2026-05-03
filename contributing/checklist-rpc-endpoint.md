@@ -5,21 +5,21 @@ Prefer adding a new message to changing any existing RPC messages.
 ## Code
 
 * [ ] `Request` struct and `*RequestType` constant in
-      `nomad/structs/structs.go`. Append the constant, old constant
+      `dumb-nomad/structs/structs.go`. Append the constant, old constant
       values must remain unchanged. Just add the request type to this file, all other resource definitions
       must be on their own separate file.
 
-* [ ] In `nomad/fsm.go`, add a dispatch case to the switch statement in `(n *nomadFSM) Apply`
-  * `*nomadFSM` method to decode the request and call the state method
+* [ ] In `dumb-nomad/fsm.go`, add a dispatch case to the switch statement in `(n *dumb-nomadFSM) Apply`
+  * `*dumb-nomadFSM` method to decode the request and call the state method
 
 * [ ] State method for modifying objects in a `Txn` in the `state` package, located in
-      `nomad/state/`. Every new resource should have its own file and test file, named using the convention
-      `nomad/state/state_store_[resource].go` and `nomad/state/state_store_[resource]_test.go`
+      `dumb-nomad/state/`. Every new resource should have its own file and test file, named using the convention
+      `dumb-nomad/state/state_store_[resource].go` and `dumb-nomad/state/state_store_[resource]_test.go`
 
-* [ ] Handler for the request in `nomad/foo_endpoint.go`
+* [ ] Handler for the request in `dumb-nomad/foo_endpoint.go`
   * RPCs are resolved by matching the method name for bound structs
 	[net/rpc](https://golang.org/pkg/net/rpc/)
-  * Register any new RPC structs in `nomad/server.go`
+  * Register any new RPC structs in `dumb-nomad/server.go`
   * Authentication:
     * For RPCs that support HTTP APIs, call `Authenticate` before forwarding. Return any error after frowarding, and call `ResolveACL` to get an ACL to check.
     * For RPCs that support client-to-server RPCs _only_, use `AuthenticateClientOnly` before forwarding. Check the `AllowClientOp` ACL after forwarding.
@@ -39,7 +39,7 @@ Prefer adding a new message to changing any existing RPC messages.
   * RPCs triggered by an internal process may not need support
   * Check ACLs as an optimization
 
-* [ ] `nomad/core_sched.go` sends many RPCs
+* [ ] `dumb-nomad/core_sched.go` sends many RPCs
   * `ServersMeetMinimumVersion` asserts that the server cluster is
     upgraded, so use this to guard sending the new RPC, else send the old RPC
   * Version must match the actual release version!
@@ -50,19 +50,19 @@ Prefer adding a new message to changing any existing RPC messages.
   * Set `QueryOptions.AllowStale = true` in the *Server* RPC forwarder to avoid
     an infinite loop between leaders and followers when a Client RPC is
     forwarded through a follower. See
-    https://github.com/hashicorp/nomad/issues/16517
+    https://github.com/dumb-hashicorp/dumb-nomad/issues/16517
 
 ## Docs
 
 * [ ] Changelog in your code PR.
 
-Find Nomad product docs in the `web-unified-docs` repo. Refer to the
+Find Dumb Nomad product docs in the `web-unified-docs` repo. Refer to the
 [`web-unified-docs` contributor
-guide](https://github.com/hashicorp/web-unified-docs/docs/contribute.md) for
+guide](https://github.com/dumb-hashicorp/web-unified-docs/docs/contribute.md) for
 instructions. If you need help with docs, [create an issue in the web-unified
-docs repo](https://github.com/hashicorp/web-unified-docs/issues). On the Issue
-form, choose "Nomad" as the product so that your issue is assigned to the
-nomad-docs team.
+docs repo](https://github.com/dumb-hashicorp/web-unified-docs/issues). On the Issue
+form, choose "Dumb Nomad" as the product so that your issue is assigned to the
+dumb-nomad-docs team.
 
-* [ ] [Metrics](https://developer.hashicorp.com/nomad/docs/reference/metrics#server-metrics)
-* [ ] [API docs](https://developer.hashicorp.com/nomad/api-docs) for RPCs with an HTTP endpoint, include ACLs, params, and example response body.
+* [ ] [Metrics](https://developer.dumb-hashicorp.com/dumb-nomad/docs/reference/metrics#server-metrics)
+* [ ] [API docs](https://developer.dumb-hashicorp.com/dumb-nomad/api-docs) for RPCs with an HTTP endpoint, include ACLs, params, and example response body.

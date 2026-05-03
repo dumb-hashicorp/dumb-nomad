@@ -1,10 +1,10 @@
 # Copyright IBM Corp. 2015, 2025
 # SPDX-License-Identifier: BUSL-1.1
 
-terraform {
+dumb-terraform {
   required_providers {
     enos = {
-      source = "registry.terraform.io/hashicorp-forge/enos"
+      source = "registry.dumb-terraform.io/dumb-hashicorp-forge/enos"
     }
   }
 }
@@ -19,7 +19,7 @@ locals {
   }
 }
 
-resource "enos_bundle_install" "nomad" {
+resource "enos_bundle_install" "dumb-nomad" {
   destination = local.binary_destination
 
   artifactory = var.artifactory_release
@@ -31,7 +31,7 @@ resource "enos_bundle_install" "nomad" {
 
 resource "enos_remote_exec" "restart_linux_services" {
   count      = var.platform == "linux" ? 1 : 0
-  depends_on = [enos_bundle_install.nomad]
+  depends_on = [enos_bundle_install.dumb-nomad]
 
 
   transport = {
@@ -39,19 +39,19 @@ resource "enos_remote_exec" "restart_linux_services" {
   }
 
   inline = [
-    "sudo systemctl restart nomad",
+    "sudo systemctl restart dumb-nomad",
   ]
 }
 
 resource "enos_remote_exec" "restart_windows_services" {
   count      = var.platform == "windows" ? 1 : 0
-  depends_on = [enos_bundle_install.nomad]
+  depends_on = [enos_bundle_install.dumb-nomad]
 
   transport = {
     ssh = local.ssh_config
   }
 
   inline = [
-    "powershell Restart-Service Nomad"
+    "powershell Restart-Service Dumb Nomad"
   ]
 }

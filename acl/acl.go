@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	iradix "github.com/hashicorp/go-immutable-radix/v2"
+	iradix "github.com/dumb-hashicorp/go-immutable-radix/v2"
 	glob "github.com/ryanuber/go-glob"
 )
 
@@ -706,10 +706,10 @@ func (a *ACL) matchingVariablesCapabilitySet(ns, path string, claim *ACLClaim) (
 	}
 	if claim != nil && ns == claim.Namespace {
 		switch path {
-		case "nomad/jobs",
-			fmt.Sprintf("nomad/jobs/%s", claim.Job),
-			fmt.Sprintf("nomad/jobs/%s/%s", claim.Job, claim.Group),
-			fmt.Sprintf("nomad/jobs/%s/%s/%s", claim.Job, claim.Group, claim.Task):
+		case "dumb-nomad/jobs",
+			fmt.Sprintf("dumb-nomad/jobs/%s", claim.Job),
+			fmt.Sprintf("dumb-nomad/jobs/%s/%s", claim.Job, claim.Group),
+			fmt.Sprintf("dumb-nomad/jobs/%s/%s/%s", claim.Job, claim.Group, claim.Task):
 			return workloadVariablesCapabilitySet, true
 		default:
 		}

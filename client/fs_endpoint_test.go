@@ -19,19 +19,19 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/config"
-	sframer "github.com/hashicorp/nomad/client/lib/streamframer"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	sframer "github.com/dumb-hashicorp/dumb-nomad/client/lib/streamframer"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -43,7 +43,7 @@ func tempAllocDir(t testing.TB) *allocdir.AllocDir {
 
 	require.NoError(t, os.Chmod(dir, 0o777))
 
-	return allocdir.NewAllocDir(testlog.HCLogger(t), dir, dir, "test_allocid")
+	return allocdir.NewAllocDir(testlog.DUMB_HCLogger(t), dir, dir, "test_allocid")
 }
 
 type nopWriteCloser struct {
@@ -80,7 +80,7 @@ func TestFS_Stat(t *testing.T) {
 	require := require.New(t)
 
 	// Start a server and client
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -116,7 +116,7 @@ func TestFS_Stat_ACL(t *testing.T) {
 	ci.Parallel(t)
 
 	// Start a server
-	s, root, cleanupS := nomad.TestACLServer(t, nil)
+	s, root, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -213,7 +213,7 @@ func TestFS_List(t *testing.T) {
 	require := require.New(t)
 
 	// Start a server and client
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -249,7 +249,7 @@ func TestFS_List_ACL(t *testing.T) {
 	ci.Parallel(t)
 
 	// Start a server
-	s, root, cleanupS := nomad.TestACLServer(t, nil)
+	s, root, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -402,7 +402,7 @@ func TestFS_Stream_GC(t *testing.T) {
 	ci.Parallel(t)
 
 	// Start a server and client.
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	t.Cleanup(cleanupS)
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -490,7 +490,7 @@ func TestFS_Stream_ACL(t *testing.T) {
 	ci.Parallel(t)
 
 	// Start a server
-	s, root, cleanupS := nomad.TestACLServer(t, nil)
+	s, root, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -619,7 +619,7 @@ func TestFS_Stream(t *testing.T) {
 	require := require.New(t)
 
 	// Start a server and client
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -735,7 +735,7 @@ func TestFS_Stream_Follow(t *testing.T) {
 	require := require.New(t)
 
 	// Start a server and client
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -832,7 +832,7 @@ func TestFS_Stream_Limit(t *testing.T) {
 	require := require.New(t)
 
 	// Start a server and client
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -1004,7 +1004,7 @@ func TestFS_Logs_TaskPending(t *testing.T) {
 	require := require.New(t)
 
 	// Start a server and client
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -1120,7 +1120,7 @@ func TestFS_Logs_GC(t *testing.T) {
 	ci.Parallel(t)
 
 	// Start a server and client.
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	t.Cleanup(cleanupS)
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -1210,7 +1210,7 @@ func TestFS_Logs_ACL(t *testing.T) {
 	require := require.New(t)
 
 	// Start a server
-	s, root, cleanupS := nomad.TestACLServer(t, nil)
+	s, root, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -1341,7 +1341,7 @@ func TestFS_Logs(t *testing.T) {
 	require := require.New(t)
 
 	// Start a server and client
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -1442,7 +1442,7 @@ func TestFS_Logs_Follow(t *testing.T) {
 	require := require.New(t)
 
 	// Start a server and client
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 

@@ -12,14 +12,14 @@ import (
 	"runtime"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/logmon"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	bstructs "github.com/hashicorp/nomad/plugins/base/structs"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/logmon"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	bstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/base/structs"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -40,7 +40,7 @@ type logmonHook struct {
 
 	config *logmonHookConfig
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 type logmonHookConfig struct {
@@ -50,7 +50,7 @@ type logmonHookConfig struct {
 	stderrFifo string
 }
 
-func newLogMonHook(tr *TaskRunner, logger hclog.Logger) *logmonHook {
+func newLogMonHook(tr *TaskRunner, logger dumb-hclog.Logger) *logmonHook {
 	hook := &logmonHook{
 		runner: tr,
 		config: tr.logmonHookConfig,

@@ -7,10 +7,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/hcl"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-hcl"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
@@ -18,25 +18,25 @@ func TestVolumeDispatchParse(t *testing.T) {
 	ci.Parallel(t)
 
 	cases := []struct {
-		hcl string
+		dumb-hcl string
 		t   string
 		err string
 	}{{
-		hcl: `
+		dumb-hcl: `
 type = "foo"
 rando = "bar"
 `,
 		t:   "foo",
 		err: "",
 	}, {
-		hcl: `{"id": "foo", "type": "foo", "other": "bar"}`,
+		dumb-hcl: `{"id": "foo", "type": "foo", "other": "bar"}`,
 		t:   "foo",
 		err: "",
 	}}
 
 	for _, c := range cases {
-		t.Run(c.hcl, func(t *testing.T) {
-			_, s, err := parseVolumeType(c.hcl)
+		t.Run(c.dumb-hcl, func(t *testing.T) {
+			_, s, err := parseVolumeType(c.dumb-hcl)
 			must.Eq(t, c.t, s)
 			if c.err == "" {
 				must.NoError(t, err)
@@ -52,12 +52,12 @@ func TestCSIVolumeDecode(t *testing.T) {
 
 	cases := []struct {
 		name     string
-		hcl      string
+		dumb-hcl      string
 		expected *api.CSIVolume
 		err      string
 	}{{
 		name: "volume creation",
-		hcl: `
+		dumb-hcl: `
 id              = "testvolume"
 namespace       = "prod"
 name            = "test"
@@ -140,7 +140,7 @@ topology_request {
 		err: "",
 	}, {
 		name: "volume registration",
-		hcl: `
+		dumb-hcl: `
 id              = "testvolume"
 namespace       = "prod"
 external_id     = "vol-12345"
@@ -193,7 +193,7 @@ topology_request {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			ast, err := hcl.ParseString(c.hcl)
+			ast, err := dumb-hcl.ParseString(c.dumb-hcl)
 			must.NoError(t, err)
 			vol, err := csiDecodeVolume(ast)
 			if c.err == "" {
@@ -221,7 +221,7 @@ func TestVolumeRegisterCommand_Run(t *testing.T) {
 		Meta: Meta{Ui: ui},
 	}
 
-	volumeHCL := `
+	volumeDUMB_HCL := `
 type = "csi"
 id = "test-volume"
 name = "test-volume"
@@ -236,9 +236,9 @@ capability {
 }
 `
 
-	file, err := os.CreateTemp(t.TempDir(), "csi-volume-test-*.hcl")
+	file, err := os.CreateTemp(t.TempDir(), "csi-volume-test-*.dumb-hcl")
 	must.NoError(t, err)
-	_, err = file.WriteString(volumeHCL)
+	_, err = file.WriteString(volumeDUMB_HCL)
 	must.NoError(t, err)
 
 	// Since we can't easily mock the API client to fake a CSI plugin running,

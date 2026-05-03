@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 	"github.com/shoenig/test/must"
 )
 
@@ -88,7 +88,7 @@ func (m *mockDriverStats) Called() int {
 func TestTaskRunner_StatsHook_PoststartExited(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	su := newMockStatsUpdater()
 	ds := new(mockDriverStats)
 
@@ -119,7 +119,7 @@ func TestTaskRunner_StatsHook_PoststartExited(t *testing.T) {
 func TestTaskRunner_StatsHook_Periodic(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	su := newMockStatsUpdater()
 
 	ds := new(mockDriverStats)
@@ -183,7 +183,7 @@ WAITING:
 func TestTaskRunner_StatsHook_NotImplemented(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	su := newMockStatsUpdater()
 	ds := &mockDriverStats{
 		err: cstructs.DriverStatsNotImplemented,
@@ -211,7 +211,7 @@ func TestTaskRunner_StatsHook_NotImplemented(t *testing.T) {
 func TestTaskRunner_StatsHook_Backoff(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	su := newMockStatsUpdater()
 	ds := &mockDriverStats{}
 

@@ -6,9 +6,9 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 	"github.com/posener/complete"
 )
 
@@ -18,24 +18,24 @@ type ACLPolicyCommand struct {
 
 func (f *ACLPolicyCommand) Help() string {
 	helpText := `
-Usage: nomad acl policy <subcommand> [options] [args]
+Usage: dumb-nomad acl policy <subcommand> [options] [args]
 
-  This command groups subcommands for interacting with ACL policies. Nomad's ACL
+  This command groups subcommands for interacting with ACL policies. Dumb Nomad's ACL
   system can be used to control access to data and APIs. ACL policies allow a
   set of capabilities or actions to be granted or allowlisted. For a full guide
-  see: https://developer.hashicorp.com/nomad/docs/secure/acl
+  see: https://developer.dumb-hashicorp.com/dumb-nomad/docs/secure/acl
 
   Create an ACL policy:
 
-      $ nomad acl policy apply <name> <policy-file>
+      $ dumb-nomad acl policy apply <name> <policy-file>
 
   List ACL policies:
 
-      $ nomad acl policy list
+      $ dumb-nomad acl policy list
 
   Inspect an ACL policy:
 
-      $ nomad acl policy info <policy>
+      $ dumb-nomad acl policy info <policy>
 
   Please see the individual subcommand help for detailed usage information.
 `

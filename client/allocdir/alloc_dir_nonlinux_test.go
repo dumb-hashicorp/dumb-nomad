@@ -11,10 +11,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
 	"github.com/shoenig/test/must"
 )
 
@@ -27,7 +27,7 @@ func TestAllocDir_ReadAt_CaseInsensitiveSecretDir(t *testing.T) {
 	tmp, err := filepath.EvalSymlinks(t.TempDir())
 	must.NoError(t, err)
 
-	d := NewAllocDir(testlog.HCLogger(t), tmp, tmp, "test")
+	d := NewAllocDir(testlog.DUMB_HCLogger(t), tmp, tmp, "test")
 	must.NoError(t, d.Build())
 	defer func() { _ = d.Destroy() }()
 

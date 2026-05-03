@@ -7,7 +7,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Service from '@ember/service';
-import setupAbility from 'nomad-ui/tests/helpers/setup-ability';
+import setupAbility from 'dumb-nomad-ui/tests/helpers/setup-ability';
 
 module('Unit | Ability | variable', function (hooks) {
   setupTest(hooks);
@@ -923,7 +923,7 @@ module('Unit | Ability | variable', function (hooks) {
                       },
                       {
                         Capabilities: ['list', 'read', 'create'],
-                        PathSpec: 'nomad/jobs/*',
+                        PathSpec: 'dumb-nomad/jobs/*',
                       },
                     ],
                   },
@@ -959,7 +959,7 @@ module('Unit | Ability | variable', function (hooks) {
           },
           {
             capabilities: ['list', 'read', 'create'],
-            name: 'nomad/jobs/*',
+            name: 'dumb-nomad/jobs/*',
             namespace: 'namespace-2',
           },
         ],

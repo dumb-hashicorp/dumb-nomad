@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
 	"github.com/shoenig/test/must"
 )
 

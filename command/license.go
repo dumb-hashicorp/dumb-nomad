@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 )
 
 var _ cli.Command = &LicenseCommand{}
@@ -20,22 +20,22 @@ type LicenseCommand struct {
 
 func (l *LicenseCommand) Help() string {
 	helpText := `
-Usage: nomad license <subcommand> [options] [args]
+Usage: dumb-nomad license <subcommand> [options] [args]
 
-This command has subcommands for managing the Nomad Enterprise license.
+This command has subcommands for managing the Dumb Nomad Enterprise license.
 For more detailed examples see:
-https://developer.hashicorp.com/nomad/commands/license
+https://developer.dumb-hashicorp.com/dumb-nomad/commands/license
 
 Retrieve the server's license:
 
-	$ nomad license get
+	$ dumb-nomad license get
 
 	`
 	return strings.TrimSpace(helpText)
 }
 
 func (l *LicenseCommand) Synopsis() string {
-	return "Interact with Nomad Enterprise License"
+	return "Interact with Dumb Nomad Enterprise License"
 }
 
 func (l *LicenseCommand) Name() string { return "license" }

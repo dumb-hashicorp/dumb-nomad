@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/shoenig/test/must"
 )
 
@@ -35,64 +35,64 @@ node {
 func TestAuth(t *testing.T) {
 
 	// Wait until we have a usable cluster before running the tests.
-	nomadClient := e2eutil.NomadClient(t)
-	e2eutil.WaitForLeader(t, nomadClient)
-	e2eutil.WaitForNodesReady(t, nomadClient, 1)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
+	e2eutil.WaitForLeader(t, dumb-nomadClient)
+	e2eutil.WaitForNodesReady(t, dumb-nomadClient, 1)
 
-	nodes, _, err := nomadClient.Nodes().List(nil)
+	nodes, _, err := dumb-nomadClient.Nodes().List(nil)
 	must.NoError(t, err, must.Sprint("expected no error from root client"))
 	must.Greater(t, 0, len(nodes))
-	node, _, err := nomadClient.Nodes().Info(nodes[0].ID, nil)
+	node, _, err := dumb-nomadClient.Nodes().Info(nodes[0].ID, nil)
 
 	ns := uuid.Generate()
 	validPolicyName := uuid.Generate()
 	invalidPolicyName := uuid.Generate()
 
-	setupAuthTest(t, nomadClient, ns, validPolicyName, invalidPolicyName)
+	setupAuthTest(t, dumb-nomadClient, ns, validPolicyName, invalidPolicyName)
 
 	// Test cases that exercise requests directly to the server
 	t.Run("AnonServerRequests", testAnonServerRequests(node, ns))
-	t.Run("BogusServerRequests", testBogusServerRequests(nomadClient, node, ns))
+	t.Run("BogusServerRequests", testBogusServerRequests(dumb-nomadClient, node, ns))
 	t.Run("InvalidPermissionsServerRequests",
-		testInvalidPermissionsServerRequests(nomadClient, node, ns, invalidPolicyName))
+		testInvalidPermissionsServerRequests(dumb-nomadClient, node, ns, invalidPolicyName))
 	t.Run("ValidPermissionsServerRequests",
-		testValidPermissionsServerRequests(nomadClient, node, ns, validPolicyName))
+		testValidPermissionsServerRequests(dumb-nomadClient, node, ns, validPolicyName))
 
 	// Test cases that exercise requests forwarded from the client
 	t.Run("AnonClientRequests", testAnonClientRequests(node, ns))
-	t.Run("BogusClientRequests", testBogusClientRequests(nomadClient, node, ns))
+	t.Run("BogusClientRequests", testBogusClientRequests(dumb-nomadClient, node, ns))
 	t.Run("InvalidPermissionsClientRequests",
-		testInvalidPermissionsClientRequests(nomadClient, node, ns, invalidPolicyName))
+		testInvalidPermissionsClientRequests(dumb-nomadClient, node, ns, invalidPolicyName))
 	t.Run("ValidPermissionsClientRequests",
-		testValidPermissionsClientRequests(nomadClient, node, ns, validPolicyName))
+		testValidPermissionsClientRequests(dumb-nomadClient, node, ns, validPolicyName))
 }
 
 func testAnonServerRequests(node *api.Node, ns string) func(t *testing.T) {
 	return func(t *testing.T) {
-		nomadClient := e2eutil.NomadClient(t)
-		nomadClient.SetSecretID("")
+		dumb-nomadClient := e2eutil.Dumb NomadClient(t)
+		dumb-nomadClient.SetSecretID("")
 
-		testReadNamespaceAPI(t, nomadClient, ns, "", true)
-		testNodeAPI(t, nomadClient, node.ID, "", true)
-		testVariablesAPI(t, nomadClient, ns, "", true, true)
+		testReadNamespaceAPI(t, dumb-nomadClient, ns, "", true)
+		testNodeAPI(t, dumb-nomadClient, node.ID, "", true)
+		testVariablesAPI(t, dumb-nomadClient, ns, "", true, true)
 	}
 }
 
-func testBogusServerRequests(nomadClient *api.Client,
+func testBogusServerRequests(dumb-nomadClient *api.Client,
 	node *api.Node, ns string) func(t *testing.T) {
 	return func(t *testing.T) {
 		authToken := uuid.Generate()
 
-		testReadNamespaceAPI(t, nomadClient, ns, authToken, true)
-		testNodeAPI(t, nomadClient, node.ID, authToken, true)
-		testVariablesAPI(t, nomadClient, ns, authToken, true, true)
+		testReadNamespaceAPI(t, dumb-nomadClient, ns, authToken, true)
+		testNodeAPI(t, dumb-nomadClient, node.ID, authToken, true)
+		testVariablesAPI(t, dumb-nomadClient, ns, authToken, true, true)
 	}
 }
 
-func testInvalidPermissionsServerRequests(nomadClient *api.Client,
+func testInvalidPermissionsServerRequests(dumb-nomadClient *api.Client,
 	node *api.Node, ns, policyName string) func(t *testing.T) {
 	return func(t *testing.T) {
-		token, _, err := nomadClient.ACLTokens().Create(&api.ACLToken{
+		token, _, err := dumb-nomadClient.ACLTokens().Create(&api.ACLToken{
 			Name:          policyName,
 			Type:          "client",
 			Policies:      []string{policyName},
@@ -101,16 +101,16 @@ func testInvalidPermissionsServerRequests(nomadClient *api.Client,
 		must.NoError(t, err)
 		authToken := token.SecretID
 
-		testReadNamespaceAPI(t, nomadClient, ns, authToken, true)
-		testNodeAPI(t, nomadClient, node.ID, authToken, true)
-		testVariablesAPI(t, nomadClient, ns, authToken, true, true)
+		testReadNamespaceAPI(t, dumb-nomadClient, ns, authToken, true)
+		testNodeAPI(t, dumb-nomadClient, node.ID, authToken, true)
+		testVariablesAPI(t, dumb-nomadClient, ns, authToken, true, true)
 	}
 }
 
-func testValidPermissionsServerRequests(nomadClient *api.Client,
+func testValidPermissionsServerRequests(dumb-nomadClient *api.Client,
 	node *api.Node, ns, policyName string) func(t *testing.T) {
 	return func(t *testing.T) {
-		token, _, err := nomadClient.ACLTokens().Create(&api.ACLToken{
+		token, _, err := dumb-nomadClient.ACLTokens().Create(&api.ACLToken{
 			Name:          policyName,
 			Type:          "client",
 			Policies:      []string{policyName},
@@ -119,9 +119,9 @@ func testValidPermissionsServerRequests(nomadClient *api.Client,
 		must.NoError(t, err)
 		authToken := token.SecretID
 
-		testReadNamespaceAPI(t, nomadClient, ns, authToken, false)
-		testNodeAPI(t, nomadClient, node.ID, authToken, false)
-		testVariablesAPI(t, nomadClient, ns, authToken, false, true)
+		testReadNamespaceAPI(t, dumb-nomadClient, ns, authToken, false)
+		testNodeAPI(t, dumb-nomadClient, node.ID, authToken, false)
+		testVariablesAPI(t, dumb-nomadClient, ns, authToken, false, true)
 	}
 }
 
@@ -129,13 +129,13 @@ func testAnonClientRequests(node *api.Node, ns string) func(t *testing.T) {
 	return func(t *testing.T) {
 		config := api.DefaultConfig()
 		config.Address = addressForNode(node)
-		nomadClient, err := api.NewClient(config)
-		nomadClient.SetSecretID("")
+		dumb-nomadClient, err := api.NewClient(config)
+		dumb-nomadClient.SetSecretID("")
 		must.NoError(t, err)
 
-		testReadNamespaceAPI(t, nomadClient, ns, "", true)
-		testNodeAPI(t, nomadClient, node.ID, "", true)
-		testVariablesAPI(t, nomadClient, ns, "", true, true)
+		testReadNamespaceAPI(t, dumb-nomadClient, ns, "", true)
+		testNodeAPI(t, dumb-nomadClient, node.ID, "", true)
+		testVariablesAPI(t, dumb-nomadClient, ns, "", true, true)
 	}
 }
 
@@ -144,14 +144,14 @@ func testBogusClientRequests(rootClient *api.Client,
 	return func(t *testing.T) {
 		config := api.DefaultConfig()
 		config.Address = addressForNode(node)
-		nomadClient, err := api.NewClient(config)
+		dumb-nomadClient, err := api.NewClient(config)
 		must.NoError(t, err)
 
 		authToken := uuid.Generate()
 
-		testReadNamespaceAPI(t, nomadClient, ns, authToken, true)
-		testNodeAPI(t, nomadClient, node.ID, authToken, true)
-		testVariablesAPI(t, nomadClient, ns, authToken, true, true)
+		testReadNamespaceAPI(t, dumb-nomadClient, ns, authToken, true)
+		testNodeAPI(t, dumb-nomadClient, node.ID, authToken, true)
+		testVariablesAPI(t, dumb-nomadClient, ns, authToken, true, true)
 	}
 }
 
@@ -168,14 +168,14 @@ func testInvalidPermissionsClientRequests(rootClient *api.Client,
 
 		config := api.DefaultConfig()
 		config.Address = addressForNode(node)
-		nomadClient, err := api.NewClient(config)
+		dumb-nomadClient, err := api.NewClient(config)
 		must.NoError(t, err)
 
 		authToken := token.SecretID
 
-		testReadNamespaceAPI(t, nomadClient, ns, authToken, true)
-		testNodeAPI(t, nomadClient, node.ID, authToken, true)
-		testVariablesAPI(t, nomadClient, ns, authToken, true, true)
+		testReadNamespaceAPI(t, dumb-nomadClient, ns, authToken, true)
+		testNodeAPI(t, dumb-nomadClient, node.ID, authToken, true)
+		testVariablesAPI(t, dumb-nomadClient, ns, authToken, true, true)
 	}
 }
 
@@ -192,22 +192,22 @@ func testValidPermissionsClientRequests(rootClient *api.Client,
 
 		config := api.DefaultConfig()
 		config.Address = addressForNode(node)
-		nomadClient, err := api.NewClient(config)
+		dumb-nomadClient, err := api.NewClient(config)
 		must.NoError(t, err)
 
 		authToken := token.SecretID
 
-		testReadNamespaceAPI(t, nomadClient, ns, authToken, false)
-		testNodeAPI(t, nomadClient, node.ID, authToken, false)
-		testVariablesAPI(t, nomadClient, ns, authToken, false, true)
+		testReadNamespaceAPI(t, dumb-nomadClient, ns, authToken, false)
+		testNodeAPI(t, dumb-nomadClient, node.ID, authToken, false)
+		testVariablesAPI(t, dumb-nomadClient, ns, authToken, false, true)
 	}
 }
 
 // testReadNamespaceAPI exercises an API that requires any namespace capability
-func testReadNamespaceAPI(t *testing.T, nomadClient *api.Client, ns, authToken string, expectErr bool) {
+func testReadNamespaceAPI(t *testing.T, dumb-nomadClient *api.Client, ns, authToken string, expectErr bool) {
 	t.Helper()
 	opts := &api.QueryOptions{AuthToken: authToken}
-	_, _, err := nomadClient.Namespaces().Info(ns, opts)
+	_, _, err := dumb-nomadClient.Namespaces().Info(ns, opts)
 	if expectErr {
 		must.Error(t, err, must.Sprint("expected error when reading namespace"))
 	} else {
@@ -216,10 +216,10 @@ func testReadNamespaceAPI(t *testing.T, nomadClient *api.Client, ns, authToken s
 }
 
 // testNodeAPI exercises an API that requires the node:write permission
-func testNodeAPI(t *testing.T, nomadClient *api.Client, nodeID, authToken string, expectErr bool) {
+func testNodeAPI(t *testing.T, dumb-nomadClient *api.Client, nodeID, authToken string, expectErr bool) {
 	t.Helper()
 	opts := &api.WriteOptions{AuthToken: authToken}
-	_, _, err := nomadClient.Nodes().ForceEvaluate(nodeID, opts)
+	_, _, err := dumb-nomadClient.Nodes().ForceEvaluate(nodeID, opts)
 	if expectErr {
 		must.Error(t, err, must.Sprint("expected error when force-evaluating node"))
 	} else {
@@ -229,11 +229,11 @@ func testNodeAPI(t *testing.T, nomadClient *api.Client, nodeID, authToken string
 
 // testVariablesAPI exercises an API that requires namespace capabilities for
 // variables
-func testVariablesAPI(t *testing.T, nomadClient *api.Client, ns, authToken string, expectErrTestPath, expectErrOutsidePath bool) {
+func testVariablesAPI(t *testing.T, dumb-nomadClient *api.Client, ns, authToken string, expectErrTestPath, expectErrOutsidePath bool) {
 	t.Helper()
 	opts := &api.WriteOptions{Namespace: ns, AuthToken: authToken}
 
-	_, _, err := nomadClient.Variables().Create(&api.Variable{
+	_, _, err := dumb-nomadClient.Variables().Create(&api.Variable{
 		Namespace: ns,
 		Path:      "test/" + t.Name(),
 		Items:     map[string]string{"foo": t.Name()},
@@ -245,13 +245,13 @@ func testVariablesAPI(t *testing.T, nomadClient *api.Client, ns, authToken strin
 		must.NoError(t, err, must.Sprint("expected no error writing variable"))
 	}
 	t.Cleanup(func() {
-		_, err := nomadClient.Variables().Delete("test/"+t.Name(), opts)
+		_, err := dumb-nomadClient.Variables().Delete("test/"+t.Name(), opts)
 		if !expectErrTestPath {
 			must.NoError(t, err, must.Sprint("expected no error cleaning up variable"))
 		}
 	})
 
-	_, _, err = nomadClient.Variables().Create(&api.Variable{
+	_, _, err = dumb-nomadClient.Variables().Create(&api.Variable{
 		Namespace: ns,
 		Path:      "other/" + t.Name(),
 		Items:     map[string]string{"foo": t.Name()},
@@ -265,44 +265,44 @@ func testVariablesAPI(t *testing.T, nomadClient *api.Client, ns, authToken strin
 	t.Cleanup(func() {
 		// no test should ever write this variable, so we don't expect delete to
 		// work either but need it for cleanup just in case we did write it
-		nomadClient.Variables().Delete("other/"+t.Name(), opts)
+		dumb-nomadClient.Variables().Delete("other/"+t.Name(), opts)
 	})
 
 }
 
-func setupAuthTest(t *testing.T, nomadClient *api.Client,
+func setupAuthTest(t *testing.T, dumb-nomadClient *api.Client,
 	ns, validPolicyName, invalidPolicyName string) {
 	t.Helper()
 
-	_, err := nomadClient.Namespaces().Register(&api.Namespace{Name: ns}, nil)
+	_, err := dumb-nomadClient.Namespaces().Register(&api.Namespace{Name: ns}, nil)
 	must.NoError(t, err, must.Sprint("expected no error when registering namespace"))
 
 	t.Cleanup(func() {
-		_, err := nomadClient.Namespaces().Delete(ns, nil)
+		_, err := dumb-nomadClient.Namespaces().Delete(ns, nil)
 		must.NoError(t, err, must.Sprint("expected no error cleaning up namespace"))
 	})
 
 	// Create a valid and useful policy
-	_, err = nomadClient.ACLPolicies().Upsert(&api.ACLPolicy{
+	_, err = dumb-nomadClient.ACLPolicies().Upsert(&api.ACLPolicy{
 		Name:  validPolicyName,
 		Rules: fmt.Sprintf(validPolicySpec, ns),
 	}, nil)
 	must.NoError(t, err, must.Sprint("expected no error when registering policy"))
 
 	t.Cleanup(func() {
-		_, err := nomadClient.ACLPolicies().Delete(validPolicyName, nil)
+		_, err := dumb-nomadClient.ACLPolicies().Delete(validPolicyName, nil)
 		must.NoError(t, err, must.Sprint("expected no error cleaning up ACL policy"))
 	})
 
 	// Create a useless policy
-	_, err = nomadClient.ACLPolicies().Upsert(&api.ACLPolicy{
+	_, err = dumb-nomadClient.ACLPolicies().Upsert(&api.ACLPolicy{
 		Name:  invalidPolicyName,
 		Rules: `plugin { policy = "read" }`,
 	}, nil)
 	must.NoError(t, err, must.Sprint("expected no error when registering policy"))
 
 	t.Cleanup(func() {
-		_, err := nomadClient.ACLPolicies().Delete(invalidPolicyName, nil)
+		_, err := dumb-nomadClient.ACLPolicies().Delete(invalidPolicyName, nil)
 		must.NoError(t, err, must.Sprint("expected no error cleaning up ACL policy"))
 	})
 }
@@ -315,14 +315,14 @@ func setupAuthTest(t *testing.T, nomadClient *api.Client,
 // advertised address
 func addressForNode(node *api.Node) string {
 	if publicIP, ok := node.Attributes["unique.platform.aws.public-ipv4"]; ok {
-		if v := os.Getenv("NOMAD_CACERT"); v != "" {
+		if v := os.Getenv("DUMB_NOMAD_CACERT"); v != "" {
 			return fmt.Sprintf("https://%s:4646", publicIP)
 		} else {
 			return fmt.Sprintf("http://%s:4646", publicIP)
 		}
 	}
 
-	if v := os.Getenv("NOMAD_CACERT"); v != "" {
+	if v := os.Getenv("DUMB_NOMAD_CACERT"); v != "" {
 		return fmt.Sprintf("https://%s", node.HTTPAddr)
 	}
 	return fmt.Sprintf("http://%s", node.HTTPAddr)

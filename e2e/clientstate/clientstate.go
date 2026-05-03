@@ -16,16 +16,16 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/execagent"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/helper/discover"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/execagent"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/discover"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 )
 
 func init() {
@@ -41,16 +41,16 @@ func init() {
 type ClientStateTC struct {
 	framework.TC
 
-	// bin is the path to Nomad binary
+	// bin is the path to Dumb Nomad binary
 	bin string
 }
 
 func (tc *ClientStateTC) BeforeAll(f *framework.F) {
-	if os.Getenv("NOMAD_TEST_STATE") == "" {
-		f.T().Skip("Skipping very slow state corruption test unless NOMAD_TEST_STATE=1")
+	if os.Getenv("DUMB_NOMAD_TEST_STATE") == "" {
+		f.T().Skip("Skipping very slow state corruption test unless DUMB_NOMAD_TEST_STATE=1")
 	}
 
-	bin, err := discover.NomadExecutable()
+	bin, err := discover.Dumb NomadExecutable()
 	f.NoError(err)
 	tc.bin = bin
 }
@@ -82,8 +82,8 @@ func getPID(client *api.Client, alloc *api.Allocation, path string) (int, error)
 	return pid, nil
 }
 
-// TestClientState_Kill force kills Nomad agents and restarts them in a tight
-// loop to assert Nomad is crash safe.
+// TestClientState_Kill force kills Dumb Nomad agents and restarts them in a tight
+// loop to assert Dumb Nomad is crash safe.
 func (tc *ClientStateTC) TestClientState_Kill(f *framework.F) {
 	t := f.T()
 	ci.Parallel(t)
@@ -104,7 +104,7 @@ func (tc *ClientStateTC) TestClientState_Kill(f *framework.F) {
 	f.NoError(err)
 
 	jobID := "sleeper-" + uuid.Generate()[:8]
-	allocs := e2eutil.RegisterAndWaitForAllocs(t, client, "clientstate/sleeper.nomad", jobID, "")
+	allocs := e2eutil.RegisterAndWaitForAllocs(t, client, "clientstate/sleeper.dumb-nomad", jobID, "")
 	f.Len(allocs, 1)
 
 	alloc, _, err := client.Allocations().Info(allocs[0].ID, nil)
@@ -223,8 +223,8 @@ func (tc *ClientStateTC) TestClientState_Kill(f *framework.F) {
 	}
 }
 
-// TestClientState_KillDuringRestart force kills Nomad agents and restarts them
-// in a tight loop to assert Nomad is crash safe while a task is restarting.
+// TestClientState_KillDuringRestart force kills Dumb Nomad agents and restarts them
+// in a tight loop to assert Dumb Nomad is crash safe while a task is restarting.
 func (tc *ClientStateTC) TestClientState_KillDuringRestart(f *framework.F) {
 	t := f.T()
 	ci.Parallel(t)
@@ -246,7 +246,7 @@ func (tc *ClientStateTC) TestClientState_KillDuringRestart(f *framework.F) {
 	f.NoError(err)
 
 	jobID := "restarter-" + uuid.Generate()[:8]
-	allocs := e2eutil.RegisterAndWaitForAllocs(t, client, "clientstate/restarter.nomad", jobID, "")
+	allocs := e2eutil.RegisterAndWaitForAllocs(t, client, "clientstate/restarter.dumb-nomad", jobID, "")
 	f.Len(allocs, 1)
 
 	alloc, _, err := client.Allocations().Info(allocs[0].ID, nil)
@@ -367,7 +367,7 @@ func (tc *ClientStateTC) TestClientState_Corrupt(f *framework.F) {
 	f.NoError(err)
 
 	jobID := "sleeper-" + uuid.Generate()[:8]
-	allocs := e2eutil.RegisterAndWaitForAllocs(t, client, "clientstate/sleeper.nomad", jobID, "")
+	allocs := e2eutil.RegisterAndWaitForAllocs(t, client, "clientstate/sleeper.dumb-nomad", jobID, "")
 	f.Len(allocs, 1)
 
 	alloc, _, err := client.Allocations().Info(allocs[0].ID, nil)
@@ -426,7 +426,7 @@ func (tc *ClientStateTC) TestClientState_Corrupt(f *framework.F) {
 	assertHealthy()
 
 	// Remove task bucket from client state
-	db, err := state.NewBoltStateDB(testlog.HCLogger(t), filepath.Join(clientAgent.DataDir, "client"))
+	db, err := state.NewBoltStateDB(testlog.DUMB_HCLogger(t), filepath.Join(clientAgent.DataDir, "client"))
 	f.NoError(err)
 
 	f.NoError(db.DeleteTaskBucket(alloc.ID, "sleeper"))
@@ -447,7 +447,7 @@ func (tc *ClientStateTC) TestClientState_Corrupt(f *framework.F) {
 
 	// Retrieving the pid should work once it restarts.
 	// Critically there are now 2 pids because the client task state was
-	// lost Nomad started a new copy.
+	// lost Dumb Nomad started a new copy.
 	testutil.WaitForResult(func() (bool, error) {
 		allocfs := client.AllocFS()
 		r, err := allocfs.Cat(alloc, "sleeper/pid", nil)

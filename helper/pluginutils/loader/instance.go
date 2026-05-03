@@ -3,7 +3,7 @@
 
 package loader
 
-import plugin "github.com/hashicorp/go-plugin"
+import plugin "github.com/dumb-hashicorp/go-plugin"
 
 // PluginInstance wraps an instance of a plugin. If the plugin is external, it
 // provides methods to retrieve the ReattachConfig and to kill the plugin.

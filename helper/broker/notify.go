@@ -7,7 +7,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 )
 
 // GenericNotifier allows a process to send updates to many subscribers in an

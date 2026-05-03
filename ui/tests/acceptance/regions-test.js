@@ -10,12 +10,12 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { selectChoose } from 'ember-power-select/test-support';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import JobsList from 'nomad-ui/tests/pages/jobs/list';
-import ClientsList from 'nomad-ui/tests/pages/clients/list';
-import Layout from 'nomad-ui/tests/pages/layout';
-import Allocation from 'nomad-ui/tests/pages/allocations/detail';
-import Tokens from 'nomad-ui/tests/pages/settings/tokens';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import JobsList from 'dumb-nomad-ui/tests/pages/jobs/list';
+import ClientsList from 'dumb-nomad-ui/tests/pages/clients/list';
+import Layout from 'dumb-nomad-ui/tests/pages/layout';
+import Allocation from 'dumb-nomad-ui/tests/pages/allocations/detail';
+import Tokens from 'dumb-nomad-ui/tests/pages/settings/tokens';
 
 module('Acceptance | regions (only one)', function (hooks) {
   setupApplicationTest(hooks);
@@ -117,13 +117,13 @@ module('Acceptance | regions (many)', function (hooks) {
 
   test('when on the default region, pages do not include the region query param', async function (assert) {
     let managementToken = server.create('token');
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
     await JobsList.visit();
     await settled();
 
     assert.equal(currentURL(), '/jobs', 'No region query param');
     assert.equal(
-      window.localStorage.nomadActiveRegion,
+      window.localStorage.dumb-nomadActiveRegion,
       'global',
       'Region in localStorage'
     );
@@ -141,7 +141,7 @@ module('Acceptance | regions (many)', function (hooks) {
       'New region is the region query param value'
     );
     assert.equal(
-      window.localStorage.nomadActiveRegion,
+      window.localStorage.dumb-nomadActiveRegion,
       newRegion,
       'New region in localStorage'
     );
@@ -149,7 +149,7 @@ module('Acceptance | regions (many)', function (hooks) {
 
   test('switching regions to the default region, unsets the region query param', async function (assert) {
     let managementToken = server.create('token');
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
     const startingRegion = server.db.regions[1].id;
     const defaultRegion = server.db.regions[0].id;
 
@@ -162,7 +162,7 @@ module('Acceptance | regions (many)', function (hooks) {
       'No region query param for the default region'
     );
     assert.equal(
-      window.localStorage.nomadActiveRegion,
+      window.localStorage.dumb-nomadActiveRegion,
       defaultRegion,
       'New region in localStorage'
     );
@@ -179,14 +179,14 @@ module('Acceptance | regions (many)', function (hooks) {
       'Region param is persisted when navigating straight to a detail page'
     );
     assert.equal(
-      window.localStorage.nomadActiveRegion,
+      window.localStorage.dumb-nomadActiveRegion,
       region,
       'Region is also set in localStorage from a detail page'
     );
   });
 
   test('when the region is not the default region, all api requests other than the agent/self request include the region query param', async function (assert) {
-    window.localStorage.removeItem('nomadTokenSecret');
+    window.localStorage.removeItem('dumb-nomadTokenSecret');
     const region = server.db.regions[1].id;
 
     await JobsList.visit({ region });
@@ -241,7 +241,7 @@ module('Acceptance | regions (many)', function (hooks) {
     );
     await Tokens.secret(managementToken.secretId).submit();
     assert.equal(
-      window.localStorage.nomadActiveRegion,
+      window.localStorage.dumb-nomadActiveRegion,
       'global',
       'Region is set in localStorage after signing in'
     );

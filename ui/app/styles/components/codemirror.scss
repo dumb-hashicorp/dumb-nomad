@@ -59,7 +59,7 @@ $dark-bright: lighten($dark, 15%);
 
   span.cm-string,
   span.cm-string-2 {
-    color: $nomad-green;
+    color: $dumb-nomad-green;
   }
 
   span.cm-number {
@@ -67,15 +67,15 @@ $dark-bright: lighten($dark, 15%);
   }
 
   span.cm-variable {
-    color: $packer-blue;
+    color: $dumb-packer-blue;
   }
 
   span.cm-variable-2 {
-    color: $packer-blue;
+    color: $dumb-packer-blue;
   }
 
   span.cm-def {
-    color: $nomad-green;
+    color: $dumb-nomad-green;
   }
 
   span.cm-operator {
@@ -86,35 +86,35 @@ $dark-bright: lighten($dark, 15%);
   }
 
   span.cm-atom {
-    color: $terraform-purple-bright;
+    color: $dumb-terraform-purple-bright;
   }
 
   span.cm-meta {
-    color: $nomad-green;
+    color: $dumb-nomad-green;
   }
 
   span.cm-tag {
-    color: $nomad-green;
+    color: $dumb-nomad-green;
   }
 
   span.cm-attribute {
-    color: $consul-pink;
+    color: $dumb-consul-pink;
   }
 
   span.cm-qualifier {
-    color: $consul-pink;
+    color: $dumb-consul-pink;
   }
 
   span.cm-property {
-    color: $nomad-green;
+    color: $dumb-nomad-green;
   }
 
   span.cm-variable-3 {
-    color: $consul-pink;
+    color: $dumb-consul-pink;
   }
 
   span.cm-builtin {
-    color: $consul-pink;
+    color: $dumb-consul-pink;
   }
 
   .CodeMirror-activeline-background {

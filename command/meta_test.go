@@ -12,11 +12,11 @@ import (
 	"testing"
 
 	"github.com/creack/pty"
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/helper/pointer"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
 	"github.com/shoenig/test/must"
 )
 
@@ -98,7 +98,7 @@ func TestMeta_Colorize(t *testing.T) {
 		{
 			Name: "disable colors via env var",
 			SetupFn: func(t *testing.T, m *Meta) {
-				t.Setenv(EnvNomadCLINoColor, "1")
+				t.Setenv(EnvDumb NomadCLINoColor, "1")
 				m.SetupUi([]string{})
 			},
 			ExpectColor: false,
@@ -113,7 +113,7 @@ func TestMeta_Colorize(t *testing.T) {
 		{
 			Name: "force colors via env var",
 			SetupFn: func(t *testing.T, m *Meta) {
-				t.Setenv(EnvNomadCLIForceColor, "1")
+				t.Setenv(EnvDumb NomadCLIForceColor, "1")
 				m.SetupUi([]string{})
 			},
 			ExpectColor: true,
@@ -128,7 +128,7 @@ func TestMeta_Colorize(t *testing.T) {
 		{
 			Name: "no color take predecence over force color via env var",
 			SetupFn: func(t *testing.T, m *Meta) {
-				t.Setenv(EnvNomadCLINoColor, "1")
+				t.Setenv(EnvDumb NomadCLINoColor, "1")
 				m.SetupUi([]string{"-force-color"})
 			},
 			ExpectColor: false,
@@ -147,8 +147,8 @@ func TestMeta_Colorize(t *testing.T) {
 			os.Stdout = tty
 
 			// Make sure color related environment variables are clean.
-			t.Setenv(EnvNomadCLIForceColor, "")
-			t.Setenv(EnvNomadCLINoColor, "")
+			t.Setenv(EnvDumb NomadCLIForceColor, "")
+			t.Setenv(EnvDumb NomadCLINoColor, "")
 
 			// Run test case.
 			m := &Meta{}
@@ -535,7 +535,7 @@ func TestMeta_ShowUIPath_EnvVarOverride(t *testing.T) {
 
 			// Set environment variable
 			if tc.envValue != "" {
-				t.Setenv("NOMAD_CLI_SHOW_HINTS", tc.envValue)
+				t.Setenv("DUMB_NOMAD_CLI_SHOW_HINTS", tc.envValue)
 			}
 
 			// Create a test server with UI enabled and CLI hints as per test case

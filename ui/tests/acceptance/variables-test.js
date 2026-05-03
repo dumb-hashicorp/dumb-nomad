@@ -13,17 +13,17 @@ import {
   visit,
 } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { clickToggle, clickOption } from 'nomad-ui/tests/helpers/helios';
+import { clickToggle, clickOption } from 'dumb-nomad-ui/tests/helpers/helios';
 import { setupApplicationTest } from 'ember-qunit';
 import { module, test } from 'qunit';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import { allScenarios } from '../../mirage/scenarios/default';
 import cleanWhitespace from '../utils/clean-whitespace';
 import percySnapshot from '@percy/ember';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
-import Variables from 'nomad-ui/tests/pages/variables';
-import Layout from 'nomad-ui/tests/pages/layout';
+import Variables from 'dumb-nomad-ui/tests/pages/variables';
+import Layout from 'dumb-nomad-ui/tests/pages/layout';
 
 const VARIABLE_TOKEN_ID = '53cur3-v4r14bl35';
 const LIMITED_VARIABLE_TOKEN_ID = 'f3w3r-53cur3-v4r14bl35';
@@ -44,7 +44,7 @@ module('Acceptance | variables', function (hooks) {
 
   test('it allows access for management level tokens', async function (assert) {
     allScenarios.variableTestCluster(server);
-    window.localStorage.nomadTokenSecret = server.db.tokens[0].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[0].secretId;
     await Variables.visit();
     assert.equal(currentURL(), '/variables');
     assert.ok(Layout.gutter.variables.isVisible, 'Menu section is visible');
@@ -54,7 +54,7 @@ module('Acceptance | variables', function (hooks) {
     assert.expect(2);
     allScenarios.variableTestCluster(server);
     const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-    window.localStorage.nomadTokenSecret = variablesToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
 
     await Variables.visit();
     assert.equal(currentURL(), '/variables');
@@ -66,7 +66,7 @@ module('Acceptance | variables', function (hooks) {
     assert.expect(13);
     allScenarios.variableTestCluster(server);
     const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-    window.localStorage.nomadTokenSecret = variablesToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
     server.db.variables.update({ namespace: 'default' });
     const policy = server.db.policies.find('Variable-Maker');
     policy.rulesJSON.Namespaces[0].Variables.Paths.find(
@@ -146,7 +146,7 @@ module('Acceptance | variables', function (hooks) {
     assert.notOk(fooLink, 'foo0 file is no longer present');
   });
 
-  test('variables prefixed with nomad/jobs/ correctly link to entities', async function (assert) {
+  test('variables prefixed with dumb-nomad/jobs/ correctly link to entities', async function (assert) {
     assert.expect(29);
     allScenarios.variableTestCluster(server);
     const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
@@ -162,7 +162,7 @@ module('Acceptance | variables', function (hooks) {
       .filterBy('taskGroup', variableLinkedGroup.name)
       ?.find((alloc) => alloc.taskStateIds.length);
 
-    window.localStorage.nomadTokenSecret = variablesToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
 
     // Non-job variable
     await Variables.visit();
@@ -195,7 +195,7 @@ module('Acceptance | variables', function (hooks) {
 
     assert.equal(
       currentURL(),
-      '/variables/path/nomad/jobs',
+      '/variables/path/dumb-nomad/jobs',
       'correctly traverses to the jobs directory'
     );
     let jobFileLink = find('[data-test-file-row]');
@@ -204,7 +204,7 @@ module('Acceptance | variables', function (hooks) {
 
     await click(jobFileLink);
     assert.ok(
-      currentURL().startsWith('/variables/var/nomad/jobs/'),
+      currentURL().startsWith('/variables/var/dumb-nomad/jobs/'),
       'correctly traverses to a job file'
     );
     relatedEntitiesBox = find('.related-entities');
@@ -227,7 +227,7 @@ module('Acceptance | variables', function (hooks) {
     await click(jobVariableLink);
     assert.ok(
       currentURL().startsWith(
-        `/variables/var/nomad/jobs/${variableLinkedJob.id}`
+        `/variables/var/dumb-nomad/jobs/${variableLinkedJob.id}`
       ),
       'correctly traverses from job to variable'
     );
@@ -263,7 +263,7 @@ module('Acceptance | variables', function (hooks) {
     await click(groupVariableLink);
     assert.ok(
       currentURL().startsWith(
-        `/variables/var/nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}`
+        `/variables/var/dumb-nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}`
       ),
       'correctly traverses from group to variable'
     );
@@ -305,7 +305,7 @@ module('Acceptance | variables', function (hooks) {
     await click(taskVariableLink);
     assert.ok(
       currentURL().startsWith(
-        `/variables/var/nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}/${variableLinkedTask.name}`
+        `/variables/var/dumb-nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}/${variableLinkedTask.name}`
       ),
       'correctly traverses from task to variable'
     );
@@ -328,7 +328,7 @@ module('Acceptance | variables', function (hooks) {
         'Related Entities notification is not present when path is generic'
       );
     document.querySelector('[data-test-path-input]').value = ''; // clear path input
-    await typeIn('[data-test-path-input]', 'nomad/jobs/abc');
+    await typeIn('[data-test-path-input]', 'dumb-nomad/jobs/abc');
     assert
       .dom('.related-entities.notification')
       .exists(
@@ -359,7 +359,7 @@ module('Acceptance | variables', function (hooks) {
   test('it does not allow you to save if you lack Items', async function (assert) {
     assert.expect(5);
     allScenarios.variableTestCluster(server);
-    window.localStorage.nomadTokenSecret = server.db.tokens[0].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[0].secretId;
     await Variables.visitNew();
     assert.equal(currentURL(), '/variables/new');
     await typeIn('[data-test-path-input]', 'foo/bar');
@@ -385,7 +385,7 @@ module('Acceptance | variables', function (hooks) {
     assert.expect(1);
     allScenarios.variableTestCluster(server);
     const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-    window.localStorage.nomadTokenSecret = variablesToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
     await Variables.visit();
     await a11yAudit(assert);
   });
@@ -396,7 +396,7 @@ module('Acceptance | variables', function (hooks) {
       allScenarios.variableTestCluster(server);
       server.createList('variable', 3);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       await Variables.visit();
       // End Test Set-up
 
@@ -437,7 +437,7 @@ module('Acceptance | variables', function (hooks) {
         .exists('The new variable key should appear in the list.');
 
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
     });
 
     test('prevents users from creating a variable without proper permissions', async function (assert) {
@@ -445,7 +445,7 @@ module('Acceptance | variables', function (hooks) {
       allScenarios.variableTestCluster(server);
       server.createList('variable', 3);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       const policy = server.db.policies.find('Variable-Maker');
       policy.rulesJSON.Namespaces[0].Variables.Paths.find(
         (path) => path.PathSpec === '*'
@@ -460,19 +460,19 @@ module('Acceptance | variables', function (hooks) {
         );
 
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
     });
 
-    test('allows creating a variable that starts with nomad/jobs/', async function (assert) {
+    test('allows creating a variable that starts with dumb-nomad/jobs/', async function (assert) {
       // Arrange Test Set-up
       allScenarios.variableTestCluster(server);
       server.createList('variable', 3);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       await Variables.visitNew();
       // End Test Set-up
 
-      await typeIn('[data-test-path-input]', 'nomad/jobs/foo/bar');
+      await typeIn('[data-test-path-input]', 'dumb-nomad/jobs/foo/bar');
       await typeIn('[data-test-var-key]', 'my-test-key');
       await typeIn('[data-test-var-value]', 'my_test_value');
       await click('[data-test-submit-var]');
@@ -487,56 +487,56 @@ module('Acceptance | variables', function (hooks) {
         .exists('Shows a success toast notification on creation.');
 
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
     });
 
-    test('disallows creating a variable that starts with nomad/<something-other-than-jobs>/', async function (assert) {
+    test('disallows creating a variable that starts with dumb-nomad/<something-other-than-jobs>/', async function (assert) {
       // Arrange Test Set-up
       allScenarios.variableTestCluster(server);
       server.createList('variable', 3);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       await Variables.visitNew();
       // End Test Set-up
 
-      await typeIn('[data-test-path-input]', 'nomad/foo/');
+      await typeIn('[data-test-path-input]', 'dumb-nomad/foo/');
       await typeIn('[data-test-var-key]', 'my-test-key');
       await typeIn('[data-test-var-value]', 'my_test_value');
       assert
         .dom('[data-test-submit-var]')
         .isDisabled(
-          'Cannot submit a variable that begins with nomad/<not-jobs>/'
+          'Cannot submit a variable that begins with dumb-nomad/<not-jobs>/'
         );
 
       document.querySelector('[data-test-path-input]').value = ''; // clear current input
-      await typeIn('[data-test-path-input]', 'nomad/jobs/');
+      await typeIn('[data-test-path-input]', 'dumb-nomad/jobs/');
       assert
         .dom('[data-test-submit-var]')
-        .isNotDisabled('Can submit a variable that begins with nomad/jobs/');
+        .isNotDisabled('Can submit a variable that begins with dumb-nomad/jobs/');
 
       document.querySelector('[data-test-path-input]').value = ''; // clear current input
-      await typeIn('[data-test-path-input]', 'nomad/another-foo/');
+      await typeIn('[data-test-path-input]', 'dumb-nomad/another-foo/');
       assert
         .dom('[data-test-submit-var]')
         .isDisabled('Disabled state re-evaluated when path input changes');
 
       document.querySelector('[data-test-path-input]').value = ''; // clear current input
-      await typeIn('[data-test-path-input]', 'nomad/jobs/job-templates/');
+      await typeIn('[data-test-path-input]', 'dumb-nomad/jobs/job-templates/');
       assert
         .dom('[data-test-submit-var]')
         .isNotDisabled(
-          'Can submit a variable that begins with nomad/job-templates/'
+          'Can submit a variable that begins with dumb-nomad/job-templates/'
         );
 
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
     });
 
     test('shows a custom editor when editing a job template variable', async function (assert) {
       // Arrange Test Set-up
       allScenarios.variableTestCluster(server);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       await Variables.visitNew();
       // End Test Set-up
 
@@ -544,7 +544,7 @@ module('Acceptance | variables', function (hooks) {
         .dom('.related-entities-hint')
         .exists('Shows a hint about related entities by default');
       assert.dom('.CodeMirror').doesNotExist();
-      await typeIn('[data-test-path-input]', 'nomad/job-templates/hello-world');
+      await typeIn('[data-test-path-input]', 'dumb-nomad/job-templates/hello-world');
       assert
         .dom('.related-entities-hint')
         .doesNotExist('Hides the hint when editing a job template variable');
@@ -562,7 +562,7 @@ module('Acceptance | variables', function (hooks) {
         .exists('Shows a hint about related entities by default');
       assert.dom('.CodeMirror').doesNotExist();
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
     });
   });
 
@@ -573,7 +573,7 @@ module('Acceptance | variables', function (hooks) {
       allScenarios.variableTestCluster(server);
       server.createList('variable', 3);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       const policy = server.db.policies.find('Variable-Maker');
       policy.rulesJSON.Namespaces[0].Variables.Paths.find(
         (path) => path.PathSpec === '*'
@@ -615,7 +615,7 @@ module('Acceptance | variables', function (hooks) {
         .exists('The edited variable key should appear in the list.');
 
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
     });
 
     test('prevents users from editing a variable without proper permissions', async function (assert) {
@@ -623,7 +623,7 @@ module('Acceptance | variables', function (hooks) {
       allScenarios.variableTestCluster(server);
       server.createList('variable', 3);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       const policy = server.db.policies.find('Variable-Maker');
       policy.rulesJSON.Namespaces[0].Variables.Paths.find(
         (path) => path.PathSpec === '*'
@@ -638,13 +638,13 @@ module('Acceptance | variables', function (hooks) {
         .doesNotExist('The edit button is hidden in the view.');
 
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
     });
     test('handles conflicts on save', async function (assert) {
       // Arrange Test Set-up
       allScenarios.variableTestCluster(server);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       // End Test Set-up
 
       await Variables.visitConflicting();
@@ -675,14 +675,14 @@ module('Acceptance | variables', function (hooks) {
         .exists('The edited variable key should appear in the list.');
 
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
     });
 
     test('warns you if you try to leave with an unsaved form', async function (assert) {
       // Arrange Test Set-up
       allScenarios.variableTestCluster(server);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
 
       const originalWindowConfirm = window.confirm;
       let confirmFired = false;
@@ -740,7 +740,7 @@ module('Acceptance | variables', function (hooks) {
       );
 
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
       // Restore the original window.confirm implementation
       window.confirm = originalWindowConfirm;
     });
@@ -752,7 +752,7 @@ module('Acceptance | variables', function (hooks) {
       allScenarios.variableTestCluster(server);
       server.createList('variable', 3);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       const policy = server.db.policies.find('Variable-Maker');
       policy.rulesJSON.Namespaces[0].Variables.Paths.find(
         (path) => path.PathSpec === '*'
@@ -780,7 +780,7 @@ module('Acceptance | variables', function (hooks) {
       );
 
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
     });
 
     test('prevents users from delete a variable without proper permissions', async function (assert) {
@@ -788,7 +788,7 @@ module('Acceptance | variables', function (hooks) {
       allScenarios.variableTestCluster(server);
       server.createList('variable', 3);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       const policy = server.db.policies.find('Variable-Maker');
       policy.rulesJSON.Namespaces[0].Variables.Paths.find(
         (path) => path.PathSpec === '*'
@@ -803,7 +803,7 @@ module('Acceptance | variables', function (hooks) {
         .doesNotExist('The delete button is hidden in the view.');
 
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
     });
   });
 
@@ -811,7 +811,7 @@ module('Acceptance | variables', function (hooks) {
     test('allows a user with correct permissions to read a variable', async function (assert) {
       allScenarios.variableTestCluster(server);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       await Variables.visit();
 
       assert
@@ -825,13 +825,13 @@ module('Acceptance | variables', function (hooks) {
       assert.equal(currentRouteName(), 'variables.variable.index');
 
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
     });
 
     test('prevents users from reading a variable without proper permissions', async function (assert) {
       allScenarios.variableTestCluster(server);
       const variablesToken = server.db.tokens.find(LIMITED_VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       await Variables.visit();
 
       assert
@@ -842,7 +842,7 @@ module('Acceptance | variables', function (hooks) {
         );
 
       // Reset Token
-      window.localStorage.nomadTokenSecret = null;
+      window.localStorage.dumb-nomadTokenSecret = null;
     });
   });
 
@@ -854,7 +854,7 @@ module('Acceptance | variables', function (hooks) {
       allScenarios.variableTestCluster(server);
       server.createList('variable', 3);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       await Variables.visit();
 
       assert
@@ -886,7 +886,7 @@ module('Acceptance | variables', function (hooks) {
       allScenarios.variableTestCluster(server);
       server.createList('variable', 3);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       const twoTokens = server.db.namespaces.slice(0, 2);
       server.db.namespaces.remove(twoTokens);
       await Variables.visit();
@@ -909,7 +909,7 @@ module('Acceptance | variables', function (hooks) {
         allScenarios.variableTestCluster(server);
         server.createList('variable', 3);
         const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-        window.localStorage.nomadTokenSecret = variablesToken.secretId;
+        window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
         await Variables.visit();
         await click('[data-test-folder-row]');
 
@@ -948,7 +948,7 @@ module('Acceptance | variables', function (hooks) {
         allScenarios.variableTestCluster(server);
         server.createList('variable', 3);
         const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-        window.localStorage.nomadTokenSecret = variablesToken.secretId;
+        window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
         const twoTokens = server.db.namespaces.slice(0, 2);
         server.db.namespaces.remove(twoTokens);
         await Variables.visit();
@@ -978,7 +978,7 @@ module('Acceptance | variables', function (hooks) {
     test('If the user has no variable read access, no subnav exists', async function (assert) {
       allScenarios.variableTestCluster(server);
       const variablesToken = server.db.tokens.find('n0-v4r5-4cc355');
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       await visit(
         `/jobs/${server.db.jobs[0].id}@${server.db.jobs[0].namespace}`
       );
@@ -991,13 +991,13 @@ module('Acceptance | variables', function (hooks) {
       );
       assert.equal(currentURL(), '/jobs');
 
-      window.localStorage.nomadTokenSecret = null; // Reset Token
+      window.localStorage.dumb-nomadTokenSecret = null; // Reset Token
     });
 
     test('If the user has variable read access, but no variables, the subnav exists but contains only a message', async function (assert) {
       allScenarios.variableTestCluster(server);
       const variablesToken = server.db.tokens.find(LIMITED_VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       await visit(
         `/jobs/${server.db.jobs[1].id}@${server.db.jobs[1].namespace}`
       );
@@ -1010,14 +1010,14 @@ module('Acceptance | variables', function (hooks) {
       assert.dom('[data-test-no-auto-vars-message]').exists();
       assert.dom('[data-test-create-variable-button]').doesNotExist();
 
-      window.localStorage.nomadTokenSecret = null; // Reset Token
+      window.localStorage.dumb-nomadTokenSecret = null; // Reset Token
     });
 
     test('If the user has variable write access, but no variables, the subnav exists but contains only a message and a create button', async function (assert) {
       assert.expect(4);
       allScenarios.variableTestCluster(server);
       const variablesToken = server.db.tokens.find(VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
       await visit(
         `/jobs/${server.db.jobs[1].id}@${server.db.jobs[1].namespace}`
       );
@@ -1031,13 +1031,13 @@ module('Acceptance | variables', function (hooks) {
       assert.dom('[data-test-create-variable-button]').exists();
 
       await percySnapshot(assert);
-      window.localStorage.nomadTokenSecret = null; // Reset Token
+      window.localStorage.dumb-nomadTokenSecret = null; // Reset Token
     });
 
     test('If the user has variable read access, and variables, the subnav exists and contains a list of variables', async function (assert) {
       allScenarios.variableTestCluster(server);
       const variablesToken = server.db.tokens.find(LIMITED_VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
 
       // in variablesTestCluster, job0 has path-linked variables, others do not.
       await visit(
@@ -1050,16 +1050,16 @@ module('Acceptance | variables', function (hooks) {
         `/jobs/${server.db.jobs[0].id}@${server.db.jobs[0].namespace}/variables`
       );
       assert.dom('[data-test-file-row]').exists({ count: 3 });
-      window.localStorage.nomadTokenSecret = null; // Reset Token
+      window.localStorage.dumb-nomadTokenSecret = null; // Reset Token
     });
 
-    test('The nomad/jobs variable is always included, if it exists', async function (assert) {
+    test('The dumb-nomad/jobs variable is always included, if it exists', async function (assert) {
       allScenarios.variableTestCluster(server);
       const variablesToken = server.db.tokens.find(LIMITED_VARIABLE_TOKEN_ID);
-      window.localStorage.nomadTokenSecret = variablesToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = variablesToken.secretId;
 
       server.create('variable', {
-        id: 'nomad/jobs',
+        id: 'dumb-nomad/jobs',
         keyValues: [],
       });
 
@@ -1074,7 +1074,7 @@ module('Acceptance | variables', function (hooks) {
         `/jobs/${server.db.jobs[1].id}@${server.db.jobs[1].namespace}/variables`
       );
       assert.dom('[data-test-file-row]').exists({ count: 1 });
-      assert.dom('[data-test-file-row="nomad/jobs"]').exists();
+      assert.dom('[data-test-file-row="dumb-nomad/jobs"]').exists();
     });
 
     test('Multiple task variables are included, and make a maximum of 1 API request', async function (assert) {
@@ -1095,11 +1095,11 @@ module('Acceptance | variables', function (hooks) {
       });
 
       server.create('variable', {
-        id: 'nomad/jobs',
+        id: 'dumb-nomad/jobs',
         keyValues: [],
       });
       server.create('variable', {
-        id: 'nomad/jobs/test-job',
+        id: 'dumb-nomad/jobs/test-job',
         keyValues: [],
       });
       // Create a variable for each task
@@ -1109,30 +1109,30 @@ module('Acceptance | variables', function (hooks) {
           (group) => group.id === task.taskGroupId
         ).name;
         server.create('variable', {
-          id: `nomad/jobs/test-job/${groupName}/${task.name}`,
+          id: `dumb-nomad/jobs/test-job/${groupName}/${task.name}`,
           keyValues: [],
         });
       });
-      window.localStorage.nomadTokenSecret = token.secretId;
+      window.localStorage.dumb-nomadTokenSecret = token.secretId;
 
       //#endregion setup
 
       //#region operation
       await visit(`/jobs/${job.id}@${job.namespace}/variables`);
 
-      // 2 requests: one for the main nomad/vars variable, and one for a prefix of job name
+      // 2 requests: one for the main dumb-nomad/vars variable, and one for a prefix of job name
       let requests = server.pretender.handledRequests.filter(
         (request) =>
-          request.url === '/v1/vars?path=nomad%2Fjobs' ||
-          request.url === `/v1/vars?prefix=nomad%2Fjobs%2F${job.name}`
+          request.url === '/v1/vars?path=dumb-nomad%2Fjobs' ||
+          request.url === `/v1/vars?prefix=dumb-nomad%2Fjobs%2F${job.name}`
       );
       assert.equal(requests.length, 2);
 
-      // Should see 32 rows: nomad/jobs, job-name, and 30 task variables
+      // Should see 32 rows: dumb-nomad/jobs, job-name, and 30 task variables
       assert.dom('[data-test-file-row]').exists({ count: 32 });
       //#endregion operation
 
-      window.localStorage.nomadTokenSecret = null; // Reset Token
+      window.localStorage.dumb-nomadTokenSecret = null; // Reset Token
     });
 
     // Test: Intro text shows examples of variables at groups and tasks
@@ -1153,18 +1153,18 @@ module('Acceptance | variables', function (hooks) {
         namespaceId: 'default',
       });
       server.create('variable', {
-        id: 'nomad/jobs/test-job',
+        id: 'dumb-nomad/jobs/test-job',
         keyValues: [],
       });
       // Create a variable for each taskGroup
       server.db.taskGroups.forEach((group) => {
         server.create('variable', {
-          id: `nomad/jobs/test-job/${group.name}`,
+          id: `dumb-nomad/jobs/test-job/${group.name}`,
           keyValues: [],
         });
       });
 
-      window.localStorage.nomadTokenSecret = token.secretId;
+      window.localStorage.dumb-nomadTokenSecret = token.secretId;
 
       //#endregion setup
 
@@ -1180,7 +1180,7 @@ module('Acceptance | variables', function (hooks) {
       assert.dom('[data-test-variables-intro-all-jobs] a').exists();
       assert
         .dom('[data-test-variables-intro-all-jobs] a')
-        .hasAttribute('href', '/ui/variables/new?path=nomad%2Fjobs');
+        .hasAttribute('href', '/ui/variables/new?path=dumb-nomad%2Fjobs');
 
       // This-job reminder is there, and since the variable exists, link is to edit it
       assert.dom('[data-test-variables-intro-job]').exists();
@@ -1189,7 +1189,7 @@ module('Acceptance | variables', function (hooks) {
         .dom('[data-test-variables-intro-job] a')
         .hasAttribute(
           'href',
-          `/ui/variables/var/nomad/jobs/${job.id}@${job.namespace}/edit`
+          `/ui/variables/var/dumb-nomad/jobs/${job.id}@${job.namespace}/edit`
         );
 
       // Group reminder is there, and since the variable exists, link is to edit it
@@ -1202,7 +1202,7 @@ module('Acceptance | variables', function (hooks) {
         .dom('[data-test-variables-intro-groups] a')
         .hasAttribute(
           'href',
-          `/ui/variables/var/nomad/jobs/${job.id}/${server.db.taskGroups[0].name}@${job.namespace}/edit`
+          `/ui/variables/var/dumb-nomad/jobs/${job.id}/${server.db.taskGroups[0].name}@${job.namespace}/edit`
         );
 
       // Task reminder is there, and variables don't exist, so link is to create them, plus etc. reminder text
@@ -1213,13 +1213,13 @@ module('Acceptance | variables', function (hooks) {
         .dom('[data-test-variables-intro-tasks] code:nth-of-type(1) a')
         .hasAttribute(
           'href',
-          `/ui/variables/new?path=nomad%2Fjobs%2F${job.id}%2F${server.db.taskGroups[0].name}%2F${server.db.tasks[0].name}`
+          `/ui/variables/new?path=dumb-nomad%2Fjobs%2F${job.id}%2F${server.db.taskGroups[0].name}%2F${server.db.tasks[0].name}`
         );
       assert
         .dom('[data-test-variables-intro-tasks] code:nth-of-type(2) a')
         .hasAttribute(
           'href',
-          `/ui/variables/new?path=nomad%2Fjobs%2F${job.id}%2F${server.db.taskGroups[0].name}%2F${server.db.tasks[1].name}`
+          `/ui/variables/new?path=dumb-nomad%2Fjobs%2F${job.id}%2F${server.db.taskGroups[0].name}%2F${server.db.tasks[1].name}`
         );
     });
   });

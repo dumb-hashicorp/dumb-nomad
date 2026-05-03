@@ -7,16 +7,16 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 	"github.com/shoenig/test/must"
 )
 
 func TestPluginsCNIFingerprint_Fingerprint_present(t *testing.T) {
 	ci.Parallel(t)
 
-	f := NewPluginsCNIFingerprint(testlog.HCLogger(t))
+	f := NewPluginsCNIFingerprint(testlog.DUMB_HCLogger(t))
 	request := &FingerprintRequest{
 		Config: &config.Config{
 			CNIPath: "./test_fixtures/cni:/does/not/exist",
@@ -38,7 +38,7 @@ func TestPluginsCNIFingerprint_Fingerprint_present(t *testing.T) {
 func TestPluginsCNIFingerprint_Fingerprint_multi(t *testing.T) {
 	ci.Parallel(t)
 
-	f := NewPluginsCNIFingerprint(testlog.HCLogger(t))
+	f := NewPluginsCNIFingerprint(testlog.DUMB_HCLogger(t))
 	request := &FingerprintRequest{
 		Config: &config.Config{
 			CNIPath: "./test_fixtures/cni:./test_fixtures/cni2",
@@ -62,7 +62,7 @@ func TestPluginsCNIFingerprint_Fingerprint_multi(t *testing.T) {
 func TestPluginsCNIFingerprint_Fingerprint_absent(t *testing.T) {
 	ci.Parallel(t)
 
-	f := NewPluginsCNIFingerprint(testlog.HCLogger(t))
+	f := NewPluginsCNIFingerprint(testlog.DUMB_HCLogger(t))
 	request := &FingerprintRequest{
 		Config: &config.Config{
 			CNIPath: "/does/not/exist",
@@ -90,7 +90,7 @@ func TestPluginsCNIFingerprint_Fingerprint_empty(t *testing.T) {
 		return nil, nil
 	}
 
-	f := NewPluginsCNIFingerprint(testlog.HCLogger(t))
+	f := NewPluginsCNIFingerprint(testlog.DUMB_HCLogger(t))
 	f.(*PluginsCNIFingerprint).lister = lister
 	request := &FingerprintRequest{
 		Config: &config.Config{
@@ -108,7 +108,7 @@ func TestPluginsCNIFingerprint_Fingerprint_empty(t *testing.T) {
 func TestPluginsCNIFingerprint_Fingerprint_unset(t *testing.T) {
 	ci.Parallel(t)
 
-	f := NewPluginsCNIFingerprint(testlog.HCLogger(t))
+	f := NewPluginsCNIFingerprint(testlog.DUMB_HCLogger(t))
 	request := &FingerprintRequest{
 		Config: new(config.Config),
 	}

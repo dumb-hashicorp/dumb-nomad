@@ -8,7 +8,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/hashicorp/go-uuid"
+	"github.com/dumb-hashicorp/go-uuid"
 )
 
 // WriteAtomicWithPerms creates a temp file with specific permissions and then renames and

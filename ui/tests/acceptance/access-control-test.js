@@ -7,12 +7,12 @@ import { module, test } from 'qunit';
 import { currentURL, triggerKeyEvent, click } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import Administration from 'nomad-ui/tests/pages/administration';
-import Tokens from 'nomad-ui/tests/pages/settings/tokens';
+import Administration from 'dumb-nomad-ui/tests/pages/administration';
+import Tokens from 'dumb-nomad-ui/tests/pages/settings/tokens';
 import { allScenarios } from '../../mirage/scenarios/default';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import percySnapshot from '@percy/ember';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 // Several related tests within Access Control are contained in the Tokens, Roles,
 // and Policies acceptance tests.

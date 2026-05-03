@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/hoststats"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/hoststats"
 )
 
 const (
@@ -60,13 +60,13 @@ type AllocGarbageCollector struct {
 	// triggerCh is ticked by the Trigger method to cause a GC
 	triggerCh chan struct{}
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 // NewAllocGarbageCollector returns a garbage collector for terminated
 // allocations on a node. Must call Run() in a goroutine enable periodic
 // garbage collection.
-func NewAllocGarbageCollector(logger hclog.Logger, statsCollector hoststats.NodeStatsCollector, ac AllocCounter, config *GCConfig) *AllocGarbageCollector {
+func NewAllocGarbageCollector(logger dumb-hclog.Logger, statsCollector hoststats.NodeStatsCollector, ac AllocCounter, config *GCConfig) *AllocGarbageCollector {
 	logger = logger.Named("gc")
 	// Require at least 1 to make progress
 	if config.ParallelDestroys <= 0 {

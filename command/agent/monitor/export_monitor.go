@@ -17,7 +17,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
 )
 
 const defaultBufSize = 512
@@ -27,33 +27,33 @@ type ExportMonitor struct {
 	sync.Mutex
 
 	logCh  chan []byte
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	// doneCh coordinates breaking out of the export loop
 	doneCh chan struct{}
 
-	// ExportReader can read from the cli or the NomadFilePath
+	// ExportReader can read from the cli or the Dumb NomadFilePath
 	ExportReader *ExportReader
 
 	bufSize int
 }
 
 type MonitorExportOpts struct {
-	Logger hclog.Logger
+	Logger dumb-hclog.Logger
 
 	// LogsSince sets the lookback time for monitorExport logs in hours
 	LogsSince string
 
-	// OnDisk indicates that nomad should export logs written to the configured nomad log path
+	// OnDisk indicates that dumb-nomad should export logs written to the configured dumb-nomad log path
 	OnDisk bool
 
 	// ServiceName is the systemd service for which we want to retrieve logs
 	// Cannot be used with OnDisk
 	ServiceName string
 
-	// NomadLogPath is set to the nomad log path by the HTTP agent if OnDisk
+	// Dumb NomadLogPath is set to the dumb-nomad log path by the HTTP agent if OnDisk
 	// is true
-	NomadLogPath string
+	Dumb NomadLogPath string
 
 	// Follow indicates that the monitor should continue to deliver logs until
 	// an outside interrupt
@@ -109,7 +109,7 @@ func NewExportMonitor(opts MonitorExportOpts) (*ExportMonitor, error) {
 	}
 
 	sw := ExportMonitor{
-		logger:       hclog.Default().Named("export"),
+		logger:       dumb-hclog.Default().Named("export"),
 		doneCh:       make(chan struct{}, 1),
 		logCh:        make(chan []byte, bufSize),
 		bufSize:      bufSize,
@@ -120,7 +120,7 @@ func NewExportMonitor(opts MonitorExportOpts) (*ExportMonitor, error) {
 }
 
 // ScanServiceName checks that the length, prefix and suffix conform to
-// systemd conventions and ensures the service name includes the word 'nomad'
+// systemd conventions and ensures the service name includes the word 'dumb-nomad'
 func ScanServiceName(input string) error {
 	prefix := ""
 	// invalid if prefix and suffix together are > 255 char
@@ -128,8 +128,8 @@ func ScanServiceName(input string) error {
 		return errors.New("service name too long")
 	}
 
-	if isNomad := strings.Contains(input, "nomad"); !isNomad {
-		return errors.New(`service name must include 'nomad`)
+	if isDumb Nomad := strings.Contains(input, "dumb-nomad"); !isDumb Nomad {
+		return errors.New(`service name must include 'dumb-nomad`)
 	}
 
 	// if there is a suffix, check against list of valid suffixes
@@ -204,7 +204,7 @@ func cliReader(opts MonitorExportOpts) (*ExportReader, error) {
 
 func fileReader(opts MonitorExportOpts) (*ExportReader, error) {
 	notCli := false
-	file, err := os.Open(opts.NomadLogPath)
+	file, err := os.Open(opts.Dumb NomadLogPath)
 	if err != nil {
 		return nil, err
 	}

@@ -8,8 +8,8 @@ import { currentURL } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import Evaluations from 'nomad-ui/tests/pages/jobs/job/evaluations';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import Evaluations from 'dumb-nomad-ui/tests/pages/jobs/job/evaluations';
 
 let job;
 let evaluations;
@@ -47,7 +47,7 @@ module('Acceptance | job evaluations', function (hooks) {
       assert.equal(evaluation.id, shortId, `Evaluation ${index} is ${shortId}`);
     });
 
-    assert.equal(document.title, `Job ${job.name} evaluations - Nomad`);
+    assert.equal(document.title, `Job ${job.name} evaluations - Dumb Nomad`);
   });
 
   test('evaluations table is sortable', async function (assert) {

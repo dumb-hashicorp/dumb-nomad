@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"time"
 
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/shared/structs"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 )
 
 const (
@@ -24,7 +24,7 @@ var (
 )
 
 // DevicePlugin is the interface for a plugin that can expose detected devices
-// to Nomad and inform it how to mount them.
+// to Dumb Nomad and inform it how to mount them.
 type DevicePlugin interface {
 	base.BasePlugin
 

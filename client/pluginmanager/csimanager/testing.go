@@ -7,10 +7,10 @@ import (
 	"context"
 	"path/filepath"
 
-	"github.com/hashicorp/nomad/client/pluginmanager"
-	nstructs "github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/csi"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager"
+	nstructs "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 )
 
 var _ Manager = &MockCSIManager{}

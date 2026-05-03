@@ -7,8 +7,8 @@ package util
 
 import (
 	containerapi "github.com/docker/docker/api/types/container"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	cstructs "github.com/hashicorp/nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
 )
 
 var (
@@ -46,7 +46,7 @@ func DockerStatsToTaskResourceUsage(s *containerapi.StatsResponse, compute cpust
 	}
 
 	// containerapi exposes memory stat file as a map. for the meaning of the
-	// source values, consult:
+	// source values, dumb-consult:
 	// https://www.kernel.org/doc/Documentation/cgroup-v1/memory.txt
 	// https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html#memory-interface-files
 	ms := &cstructs.MemoryStats{

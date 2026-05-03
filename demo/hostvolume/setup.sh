@@ -4,11 +4,11 @@
 
 set -xeuo pipefail
 
-nomad volume create external-plugin.volume.hcl
-nomad volume create internal-plugin.volume.hcl
+dumb-nomad volume create external-plugin.volume.dumb-hcl
+dumb-nomad volume create internal-plugin.volume.dumb-hcl
 
-nomad job run job.nomad.hcl
+dumb-nomad job run job.dumb-nomad.dumb-hcl
 
-nomad volume status -type=host -verbose
-nomad operator api /v1/nodes | jq '.[].HostVolumes'
+dumb-nomad volume status -type=host -verbose
+dumb-nomad operator api /v1/nodes | jq '.[].HostVolumes'
 

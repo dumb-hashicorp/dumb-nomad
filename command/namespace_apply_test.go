@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
@@ -87,12 +87,12 @@ node_pool_config {
   allowed = ["prod*"]
 }
 
-vault {
+dumb-vault {
   default = "infra"
   allowed = ["apps", "infra"]
 }
 
-consul {
+dumb-consul {
   default = "prod"
   allowed = ["prod", "apps*"]
 }
@@ -112,11 +112,11 @@ meta {
 					Default: "dev",
 					Allowed: []string{"prod*"},
 				},
-				VaultConfiguration: &api.NamespaceVaultConfiguration{
+				Dumb VaultConfiguration: &api.NamespaceDumb VaultConfiguration{
 					Default: "infra",
 					Allowed: []string{"apps", "infra"},
 				},
-				ConsulConfiguration: &api.NamespaceConsulConfiguration{
+				Dumb ConsulConfiguration: &api.NamespaceDumb ConsulConfiguration{
 					Default: "prod",
 					Allowed: []string{"prod", "apps*"},
 				},

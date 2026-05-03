@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -30,7 +30,7 @@ type VolumeClaimListCommand struct {
 
 func (c *VolumeClaimListCommand) Help() string {
 	helpText := `
-Usage: nomad volume claim list [options] [claim_id]
+Usage: dumb-nomad volume claim list [options] [claim_id]
 
   volume claim list is used to list existing host volume claims.
 

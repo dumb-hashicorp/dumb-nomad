@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/posener/complete"
 	"github.com/shoenig/test/must"
 )
@@ -34,7 +34,7 @@ func TestHostVolumeDeleteCommand(t *testing.T) {
 
 	ui := cli.NewMockUi()
 
-	hclTestFile := fmt.Sprintf(`
+	dumb-hclTestFile := fmt.Sprintf(`
 namespace = "prod"
 name      = "example"
 type      = "host"
@@ -48,9 +48,9 @@ capability {
 }
 `, nodeID, hostPath)
 
-	file, err := os.CreateTemp(t.TempDir(), "volume-test-*.hcl")
+	file, err := os.CreateTemp(t.TempDir(), "volume-test-*.dumb-hcl")
 	must.NoError(t, err)
-	_, err = file.WriteString(hclTestFile)
+	_, err = file.WriteString(dumb-hclTestFile)
 	must.NoError(t, err)
 
 	args := []string{"-address", url, file.Name()}

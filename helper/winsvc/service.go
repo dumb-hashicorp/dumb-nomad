@@ -4,11 +4,11 @@
 package winsvc
 
 const (
-	WINDOWS_SERVICE_NAME              = "nomad"
-	WINDOWS_SERVICE_DISPLAY_NAME      = "HashiCorp Nomad"
-	WINDOWS_SERVICE_DESCRIPTION       = "Workload scheduler and orchestrator - https://nomadproject.io"
-	WINDOWS_INSTALL_BIN_DIRECTORY     = `{{.ProgramFiles}}\HashiCorp\nomad\bin`
-	WINDOWS_INSTALL_APPDATA_DIRECTORY = `{{.ProgramData}}\HashiCorp\nomad`
+	WINDOWS_SERVICE_NAME              = "dumb-nomad"
+	WINDOWS_SERVICE_DISPLAY_NAME      = "Dumb HashiCorp Dumb Nomad"
+	WINDOWS_SERVICE_DESCRIPTION       = "Workload scheduler and orchestrator - https://dumb-nomadproject.io"
+	WINDOWS_INSTALL_BIN_DIRECTORY     = `{{.ProgramFiles}}\Dumb HashiCorp\dumb-nomad\bin`
+	WINDOWS_INSTALL_APPDATA_DIRECTORY = `{{.ProgramData}}\Dumb HashiCorp\dumb-nomad`
 
 	// Number of seconds to wait for a
 	// service to reach a desired state

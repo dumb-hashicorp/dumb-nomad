@@ -11,10 +11,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
 )
@@ -22,7 +22,7 @@ import (
 func Test_NewEnvDigitalOceanFingerprint(t *testing.T) {
 	ci.Parallel(t)
 
-	f := NewEnvDigitalOceanFingerprint(testlog.HCLogger(t))
+	f := NewEnvDigitalOceanFingerprint(testlog.DUMB_HCLogger(t))
 	must.NotNil(t, f)
 
 	retryWrapper, ok := f.(*RetryWrapper)
@@ -36,7 +36,7 @@ func Test_NewEnvDigitalOceanFingerprint(t *testing.T) {
 func TestDigitalOceanFingerprint_nonDigitalOcean(t *testing.T) {
 
 	t.Setenv("DO_ENV_URL", "http://127.0.0.1/metadata/v1/")
-	f := NewEnvDigitalOceanFingerprint(testlog.HCLogger(t))
+	f := NewEnvDigitalOceanFingerprint(testlog.DUMB_HCLogger(t))
 	node := &structs.Node{
 		Attributes: make(map[string]string),
 	}
@@ -67,7 +67,7 @@ func TestFingerprint_DigitalOcean(t *testing.T) {
 	defer testMetadataServer.Close()
 
 	t.Setenv("DO_ENV_URL", testMetadataServer.URL+"/metadata/v1/")
-	f := NewEnvDigitalOceanFingerprint(testlog.HCLogger(t))
+	f := NewEnvDigitalOceanFingerprint(testlog.DUMB_HCLogger(t))
 
 	request := &FingerprintRequest{Config: &config.Config{}, Node: node}
 	var response FingerprintResponse
@@ -130,7 +130,7 @@ func TestEnvDigitalOceanFingerprint_digitalOceanProbe(t *testing.T) {
 				t.Setenv("DO_ENV_URL", testMetadataServer.URL+"/metadata/v1/")
 			}
 
-			f := NewEnvDigitalOceanFingerprint(testlog.HCLogger(t))
+			f := NewEnvDigitalOceanFingerprint(testlog.DUMB_HCLogger(t))
 			err := f.(*RetryWrapper).fingerprinter.(*EnvDigitalOceanFingerprint).digitalOceanProbe()
 
 			if tc.doEnv {
@@ -151,7 +151,7 @@ func digitalOceanTestMetadataServer(t *testing.T) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		uavalue, ok := r.Header["User-Agent"]
 		must.True(t, ok)
-		must.StrContains(t, uavalue[0], "Nomad/")
+		must.StrContains(t, uavalue[0], "Dumb Nomad/")
 
 		uri := r.RequestURI
 		if r.URL.RawQuery != "" {

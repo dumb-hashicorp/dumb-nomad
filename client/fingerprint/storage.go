@@ -8,14 +8,14 @@ import (
 	"os"
 	"strconv"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const bytesPerMegabyte = 1024 * 1024
 
 // StorageFingerprint is used to measure the amount of storage free for
-// applications that the Nomad agent will run on this machine.
+// applications that the Dumb Nomad agent will run on this machine.
 type StorageFingerprint struct {
 	StaticFingerprinter
 	logger log.Logger

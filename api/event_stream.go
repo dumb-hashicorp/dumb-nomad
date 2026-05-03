@@ -39,7 +39,7 @@ type Topic string
 // representation.
 func (t Topic) String() string { return string(t) }
 
-// Event holds information related to an event that occurred in Nomad.
+// Event holds information related to an event that occurred in Dumb Nomad.
 // The Payload is a hydrated object related to the Topic
 type Event struct {
 	Topic      Topic
@@ -167,7 +167,7 @@ func (e *Events) IsHeartbeat() bool {
 	return e.Index == 0 && len(e.Events) == 0
 }
 
-// EventStream is used to stream events from Nomad
+// EventStream is used to stream events from Dumb Nomad
 type EventStream struct {
 	client *Client
 }
@@ -177,7 +177,7 @@ func (c *Client) EventStream() *EventStream {
 	return &EventStream{client: c}
 }
 
-// Stream establishes a new subscription to Nomad's event stream and streams
+// Stream establishes a new subscription to Dumb Nomad's event stream and streams
 // results back to the returned channel.
 //
 // Events stop being emitted once the Events.Err field is non-nil.

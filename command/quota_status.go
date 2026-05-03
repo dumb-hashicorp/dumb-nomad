@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -21,7 +21,7 @@ type QuotaStatusCommand struct {
 
 func (c *QuotaStatusCommand) Help() string {
 	helpText := `
-Usage: nomad quota status [options] <quota>
+Usage: dumb-nomad quota status [options] <quota>
 
   Status is used to view the status of a particular quota specification.
 
@@ -149,7 +149,7 @@ func (c *QuotaStatusCommand) Run(args []string) int {
 }
 
 // quotaUsages returns the quota usages for the limits described by the spec. It
-// will make a request to each referenced Nomad region. If the region couldn't
+// will make a request to each referenced Dumb Nomad region. If the region couldn't
 // be contacted, the error will be stored in the failures map
 func quotaUsages(spec *api.QuotaSpec, client *api.Quotas) (usages map[string]*api.QuotaUsage, failures map[string]error) {
 	// Determine the regions we have limits for

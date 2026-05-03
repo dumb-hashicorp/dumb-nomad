@@ -10,43 +10,43 @@ VOLUME_BASE_NAME=test-volume
 
 run_plugin() {
     local expected
-    expected=$(nomad node status | grep -cv ID)
-    echo "$ nomad job run ./plugin.nomad"
-    nomad job run "${DIR}/plugin.nomad"
+    expected=$(dumb-nomad node status | grep -cv ID)
+    echo "$ dumb-nomad job run ./plugin.dumb-nomad"
+    dumb-nomad job run "${DIR}/plugin.dumb-nomad"
 
     while :
     do
-        nomad plugin status hostpath \
+        dumb-nomad plugin status hostpath \
             | grep "Nodes Healthy        = $expected" && break
         sleep 2
     done
     echo
-    echo "$ nomad plugin status hostpath"
-    nomad plugin status hostpath
+    echo "$ dumb-nomad plugin status hostpath"
+    dumb-nomad plugin status hostpath
 }
 
 create_volumes() {
     echo
-    echo "$ cat hostpath.hcl | sed | nomad volume create -"
+    echo "$ cat hostpath.dumb-hcl | sed | dumb-nomad volume create -"
     sed -e "s/VOLUME_NAME/${VOLUME_BASE_NAME}[0]/" \
-        "${DIR}/hostpath.hcl" | nomad volume create -
+        "${DIR}/hostpath.dumb-hcl" | dumb-nomad volume create -
 
     echo
-    echo "$ cat hostpath.hcl | sed | nomad volume create -"
+    echo "$ cat hostpath.dumb-hcl | sed | dumb-nomad volume create -"
     sed -e "s/VOLUME_NAME/${VOLUME_BASE_NAME}[1]/" \
-        "${DIR}/hostpath.hcl" | nomad volume create -
+        "${DIR}/hostpath.dumb-hcl" | dumb-nomad volume create -
 }
 
 claim_volumes() {
     echo
-    echo "$ nomad job run ./redis.nomad"
-    nomad job run "${DIR}/redis.nomad"
+    echo "$ dumb-nomad job run ./redis.dumb-nomad"
+    dumb-nomad job run "${DIR}/redis.dumb-nomad"
 }
 
 show_status() {
     echo
-    echo "$ nomad volume status"
-    nomad volume status
+    echo "$ dumb-nomad volume status"
+    dumb-nomad volume status
 }
 
 run_plugin

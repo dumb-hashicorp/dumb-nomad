@@ -10,7 +10,7 @@ import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
 export default class ActionCardComponent extends Component {
-  @service nomadActions;
+  @service dumb-nomadActions;
   get stateColor() {
     /**
      * @type {import('../models/action-instance').default}
@@ -35,7 +35,7 @@ export default class ActionCardComponent extends Component {
   }
 
   @action stopAll() {
-    this.nomadActions.stopPeers(this.instance.peerID);
+    this.dumb-nomadActions.stopPeers(this.instance.peerID);
   }
 
   @tracked selectedPeer = null;

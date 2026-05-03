@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 func TestCoordinator_OnlyMainApp(t *testing.T) {
@@ -19,7 +19,7 @@ func TestCoordinator_OnlyMainApp(t *testing.T) {
 	alloc := mock.Alloc()
 	tasks := alloc.Job.TaskGroups[0].Tasks
 	task := tasks[0]
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	shutdownCh := make(chan struct{})
 	defer close(shutdownCh)
@@ -52,7 +52,7 @@ func TestCoordinator_OnlyMainApp(t *testing.T) {
 func TestCoordinator_PrestartRunsBeforeMain(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	alloc := mock.LifecycleAlloc()
 	tasks := alloc.Job.TaskGroups[0].Tasks
@@ -157,7 +157,7 @@ func TestCoordinator_PrestartRunsBeforeMain(t *testing.T) {
 func TestCoordinator_MainRunsAfterManyInitTasks(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	alloc := mock.LifecycleAlloc()
 	alloc.Job = mock.VariableLifecycleJob(structs.Resources{CPU: 100, MemoryMB: 256}, 1, 2, 0)
@@ -226,7 +226,7 @@ func TestCoordinator_MainRunsAfterManyInitTasks(t *testing.T) {
 func TestCoordinator_FailedInitTask(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	alloc := mock.LifecycleAlloc()
 	alloc.Job = mock.VariableLifecycleJob(structs.Resources{CPU: 100, MemoryMB: 256}, 1, 2, 0)
@@ -295,7 +295,7 @@ func TestCoordinator_FailedInitTask(t *testing.T) {
 func TestCoordinator_SidecarNeverStarts(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	alloc := mock.LifecycleAlloc()
 	tasks := alloc.Job.TaskGroups[0].Tasks
@@ -362,7 +362,7 @@ func TestCoordinator_SidecarNeverStarts(t *testing.T) {
 func TestCoordinator_PoststartStartsAfterMain(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	alloc := mock.LifecycleAlloc()
 	tasks := alloc.Job.TaskGroups[0].Tasks
@@ -555,7 +555,7 @@ func TestCoordinator_Restore(t *testing.T) {
 			shutdownCh := make(chan struct{})
 			defer close(shutdownCh)
 
-			c := NewCoordinator(testlog.HCLogger(t), tc.tasks, shutdownCh)
+			c := NewCoordinator(testlog.DUMB_HCLogger(t), tc.tasks, shutdownCh)
 			c.Restore(tc.tasksState)
 			tc.testFn(t, c)
 		})

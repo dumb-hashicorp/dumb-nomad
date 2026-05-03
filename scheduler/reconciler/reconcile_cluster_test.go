@@ -11,13 +11,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/kr/pretty"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
@@ -351,7 +351,7 @@ func TestReconciler_Place_NoExisting(t *testing.T) {
 
 	job := mock.Job()
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -400,7 +400,7 @@ func TestReconciler_Place_Existing(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -451,7 +451,7 @@ func TestReconciler_ScaleDown_Partial(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -504,7 +504,7 @@ func TestReconciler_ScaleDown_Zero(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -557,7 +557,7 @@ func TestReconciler_ScaleDown_Zero_DuplicateNames(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -605,7 +605,7 @@ func TestReconciler_Inplace(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnInplace, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnInplace, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -656,7 +656,7 @@ func TestReconciler_Inplace_ScaleUp(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnInplace, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnInplace, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -709,7 +709,7 @@ func TestReconciler_Inplace_ScaleDown(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnInplace, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnInplace, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -783,7 +783,7 @@ func TestReconciler_Inplace_Rollback(t *testing.T) {
 	}, allocUpdateFnDestructive)
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFn, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFn, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -841,7 +841,7 @@ func TestReconciler_Destructive(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -887,7 +887,7 @@ func TestReconciler_DestructiveMaxParallel(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -936,7 +936,7 @@ func TestReconciler_Destructive_ScaleUp(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -988,7 +988,7 @@ func TestReconciler_Destructive_ScaleDown(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -1046,7 +1046,7 @@ func TestReconciler_LostNode(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -1109,7 +1109,7 @@ func TestReconciler_LostNode_ScaleUp(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -1172,7 +1172,7 @@ func TestReconciler_LostNode_ScaleDown(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -1230,7 +1230,7 @@ func TestReconciler_DrainNode(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -1290,7 +1290,7 @@ func TestReconciler_MigrateBatchAllocs(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        true,
 			JobID:             job.ID,
 			Job:               job,
@@ -1350,7 +1350,7 @@ func TestReconciler_MigrateDisablePlacementBatchAllocs(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        true,
 			JobID:             job.ID,
 			Job:               job,
@@ -1414,7 +1414,7 @@ func TestReconciler_MigrateRescheduleBatchAllocs(t *testing.T) {
 		}
 
 		reconciler := NewAllocReconciler(
-			testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+			testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 				JobIsBatch:        true,
 				JobID:             job.ID,
 				Job:               job,
@@ -1469,7 +1469,7 @@ func TestReconciler_MigrateRescheduleBatchAllocs(t *testing.T) {
 		}
 
 		reconciler := NewAllocReconciler(
-			testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+			testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 				JobIsBatch:        true,
 				JobID:             job.ID,
 				Job:               job,
@@ -1521,7 +1521,7 @@ func TestReconciler_MigrateRescheduleBatchAllocs(t *testing.T) {
 		}
 
 		reconciler := NewAllocReconciler(
-			testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+			testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 				JobIsBatch:        true,
 				JobID:             job.ID,
 				Job:               job,
@@ -1577,7 +1577,7 @@ func TestReconciler_MigrateRescheduleBatchAllocs(t *testing.T) {
 		}
 
 		reconciler := NewAllocReconciler(
-			testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+			testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 				JobIsBatch:        true,
 				JobID:             job.ID,
 				Job:               job,
@@ -1640,7 +1640,7 @@ func TestReconciler_DrainNode_ScaleUp(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -1706,7 +1706,7 @@ func TestReconciler_DrainNode_ScaleDown(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -1764,7 +1764,7 @@ func TestReconciler_RemovedTG(t *testing.T) {
 	job.TaskGroups[0].Name = newName
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -1845,7 +1845,7 @@ func TestReconciler_JobStopped(t *testing.T) {
 			}
 
 			reconciler := NewAllocReconciler(
-				testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+				testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 					JobIsBatch:        false,
 					JobID:             c.jobID,
 					Job:               c.job,
@@ -1927,7 +1927,7 @@ func TestReconciler_JobStopped_TerminalAllocs(t *testing.T) {
 			}
 
 			reconciler := NewAllocReconciler(
-				testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+				testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 					JobIsBatch:        false,
 					JobID:             c.jobID,
 					Job:               c.job,
@@ -1977,7 +1977,7 @@ func TestReconciler_MultiTG(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -2042,7 +2042,7 @@ func TestReconciler_MultiTG_SingleUpdateBlock(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -2129,7 +2129,7 @@ func TestReconciler_RescheduleLater_Batch(t *testing.T) {
 	allocs[5].ClientStatus = structs.AllocClientStatusComplete
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        true,
 			JobID:             job.ID,
 			Job:               job,
@@ -2222,7 +2222,7 @@ func TestReconciler_RescheduleLaterWithBatchedEvals_Batch(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        true,
 			JobID:             job.ID,
 			Job:               job,
@@ -2330,7 +2330,7 @@ func TestReconciler_RescheduleNow_Batch(t *testing.T) {
 	allocs[5].ClientStatus = structs.AllocClientStatusComplete
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        true,
 			JobID:             job.ID,
 			Job:               job,
@@ -2415,7 +2415,7 @@ func TestReconciler_RescheduleLater_Service(t *testing.T) {
 	allocs[4].DesiredStatus = structs.AllocDesiredStatusStop
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -2499,7 +2499,7 @@ func TestReconciler_Service_ClientStatusComplete(t *testing.T) {
 	allocs[4].ClientStatus = structs.AllocClientStatusComplete
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -2568,7 +2568,7 @@ func TestReconciler_Service_DesiredStop_ClientStatusComplete(t *testing.T) {
 	allocs[4].DesiredStatus = structs.AllocDesiredStatusStop
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -2655,7 +2655,7 @@ func TestReconciler_RescheduleNow_Service(t *testing.T) {
 	allocs[4].DesiredStatus = structs.AllocDesiredStatusStop
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -2744,7 +2744,7 @@ func TestReconciler_RescheduleNow_WithinAllowedTimeWindow(t *testing.T) {
 	allocs[1].ClientStatus = structs.AllocClientStatusFailed
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -2836,7 +2836,7 @@ func TestReconciler_RescheduleNow_EvalIDMatch(t *testing.T) {
 
 	now = now.Add(-30 * time.Second)
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -2956,7 +2956,7 @@ func TestReconciler_RescheduleNow_Service_WithCanaries(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job2,
@@ -3090,7 +3090,7 @@ func TestReconciler_RescheduleNow_Service_Canaries(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job2,
@@ -3227,7 +3227,7 @@ func TestReconciler_RescheduleNow_Service_Canaries_Limit(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job2,
@@ -3304,7 +3304,7 @@ func TestReconciler_DontReschedule_PreviouslyRescheduled(t *testing.T) {
 	allocs[4].DesiredStatus = structs.AllocDesiredStatusStop
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -3404,7 +3404,7 @@ func TestReconciler_CancelDeployment_JobStop(t *testing.T) {
 			}
 
 			reconciler := NewAllocReconciler(
-				testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+				testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 					JobIsBatch:        false,
 					JobID:             c.jobID,
 					Job:               c.job,
@@ -3494,7 +3494,7 @@ func TestReconciler_CancelDeployment_JobUpdate(t *testing.T) {
 			}
 
 			reconciler := NewAllocReconciler(
-				testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+				testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 					JobIsBatch:        false,
 					JobID:             job.ID,
 					Job:               job,
@@ -3556,7 +3556,7 @@ func TestReconciler_CreateDeployment_RollingUpgrade_Destructive(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -3614,7 +3614,7 @@ func TestReconciler_CreateDeployment_RollingUpgrade_Inplace(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnInplace, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnInplace, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -3671,7 +3671,7 @@ func TestReconciler_CreateDeployment_NewerCreateIndex(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -3730,7 +3730,7 @@ func TestReconciler_DontCreateDeployment_NoChanges(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -3821,7 +3821,7 @@ func TestReconciler_PausedOrFailedDeployment_NoMoreCanaries(t *testing.T) {
 
 			mockUpdateFn := allocUpdateFnMock(map[string]AllocUpdateType{canary.ID: allocUpdateFnIgnore}, allocUpdateFnDestructive)
 			reconciler := NewAllocReconciler(
-				testlog.HCLogger(t), mockUpdateFn, ReconcilerState{
+				testlog.DUMB_HCLogger(t), mockUpdateFn, ReconcilerState{
 					JobIsBatch:        false,
 					JobID:             job.ID,
 					Job:               job,
@@ -3899,7 +3899,7 @@ func TestReconciler_PausedOrFailedDeployment_NoMorePlacements(t *testing.T) {
 			}
 
 			reconciler := NewAllocReconciler(
-				testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+				testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 					JobIsBatch:        false,
 					JobID:             job.ID,
 					Job:               job,
@@ -3986,7 +3986,7 @@ func TestReconciler_PausedOrFailedDeployment_NoMoreDestructiveUpdates(t *testing
 
 			mockUpdateFn := allocUpdateFnMock(map[string]AllocUpdateType{newAlloc.ID: allocUpdateFnIgnore}, allocUpdateFnDestructive)
 			reconciler := NewAllocReconciler(
-				testlog.HCLogger(t), mockUpdateFn, ReconcilerState{
+				testlog.DUMB_HCLogger(t), mockUpdateFn, ReconcilerState{
 					JobIsBatch:        false,
 					JobID:             job.ID,
 					Job:               job,
@@ -4073,7 +4073,7 @@ func TestReconciler_DrainNode_Canary(t *testing.T) {
 
 	mockUpdateFn := allocUpdateFnMock(handled, allocUpdateFnDestructive)
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), mockUpdateFn, ReconcilerState{
+		testlog.DUMB_HCLogger(t), mockUpdateFn, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -4158,7 +4158,7 @@ func TestReconciler_LostNode_Canary(t *testing.T) {
 
 	mockUpdateFn := allocUpdateFnMock(handled, allocUpdateFnDestructive)
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), mockUpdateFn, ReconcilerState{
+		testlog.DUMB_HCLogger(t), mockUpdateFn, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -4237,7 +4237,7 @@ func TestReconciler_StopOldCanaries(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -4305,7 +4305,7 @@ func TestReconciler_NewCanaries(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -4368,7 +4368,7 @@ func TestReconciler_NewCanaries_CountGreater(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -4434,7 +4434,7 @@ func TestReconciler_NewCanaries_MultiTG(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -4502,7 +4502,7 @@ func TestReconciler_NewCanaries_ScaleUp(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -4565,7 +4565,7 @@ func TestReconciler_NewCanaries_ScaleDown(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -4657,7 +4657,7 @@ func TestReconciler_NewCanaries_FillNames(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -4739,7 +4739,7 @@ func TestReconciler_PromoteCanaries_Unblock(t *testing.T) {
 
 	mockUpdateFn := allocUpdateFnMock(handled, allocUpdateFnDestructive)
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), mockUpdateFn, ReconcilerState{
+		testlog.DUMB_HCLogger(t), mockUpdateFn, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -4826,7 +4826,7 @@ func TestReconciler_PromoteCanaries_CanariesEqualCount(t *testing.T) {
 
 	mockUpdateFn := allocUpdateFnMock(handled, allocUpdateFnDestructive)
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), mockUpdateFn, ReconcilerState{
+		testlog.DUMB_HCLogger(t), mockUpdateFn, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -4938,7 +4938,7 @@ func TestReconciler_DeploymentLimit_HealthAccounting(t *testing.T) {
 
 			mockUpdateFn := allocUpdateFnMock(handled, allocUpdateFnDestructive)
 			reconciler := NewAllocReconciler(
-				testlog.HCLogger(t), mockUpdateFn, ReconcilerState{
+				testlog.DUMB_HCLogger(t), mockUpdateFn, ReconcilerState{
 					JobIsBatch:        false,
 					JobID:             job.ID,
 					Job:               job,
@@ -5032,7 +5032,7 @@ func TestReconciler_TaintedNode_RollingUpgrade(t *testing.T) {
 
 	mockUpdateFn := allocUpdateFnMock(handled, allocUpdateFnDestructive)
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), mockUpdateFn, ReconcilerState{
+		testlog.DUMB_HCLogger(t), mockUpdateFn, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -5130,7 +5130,7 @@ func TestReconciler_FailedDeployment_TaintedNodes(t *testing.T) {
 
 	mockUpdateFn := allocUpdateFnMock(handled, allocUpdateFnDestructive)
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), mockUpdateFn, ReconcilerState{
+		testlog.DUMB_HCLogger(t), mockUpdateFn, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -5199,7 +5199,7 @@ func TestReconciler_CompleteDeployment(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -5267,7 +5267,7 @@ func TestReconciler_MarkDeploymentComplete_FailedAllocations(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -5375,7 +5375,7 @@ func TestReconciler_FailedDeployment_CancelCanaries(t *testing.T) {
 
 	mockUpdateFn := allocUpdateFnMock(handled, allocUpdateFnDestructive)
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), mockUpdateFn, ReconcilerState{
+		testlog.DUMB_HCLogger(t), mockUpdateFn, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -5457,7 +5457,7 @@ func TestReconciler_FailedDeployment_NewJob(t *testing.T) {
 	jobNew.Version += 100
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               jobNew,
@@ -5525,7 +5525,7 @@ func TestReconciler_MarkDeploymentComplete(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -5607,7 +5607,7 @@ func TestReconciler_JobChange_ScaleUp_SecondEval(t *testing.T) {
 
 	mockUpdateFn := allocUpdateFnMock(handled, allocUpdateFnDestructive)
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), mockUpdateFn, ReconcilerState{
+		testlog.DUMB_HCLogger(t), mockUpdateFn, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -5655,7 +5655,7 @@ func TestReconciler_RollingUpgrade_MissingAllocs(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -5724,7 +5724,7 @@ func TestReconciler_Batch_Rerun(t *testing.T) {
 	job2.CreateIndex++
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        true,
 			JobID:             job2.ID,
 			Job:               job2,
@@ -5798,7 +5798,7 @@ func TestReconciler_FailedDeployment_DontReschedule(t *testing.T) {
 		FinishedAt: now.Add(-10 * time.Second)}}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -5866,7 +5866,7 @@ func TestReconciler_DeploymentWithFailedAllocs_DontReschedule(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -5964,7 +5964,7 @@ func TestReconciler_FailedDeployment_AutoRevert_CancelCanaries(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               jobv2,
@@ -6039,7 +6039,7 @@ func TestReconciler_SuccessfulDeploymentWithFailedAllocs_Reschedule(t *testing.T
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnDestructive, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -6114,7 +6114,7 @@ func TestReconciler_ForceReschedule_Service(t *testing.T) {
 	allocs[0].DesiredTransition = structs.DesiredTransition{ForceReschedule: pointer.Of(true)}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -6207,7 +6207,7 @@ func TestReconciler_RescheduleNot_Service(t *testing.T) {
 	allocs[4].DesiredStatus = structs.AllocDesiredStatusStop
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -6621,7 +6621,7 @@ func TestReconciler_Disconnected_Client(t *testing.T) {
 			}
 
 			reconciler := NewAllocReconciler(
-				testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+				testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 					JobIsBatch:        tc.isBatch,
 					JobID:             job.ID,
 					Job:               job,
@@ -6723,7 +6723,7 @@ func TestReconciler_RescheduleNot_Batch(t *testing.T) {
 	allocs[5].ClientStatus = structs.AllocClientStatusComplete
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        true,
 			JobID:             job.ID,
 			Job:               job,
@@ -6765,7 +6765,7 @@ func TestReconciler_Node_Disconnect_Updates_Alloc_To_Unknown(t *testing.T) {
 
 	now := time.Now().UTC()
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -6838,7 +6838,7 @@ func TestReconciler_Disconnect_UpdateJobAfterReconnect(t *testing.T) {
 	}
 
 	reconciler := NewAllocReconciler(
-		testlog.HCLogger(t), allocUpdateFnInplace, ReconcilerState{
+		testlog.DUMB_HCLogger(t), allocUpdateFnInplace, ReconcilerState{
 			JobIsBatch:        false,
 			JobID:             job.ID,
 			Job:               job,
@@ -7204,7 +7204,7 @@ func TestReconciler_Client_Disconnect_Canaries(t *testing.T) {
 
 			mockUpdateFn := allocUpdateFnMock(handled, allocUpdateFnDestructive)
 			reconciler := NewAllocReconciler(
-				testlog.HCLogger(t), mockUpdateFn, ReconcilerState{
+				testlog.DUMB_HCLogger(t), mockUpdateFn, ReconcilerState{
 					JobIsBatch:        false,
 					JobID:             updatedJob.ID,
 					Job:               updatedJob,
@@ -7363,7 +7363,7 @@ func TestReconciler_ComputeDeploymentPaused(t *testing.T) {
 			}
 
 			reconciler := NewAllocReconciler(
-				testlog.HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
+				testlog.DUMB_HCLogger(t), allocUpdateFnIgnore, ReconcilerState{
 					JobIsBatch:        false,
 					JobID:             job.ID,
 					Job:               job,

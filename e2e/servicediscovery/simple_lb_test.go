@@ -9,14 +9,14 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/shoenig/test/must"
 )
 
 func testSimpleLoadBalancing(t *testing.T) {
-	nomadClient := e2eutil.NomadClient(t)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
 
 	// Generate our unique job ID which will be used for this test.
 	jobID := "nsd-simple-lb-replicas-" + uuid.Short()
@@ -29,7 +29,7 @@ func testSimpleLoadBalancing(t *testing.T) {
 	defer e2eutil.CleanupJobsAndGCWithContext(t, ctx, &jobIDs)
 
 	// Register the replicas job.
-	allocStubs := e2eutil.RegisterAndWaitForAllocs(t, nomadClient, jobSimpleLBReplicas, jobID, "")
+	allocStubs := e2eutil.RegisterAndWaitForAllocs(t, dumb-nomadClient, jobSimpleLBReplicas, jobID, "")
 	must.Len(t, 3, allocStubs)
 
 	for _, stub := range allocStubs {
@@ -51,14 +51,14 @@ func testSimpleLoadBalancing(t *testing.T) {
 			Tags:        []string{tag},
 		}
 		filter := fmt.Sprintf("Tags contains %q", tag)
-		requireEventuallyNomadService(t, &expectService, filter)
+		requireEventuallyDumb NomadService(t, &expectService, filter)
 	}
 
 	jobID2 := "nsd-simple-lb-clients" + uuid.Short()
 	jobIDs = append(jobIDs, jobID2)
 
 	// Register the clients job.
-	allocStubs = e2eutil.RegisterAndWaitForAllocs(t, nomadClient, jobSimpleLBClients, jobID2, "")
+	allocStubs = e2eutil.RegisterAndWaitForAllocs(t, dumb-nomadClient, jobSimpleLBClients, jobID2, "")
 	must.Len(t, 2, allocStubs)
 
 	for _, stub := range allocStubs {

@@ -10,13 +10,13 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/stretchr/testify/require"
 )
 
@@ -24,16 +24,16 @@ import (
 // work when TLS is enabled.
 func TestPrevAlloc_StreamAllocDir_TLS(t *testing.T) {
 	const (
-		caFn         = "../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		serverCertFn = "../helper/tlsutil/testdata/global-server-nomad.pem"
-		serverKeyFn  = "../helper/tlsutil/testdata/global-server-nomad-key.pem"
-		clientCertFn = "../helper/tlsutil/testdata/global-client-nomad.pem"
-		clientKeyFn  = "../helper/tlsutil/testdata/global-client-nomad-key.pem"
+		caFn         = "../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		serverCertFn = "../helper/tlsutil/testdata/global-server-dumb-nomad.pem"
+		serverKeyFn  = "../helper/tlsutil/testdata/global-server-dumb-nomad-key.pem"
+		clientCertFn = "../helper/tlsutil/testdata/global-client-dumb-nomad.pem"
+		clientKeyFn  = "../helper/tlsutil/testdata/global-client-dumb-nomad-key.pem"
 	)
 	ci.Parallel(t)
 	require := require.New(t)
 
-	server, cleanupS := nomad.TestServer(t, func(c *nomad.Config) {
+	server, cleanupS := dumb-nomad.TestServer(t, func(c *dumb-nomad.Config) {
 		c.TLSConfig = &config.TLSConfig{
 			EnableHTTP:           true,
 			EnableRPC:            true,

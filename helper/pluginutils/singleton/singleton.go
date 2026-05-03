@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"sync"
 
-	log "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/plugins/base"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
 )
 
 var (
@@ -65,7 +65,7 @@ func (s *SingletonLoader) Reattach(name, pluginType string, config *plugin.Reatt
 // getPlugin is a helper that either dispenses or reattaches to a plugin using
 // futures to ensure only a single instance is retrieved
 func (s *SingletonLoader) getPlugin(reattach bool, name, pluginType string, logger log.Logger,
-	nomadConfig *base.AgentConfig, config *plugin.ReattachConfig) (loader.PluginInstance, error) {
+	dumb-nomadConfig *base.AgentConfig, config *plugin.ReattachConfig) (loader.PluginInstance, error) {
 
 	// Lock the instance map to prevent races
 	s.instanceLock.Lock()
@@ -82,7 +82,7 @@ func (s *SingletonLoader) getPlugin(reattach bool, name, pluginType string, logg
 		if reattach {
 			go s.reattach(f, name, pluginType, config)
 		} else {
-			go s.dispense(f, name, pluginType, nomadConfig, logger)
+			go s.dispense(f, name, pluginType, dumb-nomadConfig, logger)
 		}
 	}
 

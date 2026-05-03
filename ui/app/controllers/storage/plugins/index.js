@@ -7,9 +7,9 @@ import { inject as service } from '@ember/service';
 import { action, computed } from '@ember/object';
 import { alias, readOnly } from '@ember/object/computed';
 import Controller, { inject as controller } from '@ember/controller';
-import SortableFactory from 'nomad-ui/mixins/sortable-factory';
-import Searchable from 'nomad-ui/mixins/searchable';
-import { lazyClick } from 'nomad-ui/helpers/lazy-click';
+import SortableFactory from 'dumb-nomad-ui/mixins/sortable-factory';
+import Searchable from 'dumb-nomad-ui/mixins/searchable';
+import { lazyClick } from 'dumb-nomad-ui/helpers/lazy-click';
 import classic from 'ember-classic-decorator';
 
 @classic

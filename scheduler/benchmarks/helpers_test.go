@@ -7,33 +7,33 @@ package benchmarks
 // against real world state snapshots or data directories. These live
 // here and not in the parent scheduler package because it would
 // create circular imports between the scheduler and raftutils package
-// (via the nomad package)
+// (via the dumb-nomad package)
 
 import (
 	"errors"
 	"os"
 	"testing"
 
-	"github.com/hashicorp/nomad/helper/raftutil"
-	"github.com/hashicorp/nomad/scheduler/tests"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/raftutil"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/tests"
 	"github.com/shoenig/test/must"
 )
 
 // NewBenchmarkingHarness creates a starting test harness with state
 // store. The starting contents of the state store depends on which
 // env var is set:
-// - NOMAD_BENCHMARK_DATADIR: path to data directory
-// - NOMAD_BENCHMARK_SNAPSHOT: path to raft snapshot
+// - DUMB_NOMAD_BENCHMARK_DATADIR: path to data directory
+// - DUMB_NOMAD_BENCHMARK_SNAPSHOT: path to raft snapshot
 // - neither: empty starting state
 func NewBenchmarkingHarness(t testing.TB) *tests.Harness {
 	// create the Harness and starting state.
-	datadir := os.Getenv("NOMAD_BENCHMARK_DATADIR")
+	datadir := os.Getenv("DUMB_NOMAD_BENCHMARK_DATADIR")
 	if datadir != "" {
 		h, err := NewHarnessFromDataDir(t, datadir)
 		must.NoError(t, err)
 		return h
 	} else {
-		snapshotPath := os.Getenv("NOMAD_BENCHMARK_SNAPSHOT")
+		snapshotPath := os.Getenv("DUMB_NOMAD_BENCHMARK_SNAPSHOT")
 		if snapshotPath != "" {
 			h, err := NewHarnessFromSnapshot(t, snapshotPath)
 			must.NoError(t, err)

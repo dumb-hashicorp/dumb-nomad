@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -18,22 +18,22 @@ type OperatorSnapshotRestoreCommand struct {
 
 func (c *OperatorSnapshotRestoreCommand) Help() string {
 	helpText := `
-Usage: nomad operator snapshot restore [options] <file>
+Usage: dumb-nomad operator snapshot restore [options] <file>
 
-  Restores an atomic, point-in-time snapshot of the state of the Nomad servers
+  Restores an atomic, point-in-time snapshot of the state of the Dumb Nomad servers
   which includes jobs, nodes, allocations, periodic jobs, and ACLs.
 
   Restores involve a potentially dangerous low-level Raft operation that is not
   designed to handle server failures during a restore. This command is primarily
   intended to be used when recovering from a disaster, restoring into a fresh
-  cluster of Nomad servers.
+  cluster of Dumb Nomad servers.
 
   If ACLs are enabled, a management token must be supplied in order to perform
   snapshot operations.
 
   To restore a snapshot from the file "backup.snap":
 
-    $ nomad operator snapshot restore backup.snap
+    $ dumb-nomad operator snapshot restore backup.snap
 
 General Options:
 
@@ -50,7 +50,7 @@ func (c *OperatorSnapshotRestoreCommand) AutocompleteArgs() complete.Predictor {
 }
 
 func (c *OperatorSnapshotRestoreCommand) Synopsis() string {
-	return "Restore snapshot of Nomad server state"
+	return "Restore snapshot of Dumb Nomad server state"
 }
 
 func (c *OperatorSnapshotRestoreCommand) Name() string { return "operator snapshot restore" }

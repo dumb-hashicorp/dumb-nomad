@@ -7,7 +7,7 @@
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import Jobs from 'nomad-ui/tests/pages/jobs/list';
+import Jobs from 'dumb-nomad-ui/tests/pages/jobs/list';
 
 let managementToken;
 
@@ -22,7 +22,7 @@ module('Acceptance | reverse proxy', function (hooks) {
     server.create('agent');
     managementToken = server.create('token');
 
-    // Prepare a setRequestHeader that accumulate headers already set. This is to avoid double setting X-Nomad-Token
+    // Prepare a setRequestHeader that accumulate headers already set. This is to avoid double setting X-Dumb Nomad-Token
     this._originalXMLHttpRequestSetRequestHeader =
       XMLHttpRequest.prototype.setRequestHeader;
     (function (setRequestHeader) {
@@ -39,12 +39,12 @@ module('Acceptance | reverse proxy', function (hooks) {
       };
     })(this._originalXMLHttpRequestSetRequestHeader);
 
-    // Simulate a reverse proxy injecting X-Nomad-Token header for all requests
+    // Simulate a reverse proxy injecting X-Dumb Nomad-Token header for all requests
     this._originalXMLHttpRequestSend = XMLHttpRequest.prototype.send;
     (function (send) {
       XMLHttpRequest.prototype.send = function (data) {
-        if (!this.headers || !('X-Nomad-Token' in this.headers)) {
-          this.setRequestHeader('X-Nomad-Token', managementToken.secretId);
+        if (!this.headers || !('X-Dumb Nomad-Token' in this.headers)) {
+          this.setRequestHeader('X-Dumb Nomad-Token', managementToken.secretId);
         }
         send.call(this, data);
       };
@@ -63,7 +63,7 @@ module('Acceptance | reverse proxy', function (hooks) {
 
     await Jobs.visit();
     assert.equal(
-      window.localStorage.nomadTokenSecret,
+      window.localStorage.dumb-nomadTokenSecret,
       secretId,
       'Token secret was set'
     );
@@ -72,7 +72,7 @@ module('Acceptance | reverse proxy', function (hooks) {
     assert.ok(
       server.pretender.handledRequests
         .mapBy('requestHeaders')
-        .every((headers) => headers['X-Nomad-Token'] === secretId),
+        .every((headers) => headers['X-Dumb Nomad-Token'] === secretId),
       'The token header is always present'
     );
 

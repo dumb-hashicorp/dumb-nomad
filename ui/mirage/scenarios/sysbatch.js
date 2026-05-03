@@ -12,7 +12,7 @@ export function sysbatchLarge(server) {
 }
 
 function sysbatchScenario(server, clientCount) {
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
 
   const clients = server.createList('node', clientCount, {
     datacenter: 'dc1',

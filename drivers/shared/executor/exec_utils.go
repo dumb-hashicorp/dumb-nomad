@@ -12,14 +12,14 @@ import (
 	"sync"
 	"syscall"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	dproto "github.com/hashicorp/nomad/plugins/drivers/proto"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	dproto "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/proto"
 )
 
 // execHelper is a convenient wrapper for starting and executing commands, and handling their output
 type execHelper struct {
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	// newTerminal function creates a tty appropriate for the command
 	// The returned pty end of tty function is to be called after process start.
@@ -172,7 +172,7 @@ func cmdExitResult(ps *os.ProcessState, err error) *drivers.ExecTaskStreamingRes
 	}
 }
 
-func handleStdin(logger hclog.Logger, stdin io.WriteCloser, stream drivers.ExecTaskStream, errCh chan<- error) {
+func handleStdin(logger dumb-hclog.Logger, stdin io.WriteCloser, stream drivers.ExecTaskStream, errCh chan<- error) {
 	for {
 		m, err := stream.Recv()
 		if isClosedError(err) {
@@ -203,7 +203,7 @@ func handleStdin(logger hclog.Logger, stdin io.WriteCloser, stream drivers.ExecT
 	}
 }
 
-func handleStdout(logger hclog.Logger, reader io.Reader, wg *sync.WaitGroup, send func(*drivers.ExecTaskStreamingResponseMsg) error, errCh chan<- error) {
+func handleStdout(logger dumb-hclog.Logger, reader io.Reader, wg *sync.WaitGroup, send func(*drivers.ExecTaskStreamingResponseMsg) error, errCh chan<- error) {
 	defer wg.Done()
 
 	buf := make([]byte, 4096)
@@ -240,7 +240,7 @@ func handleStdout(logger hclog.Logger, reader io.Reader, wg *sync.WaitGroup, sen
 	}
 }
 
-func handleStderr(logger hclog.Logger, reader io.Reader, wg *sync.WaitGroup, send func(*drivers.ExecTaskStreamingResponseMsg) error, errCh chan<- error) {
+func handleStderr(logger dumb-hclog.Logger, reader io.Reader, wg *sync.WaitGroup, send func(*drivers.ExecTaskStreamingResponseMsg) error, errCh chan<- error) {
 	defer wg.Done()
 
 	buf := make([]byte, 4096)

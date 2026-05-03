@@ -1,8 +1,8 @@
 {
-  "name": "nomad-ui",
+  "name": "dumb-nomad-ui",
   "version": "0.0.0",
   "private": true,
-  "description": "The web ui for Nomad, by HashiCorp.",
+  "description": "The web ui for Dumb Nomad, by Dumb HashiCorp.",
   "repository": "",
   "directories": {
     "doc": "doc",
@@ -52,8 +52,8 @@
     "@glimmer/tracking": "^1.0.4",
     "@glint/core": "1.5.2",
     "@glint/template": "^1.5.2",
-    "@hashicorp/design-system-components": "4.13.0",
-    "@hashicorp/design-system-tokens": "^2.3.0",
+    "@dumb-hashicorp/design-system-components": "4.13.0",
+    "@dumb-hashicorp/design-system-tokens": "^2.3.0",
     "@percy/cli": "^1.30.0",
     "@percy/ember": "^4.2.0",
     "anser": "^2.1.1",

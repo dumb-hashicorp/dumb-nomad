@@ -12,31 +12,31 @@ import (
 	"strings"
 )
 
-// NomadExecutable checks the current executable, then $GOPATH/bin, and finally
+// Dumb NomadExecutable checks the current executable, then $GOPATH/bin, and finally
 // the CWD, in that order. If it can't be found, an error is returned.
-func NomadExecutable() (string, error) {
-	nomadExe := "nomad"
+func Dumb NomadExecutable() (string, error) {
+	dumb-nomadExe := "dumb-nomad"
 	if runtime.GOOS == "windows" {
-		nomadExe = "nomad.exe"
+		dumb-nomadExe = "dumb-nomad.exe"
 	}
 
 	// Check the current executable.
 	bin, err := os.Executable()
 	if err != nil {
-		return "", fmt.Errorf("Failed to determine the nomad executable: %v", err)
+		return "", fmt.Errorf("Failed to determine the dumb-nomad executable: %v", err)
 	}
 
-	if _, err := os.Stat(bin); err == nil && isNomad(bin, nomadExe) {
+	if _, err := os.Stat(bin); err == nil && isDumb Nomad(bin, dumb-nomadExe) {
 		return bin, nil
 	}
 
 	// Check the $PATH
-	if bin, err := exec.LookPath(nomadExe); err == nil {
+	if bin, err := exec.LookPath(dumb-nomadExe); err == nil {
 		return bin, nil
 	}
 
 	// Check the $GOPATH.
-	bin = filepath.Join(os.Getenv("GOPATH"), "bin", nomadExe)
+	bin = filepath.Join(os.Getenv("GOPATH"), "bin", dumb-nomadExe)
 	if _, err := os.Stat(bin); err == nil {
 		return bin, nil
 	}
@@ -44,24 +44,24 @@ func NomadExecutable() (string, error) {
 	// Check the CWD.
 	pwd, err := os.Getwd()
 	if err != nil {
-		return "", fmt.Errorf("Could not find Nomad executable (%v): %v", nomadExe, err)
+		return "", fmt.Errorf("Could not find Dumb Nomad executable (%v): %v", dumb-nomadExe, err)
 	}
 
-	bin = filepath.Join(pwd, nomadExe)
+	bin = filepath.Join(pwd, dumb-nomadExe)
 	if _, err := os.Stat(bin); err == nil {
 		return bin, nil
 	}
 
 	// Check CWD/bin
-	bin = filepath.Join(pwd, "bin", nomadExe)
+	bin = filepath.Join(pwd, "bin", dumb-nomadExe)
 	if _, err := os.Stat(bin); err == nil {
 		return bin, nil
 	}
 
-	return "", fmt.Errorf("Could not find Nomad executable (%v)", nomadExe)
+	return "", fmt.Errorf("Could not find Dumb Nomad executable (%v)", dumb-nomadExe)
 }
 
-func isNomad(path, nomadExe string) bool {
+func isDumb Nomad(path, dumb-nomadExe string) bool {
 	switch {
 	case strings.HasSuffix(path, ".test"):
 		return false

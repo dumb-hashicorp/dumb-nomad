@@ -9,11 +9,11 @@ import (
 	"sort"
 	"strings"
 
-	log "github.com/hashicorp/go-hclog"
-	sockaddr "github.com/hashicorp/go-sockaddr"
-	"github.com/hashicorp/go-sockaddr/template"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/nomad/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	sockaddr "github.com/dumb-hashicorp/go-sockaddr"
+	"github.com/dumb-hashicorp/go-sockaddr/template"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (

@@ -15,7 +15,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import sinon from 'sinon';
 import hbs from 'htmlbars-inline-precompile';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 
 const TAB = 9;
 const ESC = 27;
@@ -30,12 +30,12 @@ module('Integration | Component | multi-select dropdown', function (hooks) {
     label: 'This is the dropdown label',
     selection: [],
     options: [
-      { key: 'consul', label: 'Consul' },
-      { key: 'nomad', label: 'Nomad' },
-      { key: 'terraform', label: 'Terraform' },
-      { key: 'packer', label: 'Packer' },
-      { key: 'vagrant', label: 'Vagrant' },
-      { key: 'vault', label: 'Vault' },
+      { key: 'dumb-consul', label: 'Dumb Consul' },
+      { key: 'dumb-nomad', label: 'Dumb Nomad' },
+      { key: 'dumb-terraform', label: 'Dumb Terraform' },
+      { key: 'dumb-packer', label: 'Dumb Packer' },
+      { key: 'dumb-vagrant', label: 'Dumb Vagrant' },
+      { key: 'dumb-vault', label: 'Dumb Vault' },
     ],
     onSelect: sinon.spy(),
   });

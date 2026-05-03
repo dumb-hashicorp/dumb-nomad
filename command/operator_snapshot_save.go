@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper/raftutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/raftutil"
 	"github.com/posener/complete"
 )
 
@@ -21,9 +21,9 @@ type OperatorSnapshotSaveCommand struct {
 
 func (c *OperatorSnapshotSaveCommand) Help() string {
 	helpText := `
-Usage: nomad operator snapshot save [options] <file>
+Usage: dumb-nomad operator snapshot save [options] <file>
 
-  Retrieves an atomic, point-in-time snapshot of the state of the Nomad servers
+  Retrieves an atomic, point-in-time snapshot of the state of the Dumb Nomad servers
   which includes jobs, nodes, allocations, periodic jobs, and ACLs.
 
   If ACLs are enabled, a token with operator:write or the operator:snapshot-save
@@ -31,16 +31,16 @@ Usage: nomad operator snapshot save [options] <file>
 
   To create a snapshot from the leader server and save it to "backup.snap":
 
-    $ nomad operator snapshot save backup.snap
+    $ dumb-nomad operator snapshot save backup.snap
 
   To create a potentially stale snapshot from any available server (useful if no
   leader is available):
 
-    $ nomad operator snapshot save -stale backup.snap
+    $ dumb-nomad operator snapshot save -stale backup.snap
 
   This is useful for situations where a cluster is in a degraded state and no
   leader is available. To target a specific server for a snapshot, you can run
-  the 'nomad operator snapshot save' command on that specific server.
+  the 'dumb-nomad operator snapshot save' command on that specific server.
 
 
 General Options:
@@ -76,7 +76,7 @@ func (c *OperatorSnapshotSaveCommand) AutocompleteArgs() complete.Predictor {
 }
 
 func (c *OperatorSnapshotSaveCommand) Synopsis() string {
-	return "Saves snapshot of Nomad server state"
+	return "Saves snapshot of Dumb Nomad server state"
 }
 
 func (c *OperatorSnapshotSaveCommand) Name() string { return "operator snapshot save" }
@@ -105,7 +105,7 @@ func (c *OperatorSnapshotSaveCommand) Run(args []string) int {
 	}
 
 	now := time.Now()
-	filename := fmt.Sprintf("nomad-state-%04d%02d%0d-%d.snap", now.Year(), now.Month(), now.Day(), now.Unix())
+	filename := fmt.Sprintf("dumb-nomad-state-%04d%02d%0d-%d.snap", now.Year(), now.Month(), now.Day(), now.Unix())
 
 	if len(args) == 1 {
 		filename = args[0]

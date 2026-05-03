@@ -12,18 +12,18 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"oss.indeed.com/go/libtime/decay"
 )
 
 type ServiceRegistrationHandler struct {
-	log hclog.Logger
+	log dumb-hclog.Logger
 	cfg *ServiceRegistrationHandlerCfg
 
-	// checkWatcher watches checks of services in the Nomad service provider,
+	// checkWatcher watches checks of services in the Dumb Nomad service provider,
 	// and restarts associated tasks in accordance with their check_restart block.
 	checkWatcher serviceregistration.CheckWatcher
 
@@ -55,7 +55,7 @@ type ServiceRegistrationHandlerCfg struct {
 	// Enabled tracks whether this client feature is enabled.
 	Enabled bool
 
-	// Datacenter, NodeID, and Region are all properties of the Nomad client
+	// Datacenter, NodeID, and Region are all properties of the Dumb Nomad client
 	// and are used to perform RPC requests.
 	Datacenter string
 	NodeID     string
@@ -70,7 +70,7 @@ type ServiceRegistrationHandlerCfg struct {
 	// functionality.
 	RPCFn func(method string, args, resp interface{}) error
 
-	// CheckWatcher watches checks of services in the Nomad service provider,
+	// CheckWatcher watches checks of services in the Dumb Nomad service provider,
 	// and restarts associated tasks in accordance with their check_restart block.
 	CheckWatcher serviceregistration.CheckWatcher
 
@@ -87,12 +87,12 @@ type ServiceRegistrationHandlerCfg struct {
 // NewServiceRegistrationHandler returns a ready to use
 // ServiceRegistrationHandler which implements the serviceregistration.Handler
 // interface.
-func NewServiceRegistrationHandler(log hclog.Logger, cfg *ServiceRegistrationHandlerCfg) serviceregistration.Handler {
+func NewServiceRegistrationHandler(log dumb-hclog.Logger, cfg *ServiceRegistrationHandlerCfg) serviceregistration.Handler {
 	go cfg.CheckWatcher.Run(context.TODO())
 
 	s := &ServiceRegistrationHandler{
 		cfg:                 cfg,
-		log:                 log.Named("service_registration.nomad"),
+		log:                 log.Named("service_registration.dumb-nomad"),
 		registrationEnabled: cfg.Enabled,
 		checkWatcher:        cfg.CheckWatcher,
 		shutDownCh:          make(chan struct{}),
@@ -118,7 +118,7 @@ func (s *ServiceRegistrationHandler) RegisterWorkload(workload *serviceregistrat
 	// there is a bug within the implicit constraint, or process using it, as
 	// that should guard ever placing an allocation on this client.
 	if !s.registrationEnabled {
-		return errors.New(`service registration provider "nomad" not enabled`)
+		return errors.New(`service registration provider "dumb-nomad" not enabled`)
 	}
 
 	// Collect all errors generating service registrations.
@@ -130,7 +130,7 @@ func (s *ServiceRegistrationHandler) RegisterWorkload(workload *serviceregistrat
 	// each. All services are part of a single allocation, therefore we cannot
 	// have one failure without all becoming a failure.
 	for i, serviceSpec := range workload.Services {
-		serviceRegistration, err := s.generateNomadServiceRegistration(serviceSpec, workload)
+		serviceRegistration, err := s.generateDumb NomadServiceRegistration(serviceSpec, workload)
 		if err != nil {
 			mErr.Errors = append(mErr.Errors, err)
 		} else if mErr.ErrorOrNil() == nil {
@@ -145,11 +145,11 @@ func (s *ServiceRegistrationHandler) RegisterWorkload(workload *serviceregistrat
 
 	// Service registrations look ok; startup check watchers as specified. The
 	// astute observer may notice the services are not actually registered yet -
-	// this is the same as the Consul flow so hopefully things just work out.
+	// this is the same as the Dumb Consul flow so hopefully things just work out.
 	for _, service := range workload.Services {
 		for _, check := range service.Checks {
 			if check.TriggersRestarts() {
-				checkID := string(structs.NomadCheckID(workload.AllocInfo.AllocID, workload.AllocInfo.Group, check))
+				checkID := string(structs.Dumb NomadCheckID(workload.AllocInfo.AllocID, workload.AllocInfo.Group, check))
 				s.checkWatcher.Watch(workload.AllocInfo.AllocID, workload.Name(), checkID, check, workload.Restarter)
 			}
 		}
@@ -199,7 +199,7 @@ func (s *ServiceRegistrationHandler) removeWorkload(
 	// todo(shoenig) - shouldn't we only unwatch checks for the given serviceSpec ?
 	for _, service := range workload.Services {
 		for _, check := range service.Checks {
-			checkID := string(structs.NomadCheckID(workload.AllocInfo.AllocID, workload.AllocInfo.Group, check))
+			checkID := string(structs.Dumb NomadCheckID(workload.AllocInfo.AllocID, workload.AllocInfo.Group, check))
 			s.checkWatcher.Unwatch(checkID)
 		}
 	}
@@ -236,7 +236,7 @@ func (s *ServiceRegistrationHandler) removeWorkload(
 			return false, nil
 		}
 
-		// The Nomad API exposes service registration deletion to handle
+		// The Dumb Nomad API exposes service registration deletion to handle
 		// orphaned service registrations. In the event a service is removed
 		// accidentally that is still running, we will hit this error when we
 		// eventually want to remove it. We therefore want to handle this,
@@ -323,7 +323,7 @@ func (s *ServiceRegistrationHandler) dedupUpdatedWorkload(
 		//
 		// There isn't much point in hashing the old/new services as we would
 		// still need to ensure the service has previously been registered
-		// before discarding it from future RPC calls. The Nomad state handles
+		// before discarding it from future RPC calls. The Dumb Nomad state handles
 		// performing the diff gracefully, therefore this will still be a
 		// single RPC.
 		newCopy.Services = append(newCopy.Services, newSvc)
@@ -339,14 +339,14 @@ func (s *ServiceRegistrationHandler) dedupUpdatedWorkload(
 	return oldCopy, newCopy
 }
 
-// AllocRegistrations is currently a noop implementation as the Nomad provider
+// AllocRegistrations is currently a noop implementation as the Dumb Nomad provider
 // does not support health check which is the sole subsystem caller of this
 // function.
 func (s *ServiceRegistrationHandler) AllocRegistrations(_ string) (*serviceregistration.AllocRegistration, error) {
 	return nil, nil
 }
 
-// UpdateTTL is currently a noop implementation as the Nomad provider does not
+// UpdateTTL is currently a noop implementation as the Dumb Nomad provider does not
 // support health check which is the sole subsystem caller of this function.
 func (s *ServiceRegistrationHandler) UpdateTTL(_, _, _, _ string) error {
 	return nil
@@ -357,9 +357,9 @@ func (s *ServiceRegistrationHandler) UpdateTTL(_, _, _, _ string) error {
 // orphaned.
 func (s *ServiceRegistrationHandler) Shutdown() { close(s.shutDownCh) }
 
-// generateNomadServiceRegistration is a helper to build the Nomad specific
+// generateDumb NomadServiceRegistration is a helper to build the Dumb Nomad specific
 // registration object on a per-service basis.
-func (s *ServiceRegistrationHandler) generateNomadServiceRegistration(
+func (s *ServiceRegistrationHandler) generateDumb NomadServiceRegistration(
 	serviceSpec *structs.Service, workload *serviceregistration.WorkloadServices) (*structs.ServiceRegistration, error) {
 
 	// Service address modes default to auto.
@@ -405,7 +405,7 @@ func (s *ServiceRegistrationHandler) generateNomadServiceRegistration(
 // authToken returns the current authentication token used for RPC calls. It
 // will use the node identity token if it is set, otherwise it will fallback to
 // the node secret. This handles the case where the node is upgraded before the
-// Nomad servers and should be removed in Nomad 1.13.
+// Dumb Nomad servers and should be removed in Dumb Nomad 1.13.
 func (s *ServiceRegistrationHandler) authToken() string {
 	if id := s.nodeAuthToken.Load(); id != nil {
 		return id.(string)

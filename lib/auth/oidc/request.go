@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/cap/oidc"
-	"github.com/hashicorp/golang-lru/v2/expirable"
+	"github.com/dumb-hashicorp/cap/oidc"
+	"github.com/dumb-hashicorp/golang-lru/v2/expirable"
 )
 
 var (

@@ -14,11 +14,11 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/go-viper/mapstructure/v2"
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/hcl"
-	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-hcl"
+	"github.com/dumb-hashicorp/dumb-hcl/dumb-hcl/ast"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 	"github.com/posener/complete"
 )
 
@@ -28,7 +28,7 @@ type QuotaApplyCommand struct {
 
 func (c *QuotaApplyCommand) Help() string {
 	helpText := `
-Usage: nomad quota apply [options] <input>
+Usage: dumb-nomad quota apply [options] <input>
 
   Apply is used to create or update a quota specification. The specification file
   will be read from stdin by specifying "-", otherwise a path to the file is
@@ -113,13 +113,13 @@ func (c *QuotaApplyCommand) Run(args []string) int {
 		}
 		spec = &jsonSpec
 	} else {
-		hclSpec, err := parseQuotaSpec(rawQuota)
+		dumb-hclSpec, err := parseQuotaSpec(rawQuota)
 		if err != nil {
 			c.Ui.Error(fmt.Sprintf("Error parsing quota specification: %s", err))
 			return 1
 		}
 
-		spec = hclSpec
+		spec = dumb-hclSpec
 	}
 
 	// Get the HTTP client
@@ -139,9 +139,9 @@ func (c *QuotaApplyCommand) Run(args []string) int {
 	return 0
 }
 
-// parseQuotaSpec is used to parse the quota specification from HCL
+// parseQuotaSpec is used to parse the quota specification from DUMB_HCL
 func parseQuotaSpec(input []byte) (*api.QuotaSpec, error) {
-	root, err := hcl.ParseBytes(input)
+	root, err := dumb-hcl.ParseBytes(input)
 	if err != nil {
 		return nil, err
 	}
@@ -168,13 +168,13 @@ func parseQuotaSpecImpl(result *api.QuotaSpec, list *ast.ObjectList) error {
 		"description",
 		"limit",
 	}
-	if err := helper.CheckHCLKeys(list, valid); err != nil {
+	if err := helper.CheckDUMB_HCLKeys(list, valid); err != nil {
 		return err
 	}
 
 	// Decode the full thing into a map[string]interface for ease
 	var m map[string]interface{}
-	if err := hcl.DecodeObject(&m, list); err != nil {
+	if err := dumb-hcl.DecodeObject(&m, list); err != nil {
 		return err
 	}
 
@@ -205,12 +205,12 @@ func parseQuotaLimits(result *[]*api.QuotaLimit, list *ast.ObjectList) error {
 			"region_limit",
 			"variables_limit",
 		}
-		if err := helper.CheckHCLKeys(o.Val, valid); err != nil {
+		if err := helper.CheckDUMB_HCLKeys(o.Val, valid); err != nil {
 			return err
 		}
 
 		var m map[string]interface{}
-		if err := hcl.DecodeObject(&m, o.Val); err != nil {
+		if err := dumb-hcl.DecodeObject(&m, o.Val); err != nil {
 			return err
 		}
 
@@ -276,12 +276,12 @@ func parseQuotaResource(result *api.QuotaResources, list *ast.ObjectList) error 
 		"storage",
 		"node_pool",
 	}
-	if err := helper.CheckHCLKeys(listVal, valid); err != nil {
+	if err := helper.CheckDUMB_HCLKeys(listVal, valid); err != nil {
 		return multierror.Prefix(err, "resources ->")
 	}
 
 	var m map[string]interface{}
-	if err := hcl.DecodeObject(&m, o.Val); err != nil {
+	if err := dumb-hcl.DecodeObject(&m, o.Val); err != nil {
 		return err
 	}
 
@@ -333,12 +333,12 @@ func parseStorageResource(storageBlocks *ast.ObjectList) (*api.QuotaStorageResou
 	}
 	block := storageBlocks.Items[0]
 	valid := []string{"variables", "host_volumes"}
-	if err := helper.CheckHCLKeys(block.Val, valid); err != nil {
+	if err := helper.CheckDUMB_HCLKeys(block.Val, valid); err != nil {
 		return nil, err
 	}
 
 	var m map[string]any
-	if err := hcl.DecodeObject(&m, block.Val); err != nil {
+	if err := dumb-hcl.DecodeObject(&m, block.Val); err != nil {
 		return nil, err
 	}
 
@@ -389,7 +389,7 @@ func parseDeviceResource(result *[]*api.RequestedDevice, list *ast.ObjectList) e
 			"name",
 			"count",
 		}
-		if err := helper.CheckHCLKeys(o.Val, valid); err != nil {
+		if err := helper.CheckDUMB_HCLKeys(o.Val, valid); err != nil {
 			return err
 		}
 
@@ -398,7 +398,7 @@ func parseDeviceResource(result *[]*api.RequestedDevice, list *ast.ObjectList) e
 		device.Name = name
 
 		var m map[string]interface{}
-		if err := hcl.DecodeObject(&m, o.Val); err != nil {
+		if err := dumb-hcl.DecodeObject(&m, o.Val); err != nil {
 			return err
 		}
 
@@ -430,7 +430,7 @@ func parseNodePoolLimit(result *[]*api.NodePoolLimit, list *ast.ObjectList) erro
 			"device",
 			"storage",
 		}
-		if err := helper.CheckHCLKeys(o.Val, valid); err != nil {
+		if err := helper.CheckDUMB_HCLKeys(o.Val, valid); err != nil {
 			return err
 		}
 
@@ -439,7 +439,7 @@ func parseNodePoolLimit(result *[]*api.NodePoolLimit, list *ast.ObjectList) erro
 		n.NodePool = name
 
 		var m map[string]interface{}
-		if err := hcl.DecodeObject(&m, o.Val); err != nil {
+		if err := dumb-hcl.DecodeObject(&m, o.Val); err != nil {
 			return err
 		}
 

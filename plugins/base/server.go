@@ -7,8 +7,8 @@ import (
 	"context"
 	"fmt"
 
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/plugins/base/proto"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base/proto"
 )
 
 // basePluginServer wraps a base plugin and exposes it via gRPC.
@@ -63,7 +63,7 @@ func (b *basePluginServer) SetConfig(ctx context.Context, req *proto.SetConfigRe
 	}
 
 	// Client configuration is filtered based on plugin type
-	cfg := nomadConfigFromProto(req.GetNomadConfig())
+	cfg := dumb-nomadConfigFromProto(req.GetDumb NomadConfig())
 	filteredCfg := new(AgentConfig)
 
 	if cfg != nil {

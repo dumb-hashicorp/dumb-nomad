@@ -5,7 +5,7 @@
 
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import NetworkModel from 'nomad-ui/models/network';
+import NetworkModel from 'dumb-nomad-ui/models/network';
 
 module('Unit | Serializer | Network', function (hooks) {
   setupTest(hooks);

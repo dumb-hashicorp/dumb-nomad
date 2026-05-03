@@ -15,13 +15,13 @@ import (
 	"strings"
 
 	"github.com/go-viper/mapstructure/v2"
-	"github.com/hashicorp/cli"
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/hcl"
-	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/cli"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-hcl"
+	"github.com/dumb-hashicorp/dumb-hcl/dumb-hcl/ast"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 	"github.com/posener/complete"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -45,8 +45,8 @@ type VarPutCommand struct {
 func (c *VarPutCommand) Help() string {
 	helpText := `
 Usage:
-nomad var put [options] <variable spec file reference> [<key>=<value>]...
-nomad var put [options] <path to store variable> [<variable spec file reference>] [<key>=<value>]...
+dumb-nomad var put [options] <variable spec file reference> [<key>=<value>]...
+dumb-nomad var put [options] <path to store variable> [<variable spec file reference>] [<key>=<value>]...
 
   The 'var put' command is used to create or update an existing variable.
   Variable metadata and items can be supplied using a variable specification,
@@ -56,7 +56,7 @@ nomad var put [options] <path to store variable> [<variable spec file reference>
   input (stdin) by setting the first argument to "-" or from a file by using an
   @-prefixed path to a variable specification file. When providing variable
   data via stdin, you must provide the "-in" flag with the format of the
-  specification, either "hcl" or "json"
+  specification, either "dumb-hcl" or "json"
 
   Items to be stored in the variable can be supplied using the specification,
   as a series of key-value pairs, or both. The value for a key-value pair can
@@ -87,12 +87,12 @@ Var put Options:
      Perform this operation regardless of the state or index of the variable
      on the server-side.
 
-  -in (hcl | json)
+  -in (dumb-hcl | json)
      Parser to use for data supplied via standard input or when the variable
      specification's type can not be known using the file extension. Defaults
      to "json".
 
-  -out (go-template | hcl | json | none | table)
+  -out (go-template | dumb-hcl | json | none | table)
      Format to render created or updated variable. Defaults to "none" when
      stdout is a terminal and "json" when the output is redirected.
 
@@ -114,8 +114,8 @@ Var put Options:
 func (c *VarPutCommand) AutocompleteFlags() complete.Flags {
 	return mergeAutocompleteFlags(c.Meta.AutocompleteFlags(FlagSetClient),
 		complete.Flags{
-			"-in":  complete.PredictSet("hcl", "json"),
-			"-out": complete.PredictSet("none", "hcl", "json", "go-template", "table"),
+			"-in":  complete.PredictSet("dumb-hcl", "json"),
+			"-out": complete.PredictSet("none", "dumb-hcl", "json", "go-template", "table"),
 			"-ui":  complete.PredictNothing,
 		},
 	)
@@ -350,8 +350,8 @@ func (c *VarPutCommand) Run(args []string) int {
 	switch c.outFmt {
 	case "json":
 		out = sv.AsPrettyJSON()
-	case "hcl":
-		out = renderAsHCL(sv)
+	case "dumb-hcl":
+		out = renderAsDUMB_HCL(sv)
 	case "go-template":
 		if out, err = renderWithGoTemplate(sv, c.tmpl); err != nil {
 			c.Ui.Error(err.Error())
@@ -422,10 +422,10 @@ func (c *VarPutCommand) makeVariable(path string) (*api.Variable, error) {
 		if err != nil {
 			return nil, fmt.Errorf("error unmarshaling json: %w", err)
 		}
-	case "hcl":
+	case "dumb-hcl":
 		out, err = parseVariableSpec(c.contents, c.verbose)
 		if err != nil {
-			return nil, fmt.Errorf("error parsing hcl: %w", err)
+			return nil, fmt.Errorf("error parsing dumb-hcl: %w", err)
 		}
 	case "":
 		return nil, errors.New("format flag required")
@@ -467,9 +467,9 @@ func (c *VarPutCommand) makeVariable(path string) (*api.Variable, error) {
 }
 
 // parseVariableSpec is used to parse the variable specification
-// from HCL
+// from DUMB_HCL
 func parseVariableSpec(input []byte, verbose func(string)) (*api.Variable, error) {
-	root, err := hcl.ParseBytes(input)
+	root, err := dumb-hcl.ParseBytes(input)
 	if err != nil {
 		return nil, err
 	}
@@ -491,7 +491,7 @@ func parseVariableSpec(input []byte, verbose func(string)) (*api.Variable, error
 func parseVariableSpecImpl(result *api.Variable, list *ast.ObjectList) error {
 	// Decode the full thing into a map[string]interface for ease
 	var m map[string]interface{}
-	if err := hcl.DecodeObject(&m, list); err != nil {
+	if err := dumb-hcl.DecodeObject(&m, list); err != nil {
 		return err
 	}
 
@@ -505,7 +505,7 @@ func parseVariableSpecImpl(result *api.Variable, list *ast.ObjectList) error {
 		"modify_time",
 		"items",
 	}
-	if err := helper.CheckHCLKeys(list, valid); err != nil {
+	if err := helper.CheckDUMB_HCLKeys(list, valid); err != nil {
 		return err
 	}
 
@@ -579,8 +579,8 @@ func (c *VarPutCommand) setParserForFileArg(arg string) error {
 	switch filepath.Ext(arg) {
 	case ".json":
 		c.inFmt = "json"
-	case ".hcl":
-		c.inFmt = "hcl"
+	case ".dumb-hcl":
+		c.inFmt = "dumb-hcl"
 	default:
 		return fmt.Errorf("Unable to determine format of %s; Use the -in flag to specify it.", arg)
 	}
@@ -589,7 +589,7 @@ func (c *VarPutCommand) setParserForFileArg(arg string) error {
 
 func (c *VarPutCommand) validateInputFlag() error {
 	switch c.inFmt {
-	case "hcl", "json":
+	case "dumb-hcl", "json":
 		return nil
 	default:
 		return errors.New(errInvalidInFormat)
@@ -601,7 +601,7 @@ func (c *VarPutCommand) validateOutputFlag() error {
 		return errors.New(errUnexpectedTemplate)
 	}
 	switch c.outFmt {
-	case "none", "json", "hcl", "table":
+	case "none", "json", "dumb-hcl", "table":
 		return nil
 	case "go-template":
 		if c.tmpl == "" {

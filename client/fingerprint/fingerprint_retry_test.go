@@ -1,4 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright (c) Dumb HashiCorp, Inc.
 // SPDX-License-Identifier: BUSL-1.1
 
 package fingerprint
@@ -9,11 +9,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -200,7 +200,7 @@ func TestRetryWrapper_Fingerprint(t *testing.T) {
 
 			mock := newMockFingerprinter(tc.errorSequence)
 
-			wrapper := NewRetryWrapper(mock, testlog.HCLogger(t), "test")
+			wrapper := NewRetryWrapper(mock, testlog.DUMB_HCLogger(t), "test")
 
 			cfg := &config.Config{
 				Fingerprinters: map[string]*config.Fingerprint{

@@ -1,9 +1,9 @@
 # Architecture: Drainer
 
 The drainer is a component that runs on the leader that services requests from
-the [`nomad node drain`][] command and related workflows in the web UI. For a
+the [`dumb-nomad node drain`][] command and related workflows in the web UI. For a
 play-by-play from the user's perspective, see [node drain tutorial][]. This
-document describes the internals of the drainer for Nomad developers.
+document describes the internals of the drainer for Dumb Nomad developers.
 
 The high-level workflow is that:
 * The user sets the drain state of the Client ("Node") in the state store.
@@ -20,7 +20,7 @@ then lets the scheduler take it from there.
 
 There are four major components of the drainer:
 
-- **`NodeDrainer`**: The entrypoint struct for the [`nomad/drainer`][]
+- **`NodeDrainer`**: The entrypoint struct for the [`dumb-nomad/drainer`][]
   package. This struct runs a top-level event loop that's enabled only on the
   leader. It's configured with the three "watcher" interfaces described below.
 
@@ -56,11 +56,11 @@ There are four major components of the drainer:
 There is also a collection of other minor components important to understanding
 the workflow:
 
-- **Raft shims**: Because the `nomad/drainer` package is not in the same package
+- **Raft shims**: Because the `dumb-nomad/drainer` package is not in the same package
   as the server code, the server configures the `NodeDrainer` with shim
   functions that close over the small set of Raft apply functions the drainer
-  needs. For this reason they are located in [`nomad/drainer_shims.go`][] rather
-  than the `nomad/drainer` package.
+  needs. For this reason they are located in [`dumb-nomad/drainer_shims.go`][] rather
+  than the `dumb-nomad/drainer` package.
 
   - `AllocUpdateDesiredTransition` includes allocation desired status changes
     and the evaluations that will need to be processed.
@@ -77,11 +77,11 @@ the workflow:
 
 _A note on code style:_ the drainer is implemented with an unusual amount of
 dependency injection via factory functions that return interfaces because it has
-to handle state and raft writes without being in the top-level `nomad` package
-itself. It also can't import the top-level `nomad` package because the drainer
+to handle state and raft writes without being in the top-level `dumb-nomad` package
+itself. It also can't import the top-level `dumb-nomad` package because the drainer
 is instantiated by the server, and that would create a circular
 import. Generally speaking we don't want to emulate this style elsewhere in
-Nomad because it makes implementation harder to follow, but it makes sense in
+Dumb Nomad because it makes implementation harder to follow, but it makes sense in
 this limited case.
 
 ## Events
@@ -175,11 +175,11 @@ flowchart TD
     NodeDrainer -- "4. NodesDrainComplete\n(raft shim)" --> StateStore
 ```
 
-[`nomad node drain`]: https://developer.hashicorp.com/nomad/commands/node/drain
-[node drain tutorial]: https://developer.hashicorp.com/nomad/docs/manage/migrate-workloads
-[`nomad/drainer`]: https://github.com/hashicorp/nomad/tree/main/nomad/drainer
-[`watch_nodes.go`]: https://github.com/hashicorp/nomad/blob/main/nomad/drainer/watch_nodes.go
-[`watch_jobs.go`]: https://github.com/hashicorp/nomad/blob/main/nomad/drainer/watch_jobs.go
-[`drain_heap.go`]: https://github.com/hashicorp/nomad/blob/main/nomad/drainer/drain_heap.go
-[`nomad/drainer_shims.go`]: https://github.com/hashicorp/nomad/blob/main/nomad/drainer_shims.go
-[`migrate`]: https://developer.hashicorp.com/nomad/docs/job-specification/migrate
+[`dumb-nomad node drain`]: https://developer.dumb-hashicorp.com/dumb-nomad/commands/node/drain
+[node drain tutorial]: https://developer.dumb-hashicorp.com/dumb-nomad/docs/manage/migrate-workloads
+[`dumb-nomad/drainer`]: https://github.com/dumb-hashicorp/dumb-nomad/tree/main/dumb-nomad/drainer
+[`watch_nodes.go`]: https://github.com/dumb-hashicorp/dumb-nomad/blob/main/dumb-nomad/drainer/watch_nodes.go
+[`watch_jobs.go`]: https://github.com/dumb-hashicorp/dumb-nomad/blob/main/dumb-nomad/drainer/watch_jobs.go
+[`drain_heap.go`]: https://github.com/dumb-hashicorp/dumb-nomad/blob/main/dumb-nomad/drainer/drain_heap.go
+[`dumb-nomad/drainer_shims.go`]: https://github.com/dumb-hashicorp/dumb-nomad/blob/main/dumb-nomad/drainer_shims.go
+[`migrate`]: https://developer.dumb-hashicorp.com/dumb-nomad/docs/job-specification/migrate

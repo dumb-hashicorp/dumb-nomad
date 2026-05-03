@@ -181,10 +181,10 @@ func (m *StatValue) GetDesc() string {
 }
 
 func init() {
-	proto.RegisterType((*StatObject)(nil), "hashicorp.nomad.plugins.shared.structs.StatObject")
-	proto.RegisterMapType((map[string]*StatValue)(nil), "hashicorp.nomad.plugins.shared.structs.StatObject.AttributesEntry")
-	proto.RegisterMapType((map[string]*StatObject)(nil), "hashicorp.nomad.plugins.shared.structs.StatObject.NestedEntry")
-	proto.RegisterType((*StatValue)(nil), "hashicorp.nomad.plugins.shared.structs.StatValue")
+	proto.RegisterType((*StatObject)(nil), "dumb-hashicorp.dumb-nomad.plugins.shared.structs.StatObject")
+	proto.RegisterMapType((map[string]*StatValue)(nil), "dumb-hashicorp.dumb-nomad.plugins.shared.structs.StatObject.AttributesEntry")
+	proto.RegisterMapType((map[string]*StatObject)(nil), "dumb-hashicorp.dumb-nomad.plugins.shared.structs.StatObject.NestedEntry")
+	proto.RegisterType((*StatValue)(nil), "dumb-hashicorp.dumb-nomad.plugins.shared.structs.StatValue")
 }
 
 func init() {

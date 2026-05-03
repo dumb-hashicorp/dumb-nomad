@@ -14,11 +14,11 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sys/unix"
 )
@@ -43,7 +43,7 @@ func TestSIDSHook_recoverToken(t *testing.T) {
 			Name: taskName,
 			Kind: taskKind,
 		},
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	})
 
 	expected := uuid.Generate()
@@ -67,7 +67,7 @@ func TestSIDSHook_recoverToken_empty(t *testing.T) {
 			Name: taskName,
 			Kind: taskKind,
 		},
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	})
 
 	token, err := h.recoverToken(secrets)
@@ -97,7 +97,7 @@ func TestSIDSHook_recoverToken_unReadable(t *testing.T) {
 			Name: taskName,
 			Kind: taskKind,
 		},
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	})
 
 	_, err = h.recoverToken(secrets)

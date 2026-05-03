@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 	"github.com/shoenig/test/must"
 )
 
@@ -36,7 +36,7 @@ func (cp *fauxConnPool) Ping(net.Addr) error {
 }
 
 func testManager(t *testing.T) (m *Manager) {
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	shutdownCh := make(chan struct{})
 	m = New(logger, shutdownCh, &fauxConnPool{})
 	return m
@@ -119,7 +119,7 @@ func TestManagerInternal_refreshServerRebalanceTimer(t *testing.T) {
 		{1000000, 19, 10 * time.Minute},
 	}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	shutdownCh := make(chan struct{})
 
 	for _, s := range clusters {

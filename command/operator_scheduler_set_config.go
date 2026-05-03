@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	flagHelper "github.com/hashicorp/nomad/helper/flags"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	flagHelper "github.com/dumb-hashicorp/dumb-nomad/helper/flags"
 	"github.com/posener/complete"
 )
 
@@ -159,7 +159,7 @@ func (o *OperatorSchedulerSetConfig) Synopsis() string {
 
 func (o *OperatorSchedulerSetConfig) Help() string {
 	helpText := `
-Usage: nomad operator scheduler set-config [options]
+Usage: dumb-nomad operator scheduler set-config [options]
 
   Modifies the current scheduler configuration.
 

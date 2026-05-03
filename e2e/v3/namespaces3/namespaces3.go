@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-set/v3"
-	nomadapi "github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/v3/util3"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/go-set/v3"
+	dumb-nomadapi "github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/util3"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
@@ -18,7 +18,7 @@ import (
 type Names struct {
 	t *testing.T
 
-	nomadClient *nomadapi.Client
+	dumb-nomadClient *dumb-nomadapi.Client
 
 	noCleanup bool
 	timeout   time.Duration
@@ -37,7 +37,7 @@ func (g *Names) cleanup() {
 		return
 	}
 
-	namespaceAPI := g.nomadClient.Namespaces()
+	namespaceAPI := g.dumb-nomadClient.Namespaces()
 
 	// remove any namespaces we created (or updated)
 	for namespace := range g.apply.Items() {
@@ -66,9 +66,9 @@ func (ns *Namespace) String() string {
 }
 
 func (g *Names) setClient() {
-	nomadClient, nomadErr := nomadapi.NewClient(nomadapi.DefaultConfig())
-	must.NoError(g.t, nomadErr, must.Sprint("failed to create nomad api client"))
-	g.nomadClient = nomadClient
+	dumb-nomadClient, dumb-nomadErr := dumb-nomadapi.NewClient(dumb-nomadapi.DefaultConfig())
+	must.NoError(g.t, dumb-nomadErr, must.Sprint("failed to create dumb-nomad api client"))
+	g.dumb-nomadClient = dumb-nomadClient
 }
 
 func configure(t *testing.T, opts ...Option) Cleanup {
@@ -90,7 +90,7 @@ func configure(t *testing.T, opts ...Option) Cleanup {
 }
 
 func (g *Names) run() {
-	namespacesAPI := g.nomadClient.Namespaces()
+	namespacesAPI := g.dumb-nomadClient.Namespaces()
 
 	// do deletions
 	for namespace := range g.remove.Items() {
@@ -102,7 +102,7 @@ func (g *Names) run() {
 	// do applies
 	for namespace := range g.apply.Items() {
 		g.logf("apply namespace %q", namespace)
-		_, err := namespacesAPI.Register(&nomadapi.Namespace{
+		_, err := namespacesAPI.Register(&dumb-nomadapi.Namespace{
 			Name:        namespace.Name,
 			Description: namespace.Description,
 		}, nil)

@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 )
 
 // AgentDisconnect is a test helper function that runs a raw_exec job
@@ -27,7 +27,7 @@ func AgentDisconnect(nodeID string, after time.Duration) (string, error) {
 		vars = append(vars, "-var", fmt.Sprintf("time=%d", int(after.Seconds())))
 	}
 
-	jobFilePath := "../e2eutil/input/disconnect-node.nomad"
+	jobFilePath := "../e2eutil/input/disconnect-node.dumb-nomad"
 
 	// TODO: temporary hack around having older tests running on the
 	// framework vs new tests not, as the framework has a different
@@ -37,7 +37,7 @@ func AgentDisconnect(nodeID string, after time.Duration) (string, error) {
 		return "", err
 	}
 	if filepath.Base(dir) == "e2e" {
-		jobFilePath = "e2eutil/input/disconnect-node.nomad"
+		jobFilePath = "e2eutil/input/disconnect-node.dumb-nomad"
 	}
 
 	err = RegisterWithArgs(jobID, jobFilePath, vars...)
@@ -58,7 +58,7 @@ func AgentRestartAfter(nodeID string, after time.Duration) (string, error) {
 		vars = append(vars, "-var", fmt.Sprintf("time=%d", int(after.Seconds())))
 	}
 
-	jobFilePath := "../e2eutil/input/restart-node.nomad"
+	jobFilePath := "../e2eutil/input/restart-node.dumb-nomad"
 
 	// TODO: temporary hack around having older tests running on the
 	// framework vs new tests not, as the framework has a different
@@ -68,7 +68,7 @@ func AgentRestartAfter(nodeID string, after time.Duration) (string, error) {
 		return "", err
 	}
 	if filepath.Base(dir) == "e2e" {
-		jobFilePath = "e2eutil/input/restart-node.nomad"
+		jobFilePath = "e2eutil/input/restart-node.dumb-nomad"
 	}
 
 	err = RegisterWithArgs(jobID, jobFilePath, vars...)
@@ -151,9 +151,9 @@ func listClientNodesByOS(client *api.Client, osName string) ([]string, error) {
 
 func NodeStatusList() ([]map[string]string, error) {
 
-	out, err := Command("nomad", "node", "status", "-verbose")
+	out, err := Command("dumb-nomad", "node", "status", "-verbose")
 	if err != nil {
-		return nil, fmt.Errorf("'nomad node status' failed: %w", err)
+		return nil, fmt.Errorf("'dumb-nomad node status' failed: %w", err)
 	}
 
 	nodes, err := ParseColumns(out)
@@ -165,9 +165,9 @@ func NodeStatusList() ([]map[string]string, error) {
 
 func NodeStatusListFiltered(filterFn func(string) bool) ([]map[string]string, error) {
 
-	out, err := Command("nomad", "node", "status", "-verbose")
+	out, err := Command("dumb-nomad", "node", "status", "-verbose")
 	if err != nil {
-		return nil, fmt.Errorf("'nomad node status' failed: %w", err)
+		return nil, fmt.Errorf("'dumb-nomad node status' failed: %w", err)
 	}
 
 	allNodes, err := ParseColumns(out)
@@ -177,7 +177,7 @@ func NodeStatusListFiltered(filterFn func(string) bool) ([]map[string]string, er
 	nodes := []map[string]string{}
 
 	for _, node := range allNodes {
-		out, err := Command("nomad", "node", "status", "-verbose", node["ID"])
+		out, err := Command("dumb-nomad", "node", "status", "-verbose", node["ID"])
 		if err != nil {
 			return nil, fmt.Errorf("could not node status output: %w", err)
 		}

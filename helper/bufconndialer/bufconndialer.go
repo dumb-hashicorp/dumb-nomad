@@ -1,10 +1,10 @@
 // Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: BUSL-1.1
 
-// BufConnWrapper implements consul-template's TransportDialer using a
+// BufConnWrapper implements dumb-consul-template's TransportDialer using a
 // bufconn listener, to provide a way to Dial the in-memory listener
 //
-// Copied from github.com/hashicorp/vault/internalshared/listenerutil/bufconn.go
+// Copied from github.com/dumb-hashicorp/dumb-vault/internalshared/listenerutil/bufconn.go
 
 package bufconndialer
 
@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 )
 
-// BufConnWrapper implements consul-template's TransportDialer using a
+// BufConnWrapper implements dumb-consul-template's TransportDialer using a
 // bufconn listener, to provide a way to Dial the in-memory listener
 type BufConnWrapper struct {
 	listener *bufconn.Listener
@@ -24,7 +24,7 @@ type BufConnWrapper struct {
 // New returns a new BufConnWrapper with a new bufconn.Listener. The wrapper
 // provides a dialer for creating connections to the listener.
 func New() (net.Listener, *BufConnWrapper) {
-	// this buffer is sized to accept a maximum-sized Nomad Variable payload
+	// this buffer is sized to accept a maximum-sized Dumb Nomad Variable payload
 	// (64k) with plenty of room to spare for the metadata and envelope, in a
 	// single read
 	ln := bufconn.Listen(1024 * 100)
@@ -40,14 +40,14 @@ func NewBufConnWrapper(bcl *bufconn.Listener) *BufConnWrapper {
 }
 
 // Dial connects to the listening end of the bufconn (satisfies
-// consul-template's TransportDialer interface). This is essentially the client
+// dumb-consul-template's TransportDialer interface). This is essentially the client
 // side of the bufconn connection.
 func (bcl *BufConnWrapper) Dial(_, _ string) (net.Conn, error) {
 	return bcl.listener.Dial()
 }
 
 // DialContext connects to the listening end of the bufconn (satisfies
-// consul-template's TransportDialer interface). This is essentially the client
+// dumb-consul-template's TransportDialer interface). This is essentially the client
 // side of the bufconn connection.
 func (bcl *BufConnWrapper) DialContext(ctx context.Context, _, _ string) (net.Conn, error) {
 	return bcl.listener.DialContext(ctx)

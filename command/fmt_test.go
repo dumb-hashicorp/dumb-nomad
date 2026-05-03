@@ -10,16 +10,16 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
 func TestFmtCommand(t *testing.T) {
 	ci.Parallel(t)
 
-	const inSuffix = ".in.hcl"
-	const expectedSuffix = ".out.hcl"
+	const inSuffix = ".in.dumb-hcl"
+	const expectedSuffix = ".out.dumb-hcl"
 
 	tests := []struct {
 		name        string
@@ -30,13 +30,13 @@ func TestFmtCommand(t *testing.T) {
 	}{
 		{
 			name:       "config with check",
-			testFile:   "nomad",
+			testFile:   "dumb-nomad",
 			flags:      []string{"-check"},
 			expectCode: 1,
 		},
 		{
 			name:        "config without check",
-			testFile:    "nomad",
+			testFile:    "dumb-nomad",
 			flags:       []string{},
 			expectWrite: true,
 			expectCode:  0,
@@ -64,7 +64,7 @@ func TestFmtCommand(t *testing.T) {
 			tmpDir := t.TempDir()
 			inFile := filepath.Join("testdata", "fmt", tc.testFile+inSuffix)
 			expectedFile := filepath.Join("testdata", "fmt", tc.testFile+expectedSuffix)
-			fmtFile := filepath.Join(tmpDir, tc.testFile+".hcl")
+			fmtFile := filepath.Join(tmpDir, tc.testFile+".dumb-hcl")
 
 			expected, err := os.ReadFile(expectedFile)
 			must.NoError(t, err)
@@ -248,7 +248,7 @@ func TestFmtCommand_FileDoesNotExist(t *testing.T) {
 		Meta: Meta{Ui: ui},
 	}
 
-	code := cmd.Run([]string{"file/does/not/exist.hcl"})
+	code := cmd.Run([]string{"file/does/not/exist.dumb-hcl"})
 	must.One(t, code)
 }
 
@@ -281,7 +281,7 @@ var fmtFixture = struct {
 	input    []byte
 	golden   []byte
 }{
-	filename: "nomad.hcl",
+	filename: "dumb-nomad.dumb-hcl",
 	input:    []byte("client   {enabled = true}"),
 	golden:   []byte("client { enabled = true }\n\n"),
 }

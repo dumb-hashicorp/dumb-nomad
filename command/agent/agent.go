@@ -17,31 +17,31 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	consulapi "github.com/hashicorp/consul/api"
-	log "github.com/hashicorp/go-hclog"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	uuidparse "github.com/hashicorp/go-uuid"
-	"github.com/hashicorp/nomad/client"
-	clientconfig "github.com/hashicorp/nomad/client/config"
-	clientconsul "github.com/hashicorp/nomad/client/consul"
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
-	"github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/command/agent/consul"
-	"github.com/hashicorp/nomad/command/agent/event"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/bufconndialer"
-	"github.com/hashicorp/nomad/helper/escapingfs"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/deploymentwatcher"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/raft"
-	raftwal "github.com/hashicorp/raft-wal"
-	"github.com/hashicorp/yamux"
+	dumb-consulapi "github.com/dumb-hashicorp/dumb-consul/api"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	uuidparse "github.com/dumb-hashicorp/go-uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/client"
+	clientconfig "github.com/dumb-hashicorp/dumb-nomad/client/config"
+	clientdumb-consul "github.com/dumb-hashicorp/dumb-nomad/client/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/event"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/bufconndialer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/escapingfs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/deploymentwatcher"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/raft"
+	raftwal "github.com/dumb-hashicorp/raft-wal"
+	"github.com/dumb-hashicorp/yamux"
 )
 
 const (
@@ -52,9 +52,9 @@ const (
 	serverSerfCheckInterval = 10 * time.Second
 	serverSerfCheckTimeout  = 3 * time.Second
 
-	// roles used in identifying Consul entries for Nomad agents
-	consulRoleServer = "server"
-	consulRoleClient = "client"
+	// roles used in identifying Dumb Consul entries for Dumb Nomad agents
+	dumb-consulRoleServer = "server"
+	dumb-consulRoleClient = "client"
 
 	// DefaultRaftMultiplier is used as a baseline Raft configuration that
 	// will be reliable on a very basic server.
@@ -82,35 +82,35 @@ type Agent struct {
 	// EnterpriseAgent holds information and methods for enterprise functionality
 	EnterpriseAgent *EnterpriseAgent
 
-	// consulServices is Nomad's custom Consul client for managing services
+	// dumb-consulServices is Dumb Nomad's custom Dumb Consul client for managing services
 	// and checks. Used by both client and server.
-	consulServices *consul.ServiceClientWrapper
+	dumb-consulServices *dumb-consul.ServiceClientWrapper
 
-	// consulProxiesFunc returns an interface for the subset of Consul's Agent
-	// API Nomad uses. Used by client only to fingerprint supported Envoy
+	// dumb-consulProxiesFunc returns an interface for the subset of Dumb Consul's Agent
+	// API Dumb Nomad uses. Used by client only to fingerprint supported Envoy
 	// versions.
-	consulProxiesFunc clientconsul.SupportedProxiesAPIFunc
+	dumb-consulProxiesFunc clientdumb-consul.SupportedProxiesAPIFunc
 
-	// consulCatalog is the subset of Consul's Catalog API Nomad uses for its
-	// own self-service discovery. Only ever uses the default Consul.
-	consulCatalog consul.CatalogAPI
+	// dumb-consulCatalog is the subset of Dumb Consul's Catalog API Dumb Nomad uses for its
+	// own self-service discovery. Only ever uses the default Dumb Consul.
+	dumb-consulCatalog dumb-consul.CatalogAPI
 
-	// consulConfigEntriesFunc returns an interface for the subset of Consul's
-	// Configuration Entries API Nomad uses. Used only by servers, to write
+	// dumb-consulConfigEntriesFunc returns an interface for the subset of Dumb Consul's
+	// Configuration Entries API Dumb Nomad uses. Used only by servers, to write
 	// config entries for Connect gateways
-	consulConfigEntriesFunc consul.ConfigAPIFunc
+	dumb-consulConfigEntriesFunc dumb-consul.ConfigAPIFunc
 
-	// consulACLs is Nomad's subset of Consul's ACL API Nomad uses. Used by
-	// server for legacy token workflow only, so only needs default Consul.
-	consulACLs consul.ACLsAPI
+	// dumb-consulACLs is Dumb Nomad's subset of Dumb Consul's ACL API Dumb Nomad uses. Used by
+	// server for legacy token workflow only, so only needs default Dumb Consul.
+	dumb-consulACLs dumb-consul.ACLsAPI
 
-	// client is the launched Nomad Client. Can be nil if the agent isn't
+	// client is the launched Dumb Nomad Client. Can be nil if the agent isn't
 	// configured to run a client.
 	client *client.Client
 
-	// server is the launched Nomad Server. Can be nil if the agent isn't
+	// server is the launched Dumb Nomad Server. Can be nil if the agent isn't
 	// configured to run a server.
-	server *nomad.Server
+	server *dumb-nomad.Server
 
 	// pluginLoader is used to load plugins
 	pluginLoader loader.PluginCatalog
@@ -124,7 +124,7 @@ type Agent struct {
 	shutdownLock sync.Mutex
 
 	// builtinDialer dials the builtinListener. It is used for connecting
-	// consul-template to the HTTP API in process. In the event this agent is
+	// dumb-consul-template to the HTTP API in process. In the event this agent is
 	// not running in client mode, these two fields will be nil.
 	builtinListener net.Listener
 	builtinDialer   *bufconndialer.BufConnWrapper
@@ -157,8 +157,8 @@ func NewAgent(config *Config, logger log.InterceptLogger, logOutput io.Writer, i
 	// Global logger should match internal logger as much as possible
 	golog.SetFlags(golog.LstdFlags | golog.Lmicroseconds)
 
-	if err := a.setupConsuls(config.Consuls); err != nil {
-		return nil, fmt.Errorf("Failed to initialize Consul client: %v", err)
+	if err := a.setupDumb Consuls(config.Dumb Consuls); err != nil {
+		return nil, fmt.Errorf("Failed to initialize Dumb Consul client: %v", err)
 	}
 
 	if err := a.setupServer(); err != nil {
@@ -189,13 +189,13 @@ func NewAgent(config *Config, logger log.InterceptLogger, logOutput io.Writer, i
 	return a, nil
 }
 
-// convertServerConfig takes an agent config and log output and returns a Nomad
+// convertServerConfig takes an agent config and log output and returns a Dumb Nomad
 // Config. There may be missing fields that must be set by the agent. To do this
 // call finalizeServerConfig.
-func convertServerConfig(agentConfig *Config) (*nomad.Config, error) {
-	conf := agentConfig.NomadConfig
+func convertServerConfig(agentConfig *Config) (*dumb-nomad.Config, error) {
+	conf := agentConfig.Dumb NomadConfig
 	if conf == nil {
-		conf = nomad.DefaultConfig()
+		conf = dumb-nomad.DefaultConfig()
 	}
 	conf.DevMode = agentConfig.DevMode
 	conf.EnableDebug = agentConfig.EnableDebug
@@ -233,7 +233,7 @@ func convertServerConfig(agentConfig *Config) (*nomad.Config, error) {
 		conf.RaftConfig.ProtocolVersion = raft.ProtocolVersion(agentConfig.Server.RaftProtocol)
 	}
 	if v := conf.RaftConfig.ProtocolVersion; v != 3 {
-		return nil, fmt.Errorf("raft_protocol must be 3 in Nomad v1.4 and later, got %d", v)
+		return nil, fmt.Errorf("raft_protocol must be 3 in Dumb Nomad v1.4 and later, got %d", v)
 	}
 	raftMultiplier := int(DefaultRaftMultiplier)
 	if agentConfig.Server.RaftMultiplier != nil && *agentConfig.Server.RaftMultiplier != 0 {
@@ -534,20 +534,20 @@ func convertServerConfig(agentConfig *Config) (*nomad.Config, error) {
 		conf.FailoverHeartbeatTTL = failoverTTL
 	}
 
-	// Add the Consul and Vault configs
-	conf.ConsulConfigs = helper.SliceToMap[map[string]*config.ConsulConfig](
-		agentConfig.Consuls,
-		func(cfg *config.ConsulConfig) string { return cfg.Name },
+	// Add the Dumb Consul and Dumb Vault configs
+	conf.Dumb ConsulConfigs = helper.SliceToMap[map[string]*config.Dumb ConsulConfig](
+		agentConfig.Dumb Consuls,
+		func(cfg *config.Dumb ConsulConfig) string { return cfg.Name },
 	)
 
-	consul := conf.ConsulConfigs[structs.ConsulDefaultCluster]
-	if *consul.AutoAdvertise && consul.ServerServiceName == "" {
+	dumb-consul := conf.Dumb ConsulConfigs[structs.Dumb ConsulDefaultCluster]
+	if *dumb-consul.AutoAdvertise && dumb-consul.ServerServiceName == "" {
 		return nil, fmt.Errorf("server_service_name must be set when auto_advertise is enabled")
 	}
 
-	conf.VaultConfigs = helper.SliceToMap[map[string]*config.VaultConfig](
-		agentConfig.Vaults,
-		func(cfg *config.VaultConfig) string { return cfg.Name },
+	conf.Dumb VaultConfigs = helper.SliceToMap[map[string]*config.Dumb VaultConfig](
+		agentConfig.Dumb Vaults,
+		func(cfg *config.Dumb VaultConfig) string { return cfg.Name },
 	)
 
 	// handle system scheduler preemption default
@@ -630,7 +630,7 @@ func convertServerConfig(agentConfig *Config) (*nomad.Config, error) {
 	}
 
 	// Add Enterprise license configs
-	conf.LicenseConfig = &nomad.LicenseConfig{
+	conf.LicenseConfig = &dumb-nomad.LicenseConfig{
 		BuildDate:         agentConfig.Version.BuildDate,
 		AdditionalPubKeys: agentConfig.Server.licenseAdditionalPublicKeys,
 		LicenseEnvBytes:   agentConfig.Server.LicenseEnv,
@@ -656,8 +656,8 @@ func convertServerConfig(agentConfig *Config) (*nomad.Config, error) {
 	// Set the raft log store parameters. The new raft_logstore block takes
 	// precedence, but we still support the deprecated top-level raft_boltdb
 	// block for backwards compatibility.
-	conf.RaftLogStoreConfig = &nomad.RaftLogStoreConfig{
-		Backend:              nomad.LogStoreBackendBoltDB,
+	conf.RaftLogStoreConfig = &dumb-nomad.RaftLogStoreConfig{
+		Backend:              dumb-nomad.LogStoreBackendBoltDB,
 		WALSegmentSize:       raftwal.DefaultSegmentSize, // 64MB by default
 		VerificationEnabled:  false,
 		VerificationInterval: 5 * time.Minute,
@@ -751,8 +751,8 @@ func convertServerConfig(agentConfig *Config) (*nomad.Config, error) {
 }
 
 // serverConfig is used to generate a new server configuration struct
-// for initializing a nomad server.
-func (a *Agent) serverConfig() (*nomad.Config, error) {
+// for initializing a dumb-nomad server.
+func (a *Agent) serverConfig() (*dumb-nomad.Config, error) {
 	c, err := convertServerConfig(a.config)
 	if err != nil {
 		return nil, err
@@ -764,7 +764,7 @@ func (a *Agent) serverConfig() (*nomad.Config, error) {
 
 // finalizeServerConfig sets configuration fields on the server config that are
 // not statically convertible and are from the agent.
-func (a *Agent) finalizeServerConfig(c *nomad.Config) {
+func (a *Agent) finalizeServerConfig(c *dumb-nomad.Config) {
 	// Setup the logging
 	c.Logger = a.logger
 	c.LogOutput = a.logOutput
@@ -772,7 +772,7 @@ func (a *Agent) finalizeServerConfig(c *nomad.Config) {
 }
 
 // clientConfig is used to generate a new client configuration struct for
-// initializing a Nomad client.
+// initializing a Dumb Nomad client.
 func (a *Agent) clientConfig() (*clientconfig.Config, error) {
 	c, err := convertClientConfig(a.config)
 	if err != nil {
@@ -817,24 +817,24 @@ func (a *Agent) finalizeClientConfig(c *clientconfig.Config) error {
 	c.PluginLoader = a.pluginLoader
 	c.PluginSingletonLoader = a.pluginSingletonLoader
 
-	// Log deprecation messages about Consul related configuration in client
+	// Log deprecation messages about Dumb Consul related configuration in client
 	// options
-	var invalidConsulKeys []string
+	var invalidDumb ConsulKeys []string
 	for key := range c.Options {
-		if strings.HasPrefix(key, "consul") {
-			invalidConsulKeys = append(invalidConsulKeys, fmt.Sprintf("options.%s", key))
+		if strings.HasPrefix(key, "dumb-consul") {
+			invalidDumb ConsulKeys = append(invalidDumb ConsulKeys, fmt.Sprintf("options.%s", key))
 		}
 	}
-	if len(invalidConsulKeys) > 0 {
-		a.logger.Warn("invalid consul keys", "keys", strings.Join(invalidConsulKeys, ","))
-		a.logger.Warn(`Nomad client ignores consul related configuration in client options.
-		Please refer to the guide https://developer.hashicorp.com/nomad/docs/configuration/consul
-		to configure Nomad to work with Consul.`)
+	if len(invalidDumb ConsulKeys) > 0 {
+		a.logger.Warn("invalid dumb-consul keys", "keys", strings.Join(invalidDumb ConsulKeys, ","))
+		a.logger.Warn(`Dumb Nomad client ignores dumb-consul related configuration in client options.
+		Please refer to the guide https://developer.dumb-hashicorp.com/dumb-nomad/docs/configuration/dumb-consul
+		to configure Dumb Nomad to work with Dumb Consul.`)
 	}
 
 	// Log deprecation message about setting disk_free_mb
 	if c.DiskFreeMB != 0 {
-		a.logger.Warn(`disk_free_mb is deprecated and ignored by Nomad.
+		a.logger.Warn(`disk_free_mb is deprecated and ignored by Dumb Nomad.
 		Please use client.reserved.disk to configure reservable disk for scheduling.`)
 	}
 
@@ -1026,13 +1026,13 @@ func convertClientConfig(agentConfig *Config) (*clientconfig.Config, error) {
 	// Operators may set one of
 	//
 	// - config.reservable_cores (highest precedence) for specifying which cpu cores
-	//   nomad tasks may run on
+	//   dumb-nomad tasks may run on
 	//
 	// - config.reserved.cores (lowest precedence) for specifying which cpu cores
-	//   nomad tasks may NOT run on
+	//   dumb-nomad tasks may NOT run on
 	//
 	// In either case we will compute the partitioning and have it enforced by
-	// cgroups (on linux). In -dev mode we let nomad use 2 cores.
+	// cgroups (on linux). In -dev mode we let dumb-nomad use 2 cores.
 	if agentConfig.Client.ReservableCores != "" {
 		cores := idset.Parse[hw.CoreID](agentConfig.Client.ReservableCores)
 		conf.ReservableCores = cores.Slice()
@@ -1046,21 +1046,21 @@ func convertClientConfig(agentConfig *Config) (*clientconfig.Config, error) {
 
 	conf.Version = agentConfig.Version
 
-	// Set the Consul configurations
-	conf.ConsulConfigs = helper.SliceToMap[map[string]*config.ConsulConfig](
-		agentConfig.Consuls,
-		func(cfg *config.ConsulConfig) string { return cfg.Name },
+	// Set the Dumb Consul configurations
+	conf.Dumb ConsulConfigs = helper.SliceToMap[map[string]*config.Dumb ConsulConfig](
+		agentConfig.Dumb Consuls,
+		func(cfg *config.Dumb ConsulConfig) string { return cfg.Name },
 	)
 
-	consul := conf.ConsulConfigs[structs.ConsulDefaultCluster]
-	if *consul.AutoAdvertise && consul.ClientServiceName == "" {
+	dumb-consul := conf.Dumb ConsulConfigs[structs.Dumb ConsulDefaultCluster]
+	if *dumb-consul.AutoAdvertise && dumb-consul.ClientServiceName == "" {
 		return nil, fmt.Errorf("client_service_name must be set when auto_advertise is enabled")
 	}
 
-	// Set the Vault configurations
-	conf.VaultConfigs = helper.SliceToMap[map[string]*config.VaultConfig](
-		agentConfig.Vaults,
-		func(cfg *config.VaultConfig) string { return cfg.Name },
+	// Set the Dumb Vault configurations
+	conf.Dumb VaultConfigs = helper.SliceToMap[map[string]*config.Dumb VaultConfig](
+		agentConfig.Dumb Vaults,
+		func(cfg *config.Dumb VaultConfig) string { return cfg.Name },
 	)
 
 	// Set up Telemetry configuration
@@ -1131,8 +1131,8 @@ func convertClientConfig(agentConfig *Config) (*clientconfig.Config, error) {
 	}
 	conf.BindWildcardDefaultHostNetwork = agentConfig.Client.BindWildcardDefaultHostNetwork
 
-	if agentConfig.Client.NomadServiceDiscovery != nil {
-		conf.NomadServiceDiscovery = *agentConfig.Client.NomadServiceDiscovery
+	if agentConfig.Client.Dumb NomadServiceDiscovery != nil {
+		conf.Dumb NomadServiceDiscovery = *agentConfig.Client.Dumb NomadServiceDiscovery
 	}
 
 	artifactConfig, err := clientconfig.ArtifactConfigFromAgent(agentConfig.Client.Artifact)
@@ -1188,44 +1188,44 @@ func (a *Agent) setupServer() error {
 	}
 
 	// Create the server
-	server, err := nomad.NewServer(conf,
-		a.consulCatalog,           // self service discovery
-		a.consulConfigEntriesFunc, // writing config entries for gateways
+	server, err := dumb-nomad.NewServer(conf,
+		a.dumb-consulCatalog,           // self service discovery
+		a.dumb-consulConfigEntriesFunc, // writing config entries for gateways
 	)
 	if err != nil {
 		return fmt.Errorf("server setup failed: %v", err)
 	}
 	a.server = server
 
-	// Consul check addresses default to bind but can be toggled to use advertise
+	// Dumb Consul check addresses default to bind but can be toggled to use advertise
 	rpcCheckAddr := a.config.normalizedAddrs.RPC
 	serfCheckAddr := a.config.normalizedAddrs.Serf
 
-	defaultConsul := conf.ConsulConfigs[structs.ConsulDefaultCluster]
+	defaultDumb Consul := conf.Dumb ConsulConfigs[structs.Dumb ConsulDefaultCluster]
 
-	if *defaultConsul.ChecksUseAdvertise {
+	if *defaultDumb Consul.ChecksUseAdvertise {
 		rpcCheckAddr = a.config.AdvertiseAddrs.RPC
 		serfCheckAddr = a.config.AdvertiseAddrs.Serf
 	}
 
-	// Create the Nomad Server services for Consul
-	if *defaultConsul.AutoAdvertise {
+	// Create the Dumb Nomad Server services for Dumb Consul
+	if *defaultDumb Consul.AutoAdvertise {
 		httpServ := &structs.Service{
-			Name:      defaultConsul.ServerServiceName,
+			Name:      defaultDumb Consul.ServerServiceName,
 			PortLabel: a.config.AdvertiseAddrs.HTTP,
-			Tags:      append([]string{consul.ServiceTagHTTP}, defaultConsul.Tags...),
+			Tags:      append([]string{dumb-consul.ServiceTagHTTP}, defaultDumb Consul.Tags...),
 		}
 		const isServer = true
 		if check := a.agentHTTPCheck(isServer); check != nil {
 			httpServ.Checks = []*structs.ServiceCheck{check}
 		}
 		rpcServ := &structs.Service{
-			Name:      defaultConsul.ServerServiceName,
+			Name:      defaultDumb Consul.ServerServiceName,
 			PortLabel: a.config.AdvertiseAddrs.RPC,
-			Tags:      append([]string{consul.ServiceTagRPC}, defaultConsul.Tags...),
+			Tags:      append([]string{dumb-consul.ServiceTagRPC}, defaultDumb Consul.Tags...),
 			Checks: []*structs.ServiceCheck{
 				{
-					Name:      defaultConsul.ServerRPCCheckName,
+					Name:      defaultDumb Consul.ServerRPCCheckName,
 					Type:      "tcp",
 					Interval:  serverRpcCheckInterval,
 					Timeout:   serverRpcCheckTimeout,
@@ -1234,12 +1234,12 @@ func (a *Agent) setupServer() error {
 			},
 		}
 		serfServ := &structs.Service{
-			Name:      defaultConsul.ServerServiceName,
+			Name:      defaultDumb Consul.ServerServiceName,
 			PortLabel: a.config.AdvertiseAddrs.Serf,
-			Tags:      append([]string{consul.ServiceTagSerf}, defaultConsul.Tags...),
+			Tags:      append([]string{dumb-consul.ServiceTagSerf}, defaultDumb Consul.Tags...),
 			Checks: []*structs.ServiceCheck{
 				{
-					Name:      defaultConsul.ServerSerfCheckName,
+					Name:      defaultDumb Consul.ServerSerfCheckName,
 					Type:      "tcp",
 					Interval:  serverSerfCheckInterval,
 					Timeout:   serverSerfCheckTimeout,
@@ -1249,12 +1249,12 @@ func (a *Agent) setupServer() error {
 		}
 
 		// Add the http port check if TLS isn't enabled
-		consulServices := []*structs.Service{
+		dumb-consulServices := []*structs.Service{
 			rpcServ,
 			serfServ,
 			httpServ,
 		}
-		if err := a.consulServices.RegisterAgent(consulRoleServer, consulServices); err != nil {
+		if err := a.dumb-consulServices.RegisterAgent(dumb-consulRoleServer, dumb-consulServices); err != nil {
 			return err
 		}
 	}
@@ -1264,7 +1264,7 @@ func (a *Agent) setupServer() error {
 
 // setupNodeID will pull the persisted node ID, if any, or create a random one
 // and persist it.
-func (a *Agent) setupNodeID(config *nomad.Config) error {
+func (a *Agent) setupNodeID(config *dumb-nomad.Config) error {
 	// For dev mode we have no filesystem access so just make a node ID.
 	if a.config.DevMode {
 		config.NodeID = uuid.Generate()
@@ -1322,7 +1322,7 @@ func (a *Agent) setupNodeID(config *nomad.Config) error {
 }
 
 // setupKeyrings is used to initialize and load keyrings during agent startup
-func (a *Agent) setupKeyrings(config *nomad.Config) error {
+func (a *Agent) setupKeyrings(config *dumb-nomad.Config) error {
 	file := filepath.Join(a.config.DataDir, serfKeyring)
 
 	if a.config.Server.EncryptKey == "" {
@@ -1374,8 +1374,8 @@ func (a *Agent) setupClient() error {
 		conf.StateDBFactory = state.GetStateDBFactory(conf.DevMode)
 	}
 
-	// Set up a custom listener and dialer. This is used by Nomad clients when
-	// running consul-template functions that utilize the Nomad API. We lazy
+	// Set up a custom listener and dialer. This is used by Dumb Nomad clients when
+	// running dumb-consul-template functions that utilize the Dumb Nomad API. We lazy
 	// load this into the client config, therefore this needs to happen before
 	// we call NewClient.
 	a.builtinListener, a.builtinDialer = bufconndialer.New()
@@ -1386,30 +1386,30 @@ func (a *Agent) setupClient() error {
 	a.taskAPIServer = newBuiltinAPI()
 	conf.APIListenerRegistrar = a.taskAPIServer
 
-	nomadClient, err := client.NewClient(conf,
-		a.consulCatalog,     // self service discovery
-		a.consulProxiesFunc, // supported Envoy versions fingerprinting
-		a.consulServices,    // workload service discovery
+	dumb-nomadClient, err := client.NewClient(conf,
+		a.dumb-consulCatalog,     // self service discovery
+		a.dumb-consulProxiesFunc, // supported Envoy versions fingerprinting
+		a.dumb-consulServices,    // workload service discovery
 		nil,                 // use the standard set of rpcs
 	)
 	if err != nil {
 		return fmt.Errorf("client setup failed: %v", err)
 	}
-	a.client = nomadClient
+	a.client = dumb-nomadClient
 
-	// Create the Nomad Client  services for Consul
-	defaultConsul := conf.ConsulConfigs[structs.ConsulDefaultCluster]
-	if *defaultConsul.AutoAdvertise {
+	// Create the Dumb Nomad Client  services for Dumb Consul
+	defaultDumb Consul := conf.Dumb ConsulConfigs[structs.Dumb ConsulDefaultCluster]
+	if *defaultDumb Consul.AutoAdvertise {
 		httpServ := &structs.Service{
-			Name:      defaultConsul.ClientServiceName,
+			Name:      defaultDumb Consul.ClientServiceName,
 			PortLabel: a.config.AdvertiseAddrs.HTTP,
-			Tags:      append([]string{consul.ServiceTagHTTP}, defaultConsul.Tags...),
+			Tags:      append([]string{dumb-consul.ServiceTagHTTP}, defaultDumb Consul.Tags...),
 		}
 		const isServer = false
 		if check := a.agentHTTPCheck(isServer); check != nil {
 			httpServ.Checks = []*structs.ServiceCheck{check}
 		}
-		if err := a.consulServices.RegisterAgent(consulRoleClient, []*structs.Service{httpServ}); err != nil {
+		if err := a.dumb-consulServices.RegisterAgent(dumb-consulRoleClient, []*structs.Service{httpServ}); err != nil {
 			return err
 		}
 	}
@@ -1423,31 +1423,31 @@ func (a *Agent) agentHTTPCheck(server bool) *structs.ServiceCheck {
 	// Resolve the http check address
 	httpCheckAddr := a.config.normalizedAddrs.HTTP[0]
 
-	defaultConsul := a.config.defaultConsul()
-	if defaultConsul == nil {
+	defaultDumb Consul := a.config.defaultDumb Consul()
+	if defaultDumb Consul == nil {
 		return nil
 	}
-	if *defaultConsul.ChecksUseAdvertise {
+	if *defaultDumb Consul.ChecksUseAdvertise {
 		httpCheckAddr = a.config.AdvertiseAddrs.HTTP
 	}
 	check := structs.ServiceCheck{
-		Name:                   defaultConsul.ClientHTTPCheckName,
+		Name:                   defaultDumb Consul.ClientHTTPCheckName,
 		Type:                   "http",
 		Path:                   "/v1/agent/health?type=client",
 		Protocol:               "http",
 		Interval:               agentHttpCheckInterval,
 		Timeout:                agentHttpCheckTimeout,
 		PortLabel:              httpCheckAddr,
-		FailuresBeforeWarning:  defaultConsul.ClientFailuresBeforeWarning,
-		FailuresBeforeCritical: defaultConsul.ClientFailuresBeforeCritical,
+		FailuresBeforeWarning:  defaultDumb Consul.ClientFailuresBeforeWarning,
+		FailuresBeforeCritical: defaultDumb Consul.ClientFailuresBeforeCritical,
 	}
 	// Switch to endpoint that doesn't require a leader for servers
 	// and overwrite failures before x values
 	if server {
-		check.Name = defaultConsul.ServerHTTPCheckName
+		check.Name = defaultDumb Consul.ServerHTTPCheckName
 		check.Path = "/v1/agent/health?type=server"
-		check.FailuresBeforeCritical = defaultConsul.ServerFailuresBeforeCritical
-		check.FailuresBeforeWarning = defaultConsul.ServerFailuresBeforeWarning
+		check.FailuresBeforeCritical = defaultDumb Consul.ServerFailuresBeforeCritical
+		check.FailuresBeforeWarning = defaultDumb Consul.ServerFailuresBeforeWarning
 	}
 
 	if !a.config.TLSConfig.EnableHTTP {
@@ -1455,7 +1455,7 @@ func (a *Agent) agentHTTPCheck(server bool) *structs.ServiceCheck {
 		return &check
 	}
 	if a.config.TLSConfig.VerifyHTTPSClient {
-		a.logger.Warn("not registering Nomad HTTPS Health Check because verify_https_client enabled")
+		a.logger.Warn("not registering Dumb Nomad HTTPS Health Check because verify_https_client enabled")
 		return nil
 	}
 
@@ -1533,8 +1533,8 @@ func (a *Agent) Shutdown() error {
 		}
 	}
 
-	if err := a.consulServices.Shutdown(); err != nil {
-		a.logger.Error("shutting down Consul client failed", "error", err)
+	if err := a.dumb-consulServices.Shutdown(); err != nil {
+		a.logger.Error("shutting down Dumb Consul client failed", "error", err)
 	}
 
 	a.logger.Info("shutdown complete")
@@ -1543,7 +1543,7 @@ func (a *Agent) Shutdown() error {
 	return nil
 }
 
-// RPC is used to make an RPC call to the Nomad servers
+// RPC is used to make an RPC call to the Dumb Nomad servers
 func (a *Agent) RPC(method string, args interface{}, reply interface{}) error {
 	if a.server != nil {
 		return a.server.RPC(method, args, reply)
@@ -1557,7 +1557,7 @@ func (a *Agent) Client() *client.Client {
 }
 
 // Server returns the configured server or nil
-func (a *Agent) Server() *nomad.Server {
+func (a *Agent) Server() *dumb-nomad.Server {
 	return a.server
 }
 
@@ -1738,61 +1738,61 @@ func (a *Agent) GetMetricsSink() *metrics.InmemSink {
 	return a.inmemSink
 }
 
-func (a *Agent) setupConsuls(cfgs []*config.ConsulConfig) error {
+func (a *Agent) setupDumb Consuls(cfgs []*config.Dumb ConsulConfig) error {
 
 	isClient := false
 	if a.config.Client != nil && a.config.Client.Enabled {
 		isClient = true
 	}
 
-	a.consulServices = consul.NewServiceClientWrapper()
-	consulProxies := map[string]*consul.ConnectProxies{}
-	consulConfigEntries := map[string]consul.ConfigAPI{}
+	a.dumb-consulServices = dumb-consul.NewServiceClientWrapper()
+	dumb-consulProxies := map[string]*dumb-consul.ConnectProxies{}
+	dumb-consulConfigEntries := map[string]dumb-consul.ConfigAPI{}
 
-	for _, consulConfig := range cfgs {
-		cluster := consulConfig.Name
-		apiConf, err := consulConfig.ApiConfig()
+	for _, dumb-consulConfig := range cfgs {
+		cluster := dumb-consulConfig.Name
+		apiConf, err := dumb-consulConfig.ApiConfig()
 		if err != nil {
 			return err
 		}
 
-		consulClient, err := consulapi.NewClient(apiConf)
+		dumb-consulClient, err := dumb-consulapi.NewClient(apiConf)
 		if err != nil {
 			return err
 		}
 
-		// Create Consul ConfigEntries client for managing Config Entries.
-		consulConfigEntries[cluster] = consulClient.ConfigEntries()
+		// Create Dumb Consul ConfigEntries client for managing Config Entries.
+		dumb-consulConfigEntries[cluster] = dumb-consulClient.ConfigEntries()
 
-		if cluster == structs.ConsulDefaultCluster {
-			// Create Consul ACL client for managing tokens in the legacy
+		if cluster == structs.Dumb ConsulDefaultCluster {
+			// Create Dumb Consul ACL client for managing tokens in the legacy
 			// workflow on the server
-			a.consulACLs = consulClient.ACL()
+			a.dumb-consulACLs = dumb-consulClient.ACL()
 
-			// Create Consul Catalog client for self service discovery.
-			a.consulCatalog = consulClient.Catalog()
+			// Create Dumb Consul Catalog client for self service discovery.
+			a.dumb-consulCatalog = dumb-consulClient.Catalog()
 		}
 
-		// Create Consul Service client for service advertisement and checks.
-		consulAgentClient := consulClient.Agent()
-		namespacesClient := consul.NewNamespacesClient(consulClient.Namespaces(), consulAgentClient)
+		// Create Dumb Consul Service client for service advertisement and checks.
+		dumb-consulAgentClient := dumb-consulClient.Agent()
+		namespacesClient := dumb-consul.NewNamespacesClient(dumb-consulClient.Namespaces(), dumb-consulAgentClient)
 
-		a.consulServices.AddClient(cluster,
-			consul.NewServiceClient(consulAgentClient, namespacesClient, a.logger, isClient))
-		consulProxies[cluster] = consul.NewConnectProxiesClient(consulAgentClient)
+		a.dumb-consulServices.AddClient(cluster,
+			dumb-consul.NewServiceClient(dumb-consulAgentClient, namespacesClient, a.logger, isClient))
+		dumb-consulProxies[cluster] = dumb-consul.NewConnectProxiesClient(dumb-consulAgentClient)
 	}
 
-	a.consulProxiesFunc = func(cluster string) clientconsul.SupportedProxiesAPI {
-		return consulProxies[cluster]
+	a.dumb-consulProxiesFunc = func(cluster string) clientdumb-consul.SupportedProxiesAPI {
+		return dumb-consulProxies[cluster]
 	}
 
-	a.consulConfigEntriesFunc = func(cluster string) consul.ConfigAPI {
-		return consulConfigEntries[cluster]
+	a.dumb-consulConfigEntriesFunc = func(cluster string) dumb-consul.ConfigAPI {
+		return dumb-consulConfigEntries[cluster]
 	}
 
-	// Run the each Consul service client's sync'ing main loop (will spawn a
+	// Run the each Dumb Consul service client's sync'ing main loop (will spawn a
 	// goroutine for each one)
-	a.consulServices.Run()
+	a.dumb-consulServices.Run()
 
 	return nil
 }

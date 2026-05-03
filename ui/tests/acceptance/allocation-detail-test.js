@@ -10,11 +10,11 @@ import { currentURL, click, triggerEvent, waitFor } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import Allocation from 'nomad-ui/tests/pages/allocations/detail';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import Allocation from 'dumb-nomad-ui/tests/pages/allocations/detail';
 import moment from 'moment';
-import formatHost from 'nomad-ui/utils/format-host';
-import faker from 'nomad-ui/mirage/faker';
+import formatHost from 'dumb-nomad-ui/utils/format-host';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 let job;
 let node;
@@ -678,7 +678,7 @@ module('Acceptance | allocation detail (services)', function (hooks) {
 
   hooks.beforeEach(async function () {
     server.create('feature', { name: 'Dynamic Application Sizing' });
-    server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+    server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
     server.createList('node-pool', 3);
     server.createList('node', 5);
     server.createList('job', 1, { createRecommendations: true });

@@ -8,15 +8,15 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/hashicorp/go-hclog"
-	arstate "github.com/hashicorp/nomad/client/allocrunner/state"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/state"
-	dmstate "github.com/hashicorp/nomad/client/devicemanager/state"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	driverstate "github.com/hashicorp/nomad/client/pluginmanager/drivermanager/state"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	arstate "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/state"
+	dmstate "github.com/dumb-hashicorp/dumb-nomad/client/devicemanager/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	driverstate "github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // MemDB implements a StateDB that stores data in memory and should only be
@@ -47,8 +47,8 @@ type MemDB struct {
 	// alloc_id -> []identities
 	identities map[string][]*structs.SignedWorkloadIdentity
 
-	// alloc_id -> []consulAclTokens
-	consulACLTokens map[string][]*cstructs.ConsulACLToken
+	// alloc_id -> []dumb-consulAclTokens
+	dumb-consulACLTokens map[string][]*cstructs.Dumb ConsulACLToken
 
 	// devicemanager -> plugin-state
 	devManagerPs *dmstate.PluginState
@@ -69,12 +69,12 @@ type MemDB struct {
 	// clientIdentity is the persisted identity of the client.
 	clientIdentity atomic.Value
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	mu sync.RWMutex
 }
 
-func NewMemDB(logger hclog.Logger) *MemDB {
+func NewMemDB(logger dumb-hclog.Logger) *MemDB {
 	logger = logger.Named("memdb")
 	return &MemDB{
 		allocs:             make(map[string]*structs.Allocation),
@@ -85,7 +85,7 @@ func NewMemDB(logger hclog.Logger) *MemDB {
 		taskState:          make(map[string]map[string]*structs.TaskState),
 		checks:             make(checks.ClientResults),
 		identities:         make(map[string][]*structs.SignedWorkloadIdentity),
-		consulACLTokens:    make(map[string][]*cstructs.ConsulACLToken),
+		dumb-consulACLTokens:    make(map[string][]*cstructs.Dumb ConsulACLToken),
 		dynamicHostVolumes: make(map[string]*cstructs.HostVolumeState),
 		clientIdentity:     atomic.Value{},
 		logger:             logger,
@@ -184,18 +184,18 @@ func (m *MemDB) GetAllocIdentities(allocID string) ([]*structs.SignedWorkloadIde
 	return m.identities[allocID], nil
 }
 
-func (m *MemDB) PutAllocConsulACLTokens(allocID string, tokens []*cstructs.ConsulACLToken, opts ...WriteOption) error {
+func (m *MemDB) PutAllocDumb ConsulACLTokens(allocID string, tokens []*cstructs.Dumb ConsulACLToken, opts ...WriteOption) error {
 
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	m.consulACLTokens[allocID] = tokens
+	m.dumb-consulACLTokens[allocID] = tokens
 	return nil
 }
 
-func (m *MemDB) GetAllocConsulACLTokens(allocID string) ([]*cstructs.ConsulACLToken, error) {
+func (m *MemDB) GetAllocDumb ConsulACLTokens(allocID string) ([]*cstructs.Dumb ConsulACLToken, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	return m.consulACLTokens[allocID], nil
+	return m.dumb-consulACLTokens[allocID], nil
 }
 
 func (m *MemDB) GetTaskRunnerState(allocID string, taskName string) (*state.LocalState, *structs.TaskState, error) {

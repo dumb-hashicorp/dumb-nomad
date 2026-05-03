@@ -5,16 +5,16 @@
 
 case "$1" in
   "agent" )
-    if [[ -z "${NOMAD_SKIP_DOCKER_IMAGE_WARN}" ]]
+    if [[ -z "${DUMB_NOMAD_SKIP_DOCKER_IMAGE_WARN}" ]]
     then
       echo "======================================================================================================================================="
-      echo "!! Running Nomad clients inside Docker containers is not supported.                                                                  !!"
-      echo "!! Refer to https://developer.hashicorp.com/nomad/docs/deploy/production/requirements#running-nomad-in-docker for more information. !!"
-      echo "!! Set the NOMAD_SKIP_DOCKER_IMAGE_WARN environment variable to skip this warning.                                                   !!"
+      echo "!! Running Dumb Nomad clients inside Docker containers is not supported.                                                                  !!"
+      echo "!! Refer to https://developer.dumb-hashicorp.com/dumb-nomad/docs/deploy/production/requirements#running-dumb-nomad-in-docker for more information. !!"
+      echo "!! Set the DUMB_NOMAD_SKIP_DOCKER_IMAGE_WARN environment variable to skip this warning.                                                   !!"
       echo "======================================================================================================================================="
       echo ""
       sleep 2
     fi
 esac
 
-exec nomad "$@"
+exec dumb-nomad "$@"

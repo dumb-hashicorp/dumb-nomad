@@ -13,18 +13,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	ctestutil "github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclutils"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	dtestutil "github.com/hashicorp/nomad/plugins/drivers/testutils"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	ctestutil "github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclutils"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	dtestutil "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -41,8 +41,8 @@ func TestQemuDriver_Start_Wait_Stop(t *testing.T) {
 	defer cancel()
 
 	topology := numalib.Scan(numalib.PlatformScanners(false))
-	d := NewQemuDriver(ctx, testlog.HCLogger(t))
-	d.(*Driver).nomadConfig = &base.ClientDriverConfig{Topology: topology}
+	d := NewQemuDriver(ctx, testlog.DUMB_HCLogger(t))
+	d.(*Driver).dumb-nomadConfig = &base.ClientDriverConfig{Topology: topology}
 	harness := dtestutil.NewDriverHarness(t, d)
 	allocID := uuid.Generate()
 	harness.MakeTaskCgroup(allocID, "linux")
@@ -119,8 +119,8 @@ func TestQemuDriver_User(t *testing.T) {
 	defer cancel()
 
 	topology := numalib.Scan(numalib.PlatformScanners(false))
-	d := NewQemuDriver(ctx, testlog.HCLogger(t))
-	d.(*Driver).nomadConfig = &base.ClientDriverConfig{Topology: topology}
+	d := NewQemuDriver(ctx, testlog.DUMB_HCLogger(t))
+	d.(*Driver).dumb-nomadConfig = &base.ClientDriverConfig{Topology: topology}
 	harness := dtestutil.NewDriverHarness(t, d)
 	allocID := uuid.Generate()
 	harness.MakeTaskCgroup(allocID, "linux")
@@ -164,8 +164,8 @@ func TestQemuDriver_Stats(t *testing.T) {
 	defer cancel()
 
 	topology := numalib.Scan(numalib.PlatformScanners(false))
-	d := NewQemuDriver(ctx, testlog.HCLogger(t))
-	d.(*Driver).nomadConfig = &base.ClientDriverConfig{Topology: topology}
+	d := NewQemuDriver(ctx, testlog.DUMB_HCLogger(t))
+	d.(*Driver).dumb-nomadConfig = &base.ClientDriverConfig{Topology: topology}
 	harness := dtestutil.NewDriverHarness(t, d)
 	allocID := uuid.Generate()
 	harness.MakeTaskCgroup(allocID, "linux")
@@ -245,7 +245,7 @@ func TestQemuDriver_Fingerprint(t *testing.T) {
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
-		d := NewQemuDriver(ctx, testlog.HCLogger(t))
+		d := NewQemuDriver(ctx, testlog.DUMB_HCLogger(t))
 		harness := dtestutil.NewDriverHarness(t, d)
 
 		fingerCh, err := harness.Fingerprint(context.Background())
@@ -269,7 +269,7 @@ func TestQemuDriver_Fingerprint(t *testing.T) {
 		defer cancel()
 
 		allowedEms := []string{"x86_64"}
-		d := NewQemuDriver(ctx, testlog.HCLogger(t))
+		d := NewQemuDriver(ctx, testlog.DUMB_HCLogger(t))
 		config := &Config{
 			EmulatorsAllowList: allowedEms,
 		}
@@ -298,7 +298,7 @@ func TestQemuDriver_Fingerprint(t *testing.T) {
 	})
 }
 
-func TestConfig_ParseAllHCL(t *testing.T) {
+func TestConfig_ParseAllDUMB_HCL(t *testing.T) {
 	ci.Parallel(t)
 
 	cfgStr := `
@@ -327,7 +327,7 @@ config {
 	}
 
 	var tc *TaskConfig
-	hclutils.NewConfigParser(taskConfigSpec).ParseHCL(t, cfgStr, &tc)
+	dumb-hclutils.NewConfigParser(taskConfigSpec).ParseDUMB_HCL(t, cfgStr, &tc)
 	must.Eq(t, expected, tc)
 }
 
@@ -389,14 +389,14 @@ func TestIsAllowedImagePath(t *testing.T) {
 	ci.Parallel(t)
 
 	allowedPaths := []string{"/tmp", "/opt/qemu"}
-	allocDir := "/opt/nomad/some-alloc-dir"
+	allocDir := "/opt/dumb-nomad/some-alloc-dir"
 
 	validPaths := []string{
 		"local/path",
 		"/tmp/subdir/qemu-image",
 		"/opt/qemu/image",
 		"/opt/qemu/subdir/image",
-		"/opt/nomad/some-alloc-dir/local/image.img",
+		"/opt/dumb-nomad/some-alloc-dir/local/image.img",
 	}
 
 	invalidPaths := []string{
@@ -404,7 +404,7 @@ func TestIsAllowedImagePath(t *testing.T) {
 		"../image.img",
 		"/tmpimage.img",
 		"/opt/other/image.img",
-		"/opt/nomad-submatch.img",
+		"/opt/dumb-nomad-submatch.img",
 	}
 
 	for _, p := range validPaths {
@@ -454,7 +454,7 @@ func testResources(allocID, task string) *drivers.Resources {
 	}
 
 	r := &drivers.Resources{
-		NomadResources: &structs.AllocatedTaskResources{
+		Dumb NomadResources: &structs.AllocatedTaskResources{
 			Memory: structs.AllocatedMemoryResources{
 				MemoryMB: 128,
 			},

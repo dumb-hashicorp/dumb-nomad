@@ -4,12 +4,12 @@
  */
 
 import Component from '@glimmer/component';
-import localStorageProperty from 'nomad-ui/utils/properties/local-storage';
+import localStorageProperty from 'dumb-nomad-ui/utils/properties/local-storage';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 
 export default class DasDismissedComponent extends Component {
-  @localStorageProperty('nomadRecommendationDismssalUnderstood', false)
+  @localStorageProperty('dumb-nomadRecommendationDismssalUnderstood', false)
   explanationUnderstood;
 
   @tracked dismissInTheFuture = false;

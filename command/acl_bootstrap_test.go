@@ -7,10 +7,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/nomad/mock"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
 	"github.com/shoenig/test/must"
 )
 
@@ -94,7 +94,7 @@ func TestACLBootstrapCommand_WithOperatorFileBootstrapToken(t *testing.T) {
 	mockToken := mock.ACLToken()
 
 	// Create temp file
-	file, rm := getTempFile(t, "nomad-token.token")
+	file, rm := getTempFile(t, "dumb-nomad-token.token")
 	t.Cleanup(rm)
 
 	// Write the token to the file
@@ -132,7 +132,7 @@ func TestACLBootstrapCommand_WithBadOperatorFileBootstrapToken(t *testing.T) {
 	invalidToken := "invalid-token"
 
 	// Create temp file
-	file, cleanup := getTempFile(t, "nomad-token.token")
+	file, cleanup := getTempFile(t, "dumb-nomad-token.token")
 	t.Cleanup(cleanup)
 
 	// Write the token to the file

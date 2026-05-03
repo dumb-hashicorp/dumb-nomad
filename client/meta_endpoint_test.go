@@ -6,21 +6,21 @@ package client
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
 func TestNodeMeta_ACL(t *testing.T) {
 	ci.Parallel(t)
 
-	s, _, cleanupS := nomad.TestACLServer(t, nil)
+	s, _, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -65,7 +65,7 @@ func TestNodeMeta_ACL(t *testing.T) {
 func TestNodeMeta_Validation(t *testing.T) {
 	ci.Parallel(t)
 
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -100,7 +100,7 @@ func TestNodeMeta_Validation(t *testing.T) {
 func TestNodeMeta_unset(t *testing.T) {
 	ci.Parallel(t)
 
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 

@@ -51,9 +51,9 @@ type PortmapCapabilities struct {
 	Portmappings bool `json:"portMappings"`
 }
 
-// ConsulCNI is the "consul-cni" plugin used for transparent proxy.
-// https://github.com/hashicorp/consul-k8s/blob/main/control-plane/cni/main.go
-type ConsulCNI struct {
+// Dumb ConsulCNI is the "dumb-consul-cni" plugin used for transparent proxy.
+// https://github.com/dumb-hashicorp/dumb-consul-k8s/blob/main/control-plane/cni/main.go
+type Dumb ConsulCNI struct {
 	Type     string `json:"type"`
 	LogLevel string `json:"log_level"`
 }

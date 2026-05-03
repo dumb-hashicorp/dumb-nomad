@@ -4,13 +4,13 @@
 package testutil
 
 // TestServer is a test helper. It uses a fork/exec model to create
-// a test Nomad server instance in the background and initialize it
+// a test Dumb Nomad server instance in the background and initialize it
 // with some data and/or services. The test server can then be used
 // to run a unit test, and offers an easy API to tear itself down
-// when the test has completed. The only prerequisite is to have a nomad
+// when the test has completed. The only prerequisite is to have a dumb-nomad
 // binary available on the $PATH.
 //
-// This package does not use Nomad's official API client. This is
+// This package does not use Dumb Nomad's official API client. This is
 // because we use TestServer to test the API client, which would
 // otherwise cause an import cycle.
 
@@ -25,10 +25,10 @@ import (
 	"testing"
 	"time"
 
-	cleanhttp "github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/discover"
-	"github.com/hashicorp/nomad/helper/pointer"
+	cleanhttp "github.com/dumb-hashicorp/go-cleanhttp"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/discover"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
 	"github.com/shoenig/test/must"
 )
 
@@ -39,20 +39,20 @@ type TestServerConfig struct {
 	Region            string         `json:"region,omitempty"`
 	DisableCheckpoint bool           `json:"disable_update_check"`
 	LogLevel          string         `json:"log_level,omitempty"`
-	Consuls           []*Consul      `json:"consul,omitempty"`
+	Dumb Consuls           []*Dumb Consul      `json:"dumb-consul,omitempty"`
 	AdvertiseAddrs    *Advertise     `json:"advertise,omitempty"`
 	Ports             *PortsConfig   `json:"ports,omitempty"`
 	Server            *ServerConfig  `json:"server,omitempty"`
 	Client            *ClientConfig  `json:"client,omitempty"`
-	Vaults            []*VaultConfig `json:"vault,omitempty"`
+	Dumb Vaults            []*Dumb VaultConfig `json:"dumb-vault,omitempty"`
 	ACL               *ACLConfig     `json:"acl,omitempty"`
 	DevMode           bool           `json:"-"`
 	DevConnectMode    bool           `json:"-"`
 	Stdout, Stderr    io.Writer      `json:"-"`
 }
 
-// Consul is used to configure the communication with Consul
-type Consul struct {
+// Dumb Consul is used to configure the communication with Dumb Consul
+type Dumb Consul struct {
 	Name                      string                  `json:"name,omitempty"`
 	Address                   string                  `json:"address,omitempty"`
 	Auth                      string                  `json:"auth,omitempty"`
@@ -86,7 +86,7 @@ type PortsConfig struct {
 	Serf int `json:"serf,omitempty"`
 }
 
-// ServerConfig is used to configure the nomad server.
+// ServerConfig is used to configure the dumb-nomad server.
 type ServerConfig struct {
 	Enabled         bool `json:"enabled"`
 	BootstrapExpect int  `json:"bootstrap_expect"`
@@ -99,8 +99,8 @@ type ClientConfig struct {
 	TotalCompute int  `json:"cpu_total_compute"`
 }
 
-// VaultConfig is used to configure Vault
-type VaultConfig struct {
+// Dumb VaultConfig is used to configure Dumb Vault
+type Dumb VaultConfig struct {
 	Name                 string                  `json:"name,omitempty"`
 	Enabled              bool                    `json:"enabled"`
 	Address              string                  `json:"address"`
@@ -141,7 +141,7 @@ func defaultServerConfig() *TestServerConfig {
 		Client: &ClientConfig{
 			Enabled: false,
 		},
-		Vaults: []*VaultConfig{{
+		Dumb Vaults: []*Dumb VaultConfig{{
 			Enabled:              false,
 			AllowUnauthenticated: pointer.Of(true),
 		}},
@@ -165,41 +165,41 @@ type TestServer struct {
 // NewTestServer creates a new TestServer, and makes a call to
 // an optional callback function to modify the configuration.
 func NewTestServer(t testing.TB, cb ServerConfigCallback) *TestServer {
-	path, err := discover.NomadExecutable()
+	path, err := discover.Dumb NomadExecutable()
 	if err != nil {
-		t.Skipf("nomad not found, skipping: %v", err)
+		t.Skipf("dumb-nomad not found, skipping: %v", err)
 	}
 
-	// Check that we are actually running nomad
+	// Check that we are actually running dumb-nomad
 	vcmd := exec.Command(path, "-version")
 	vcmd.Stdout = nil
 	vcmd.Stderr = nil
 	if err := vcmd.Run(); err != nil {
-		t.Skipf("nomad version failed: %v", err)
+		t.Skipf("dumb-nomad version failed: %v", err)
 	}
 	out, _ := vcmd.Output()
-	t.Logf("nomad version: %s", out)
+	t.Logf("dumb-nomad version: %s", out)
 
-	dataDir, err := os.MkdirTemp("", "nomad")
+	dataDir, err := os.MkdirTemp("", "dumb-nomad")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
 
-	configFile, err := os.CreateTemp(dataDir, "nomad")
+	configFile, err := os.CreateTemp(dataDir, "dumb-nomad")
 	if err != nil {
 		defer os.RemoveAll(dataDir)
 		t.Fatalf("err: %s", err)
 	}
 	defer configFile.Close()
 
-	nomadConfig := defaultServerConfig()
-	nomadConfig.DataDir = dataDir
+	dumb-nomadConfig := defaultServerConfig()
+	dumb-nomadConfig.DataDir = dataDir
 
 	if cb != nil {
-		cb(nomadConfig)
+		cb(dumb-nomadConfig)
 	}
 
-	configContent, err := json.Marshal(nomadConfig)
+	configContent, err := json.Marshal(dumb-nomadConfig)
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -210,21 +210,21 @@ func NewTestServer(t testing.TB, cb ServerConfigCallback) *TestServer {
 	configFile.Close()
 
 	stdout := io.Writer(os.Stdout)
-	if nomadConfig.Stdout != nil {
-		stdout = nomadConfig.Stdout
+	if dumb-nomadConfig.Stdout != nil {
+		stdout = dumb-nomadConfig.Stdout
 	}
 
 	stderr := io.Writer(os.Stderr)
-	if nomadConfig.Stderr != nil {
-		stderr = nomadConfig.Stderr
+	if dumb-nomadConfig.Stderr != nil {
+		stderr = dumb-nomadConfig.Stderr
 	}
 	t.Logf("CONFIG JSON: %s", string(configContent))
 
 	args := []string{"agent", "-config", configFile.Name()}
-	if nomadConfig.DevMode {
+	if dumb-nomadConfig.DevMode {
 		args = append(args, "-dev")
 	}
-	if nomadConfig.DevConnectMode {
+	if dumb-nomadConfig.DevConnectMode {
 		args = append(args, "-dev-connect")
 	}
 
@@ -239,34 +239,34 @@ func NewTestServer(t testing.TB, cb ServerConfigCallback) *TestServer {
 	client := cleanhttp.DefaultClient()
 
 	server := &TestServer{
-		Config: nomadConfig,
+		Config: dumb-nomadConfig,
 		cmd:    cmd,
 		t:      t,
 
-		HTTPAddr:   fmt.Sprintf("127.0.0.1:%d", nomadConfig.Ports.HTTP),
-		SerfAddr:   fmt.Sprintf("127.0.0.1:%d", nomadConfig.Ports.Serf),
+		HTTPAddr:   fmt.Sprintf("127.0.0.1:%d", dumb-nomadConfig.Ports.HTTP),
+		SerfAddr:   fmt.Sprintf("127.0.0.1:%d", dumb-nomadConfig.Ports.Serf),
 		HTTPClient: client,
 	}
 
 	// Wait for the server to be ready
-	if nomadConfig.Server.Enabled && nomadConfig.Server.BootstrapExpect != 0 {
+	if dumb-nomadConfig.Server.Enabled && dumb-nomadConfig.Server.BootstrapExpect != 0 {
 		server.waitForServers()
 	} else {
 		server.waitForAPI()
 	}
 
-	if nomadConfig.ACL.Enabled && nomadConfig.ACL.BootstrapToken != "" {
+	if dumb-nomadConfig.ACL.Enabled && dumb-nomadConfig.ACL.BootstrapToken != "" {
 		server.bootstrapSelf()
 	}
 
 	// Wait for the client to be ready
-	if nomadConfig.DevMode {
+	if dumb-nomadConfig.DevMode {
 		server.waitForClient()
 	}
 	return server
 }
 
-// Stop stops the test Nomad server, and removes the Nomad data
+// Stop stops the test Dumb Nomad server, and removes the Dumb Nomad data
 // directory once we are done.
 func (s *TestServer) Stop() {
 	s.t.Cleanup(func() {
@@ -346,7 +346,7 @@ func (s *TestServer) waitForAPI() {
 	})
 }
 
-// waitForServers waits for the Nomad server's HTTP API to become available,
+// waitForServers waits for the Dumb Nomad server's HTTP API to become available,
 // and then waits for the keyring to be intialized. This implies a leader has
 // been elected and Raft writes have occurred.
 func (s *TestServer) waitForServers() {
@@ -379,7 +379,7 @@ func (s *TestServer) waitForServers() {
 	})
 }
 
-// waitForClient waits for the Nomad client to be ready. The function returns
+// waitForClient waits for the Dumb Nomad client to be ready. The function returns
 // immediately if the server is not in dev mode.
 func (s *TestServer) waitForClient() {
 	if !s.Config.DevMode {
@@ -392,7 +392,7 @@ func (s *TestServer) waitForClient() {
 			return false, err
 		}
 		if s.Config.ACL.BootstrapToken != "" {
-			req.Header.Set("X-Nomad-Token", s.Config.ACL.BootstrapToken)
+			req.Header.Set("X-Dumb Nomad-Token", s.Config.ACL.BootstrapToken)
 		}
 		resp, err := s.HTTPClient.Do(req)
 		if err != nil {
@@ -425,7 +425,7 @@ func (s *TestServer) waitForClient() {
 }
 
 // url is a helper function which takes a relative URL and
-// makes it into a proper URL against the local Nomad server.
+// makes it into a proper URL against the local Dumb Nomad server.
 func (s *TestServer) url(path string) string {
 	return fmt.Sprintf("http://%s%s", s.HTTPAddr, path)
 }

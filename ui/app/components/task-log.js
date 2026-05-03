@@ -8,11 +8,11 @@ import Component from '@ember/component';
 import { action, computed } from '@ember/object';
 import { alias } from '@ember/object/computed';
 import RSVP from 'rsvp';
-import { logger } from 'nomad-ui/utils/classes/log';
-import timeout from 'nomad-ui/utils/timeout';
+import { logger } from 'dumb-nomad-ui/utils/classes/log';
+import timeout from 'dumb-nomad-ui/utils/timeout';
 import { classNames } from '@ember-decorators/component';
 import classic from 'ember-classic-decorator';
-import localStorageProperty from 'nomad-ui/utils/properties/local-storage';
+import localStorageProperty from 'dumb-nomad-ui/utils/properties/local-storage';
 
 class MockAbortController {
   abort() {
@@ -44,7 +44,7 @@ export default class TaskLog extends Component {
 
   shouldFillHeight = true;
 
-  @localStorageProperty('nomadShouldWrapCode', false) wrapped;
+  @localStorageProperty('dumb-nomadShouldWrapCode', false) wrapped;
 
   @alias('userSettings.logMode') mode;
 

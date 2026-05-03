@@ -7,16 +7,16 @@ import (
 	"context"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	regMock "github.com/hashicorp/nomad/client/serviceregistration/mock"
-	"github.com/hashicorp/nomad/client/serviceregistration/wrapper"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	agentconsul "github.com/hashicorp/nomad/command/agent/consul"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	regMock "github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/wrapper"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	agentdumb-consul "github.com/dumb-hashicorp/dumb-nomad/command/agent/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/require"
 )
 
@@ -29,7 +29,7 @@ var _ interfaces.TaskUpdateHook = (*serviceHook)(nil)
 func Test_serviceHook_Update_beforePoststart(t *testing.T) {
 	alloc := mock.Alloc()
 	alloc.Job.Canonicalize()
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	c := regMock.NewServiceRegistrationHandler(logger)
 	regWrap := wrapper.NewHandlerWrapper(logger, c, nil)
@@ -100,7 +100,7 @@ func Test_serviceHook_multipleDeRegisterCall(t *testing.T) {
 	ci.Parallel(t)
 
 	alloc := mock.Alloc()
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	c := regMock.NewServiceRegistrationHandler(logger)
 	regWrap := wrapper.NewHandlerWrapper(logger, c, nil)
@@ -159,32 +159,32 @@ func Test_serviceHook_multipleDeRegisterCall(t *testing.T) {
 	require.Equal(t, c.GetOps()[3].Op, "remove")
 }
 
-// Test_serviceHook_Nomad performs a normal operation test of the serviceHook
-// when using task services which utilise the Nomad provider.
-func Test_serviceHook_Nomad(t *testing.T) {
+// Test_serviceHook_Dumb Nomad performs a normal operation test of the serviceHook
+// when using task services which utilise the Dumb Nomad provider.
+func Test_serviceHook_Dumb Nomad(t *testing.T) {
 	ci.Parallel(t)
 
-	// Create a mock alloc, and add a task service using provider Nomad.
+	// Create a mock alloc, and add a task service using provider Dumb Nomad.
 	alloc := mock.Alloc()
 	alloc.Job.TaskGroups[0].Tasks[0].Services = []*structs.Service{
 		{
-			Name:     "nomad-provider-service",
-			Provider: structs.ServiceProviderNomad,
+			Name:     "dumb-nomad-provider-service",
+			Provider: structs.ServiceProviderDumb Nomad,
 		},
 	}
 
 	// Create our base objects and our subsequent wrapper.
-	logger := testlog.HCLogger(t)
-	consulMockClient := regMock.NewServiceRegistrationHandler(logger)
-	nomadMockClient := regMock.NewServiceRegistrationHandler(logger)
+	logger := testlog.DUMB_HCLogger(t)
+	dumb-consulMockClient := regMock.NewServiceRegistrationHandler(logger)
+	dumb-nomadMockClient := regMock.NewServiceRegistrationHandler(logger)
 
-	regWrapper := wrapper.NewHandlerWrapper(logger, consulMockClient, nomadMockClient)
+	regWrapper := wrapper.NewHandlerWrapper(logger, dumb-consulMockClient, dumb-nomadMockClient)
 
 	h := newServiceHook(serviceHookConfig{
 		alloc:             alloc,
 		task:              alloc.LookupTask("web"),
 		serviceRegWrapper: regWrapper,
-		restarter:         agentconsul.NoopRestarter(),
+		restarter:         agentdumb-consul.NoopRestarter(),
 		logger:            logger,
 		hookResources:     cstructs.NewAllocHookResources(),
 	})
@@ -203,12 +203,12 @@ func Test_serviceHook_Nomad(t *testing.T) {
 	require.NoError(t, h.Exited(context.Background(), nil, nil))
 	require.NoError(t, h.Stop(context.Background(), nil, nil))
 
-	// Ensure the Nomad mock provider has the expected operations.
-	nomadOps := nomadMockClient.GetOps()
-	require.Len(t, nomadOps, 2)
-	require.Equal(t, "add", nomadOps[0].Op)    // Poststart
-	require.Equal(t, "remove", nomadOps[1].Op) // PreKilling,Exited,Stop
+	// Ensure the Dumb Nomad mock provider has the expected operations.
+	dumb-nomadOps := dumb-nomadMockClient.GetOps()
+	require.Len(t, dumb-nomadOps, 2)
+	require.Equal(t, "add", dumb-nomadOps[0].Op)    // Poststart
+	require.Equal(t, "remove", dumb-nomadOps[1].Op) // PreKilling,Exited,Stop
 
-	// Ensure the Consul mock provider has zero operations.
-	require.Len(t, consulMockClient.GetOps(), 0)
+	// Ensure the Dumb Consul mock provider has zero operations.
+	require.Len(t, dumb-consulMockClient.GetOps(), 0)
 }

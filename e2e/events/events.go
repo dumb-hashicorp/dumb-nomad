@@ -8,12 +8,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/stretchr/testify/require"
 )
 
@@ -33,17 +33,17 @@ func init() {
 }
 
 func (tc *EventsTest) BeforeAll(f *framework.F) {
-	e2eutil.WaitForLeader(f.T(), tc.Nomad())
+	e2eutil.WaitForLeader(f.T(), tc.Dumb Nomad())
 }
 
 func (tc *EventsTest) AfterEach(f *framework.F) {
-	nomadClient := tc.Nomad()
-	j := nomadClient.Jobs()
+	dumb-nomadClient := tc.Dumb Nomad()
+	j := dumb-nomadClient.Jobs()
 
 	for _, id := range tc.jobIDs {
 		j.Deregister(id, true, nil)
 	}
-	_, err := e2eutil.Command("nomad", "system", "gc")
+	_, err := e2eutil.Command("dumb-nomad", "system", "gc")
 	f.NoError(err)
 }
 
@@ -53,8 +53,8 @@ func (tc *EventsTest) AfterEach(f *framework.F) {
 func (tc *EventsTest) TestDeploymentEvents(f *framework.F) {
 	t := f.T()
 
-	nomadClient := tc.Nomad()
-	events := nomadClient.EventStream()
+	dumb-nomadClient := tc.Dumb Nomad()
+	events := dumb-nomadClient.EventStream()
 
 	uuid := uuid.Generate()
 	jobID := fmt.Sprintf("deployment-%s", uuid[0:8])
@@ -87,17 +87,17 @@ func (tc *EventsTest) TestDeploymentEvents(f *framework.F) {
 	}()
 
 	// register job
-	e2eutil.RegisterAndWaitForAllocs(t, nomadClient, "events/input/initial.nomad", jobID, "")
+	e2eutil.RegisterAndWaitForAllocs(t, dumb-nomadClient, "events/input/initial.dumb-nomad", jobID, "")
 
 	// update job
-	e2eutil.RegisterAndWaitForAllocs(t, nomadClient, "events/input/deploy.nomad", jobID, "")
+	e2eutil.RegisterAndWaitForAllocs(t, dumb-nomadClient, "events/input/deploy.dumb-nomad", jobID, "")
 
-	ds := e2eutil.DeploymentsForJob(t, nomadClient, jobID)
+	ds := e2eutil.DeploymentsForJob(t, dumb-nomadClient, jobID)
 	require.Equal(t, 2, len(ds))
 	deploy := ds[0]
 
 	// wait for deployment to be running and ready for auto promote
-	e2eutil.WaitForDeployment(t, nomadClient, deploy.ID, structs.DeploymentStatusRunning, structs.DeploymentStatusDescriptionRunningAutoPromotion)
+	e2eutil.WaitForDeployment(t, dumb-nomadClient, deploy.ID, structs.DeploymentStatusRunning, structs.DeploymentStatusDescriptionRunningAutoPromotion)
 
 	// ensure there is a deployment promotion event
 	testutil.WaitForResult(func() (bool, error) {
@@ -121,8 +121,8 @@ func (tc *EventsTest) TestDeploymentEvents(f *framework.F) {
 func (tc *EventsTest) TestBlockedEvalEvents(f *framework.F) {
 	t := f.T()
 
-	nomadClient := tc.Nomad()
-	events := nomadClient.EventStream()
+	dumb-nomadClient := tc.Dumb Nomad()
+	events := dumb-nomadClient.EventStream()
 
 	uuid := uuid.Generate()
 	jobID := fmt.Sprintf("blocked-deploy-%s", uuid[0:8])
@@ -155,7 +155,7 @@ func (tc *EventsTest) TestBlockedEvalEvents(f *framework.F) {
 	}()
 
 	// register job
-	e2eutil.Register(jobID, "events/input/large-job.nomad")
+	e2eutil.Register(jobID, "events/input/large-job.dumb-nomad")
 
 	// ensure there is a deployment promotion event
 	testutil.WaitForResult(func() (bool, error) {
@@ -189,8 +189,8 @@ func (tc *EventsTest) TestBlockedEvalEvents(f *framework.F) {
 func (tc *EventsTest) TestStartIndex(f *framework.F) {
 	t := f.T()
 
-	nomadClient := tc.Nomad()
-	events := nomadClient.EventStream()
+	dumb-nomadClient := tc.Dumb Nomad()
+	events := dumb-nomadClient.EventStream()
 
 	uuid := uuid.Short()
 	noopID := fmt.Sprintf("noop-%s", uuid)
@@ -201,7 +201,7 @@ func (tc *EventsTest) TestStartIndex(f *framework.F) {
 	defer cancel()
 
 	// register job
-	err := e2eutil.Register(jobID, "events/input/initial.nomad")
+	err := e2eutil.Register(jobID, "events/input/initial.dumb-nomad")
 	require.NoError(t, err)
 
 	// The stream request gets the event *closest* to the index, not
@@ -213,7 +213,7 @@ func (tc *EventsTest) TestStartIndex(f *framework.F) {
 	// enough time to land in the buffer.
 	var job *api.Job
 	f.Eventually(func() bool {
-		job, _, err = nomadClient.Jobs().Info(jobID, nil)
+		job, _, err = dumb-nomadClient.Jobs().Info(jobID, nil)
 		if err != nil {
 			return false
 		}
@@ -251,7 +251,7 @@ func (tc *EventsTest) TestStartIndex(f *framework.F) {
 	}()
 
 	// new job (to make sure we get a JobRegistered event)
-	err = e2eutil.Register(jobID2, "events/input/deploy.nomad")
+	err = e2eutil.Register(jobID2, "events/input/deploy.dumb-nomad")
 	require.NoError(t, err)
 
 	// ensure there is a deployment promotion event

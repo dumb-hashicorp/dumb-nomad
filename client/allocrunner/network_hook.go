@@ -8,11 +8,11 @@ import (
 	"errors"
 	"fmt"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/miekg/dns"
 )
 
@@ -80,10 +80,10 @@ type networkHook struct {
 	// the alloc network has been created
 	networkConfigurator NetworkConfigurator
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
-func newNetworkHook(logger hclog.Logger,
+func newNetworkHook(logger dumb-hclog.Logger,
 	ns networkIsolationSetter,
 	alloc *structs.Allocation,
 	netManager drivers.DriverNetworkManager,

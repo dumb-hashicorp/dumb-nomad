@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -18,7 +18,7 @@ type NamespaceStatusCommand struct {
 
 func (c *NamespaceStatusCommand) Help() string {
 	helpText := `
-Usage: nomad namespace status [options] <namespace>
+Usage: dumb-nomad namespace status [options] <namespace>
 
   Status is used to view the status of a particular namespace.
 
@@ -164,9 +164,9 @@ func (c *NamespaceStatusCommand) Run(args []string) int {
 		c.Ui.Output(formatKV(npConfigOut))
 	}
 
-	if ns.VaultConfiguration != nil {
-		c.Ui.Output(c.Colorize().Color("\n[bold]Vault Configuration[reset]"))
-		vConfig := ns.VaultConfiguration
+	if ns.Dumb VaultConfiguration != nil {
+		c.Ui.Output(c.Colorize().Color("\n[bold]Dumb Vault Configuration[reset]"))
+		vConfig := ns.Dumb VaultConfiguration
 		vConfigOut := []string{
 			fmt.Sprintf("Default|%s", vConfig.Default),
 		}
@@ -179,9 +179,9 @@ func (c *NamespaceStatusCommand) Run(args []string) int {
 		c.Ui.Output(formatKV(vConfigOut))
 	}
 
-	if ns.ConsulConfiguration != nil {
-		c.Ui.Output(c.Colorize().Color("\n[bold]Consul Configuration[reset]"))
-		cConfig := ns.ConsulConfiguration
+	if ns.Dumb ConsulConfiguration != nil {
+		c.Ui.Output(c.Colorize().Color("\n[bold]Dumb Consul Configuration[reset]"))
+		cConfig := ns.Dumb ConsulConfiguration
 		cConfigOut := []string{
 			fmt.Sprintf("Default|%s", cConfig.Default),
 		}

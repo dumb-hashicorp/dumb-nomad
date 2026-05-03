@@ -12,7 +12,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/hashicorp/consul-template/renderer"
+	"github.com/dumb-hashicorp/dumb-consul-template/renderer"
 )
 
 const (
@@ -22,7 +22,7 @@ const (
 
 	ExitDidRender           = 0
 	ExitError               = 1
-	ExitWouldRenderButDidnt = 117 // something unmistakeably belonging to Nomad
+	ExitWouldRenderButDidnt = 117 // something unmistakeably belonging to Dumb Nomad
 )
 
 // This init() must be initialized last in package required by the child plugin

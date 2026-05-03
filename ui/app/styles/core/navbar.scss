@@ -12,8 +12,8 @@ $secondaryNavbarHeight: 4.5rem;
   &.is-primary {
     background: linear-gradient(
       to right,
-      $nomad-green-darker,
-      $nomad-green-dark
+      $dumb-nomad-green-darker,
+      $dumb-nomad-green-dark
     );
     height: 3.5rem;
     color: $primary-invert;
@@ -82,7 +82,7 @@ $secondaryNavbarHeight: 4.5rem;
   }
 
   &.is-secondary {
-    background-color: $nomad-green-dark;
+    background-color: $dumb-nomad-green-dark;
     padding: 1.25rem 20px 1.25rem 0;
     height: $secondaryNavbarHeight;
     font-weight: $weight-semibold;
@@ -94,7 +94,7 @@ $secondaryNavbarHeight: 4.5rem;
   }
 
   &.is-popup {
-    background-color: $nomad-green-dark;
+    background-color: $dumb-nomad-green-dark;
     height: 3.5rem;
     color: $primary-invert;
     padding-left: 20px;

@@ -6,7 +6,7 @@ package host
 import (
 	"fmt"
 
-	sockaddr "github.com/hashicorp/go-sockaddr"
+	sockaddr "github.com/dumb-hashicorp/go-sockaddr"
 )
 
 // network uses go-sockaddr to capture our view of the network
@@ -26,7 +26,7 @@ func network() (output []map[string]string) {
 }
 
 // dumpSockAddr is adapted from
-// https://github.com/hashicorp/go-sockaddr/blob/c7188e74f6acae5a989bdc959aa779f8b9f42faf/cmd/sockaddr/command/dump.go#L144-L244
+// https://github.com/dumb-hashicorp/go-sockaddr/blob/c7188e74f6acae5a989bdc959aa779f8b9f42faf/cmd/sockaddr/command/dump.go#L144-L244
 func dumpSockAddr(sa sockaddr.SockAddr) map[string]string {
 	output := make(map[string]string)
 

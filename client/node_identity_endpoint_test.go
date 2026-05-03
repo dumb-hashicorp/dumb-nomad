@@ -6,13 +6,13 @@ package client
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -21,7 +21,7 @@ func TestNodeIdentity_Get(t *testing.T) {
 
 	// Create a test ACL server and client and perform our node identity get
 	// tests against it.
-	testACLServer, testServerToken, testACLServerCleanup := nomad.TestACLServer(t, nil)
+	testACLServer, testServerToken, testACLServerCleanup := dumb-nomad.TestACLServer(t, nil)
 	t.Cleanup(func() { testACLServerCleanup() })
 	testutil.WaitForLeader(t, testACLServer.RPC)
 
@@ -79,14 +79,14 @@ func TestNodeIdentity_Get(t *testing.T) {
 			"nbf",
 			"sub",
 			"iat",
-			"nomad_node_class",
-			"nomad_node_datacenter",
-			"nomad_node_id",
-			"nomad_node_pool",
+			"dumb-nomad_node_class",
+			"dumb-nomad_node_datacenter",
+			"dumb-nomad_node_id",
+			"dumb-nomad_node_pool",
 		})
 
 		must.MapContainsValues(t, resp.Claims, []any{
-			"nomadproject.io",
+			"dumb-nomadproject.io",
 			testACLClient.NodeID(),
 			testACLClient.Datacenter(),
 			testACLClient.Node().NodeClass,
@@ -96,7 +96,7 @@ func TestNodeIdentity_Get(t *testing.T) {
 
 	// Create a test non-ACL server and client and perform our node identity get
 	// tests against it.
-	testServer, testServerCleanup := nomad.TestServer(t, nil)
+	testServer, testServerCleanup := dumb-nomad.TestServer(t, nil)
 	t.Cleanup(func() { testServerCleanup() })
 	testutil.WaitForLeader(t, testServer.RPC)
 
@@ -133,14 +133,14 @@ func TestNodeIdentity_Get(t *testing.T) {
 			"nbf",
 			"sub",
 			"iat",
-			"nomad_node_class",
-			"nomad_node_datacenter",
-			"nomad_node_id",
-			"nomad_node_pool",
+			"dumb-nomad_node_class",
+			"dumb-nomad_node_datacenter",
+			"dumb-nomad_node_id",
+			"dumb-nomad_node_pool",
 		})
 
 		must.MapContainsValues(t, resp.Claims, []any{
-			"nomadproject.io",
+			"dumb-nomadproject.io",
 			testClient.NodeID(),
 			testClient.Datacenter(),
 			testClient.Node().NodeClass,
@@ -181,7 +181,7 @@ func TestNodeIdentity_Renew(t *testing.T) {
 
 	// Create a test ACL server and client and perform our node identity renewal
 	// tests against it.
-	testACLServer, testServerToken, testACLServerCleanup := nomad.TestACLServer(t, nil)
+	testACLServer, testServerToken, testACLServerCleanup := dumb-nomad.TestACLServer(t, nil)
 	t.Cleanup(func() { testACLServerCleanup() })
 	testutil.WaitForLeader(t, testACLServer.RPC)
 
@@ -234,7 +234,7 @@ func TestNodeIdentity_Renew(t *testing.T) {
 
 	// Create a test non-ACL server and client and perform our node identity
 	// renewal tests against it.
-	testServer, testServerCleanup := nomad.TestServer(t, nil)
+	testServer, testServerCleanup := dumb-nomad.TestServer(t, nil)
 	t.Cleanup(func() { testServerCleanup() })
 	testutil.WaitForLeader(t, testServer.RPC)
 

@@ -13,9 +13,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
 )
 
 // PlatformScanners returns the set of SystemScanner for Linux.
@@ -230,8 +230,8 @@ func (s *Cgroups1) ScanSystem(top *Topology) {
 		return
 	}
 
-	// detect effective cores in the cpuset/nomad cgroup
-	content, err := cgroupslib.ReadNomadCG1("cpuset", "cpuset.effective_cpus")
+	// detect effective cores in the cpuset/dumb-nomad cgroup
+	content, err := cgroupslib.ReadDumb NomadCG1("cpuset", "cpuset.effective_cpus")
 	if err != nil {
 		return
 	}
@@ -248,8 +248,8 @@ func (s *Cgroups2) ScanSystem(top *Topology) {
 		return
 	}
 
-	// detect effective cores in the nomad.slice cgroup
-	content, err := cgroupslib.ReadNomadCG2("cpuset.cpus.effective")
+	// detect effective cores in the dumb-nomad.slice cgroup
+	content, err := cgroupslib.ReadDumb NomadCG2("cpuset.cpus.effective")
 	if err != nil {
 		return
 	}
@@ -269,7 +269,7 @@ func scanIDs(top *Topology, content string) {
 }
 
 // Fallback detects if the NUMA aware topology scanning was unable to construct
-// a valid model of the system. This will be common on Nomad clients running in
+// a valid model of the system. This will be common on Dumb Nomad clients running in
 // containers, erroneous hypervisors, or without root.
 type Fallback struct{}
 

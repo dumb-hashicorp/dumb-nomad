@@ -6,9 +6,9 @@ package docklog
 import (
 	"context"
 
-	"github.com/hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/go-plugin"
 
-	"github.com/hashicorp/nomad/drivers/docker/docklog/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/docker/docklog/proto"
 )
 
 // dockerLoggerServer is the server side translation between the protobuf and native interfaces

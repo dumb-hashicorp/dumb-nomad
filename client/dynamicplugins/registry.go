@@ -1,7 +1,7 @@
 // Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: BUSL-1.1
 
-// dynamicplugins is a package that manages dynamic plugins in Nomad.
+// dynamicplugins is a package that manages dynamic plugins in Dumb Nomad.
 // It exposes a registry that allows for plugins to be registered/deregistered
 // and also allows subscribers to receive real time updates of these events.
 package dynamicplugins
@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 )
 
 const (
@@ -23,7 +23,7 @@ const (
 )
 
 // Registry is an interface that allows for the dynamic registration of plugins
-// that are running as Nomad Tasks.
+// that are running as Dumb Nomad Tasks.
 type Registry interface {
 	RegisterPlugin(info *PluginInfo) error
 	DeregisterPlugin(ptype, name, allocID string) error
@@ -146,7 +146,7 @@ type dynamicRegistry struct {
 }
 
 // StubDispenserForType allows test functions to provide alternative plugin
-// dispensers to simplify writing tests for higher level Nomad features.
+// dispensers to simplify writing tests for higher level Dumb Nomad features.
 // This function should not be called from production code.
 func (d *dynamicRegistry) StubDispenserForType(ptype string, dispenser PluginDispenser) {
 	// delete from stubs
@@ -200,7 +200,7 @@ func (d *dynamicRegistry) RegisterPlugin(info *PluginInfo) error {
 		pmap[info.Name] = infos
 	}
 
-	// TODO(tgross): https://github.com/hashicorp/nomad/issues/11786
+	// TODO(tgross): https://github.com/dumb-hashicorp/dumb-nomad/issues/11786
 	// If we're already registered, we should update the definition
 	// and send a broadcast of any update so the instanceManager can
 	// be restarted if there's been a change

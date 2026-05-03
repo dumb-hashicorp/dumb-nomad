@@ -13,10 +13,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 	"github.com/shoenig/test/must"
 )
 
@@ -41,7 +41,7 @@ func TestExecutor_InvalidCgroup(t *testing.T) {
 
 	factory.configureExecCmd(t, execCmd)
 	defer allocDir.Destroy()
-	executor := factory.new(testlog.HCLogger(t), compute)
+	executor := factory.new(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("", 0)
 
 	_, err := executor.Launch(execCmd)
@@ -61,7 +61,7 @@ func TestUniversalExecutor_setOomAdj(t *testing.T) {
 
 	factory.configureExecCmd(t, execCmd)
 	defer allocDir.Destroy()
-	executor := factory.new(testlog.HCLogger(t), compute)
+	executor := factory.new(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("", 0)
 
 	p, err := executor.Launch(execCmd)
@@ -86,7 +86,7 @@ func TestUniversalExecutor_cg1_no_executor_pid(t *testing.T) {
 
 	factory.configureExecCmd(t, execCmd)
 	defer allocDir.Destroy()
-	executor := factory.new(testlog.HCLogger(t), compute)
+	executor := factory.new(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("", 0)
 
 	p, err := executor.Launch(execCmd)
@@ -96,7 +96,7 @@ func TestUniversalExecutor_cg1_no_executor_pid(t *testing.T) {
 
 	ifaces := []string{"cpu", "memory", "freezer"}
 	for _, iface := range ifaces {
-		cgroup := fmt.Sprintf("/sys/fs/cgroup/%s/nomad/%s.web/cgroup.procs", iface, alloc)
+		cgroup := fmt.Sprintf("/sys/fs/cgroup/%s/dumb-nomad/%s.web/cgroup.procs", iface, alloc)
 
 		content, err := os.ReadFile(cgroup)
 		must.NoError(t, err)

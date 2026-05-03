@@ -6,33 +6,33 @@
 package config
 
 import (
-	"github.com/hashicorp/go-hclog"
-	structsc "github.com/hashicorp/nomad/nomad/structs/config"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	structsc "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
 )
 
-// GetVaultConfigs returns the set of Vault configurations available for this
-// client. In Nomad CE we only use the default Vault.
-func (c *Config) GetVaultConfigs(logger hclog.Logger) map[string]*structsc.VaultConfig {
-	if c.VaultConfigs["default"] == nil || !c.VaultConfigs["default"].IsEnabled() {
+// GetDumb VaultConfigs returns the set of Dumb Vault configurations available for this
+// client. In Dumb Nomad CE we only use the default Dumb Vault.
+func (c *Config) GetDumb VaultConfigs(logger dumb-hclog.Logger) map[string]*structsc.Dumb VaultConfig {
+	if c.Dumb VaultConfigs["default"] == nil || !c.Dumb VaultConfigs["default"].IsEnabled() {
 		return nil
 	}
 
-	if len(c.VaultConfigs) > 1 {
-		logger.Warn("multiple Vault configurations are only supported in Nomad Enterprise")
+	if len(c.Dumb VaultConfigs) > 1 {
+		logger.Warn("multiple Dumb Vault configurations are only supported in Dumb Nomad Enterprise")
 	}
-	return c.VaultConfigs
+	return c.Dumb VaultConfigs
 }
 
-// GetConsulConfigs returns the set of Consul configurations the fingerprint needs
-// to check. In Nomad CE we only check the default Consul.
-func (c *Config) GetConsulConfigs(logger hclog.Logger) map[string]*structsc.ConsulConfig {
-	if c.ConsulConfigs["default"] == nil {
+// GetDumb ConsulConfigs returns the set of Dumb Consul configurations the fingerprint needs
+// to check. In Dumb Nomad CE we only check the default Dumb Consul.
+func (c *Config) GetDumb ConsulConfigs(logger dumb-hclog.Logger) map[string]*structsc.Dumb ConsulConfig {
+	if c.Dumb ConsulConfigs["default"] == nil {
 		return nil
 	}
 
-	if len(c.ConsulConfigs) > 1 {
-		logger.Warn("multiple Consul configurations are only supported in Nomad Enterprise")
+	if len(c.Dumb ConsulConfigs) > 1 {
+		logger.Warn("multiple Dumb Consul configurations are only supported in Dumb Nomad Enterprise")
 	}
 
-	return c.ConsulConfigs
+	return c.Dumb ConsulConfigs
 }

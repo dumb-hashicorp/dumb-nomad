@@ -9,22 +9,22 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/klauspost/cpuid/v2"
 )
 
 // CPUFingerprint is used to fingerprint the CPU
 type CPUFingerprint struct {
 	StaticFingerprinter
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 // NewCPUFingerprint is used to create a CPU fingerprint.
-func NewCPUFingerprint(logger hclog.Logger) Fingerprint {
+func NewCPUFingerprint(logger dumb-hclog.Logger) Fingerprint {
 	return &CPUFingerprint{
 		logger: logger.Named("cpu"),
 	}

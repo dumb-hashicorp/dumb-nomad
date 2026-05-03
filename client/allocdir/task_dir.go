@@ -8,11 +8,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/helper/users/dynamic"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users/dynamic"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
 )
 
 const (
@@ -91,7 +91,7 @@ type TaskDir struct {
 	skip *set.Set[string]
 
 	// logger for this task
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 // newTaskDir creates a TaskDir struct with paths set. Call Build() to

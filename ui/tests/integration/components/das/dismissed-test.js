@@ -7,7 +7,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, render } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import sinon from 'sinon';
 
 module('Integration | Component | das/dismissed', function (hooks) {
@@ -32,7 +32,7 @@ module('Integration | Component | das/dismissed', function (hooks) {
 
     assert.ok(proceedSpy.calledWith({ manuallyDismissed: true }));
     assert.equal(
-      window.localStorage.getItem('nomadRecommendationDismssalUnderstood'),
+      window.localStorage.getItem('dumb-nomadRecommendationDismssalUnderstood'),
       'true'
     );
   });
@@ -40,7 +40,7 @@ module('Integration | Component | das/dismissed', function (hooks) {
   test('it renders the dismissal interstitial with no button when the option to never show again has been chosen and proceeds automatically', async function (assert) {
     assert.expect(3);
 
-    window.localStorage.setItem('nomadRecommendationDismssalUnderstood', true);
+    window.localStorage.setItem('dumb-nomadRecommendationDismssalUnderstood', true);
 
     const proceedSpy = sinon.spy();
     this.set('proceedSpy', proceedSpy);

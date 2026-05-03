@@ -10,11 +10,11 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -37,9 +37,9 @@ func TestHTTP_EvalList(t *testing.T) {
 		require.NoError(t, err)
 
 		// check headers and response body
-		require.NotEqual(t, "", respW.Result().Header.Get("X-Nomad-Index"), "missing index")
-		require.Equal(t, "true", respW.Result().Header.Get("X-Nomad-KnownLeader"), "missing known leader")
-		require.NotEqual(t, "", respW.Result().Header.Get("X-Nomad-LastContact"), "missing last contact")
+		require.NotEqual(t, "", respW.Result().Header.Get("X-Dumb Nomad-Index"), "missing index")
+		require.Equal(t, "true", respW.Result().Header.Get("X-Dumb Nomad-KnownLeader"), "missing known leader")
+		require.NotEqual(t, "", respW.Result().Header.Get("X-Dumb Nomad-LastContact"), "missing last contact")
 		require.Len(t, obj.([]*structs.Evaluation), 2, "expected 2 evals")
 
 		// paginated list request
@@ -94,13 +94,13 @@ func TestHTTP_EvalPrefixList(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -181,7 +181,7 @@ func TestHTTP_EvalsDelete(t *testing.T) {
 		{
 			testFn: func() {
 				httpTest(t, func(c *Config) {
-					c.NomadConfig.DefaultSchedulerConfig.PauseEvalBroker = true
+					c.Dumb NomadConfig.DefaultSchedulerConfig.PauseEvalBroker = true
 				}, func(s *TestAgent) {
 
 					// Generate a request with an eval ID that doesn't exist
@@ -205,7 +205,7 @@ func TestHTTP_EvalsDelete(t *testing.T) {
 		{
 			testFn: func() {
 				httpTest(t, func(c *Config) {
-					c.NomadConfig.DefaultSchedulerConfig.PauseEvalBroker = true
+					c.Dumb NomadConfig.DefaultSchedulerConfig.PauseEvalBroker = true
 				}, func(s *TestAgent) {
 
 					// Upsert an eval into state.
@@ -276,13 +276,13 @@ func TestHTTP_EvalAllocations(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -319,13 +319,13 @@ func TestHTTP_EvalQuery(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -362,9 +362,9 @@ func TestHTTP_EvalQueryWithRelated(t *testing.T) {
 		require.NoError(t, err)
 
 		// Check for the index
-		require.NotEmpty(t, respW.Result().Header.Get("X-Nomad-Index"))
-		require.NotEmpty(t, respW.Result().Header.Get("X-Nomad-KnownLeader"))
-		require.NotEmpty(t, respW.Result().Header.Get("X-Nomad-LastContact"))
+		require.NotEmpty(t, respW.Result().Header.Get("X-Dumb Nomad-Index"))
+		require.NotEmpty(t, respW.Result().Header.Get("X-Dumb Nomad-KnownLeader"))
+		require.NotEmpty(t, respW.Result().Header.Get("X-Dumb Nomad-LastContact"))
 
 		// Check the eval
 		e := obj.(*structs.Evaluation)
@@ -396,11 +396,11 @@ func TestHTTP_EvalCount(t *testing.T) {
 		must.NoError(t, err)
 
 		// check headers and response body
-		must.NotEq(t, "", respW.Result().Header.Get("X-Nomad-Index"),
+		must.NotEq(t, "", respW.Result().Header.Get("X-Dumb Nomad-Index"),
 			must.Sprint("missing index"))
-		must.Eq(t, "true", respW.Result().Header.Get("X-Nomad-KnownLeader"),
+		must.Eq(t, "true", respW.Result().Header.Get("X-Dumb Nomad-KnownLeader"),
 			must.Sprint("missing known leader"))
-		must.NotEq(t, "", respW.Result().Header.Get("X-Nomad-LastContact"),
+		must.NotEq(t, "", respW.Result().Header.Get("X-Dumb Nomad-LastContact"),
 			must.Sprint("missing last contact"))
 
 		resp := obj.(*structs.EvalCountResponse)

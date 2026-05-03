@@ -9,10 +9,10 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/go-viper/mapstructure/v2"
-	"github.com/hashicorp/hcl"
-	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/dumb-hcl"
+	"github.com/dumb-hashicorp/dumb-hcl/dumb-hcl/ast"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 )
 
 func (c *VolumeRegisterCommand) csiRegister(client *api.Client, ast *ast.File, override bool) int {
@@ -54,7 +54,7 @@ func csiDecodeVolume(input *ast.File) (*api.CSIVolume, error) {
 
 	// Decode the full thing into a map[string]interface for ease
 	var m map[string]interface{}
-	err = hcl.DecodeObject(&m, list)
+	err = dumb-hcl.DecodeObject(&m, list)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func csiDecodeVolume(input *ast.File) (*api.CSIVolume, error) {
 
 		for _, o := range capObj.Elem().Items {
 			valid := []string{"access_mode", "attachment_mode"}
-			if err := helper.CheckHCLKeys(o.Val, valid); err != nil {
+			if err := helper.CheckDUMB_HCLKeys(o.Val, valid); err != nil {
 				return nil, err
 			}
 
@@ -99,7 +99,7 @@ func csiDecodeVolume(input *ast.File) (*api.CSIVolume, error) {
 			}
 
 			var m map[string]interface{}
-			if err := hcl.DecodeObject(&m, ot.List); err != nil {
+			if err := dumb-hcl.DecodeObject(&m, ot.List); err != nil {
 				return nil, err
 			}
 			var cap *api.CSIVolumeCapability
@@ -116,7 +116,7 @@ func csiDecodeVolume(input *ast.File) (*api.CSIVolume, error) {
 
 		for _, o := range mObj.Elem().Items {
 			valid := []string{"fs_type", "mount_flags"}
-			if err := helper.CheckHCLKeys(o.Val, valid); err != nil {
+			if err := helper.CheckDUMB_HCLKeys(o.Val, valid); err != nil {
 				return nil, err
 			}
 
@@ -125,7 +125,7 @@ func csiDecodeVolume(input *ast.File) (*api.CSIVolume, error) {
 				break
 			}
 			var opts *api.CSIMountOptions
-			if err := hcl.DecodeObject(&opts, ot.List); err != nil {
+			if err := dumb-hcl.DecodeObject(&opts, ot.List); err != nil {
 				return nil, err
 			}
 			vol.MountOptions = opts
@@ -139,7 +139,7 @@ func csiDecodeVolume(input *ast.File) (*api.CSIVolume, error) {
 		vol.RequestedTopologies = &api.CSITopologyRequest{}
 
 		for _, o := range requestedTopos.Elem().Items {
-			if err := helper.CheckHCLKeys(o.Val, []string{"preferred", "required"}); err != nil {
+			if err := helper.CheckDUMB_HCLKeys(o.Val, []string{"preferred", "required"}); err != nil {
 				return nil, err
 			}
 			ot, ok := o.Val.(*ast.ObjectType)
@@ -149,7 +149,7 @@ func csiDecodeVolume(input *ast.File) (*api.CSIVolume, error) {
 
 			// topology_request -> required|preferred -> []topology -> []segments (kv)
 			decoded := map[string][]map[string][]map[string][]map[string]string{}
-			if err := hcl.DecodeObject(&decoded, ot.List); err != nil {
+			if err := dumb-hcl.DecodeObject(&decoded, ot.List); err != nil {
 				return nil, err
 			}
 

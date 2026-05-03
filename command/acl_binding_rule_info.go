@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/posener/complete"
 )
 
@@ -25,7 +25,7 @@ type ACLBindingRuleInfoCommand struct {
 // Help satisfies the cli.Command Help function.
 func (a *ACLBindingRuleInfoCommand) Help() string {
 	helpText := `
-Usage: nomad acl binding-rule info [options] <acl_binding_rule_id>
+Usage: dumb-nomad acl binding-rule info [options] <acl_binding_rule_id>
 
   Info is used to fetch information on an existing ACL binding rule. Requires a
   management token.

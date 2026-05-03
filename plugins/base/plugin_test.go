@@ -7,10 +7,10 @@ import (
 	"testing"
 
 	pb "github.com/golang/protobuf/proto"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 	"github.com/shoenig/test/must"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/msgpack"
@@ -84,7 +84,7 @@ func TestBasePlugin_ConfigSchema(t *testing.T) {
 	ci.Parallel(t)
 
 	mock := &MockPlugin{
-		ConfigSchemaF: func() (*hclspec.Spec, error) {
+		ConfigSchemaF: func() (*dumb-hclspec.Spec, error) {
 			return TestSpec, nil
 		},
 	}
@@ -114,7 +114,7 @@ func TestBasePlugin_SetConfig(t *testing.T) {
 		PluginInfoF: func() (*PluginInfoResponse, error) {
 			return &PluginInfoResponse{Type: PluginTypeDriver}, nil
 		},
-		ConfigSchemaF: func() (*hclspec.Spec, error) {
+		ConfigSchemaF: func() (*dumb-hclspec.Spec, error) {
 			return TestSpec, nil
 		},
 		SetConfigF: func(cfg *Config) error {

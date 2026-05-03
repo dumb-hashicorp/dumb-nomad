@@ -9,10 +9,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -93,7 +93,7 @@ func TestHTTP_PrefixSearch_POST(t *testing.T) {
 		require.Equal(t, testJob, j[0])
 
 		require.False(t, res.Truncations[structs.Jobs])
-		require.NotEqual(t, "0", header(respW, "X-Nomad-Index"))
+		require.NotEqual(t, "0", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -123,7 +123,7 @@ func TestHTTP_FuzzySearch_POST(t *testing.T) {
 		require.Nil(t, ns[0].Scope) // only job types have scope
 
 		require.False(t, res.Truncations[structs.Jobs])
-		require.NotEqual(t, "0", header(respW, "X-Nomad-Index"))
+		require.NotEqual(t, "0", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -153,7 +153,7 @@ func TestHTTP_PrefixSearch_PUT(t *testing.T) {
 		require.Equal(t, testJob, j[0])
 
 		require.False(t, res.Truncations[structs.Jobs])
-		require.NotEqual(t, "0", header(respW, "X-Nomad-Index"))
+		require.NotEqual(t, "0", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -183,7 +183,7 @@ func TestHTTP_FuzzySearch_PUT(t *testing.T) {
 		require.Nil(t, ns[0].Scope) // only job types have scope
 
 		require.False(t, res.Truncations[structs.Namespaces])
-		require.NotEqual(t, "0", header(respW, "X-Nomad-Index"))
+		require.NotEqual(t, "0", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -219,7 +219,7 @@ func TestHTTP_PrefixSearch_MultipleJobs(t *testing.T) {
 		require.NotContains(t, j, testJobC)
 
 		require.False(t, res.Truncations[structs.Jobs])
-		require.NotEqual(t, "0", header(respW, "X-Nomad-Index"))
+		require.NotEqual(t, "0", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -262,7 +262,7 @@ func TestHTTP_FuzzySearch_MultipleJobs(t *testing.T) {
 		require.Equal(t, exp, commands)
 
 		require.False(t, res.Truncations[structs.Jobs])
-		require.NotEqual(t, "0", header(respW, "X-Nomad-Index"))
+		require.NotEqual(t, "0", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -294,7 +294,7 @@ func TestHTTP_PrefixSearch_Evaluation(t *testing.T) {
 		require.Contains(t, j, eval1.ID)
 		require.NotContains(t, j, eval2.ID)
 		require.False(t, res.Truncations[structs.Evals])
-		require.Equal(t, "9000", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "9000", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -329,7 +329,7 @@ func TestHTTP_FuzzySearch_Evaluation(t *testing.T) {
 			ID: eval1.ID,
 		}, matches[0])
 		require.False(t, res.Truncations[structs.Evals])
-		require.Equal(t, "9000", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "9000", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -366,7 +366,7 @@ func TestHTTP_PrefixSearch_Allocations(t *testing.T) {
 		require.Contains(t, a, alloc.ID)
 
 		require.False(t, res.Truncations[structs.Allocs])
-		require.Equal(t, "7000", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "7000", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -396,7 +396,7 @@ func TestHTTP_FuzzySearch_Allocations(t *testing.T) {
 		require.Equal(t, "my-job.web[0]", a[0].ID)
 
 		require.False(t, res.Truncations[structs.Allocs])
-		require.Equal(t, "7000", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "7000", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -427,7 +427,7 @@ func TestHTTP_PrefixSearch_Nodes(t *testing.T) {
 		require.Contains(t, n, node.ID)
 
 		require.False(t, res.Truncations[structs.Nodes])
-		require.Equal(t, "6000", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "6000", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -457,7 +457,7 @@ func TestHTTP_FuzzySearch_Nodes(t *testing.T) {
 		require.Equal(t, "foobar", n[0].ID)
 
 		require.False(t, res.Truncations[structs.Nodes])
-		require.Equal(t, "6000", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "6000", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -485,7 +485,7 @@ func TestHTTP_PrefixSearch_Deployments(t *testing.T) {
 		n := res.Matches[structs.Deployments]
 		require.Len(t, n, 1)
 		require.Contains(t, n, deployment.ID)
-		require.Equal(t, "999", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "999", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -514,7 +514,7 @@ func TestHTTP_FuzzySearch_Deployments(t *testing.T) {
 		n := res.Matches[structs.Deployments]
 		require.Len(t, n, 1)
 		require.Equal(t, deployment.ID, n[0].ID)
-		require.Equal(t, "999", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "999", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -534,7 +534,7 @@ func TestHTTP_PrefixSearch_NoJob(t *testing.T) {
 		res := resp.(structs.SearchResponse)
 		require.Len(t, res.Matches, 1)
 		require.Len(t, res.Matches[structs.Jobs], 0)
-		require.Equal(t, "0", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "0", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -553,7 +553,7 @@ func TestHTTP_FuzzySearch_NoJob(t *testing.T) {
 
 		res := resp.(structs.FuzzySearchResponse)
 		require.Len(t, res.Matches, 0)
-		require.Equal(t, "0", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "0", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -588,7 +588,7 @@ func TestHTTP_PrefixSearch_AllContext(t *testing.T) {
 		require.Len(t, matchedEvals, 1)
 		require.Equal(t, testJobID, matchedJobs[0])
 		require.Equal(t, eval1.ID, matchedEvals[0])
-		require.Equal(t, "8000", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "8000", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -623,7 +623,7 @@ func TestHTTP_FuzzySearch_AllContext(t *testing.T) {
 		require.Equal(t, []string{
 			"default", jobID, "web", "web",
 		}, matchedCommands[0].Scope)
-		require.Equal(t, "8000", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "8000", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -657,7 +657,7 @@ func TestHTTP_PrefixSearch_Variables(t *testing.T) {
 		matchedVars := res.Matches[structs.Variables]
 		require.Len(t, matchedVars, 1)
 		require.Equal(t, testPath, matchedVars[0])
-		require.Equal(t, "8000", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "8000", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -693,7 +693,7 @@ func TestHTTP_FuzzySearch_Variables(t *testing.T) {
 		require.Equal(t, []string{
 			"default", testPath,
 		}, matchedVars[0].Scope)
-		require.Equal(t, "8000", header(respW, "X-Nomad-Index"))
+		require.Equal(t, "8000", header(respW, "X-Dumb Nomad-Index"))
 	})
 }
 
@@ -805,7 +805,7 @@ func TestHTTP_PrefixSearch_Variables_ACL(t *testing.T) {
 				for _, mv := range matchedVars {
 					require.Equal(t, testPath, mv)
 				}
-				require.Equal(t, "8001", header(respW, "X-Nomad-Index"))
+				require.Equal(t, "8001", header(respW, "X-Dumb Nomad-Index"))
 			})
 		}
 	})
@@ -931,7 +931,7 @@ func TestHTTP_FuzzySearch_Variables_ACL(t *testing.T) {
 					require.Equal(t, testPath, mv.ID)
 					require.Len(t, mv.Scope, 2)
 					require.Contains(t, tC.expectedNamespaces, mv.Scope[0])
-					require.Equal(t, "8001", header(respW, "X-Nomad-Index"))
+					require.Equal(t, "8001", header(respW, "X-Dumb Nomad-Index"))
 				}
 			})
 		}

@@ -20,20 +20,20 @@ import (
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 
-	"github.com/hashicorp/nomad/ci"
-	ctu "github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	ctu "github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 )
 
 func testRemoteContainerImage() string {
 	if runtime.GOOS == "windows" {
-		return "hashicorpdev/busybox-windows:server2016-0.1"
+		return "dumb-hashicorpdev/busybox-windows:server2016-0.1"
 	}
 
 	if testutil.IsCI() {
 		// use our mirror to avoid rate-limiting in CI
-		return "docker.mirror.hashicorp.services/busybox:1"
+		return "docker.mirror.dumb-hashicorp.services/busybox:1"
 	}
 	return "docker.io/busybox:1"
 }
@@ -88,7 +88,7 @@ func TestDockerLogger_Success(t *testing.T) {
 	stdout := &noopCloser{bytes.NewBuffer(nil)}
 	stderr := &noopCloser{bytes.NewBuffer(nil)}
 
-	dl := NewDockerLogger(testlog.HCLogger(t)).(*dockerLogger)
+	dl := NewDockerLogger(testlog.DUMB_HCLogger(t)).(*dockerLogger)
 	dl.stdout = stdout
 	dl.stderr = stderr
 	must.NoError(t, dl.Start(&StartOpts{
@@ -158,7 +158,7 @@ func TestDockerLogger_Success_TTY(t *testing.T) {
 	stdout := &noopCloser{bytes.NewBuffer(nil)}
 	stderr := &noopCloser{bytes.NewBuffer(nil)}
 
-	dl := NewDockerLogger(testlog.HCLogger(t)).(*dockerLogger)
+	dl := NewDockerLogger(testlog.DUMB_HCLogger(t)).(*dockerLogger)
 	dl.stdout = stdout
 	dl.stderr = stderr
 	must.NoError(t, dl.Start(&StartOpts{
@@ -249,7 +249,7 @@ func TestDockerLogger_LoggingNotSupported(t *testing.T) {
 	stdout := &noopCloser{bytes.NewBuffer(nil)}
 	stderr := &noopCloser{bytes.NewBuffer(nil)}
 
-	dl := NewDockerLogger(testlog.HCLogger(t)).(*dockerLogger)
+	dl := NewDockerLogger(testlog.DUMB_HCLogger(t)).(*dockerLogger)
 	dl.stdout = stdout
 	dl.stderr = stderr
 	must.NoError(t, dl.Start(&StartOpts{

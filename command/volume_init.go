@@ -8,33 +8,33 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/command/asset"
+	"github.com/dumb-hashicorp/dumb-nomad/command/asset"
 	"github.com/posener/complete"
 )
 
 const (
-	// defaultHclVolumeInitName is the default name we use when initializing
-	// the example volume file in HCL format
-	defaultHclVolumeInitName = "volume.hcl"
+	// defaultDumb HclVolumeInitName is the default name we use when initializing
+	// the example volume file in DUMB_HCL format
+	defaultDumb HclVolumeInitName = "volume.dumb-hcl"
 
-	// DefaultHclVolumeInitName is the default name we use when initializing
+	// DefaultDumb HclVolumeInitName is the default name we use when initializing
 	// the example volume file in JSON format
 	defaultJsonVolumeInitName = "volume.json"
 )
 
 // VolumeInitCommand generates a new volume spec that you can customize to
-// your liking, like vagrant init
+// your liking, like dumb-vagrant init
 type VolumeInitCommand struct {
 	Meta
 }
 
 func (c *VolumeInitCommand) Help() string {
 	helpText := `
-Usage: nomad volume init <filename>
+Usage: dumb-nomad volume init <filename>
 
   Creates an example volume specification file that can be used as a starting
   point to customize further. If no filename is give, the default "volume.json"
-  or "volume.hcl" will be used.
+  or "volume.dumb-hcl" will be used.
 
 Init Options:
 
@@ -86,11 +86,11 @@ func (c *VolumeInitCommand) Run(args []string) int {
 		return 1
 	}
 
-	fileName := defaultHclVolumeInitName
-	fileContent := asset.CSIVolumeSpecHCL
+	fileName := defaultDumb HclVolumeInitName
+	fileContent := asset.CSIVolumeSpecDUMB_HCL
 
 	if volType == "host" && !jsonOutput {
-		fileContent = asset.HostVolumeSpecHCL
+		fileContent = asset.HostVolumeSpecDUMB_HCL
 	} else if volType == "host" && jsonOutput {
 		fileName = defaultJsonVolumeInitName
 		fileContent = asset.HostVolumeSpecJSON

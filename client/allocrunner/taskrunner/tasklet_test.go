@@ -12,11 +12,11 @@ import (
 	"testing"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/testtask"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testtask"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -37,7 +37,7 @@ func TestTasklet_Exec_HappyPath(t *testing.T) {
 		{[]byte("error9000"), 9000, nil},
 	}
 	exec := newScriptedExec(results)
-	tm := newTaskletMock(exec, testlog.HCLogger(t), time.Nanosecond, 3*time.Second)
+	tm := newTaskletMock(exec, testlog.DUMB_HCLogger(t), time.Nanosecond, 3*time.Second)
 
 	handle := tm.run()
 	defer handle.cancel() // just-in-case cleanup
@@ -63,7 +63,7 @@ func TestTasklet_Exec_Cancel(t *testing.T) {
 
 	exec, cancel := newBlockingScriptExec()
 	defer cancel()
-	tm := newTaskletMock(exec, testlog.HCLogger(t), time.Hour, time.Hour)
+	tm := newTaskletMock(exec, testlog.DUMB_HCLogger(t), time.Hour, time.Hour)
 
 	handle := tm.run()
 	<-exec.running  // wait until Exec is called
@@ -97,7 +97,7 @@ func TestTasklet_Exec_Timeout(t *testing.T) {
 	exec, cancel := newBlockingScriptExec()
 	defer cancel()
 
-	tm := newTaskletMock(exec, testlog.HCLogger(t), time.Hour, time.Second)
+	tm := newTaskletMock(exec, testlog.DUMB_HCLogger(t), time.Hour, time.Second)
 
 	handle := tm.run()
 	defer handle.cancel() // just-in-case cleanup
@@ -137,7 +137,7 @@ func TestTasklet_Exec_Shutdown(t *testing.T) {
 
 	exec := newSimpleExec(0, nil)
 	shutdown := make(chan struct{})
-	tm := newTaskletMock(exec, testlog.HCLogger(t), time.Hour, 3*time.Second)
+	tm := newTaskletMock(exec, testlog.DUMB_HCLogger(t), time.Hour, 3*time.Second)
 	tm.shutdownCh = shutdown
 	handle := tm.run()
 
@@ -167,7 +167,7 @@ type taskletMock struct {
 	calls chan execResult
 }
 
-func newTaskletMock(exec interfaces.ScriptExecutor, logger hclog.Logger, interval, timeout time.Duration) *taskletMock {
+func newTaskletMock(exec interfaces.ScriptExecutor, logger dumb-hclog.Logger, interval, timeout time.Duration) *taskletMock {
 	tm := &taskletMock{calls: make(chan execResult)}
 	tm.exec = exec
 	tm.logger = logger

@@ -10,14 +10,14 @@ import (
 	"time"
 
 	pb "github.com/golang/protobuf/proto"
-	"github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/ci"
-	//	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	//	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/msgpack"
 
@@ -101,7 +101,7 @@ func TestDriverPlugin_ConfigSchema(t *testing.T) {
 
 	mock := &MockDriverPlugin{
 		MockPlugin: &base.MockPlugin{
-			ConfigSchemaF: func() (*hclspec.Spec, error) {
+			ConfigSchemaF: func() (*dumb-hclspec.Spec, error) {
 				return base.TestSpec, nil
 			},
 		},
@@ -143,7 +143,7 @@ func TestDriverPlugin_SetConfig(t *testing.T) {
 					Name:              "mock_device",
 				}, nil
 			},
-			ConfigSchemaF: func() (*hclspec.Spec, error) {
+			ConfigSchemaF: func() (*dumb-hclspec.Spec, error) {
 				return base.TestSpec, nil
 			},
 			SetConfigF: func(cfg *base.Config) error {
@@ -191,11 +191,11 @@ func TestDriverPlugin_SetConfig(t *testing.T) {
 func makeTestPlugin(t *testing.T, mock DriverPlugin) DriverPlugin {
 	t.Helper()
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	if testing.Verbose() {
-		logger.SetLevel(hclog.Trace)
+		logger.SetLevel(dumb-hclog.Trace)
 	} else {
-		logger.SetLevel(hclog.Info)
+		logger.SetLevel(dumb-hclog.Info)
 	}
 
 	client, server := plugin.TestPluginGRPCConn(t, true, map[string]plugin.Plugin{

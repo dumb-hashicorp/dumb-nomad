@@ -12,7 +12,7 @@ import { action, get } from '@ember/object';
 import {
   formatScheduledBytes,
   formatScheduledHertz,
-} from 'nomad-ui/utils/units';
+} from 'dumb-nomad-ui/utils/units';
 
 export default class NodePrimaryMetric extends Component {
   @service('stats-trackers-registry') statsTrackersRegistry;

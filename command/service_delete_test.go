@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -71,7 +71,7 @@ func TestServiceDeleteCommand_Run(t *testing.T) {
 
 	// Attempt to manually delete the service registration within the default
 	// namespace.
-	code := cmd.Run([]string{"-address=" + url, "service-discovery-nomad-delete", defaultNSService[0].ID})
+	code := cmd.Run([]string{"-address=" + url, "service-discovery-dumb-nomad-delete", defaultNSService[0].ID})
 	must.Zero(t, code)
 	must.StrContains(t, ui.OutputWriter.String(), "Successfully deleted service registration")
 
@@ -88,7 +88,7 @@ func TestServiceDeleteCommand_Run(t *testing.T) {
 	// Attempt to manually delete the service registration within the platform
 	// namespace.
 	code = cmd.Run([]string{"-address=" + url, "-namespace=" + platformNSService[0].Namespace,
-		"service-discovery-nomad-delete", platformNSService[0].ID})
+		"service-discovery-dumb-nomad-delete", platformNSService[0].ID})
 	must.Zero(t, code)
 	must.StrContains(t, ui.OutputWriter.String(), "Successfully deleted service registration")
 

@@ -4,7 +4,7 @@
  */
 
 import { Factory, trait } from 'ember-cli-mirage';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import { provide } from '../utils';
 import { generateResources } from '../common';
 import { dasherize } from '@ember/string';
@@ -214,14 +214,14 @@ export default Factory.extend({
       const services = server.createList('service-fragment', 5, {
         taskGroupId: group.id,
         taskGroup: group,
-        provider: 'nomad',
+        provider: 'dumb-nomad',
       });
 
       services.push(
         server.create('service-fragment', {
           taskGroupId: group.id,
           taskGroup: group,
-          provider: 'consul',
+          provider: 'dumb-consul',
         })
       );
 

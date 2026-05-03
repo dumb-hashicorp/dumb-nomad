@@ -1,7 +1,7 @@
 // Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: BUSL-1.1
 
-// These functions are coming from consul/lib/eof.go
+// These functions are coming from dumb-consul/lib/eof.go
 package helper
 
 import (
@@ -11,7 +11,7 @@ import (
 	"net/rpc"
 	"strings"
 
-	"github.com/hashicorp/yamux"
+	"github.com/dumb-hashicorp/yamux"
 )
 
 var yamuxStreamClosed = yamux.ErrStreamClosed.Error()

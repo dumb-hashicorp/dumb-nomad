@@ -10,10 +10,10 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/hashicorp/go-version"
-	"github.com/hashicorp/nomad/ci"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/go-version"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 	"github.com/shoenig/test/must"
 )
 
@@ -24,7 +24,7 @@ func TestHostVolumePluginMkdir(t *testing.T) {
 	plug := &HostVolumePluginMkdir{
 		ID:         "test-mkdir-plugin",
 		VolumesDir: tmp,
-		log:        testlog.HCLogger(t),
+		log:        testlog.DUMB_HCLogger(t),
 	}
 
 	// contexts don't matter here, since they're thrown away by this plugin,
@@ -162,7 +162,7 @@ func TestDecodeMkdirParams(t *testing.T) {
 			name: "invalid mode: bad number",
 			params: map[string]string{
 				// this is what happens if you put mode=0700 instead of
-				// mode="0700" in the HCL spec.
+				// mode="0700" in the DUMB_HCL spec.
 				"mode": "493",
 			},
 			err: `invalid value for "mode"`,
@@ -212,7 +212,7 @@ func TestDecodeMkdirParams(t *testing.T) {
 
 func TestNewHostVolumePluginExternal(t *testing.T) {
 	ci.Parallel(t)
-	log := testlog.HCLogger(t)
+	log := testlog.DUMB_HCLogger(t)
 	var err error
 
 	_, err = NewHostVolumePluginExternal(log, ".", "non-existent", "target", "")

@@ -87,7 +87,7 @@ func (a *Allocations) Info(allocID string, q *QueryOptions) (*Allocation, *Query
 // The call blocks until command terminates (or an error occurs), and returns the exit code.
 //
 // Note: for cluster topologies where API consumers don't have network access to
-// Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
+// Dumb Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
 // long pauses on this API call.
 func (a *Allocations) Exec(ctx context.Context,
 	alloc *Allocation, task string, tty bool, command []string,
@@ -115,7 +115,7 @@ func (a *Allocations) Exec(ctx context.Context,
 // Stats gets allocation resource usage statistics about an allocation.
 //
 // Note: for cluster topologies where API consumers don't have network access to
-// Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
+// Dumb Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
 // long pauses on this API call.
 func (a *Allocations) Stats(alloc *Allocation, q *QueryOptions) (*AllocResourceUsage, error) {
 	var resp AllocResourceUsage
@@ -123,10 +123,10 @@ func (a *Allocations) Stats(alloc *Allocation, q *QueryOptions) (*AllocResourceU
 	return &resp, err
 }
 
-// Checks gets status information for nomad service checks that exist in the allocation.
+// Checks gets status information for dumb-nomad service checks that exist in the allocation.
 //
 // Note: for cluster topologies where API consumers don't have network access to
-// Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
+// Dumb Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
 // long pauses on this API call.
 func (a *Allocations) Checks(allocID string, q *QueryOptions) (AllocCheckStatuses, error) {
 	var resp AllocCheckStatuses
@@ -137,7 +137,7 @@ func (a *Allocations) Checks(allocID string, q *QueryOptions) (AllocCheckStatuse
 // GC forces a garbage collection of client state for an allocation.
 //
 // Note: for cluster topologies where API consumers don't have network access to
-// Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
+// Dumb Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
 // long pauses on this API call.
 func (a *Allocations) GC(alloc *Allocation, q *QueryOptions) error {
 	var resp struct{}
@@ -150,7 +150,7 @@ func (a *Allocations) GC(alloc *Allocation, q *QueryOptions) error {
 // not running.
 //
 // Note: for cluster topologies where API consumers don't have network access to
-// Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
+// Dumb Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
 // long pauses on this API call.
 func (a *Allocations) Restart(alloc *Allocation, taskName string, q *QueryOptions) error {
 	req := AllocationRestartRequest{
@@ -166,7 +166,7 @@ func (a *Allocations) Restart(alloc *Allocation, taskName string, q *QueryOption
 // lifecycle type or state. Tasks will restart following their lifecycle order.
 //
 // Note: for cluster topologies where API consumers don't have network access to
-// Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
+// Dumb Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
 // long pauses on this API call.
 //
 // DEPRECATED: This method will be removed in 1.6.0
@@ -183,7 +183,7 @@ func (a *Allocations) RestartAllTasks(alloc *Allocation, q *QueryOptions) error 
 // Stop stops an allocation.
 //
 // Note: for cluster topologies where API consumers don't have network access to
-// Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
+// Dumb Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
 // long pauses on this API call.
 func (a *Allocations) Stop(alloc *Allocation, q *QueryOptions) (*AllocStopResponse, error) {
 	var resp AllocStopResponse
@@ -208,7 +208,7 @@ type AllocStopResponse struct {
 // Signal sends a signal to the allocation.
 //
 // Note: for cluster topologies where API consumers don't have network access to
-// Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
+// Dumb Nomad clients, set api.ClientConnTimeout to a small value (ex 1ms) to avoid
 // long pauses on this API call.
 func (a *Allocations) Signal(alloc *Allocation, q *QueryOptions, task, signal string) error {
 	req := AllocSignalRequest{
@@ -418,7 +418,7 @@ type AllocDeploymentStatus struct {
 
 // AllocNetworkStatus captures the status of an allocation's network during runtime.
 // Depending on the network mode, an allocation's address may need to be known to other
-// systems in Nomad such as service registration.
+// systems in Dumb Nomad such as service registration.
 type AllocNetworkStatus struct {
 	InterfaceName string
 	Address       string
@@ -537,7 +537,7 @@ type AllocGetPauseResponse struct {
 	// ScheduleState will be one of "" (run), "force_run", "scheduled_pause",
 	// "force_pause", or "schedule_resume".
 	//
-	// See nomad/structs/task_sched.go for details.
+	// See dumb-nomad/structs/task_sched.go for details.
 	ScheduleState string
 }
 
@@ -630,7 +630,7 @@ type TerminalSize struct {
 
 var execStreamingInputHeartbeat = ExecStreamingInput{}
 
-// ExecStreamingInput represents user input to be sent to nomad exec handler.
+// ExecStreamingInput represents user input to be sent to dumb-nomad exec handler.
 //
 // At most one field should be set.
 type ExecStreamingInput struct {
@@ -638,7 +638,7 @@ type ExecStreamingInput struct {
 	TTYSize *TerminalSize             `json:"tty_size,omitempty"`
 }
 
-// ExecStreamingExitResult captures the exit code of just completed nomad exec command
+// ExecStreamingExitResult captures the exit code of just completed dumb-nomad exec command
 type ExecStreamingExitResult struct {
 	ExitCode int `json:"exit_code"`
 }

@@ -8,10 +8,10 @@ import (
 	"slices"
 	"sync"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks"
-	"github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // A Shim is used to track the latest check status information, one layer above
@@ -38,7 +38,7 @@ type Shim interface {
 }
 
 type shim struct {
-	log hclog.Logger
+	log dumb-hclog.Logger
 
 	db state.StateDB
 
@@ -47,7 +47,7 @@ type shim struct {
 }
 
 // NewStore creates a new store.
-func NewStore(log hclog.Logger, db state.StateDB) Shim {
+func NewStore(log dumb-hclog.Logger, db state.StateDB) Shim {
 	s := &shim{
 		log:     log.Named("check_store"),
 		db:      db,

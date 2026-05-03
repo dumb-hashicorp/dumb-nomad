@@ -14,7 +14,7 @@ import (
 	"slices"
 	"time"
 
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 	"golang.org/x/sys/windows/registry"
 	"golang.org/x/sys/windows/svc"
 	"golang.org/x/sys/windows/svc/eventlog"

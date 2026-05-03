@@ -14,11 +14,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-set/v3"
-	nomadapi "github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/v3/util3"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/jobspec2"
+	"github.com/dumb-hashicorp/go-set/v3"
+	dumb-nomadapi "github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/util3"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/jobspec2"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
@@ -27,7 +27,7 @@ import (
 type Submission struct {
 	t *testing.T
 
-	nomadClient *nomadapi.Client
+	dumb-nomadClient *dumb-nomadapi.Client
 
 	jobSpec       string
 	jobID         string
@@ -49,27 +49,27 @@ type Submission struct {
 	inNamespace  string
 	authToken    string
 
-	legacyConsulToken string
+	legacyDumb ConsulToken string
 }
 
-func (sub *Submission) queryOptions() *nomadapi.QueryOptions {
-	return &nomadapi.QueryOptions{
+func (sub *Submission) queryOptions() *dumb-nomadapi.QueryOptions {
+	return &dumb-nomadapi.QueryOptions{
 		Namespace: sub.inNamespace,
 		AuthToken: sub.authToken,
 	}
 }
 
-func (sub *Submission) Evals() []*nomadapi.Evaluation {
+func (sub *Submission) Evals() []*dumb-nomadapi.Evaluation {
 	sub.t.Helper()
-	evals, _, err := sub.nomadClient.Jobs().
+	evals, _, err := sub.dumb-nomadClient.Jobs().
 		Evaluations(sub.JobID(), sub.queryOptions())
 	must.NoError(sub.t, err)
 	return evals
 }
 
-func (sub *Submission) Allocs() []*nomadapi.AllocationListStub {
+func (sub *Submission) Allocs() []*dumb-nomadapi.AllocationListStub {
 	sub.t.Helper()
-	allocs, _, err := sub.nomadClient.Jobs().
+	allocs, _, err := sub.dumb-nomadClient.Jobs().
 		Allocations(sub.jobID, true, sub.queryOptions())
 	must.NoError(sub.t, err, must.Sprint("could not get allocs"))
 	return allocs
@@ -78,10 +78,10 @@ func (sub *Submission) Allocs() []*nomadapi.AllocationListStub {
 // WaitForDeploymentFunc monitors a given deployment with provided fn and
 // returns success if the fn returns true.
 func (sub *Submission) WaitForDeploymentFunc(ctx context.Context,
-	deploymentID string, fn func(*nomadapi.Deployment) bool) {
+	deploymentID string, fn func(*dumb-nomadapi.Deployment) bool) {
 	sub.t.Helper()
 
-	deploymentsApi := sub.nomadClient.Deployments()
+	deploymentsApi := sub.dumb-nomadClient.Deployments()
 	for {
 		select {
 		case <-ctx.Done():
@@ -102,7 +102,7 @@ func (sub *Submission) WaitForDeploymentFunc(ctx context.Context,
 type TaskEvents struct {
 	Group  string
 	Task   string
-	Events []*nomadapi.TaskEvent
+	Events []*dumb-nomadapi.TaskEvent
 }
 
 // AllocEvents returns a map of TaskEvents with alloc ID keys
@@ -147,7 +147,7 @@ func (sub *Submission) TaskLogsByAlloc(group, task string) map[string]Logs {
 
 	// get list of allocs for the job
 	queryOpts := sub.queryOptions()
-	jobsAPI := sub.nomadClient.Jobs()
+	jobsAPI := sub.dumb-nomadClient.Jobs()
 	stubs, _, err := jobsAPI.Allocations(sub.jobID, false, queryOpts)
 	must.NoError(sub.t, err, must.Sprintf("failed to query allocations for %s/%s", group, task))
 
@@ -162,11 +162,11 @@ func (sub *Submission) TaskLogsByAlloc(group, task string) map[string]Logs {
 
 func (sub *Submission) getTaskLogs(allocID, task string) Logs {
 	queryOpts := sub.queryOptions()
-	allocAPI := sub.nomadClient.Allocations()
+	allocAPI := sub.dumb-nomadClient.Allocations()
 	alloc, _, err := allocAPI.Info(allocID, queryOpts)
 	must.NoError(sub.t, err, must.Sprintf("failed to query allocation for %s", allocID))
 
-	fsAPI := sub.nomadClient.AllocFS()
+	fsAPI := sub.dumb-nomadClient.AllocFS()
 	read := func(path string) string {
 		var content string
 		f := func() error {
@@ -209,7 +209,7 @@ func (sub *Submission) JobID() string {
 // allocation of the given task group the test assertion fails.
 func (sub *Submission) AllocID(group string) string {
 	queryOpts := sub.queryOptions()
-	jobsAPI := sub.nomadClient.Jobs()
+	jobsAPI := sub.dumb-nomadClient.Jobs()
 	stubs, _, err := jobsAPI.Allocations(sub.jobID, false, queryOpts)
 	must.NoError(sub.t, err)
 
@@ -223,12 +223,12 @@ func (sub *Submission) AllocID(group string) string {
 	panic("bug")
 }
 
-func (sub *Submission) NodesApi() *nomadapi.Nodes {
-	return sub.nomadClient.Nodes()
+func (sub *Submission) NodesApi() *dumb-nomadapi.Nodes {
+	return sub.dumb-nomadClient.Nodes()
 }
 
-func (sub *Submission) DeploymentsApi() *nomadapi.Deployments {
-	return sub.nomadClient.Deployments()
+func (sub *Submission) DeploymentsApi() *dumb-nomadapi.Deployments {
+	return sub.dumb-nomadClient.Deployments()
 }
 
 func (sub *Submission) logf(msg string, args ...any) {
@@ -237,7 +237,7 @@ func (sub *Submission) logf(msg string, args ...any) {
 }
 
 func (sub *Submission) cleanup() {
-	if os.Getenv("NOMAD_TEST_SKIPCLEANUP") == "1" {
+	if os.Getenv("DUMB_NOMAD_TEST_SKIPCLEANUP") == "1" {
 		return
 	}
 	if sub.noCleanup {
@@ -246,15 +246,15 @@ func (sub *Submission) cleanup() {
 	sub.noCleanup = true // so this isn't attempted more than once
 
 	// deregister the job that was submitted
-	jobsAPI := sub.nomadClient.Jobs()
+	jobsAPI := sub.dumb-nomadClient.Jobs()
 	sub.logf("deregister job %q", sub.jobID)
-	_, _, err := jobsAPI.Deregister(sub.jobID, true, &nomadapi.WriteOptions{
+	_, _, err := jobsAPI.Deregister(sub.jobID, true, &dumb-nomadapi.WriteOptions{
 		Namespace: sub.inNamespace,
 	})
 	test.NoError(sub.t, err, test.Sprintf("failed to deregister job %q", sub.origJobID))
 
 	// force a system gc just in case
-	sysAPI := sub.nomadClient.System()
+	sysAPI := sub.dumb-nomadClient.System()
 	sub.logf("system gc")
 	err = sysAPI.GarbageCollect()
 	test.NoError(sub.t, err, test.Sprint("failed to gc"))
@@ -336,18 +336,18 @@ func (sub *Submission) run() {
 		job.Type = pointer.Of("service")
 	}
 
-	registerOpts := &nomadapi.RegisterOptions{
-		Submission: &nomadapi.JobSubmission{
+	registerOpts := &dumb-nomadapi.RegisterOptions{
+		Submission: &dumb-nomadapi.JobSubmission{
 			Source:    sub.jobSpec,
 			Variables: sub.vars.String(),
 		},
 	}
-	writeOpts := &nomadapi.WriteOptions{
+	writeOpts := &dumb-nomadapi.WriteOptions{
 		Namespace: sub.inNamespace,
 		AuthToken: sub.authToken,
 	}
 
-	jobsAPI := sub.nomadClient.Jobs()
+	jobsAPI := sub.dumb-nomadClient.Jobs()
 	sub.logf("register (%s) job: %q", *job.Type, sub.jobID)
 	regResp, _, err := jobsAPI.RegisterOpts(job, registerOpts, writeOpts)
 	must.NoError(sub.t, err)
@@ -370,7 +370,7 @@ func (sub *Submission) run() {
 
 	evalID := regResp.EvalID
 
-	queryOpts := &nomadapi.QueryOptions{
+	queryOpts := &dumb-nomadapi.QueryOptions{
 		Namespace: sub.inNamespace,
 		AuthToken: sub.authToken,
 	}
@@ -380,7 +380,7 @@ func (sub *Submission) run() {
 	defer cancel()
 
 	// we need to go through evals until we find the deployment
-	evalAPI := sub.nomadClient.Evaluations()
+	evalAPI := sub.dumb-nomadClient.Evaluations()
 
 	// start eval lookup loop
 	var deploymentID string
@@ -400,13 +400,13 @@ EVAL:
 
 		switch eval.Status {
 
-		case nomadapi.EvalStatusComplete:
+		case dumb-nomadapi.EvalStatusComplete:
 			deploymentID = eval.DeploymentID
 			break EVAL
-		case nomadapi.EvalStatusFailed:
+		case dumb-nomadapi.EvalStatusFailed:
 			must.Unreachable(sub.t, must.Sprintf("eval failed: %s, triggered by: %s, failed allocs: %d",
 				eval.StatusDescription, eval.TriggeredBy, len(eval.FailedTGAllocs)))
-		case nomadapi.EvalStatusCancelled:
+		case dumb-nomadapi.EvalStatusCancelled:
 			sub.logf("dumping information about a cancelled evaluation")
 			sub.logf("\tJobID: %s", eval.JobID)
 			sub.logf("\tNodeID: %s", eval.NodeID)
@@ -442,7 +442,7 @@ EVAL:
 	switch *job.Type {
 	case "service", "system":
 		// need to monitor the deployment until it is complete
-		depAPI := sub.nomadClient.Deployments()
+		depAPI := sub.dumb-nomadClient.Deployments()
 	DEPLOY:
 		for {
 
@@ -459,22 +459,22 @@ EVAL:
 			sub.logf("checking deployment: %s, status: %s", dep.ID, dep.Status)
 
 			switch dep.Status {
-			case nomadapi.DeploymentStatusBlocked:
+			case dumb-nomadapi.DeploymentStatusBlocked:
 				must.Unreachable(sub.t, must.Sprint("deployment is blocked"))
-			case nomadapi.DeploymentStatusCancelled:
+			case dumb-nomadapi.DeploymentStatusCancelled:
 				must.Unreachable(sub.t, must.Sprint("deployment is cancelled"))
-			case nomadapi.DeploymentStatusFailed:
+			case dumb-nomadapi.DeploymentStatusFailed:
 				must.Unreachable(sub.t, must.Sprint("deployment is failed"))
-			case nomadapi.DeploymentStatusPaused:
+			case dumb-nomadapi.DeploymentStatusPaused:
 				must.Unreachable(sub.t, must.Sprint("deployment is paused"))
-			case nomadapi.DeploymentStatusPending:
+			case dumb-nomadapi.DeploymentStatusPending:
 				break
-			case nomadapi.DeploymentStatusRunning:
+			case dumb-nomadapi.DeploymentStatusRunning:
 				break
-			case nomadapi.DeploymentStatusSuccessful:
+			case dumb-nomadapi.DeploymentStatusSuccessful:
 				sub.logf("deployment %s was a success", dep.ID)
 				break DEPLOY
-			case nomadapi.DeploymentStatusUnblocking:
+			case dumb-nomadapi.DeploymentStatusUnblocking:
 				must.Unreachable(sub.t, must.Sprint("deployment is unblocking"))
 			default:
 				break
@@ -489,7 +489,7 @@ EVAL:
 
 func (sub *Submission) waitAlloc(group, id string) {
 	queryOpts := sub.queryOptions()
-	allocAPI := sub.nomadClient.Allocations()
+	allocAPI := sub.dumb-nomadClient.Allocations()
 
 	// Set up a context with our submission timeout.
 	ctx, cancel := context.WithTimeout(context.Background(), sub.timeout)
@@ -511,15 +511,15 @@ ALLOCATION:
 		status := latest.ClientStatus
 		sub.logf("wait for %q allocation %s, status: %s", group, id, status)
 		switch status {
-		case nomadapi.AllocClientStatusLost:
+		case dumb-nomadapi.AllocClientStatusLost:
 			must.Unreachable(sub.t, must.Sprintf("group %q allocation %s lost", group, id))
-		case nomadapi.AllocClientStatusFailed:
+		case dumb-nomadapi.AllocClientStatusFailed:
 			must.Unreachable(sub.t, must.Sprintf("group %q allocation %s failed", group, id))
-		case nomadapi.AllocClientStatusPending:
+		case dumb-nomadapi.AllocClientStatusPending:
 			break
-		case nomadapi.AllocClientStatusRunning:
+		case dumb-nomadapi.AllocClientStatusRunning:
 			break
-		case nomadapi.AllocClientStatusComplete:
+		case dumb-nomadapi.AllocClientStatusComplete:
 			break ALLOCATION
 		}
 
@@ -529,7 +529,7 @@ ALLOCATION:
 
 func (sub *Submission) waits() {
 	queryOpts := sub.queryOptions()
-	jobsAPI := sub.nomadClient.Jobs()
+	jobsAPI := sub.dumb-nomadClient.Jobs()
 	allocations, _, err := jobsAPI.Allocations(sub.jobID, false, queryOpts)
 	must.NoError(sub.t, err)
 
@@ -544,9 +544,9 @@ func (sub *Submission) waits() {
 }
 
 func (sub *Submission) setClient() {
-	nomadClient, nomadErr := nomadapi.NewClient(nomadapi.DefaultConfig())
-	must.NoError(sub.t, nomadErr, must.Sprint("failed to create nomad api client"))
-	sub.nomadClient = nomadClient
+	dumb-nomadClient, dumb-nomadErr := dumb-nomadapi.NewClient(dumb-nomadapi.DefaultConfig())
+	must.NoError(sub.t, dumb-nomadErr, must.Sprint("failed to create dumb-nomad api client"))
+	sub.dumb-nomadClient = dumb-nomadClient
 }
 
 func initialize(t *testing.T, filename string) *Submission {
@@ -612,7 +612,7 @@ func Verbose(on bool) Option {
 	}
 }
 
-// Var sets a HCL variable.
+// Var sets a DUMB_HCL variable.
 func Var(key, value string) Option {
 	return func(sub *Submission) {
 		sub.vars[key] = value
@@ -700,8 +700,8 @@ func SkipDeploymentHealthy() Option {
 	panic("not yet implemented")
 }
 
-func LegacyConsulToken(token string) Option {
+func LegacyDumb ConsulToken(token string) Option {
 	return func(c *Submission) {
-		c.legacyConsulToken = token
+		c.legacyDumb ConsulToken = token
 	}
 }

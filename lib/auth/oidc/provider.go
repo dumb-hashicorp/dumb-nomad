@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/cap/oidc"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/cap/oidc"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // providerConfig returns the OIDC provider configuration for an OIDC
@@ -153,7 +153,7 @@ func (c *ProviderCache) Delete(name string) {
 }
 
 // Shutdown stops any long-lived cache process and informs each OIDC provider
-// that they are done. This should be called whenever the Nomad server is
+// that they are done. This should be called whenever the Dumb Nomad server is
 // shutting down.
 func (c *ProviderCache) Shutdown() {
 	c.cancel()
@@ -173,7 +173,7 @@ func (c *ProviderCache) runCleanupLoop(ctx context.Context) {
 		case <-ctx.Done():
 			return
 
-		// We could be more clever and do a per-entry expiry but Nomad won't
+		// We could be more clever and do a per-entry expiry but Dumb Nomad won't
 		// have more than one ot two auth methods configured, therefore it's
 		// not worth the added complexity.
 		case <-ticker.C:

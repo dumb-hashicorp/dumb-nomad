@@ -4,7 +4,7 @@
 // This package provides a mechanism to build the Docker driver plugin as an
 // external binary. The binary has two entry points; the docker driver and the
 // docker plugin's logging child binary. An example of using this is `go build
-// -o </nomad/plugin/dir/docker`. When Nomad agent is then launched, the
+// -o </dumb-nomad/plugin/dir/docker`. When Dumb Nomad agent is then launched, the
 // external docker plugin will be used.
 package main
 
@@ -12,12 +12,12 @@ import (
 	"context"
 	"os"
 
-	log "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/drivers/docker"
-	"github.com/hashicorp/nomad/drivers/docker/docklog"
-	"github.com/hashicorp/nomad/plugins"
-	"github.com/hashicorp/nomad/plugins/base"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/docker"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/docker/docklog"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
 )
 
 func main() {

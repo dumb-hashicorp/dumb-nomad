@@ -9,18 +9,18 @@ import (
 	"testing"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/plugins/base"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
 	"github.com/stretchr/testify/require"
 )
 
 func harness(t *testing.T) (*SingletonLoader, *loader.MockCatalog) {
 	c := &loader.MockCatalog{}
-	s := NewSingletonLoader(testlog.HCLogger(t), c)
+	s := NewSingletonLoader(testlog.DUMB_HCLogger(t), c)
 	return s, c
 }
 
@@ -54,7 +54,7 @@ func TestSingleton_Dispense(t *testing.T) {
 			<-waitCh
 
 			// Retrieve the plugin
-			p1, err := s.Dispense("foo", "bar", nil, testlog.HCLogger(t))
+			p1, err := s.Dispense("foo", "bar", nil, testlog.DUMB_HCLogger(t))
 			require.NotNil(p1)
 			require.NoError(err)
 			i1 := p1.Plugin()
@@ -92,7 +92,7 @@ func TestSingleton_Dispense_Exit_Dispense(t *testing.T) {
 	}
 
 	// Retrieve the plugin
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	p1, err := s.Dispense("foo", "bar", nil, logger)
 	require.NotNil(p1)
 	require.NoError(err)
@@ -148,7 +148,7 @@ func TestSingleton_DispenseError_Dispense(t *testing.T) {
 	c.DispenseF = bad
 
 	// Retrieve the plugin
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	p1, err := s.Dispense("foo", "bar", nil, logger)
 	require.Nil(p1)
 	require.Error(err)
@@ -188,7 +188,7 @@ func TestSingleton_ReattachError_Dispense(t *testing.T) {
 	}
 
 	// Retrieve the plugin
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	p1, err := s.Reattach("foo", "bar", nil)
 	require.Nil(p1)
 	require.Error(err)
@@ -228,7 +228,7 @@ func TestSingleton_Reattach_Dispense(t *testing.T) {
 	}
 
 	// Retrieve the plugin
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	p1, err := s.Reattach("foo", "bar", nil)
 	require.NotNil(p1)
 	require.NoError(err)

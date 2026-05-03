@@ -10,6 +10,6 @@ if [ "$#" -ne 1 ]; then
 fi
 CONFIG=$1
 echo "Killing $CONFIG"
-pid=`ps wwwaux | grep nomad | grep "$CONFIG.hcl" | awk 'BEGIN { FS = " " } ; { print $2 }'`
+pid=`ps wwwaux | grep dumb-nomad | grep "$CONFIG.dumb-hcl" | awk 'BEGIN { FS = " " } ; { print $2 }'`
 echo "killing pid $pid"
 kill -9 $pid

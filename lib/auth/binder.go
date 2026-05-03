@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/go-bexpr"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-memdb"
-	"github.com/hashicorp/hil"
-	"github.com/hashicorp/hil/ast"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-bexpr"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-memdb"
+	"github.com/dumb-hashicorp/hil"
+	"github.com/dumb-hashicorp/hil/ast"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // Binder is responsible for collecting the ACL roles and policies to be
@@ -54,7 +54,7 @@ func (b *Bindings) None() bool {
 }
 
 // Bind collects the ACL roles and policies to be assigned to the created token.
-func (b *Binder) Bind(vlog hclog.Logger, authMethod *structs.ACLAuthMethod, identity *Identity) (*Bindings, error) {
+func (b *Binder) Bind(vlog dumb-hclog.Logger, authMethod *structs.ACLAuthMethod, identity *Identity) (*Bindings, error) {
 	var (
 		bindings Bindings
 		err      error

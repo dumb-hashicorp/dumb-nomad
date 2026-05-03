@@ -11,21 +11,21 @@ import (
 // Resources encapsulates the required resources of
 // a given task or task group.
 type Resources struct {
-	CPU         *int               `hcl:"cpu,optional"`
-	Cores       *int               `hcl:"cores,optional"`
-	MemoryMB    *int               `mapstructure:"memory" hcl:"memory,optional"`
-	MemoryMaxMB *int               `mapstructure:"memory_max" hcl:"memory_max,optional"`
-	DiskMB      *int               `mapstructure:"disk" hcl:"disk,optional"`
-	Networks    []*NetworkResource `hcl:"network,block"`
-	Devices     []*RequestedDevice `hcl:"device,block"`
-	NUMA        *NUMAResource      `hcl:"numa,block"`
-	SecretsMB   *int               `mapstructure:"secrets" hcl:"secrets,optional"`
+	CPU         *int               `dumb-hcl:"cpu,optional"`
+	Cores       *int               `dumb-hcl:"cores,optional"`
+	MemoryMB    *int               `mapstructure:"memory" dumb-hcl:"memory,optional"`
+	MemoryMaxMB *int               `mapstructure:"memory_max" dumb-hcl:"memory_max,optional"`
+	DiskMB      *int               `mapstructure:"disk" dumb-hcl:"disk,optional"`
+	Networks    []*NetworkResource `dumb-hcl:"network,block"`
+	Devices     []*RequestedDevice `dumb-hcl:"device,block"`
+	NUMA        *NUMAResource      `dumb-hcl:"numa,block"`
+	SecretsMB   *int               `mapstructure:"secrets" dumb-hcl:"secrets,optional"`
 
 	// COMPAT(0.10)
-	// XXX Deprecated. Please do not use. The field will be removed in Nomad
+	// XXX Deprecated. Please do not use. The field will be removed in Dumb Nomad
 	// 0.10 and is only being kept to allow any references to be removed before
 	// then.
-	IOPS *int `hcl:"iops,optional"`
+	IOPS *int `dumb-hcl:"iops,optional"`
 }
 
 // Canonicalize will supply missing values in the cases
@@ -59,7 +59,7 @@ func (r *Resources) Canonicalize() {
 
 // DefaultResources is a small resources object that contains the
 // default resources requests that we will provide to an object.
-// ---  THIS FUNCTION IS REPLICATED IN nomad/structs/structs.go
+// ---  THIS FUNCTION IS REPLICATED IN dumb-nomad/structs/structs.go
 // and should be kept in sync.
 func DefaultResources() *Resources {
 	return &Resources{
@@ -73,7 +73,7 @@ func DefaultResources() *Resources {
 // absolute minimum resources that we will provide to an object.
 // This should not be confused with the defaults which are
 // provided in DefaultResources() ---  THIS LOGIC IS REPLICATED
-// IN nomad/structs/structs.go and should be kept in sync.
+// IN dumb-nomad/structs/structs.go and should be kept in sync.
 func MinResources() *Resources {
 	return &Resources{
 		CPU:      pointerOf(1),
@@ -112,14 +112,14 @@ func (r *Resources) Merge(other *Resources) {
 
 // NUMAResource contains the NUMA affinity request for scheduling purposes.
 //
-// Applies only to Nomad Enterprise.
+// Applies only to Dumb Nomad Enterprise.
 type NUMAResource struct {
 	// Affinity must be one of "none", "prefer", "require".
-	Affinity string `hcl:"affinity,optional"`
+	Affinity string `dumb-hcl:"affinity,optional"`
 
 	// Devices is the subset of devices requested by the task that must share
 	// the same numa node, along with the tasks reserved cpu cores.
-	Devices []string `hcl:"devices,optional"`
+	Devices []string `dumb-hcl:"devices,optional"`
 }
 
 func (n *NUMAResource) Copy() *NUMAResource {
@@ -145,46 +145,46 @@ func (n *NUMAResource) Canonicalize() {
 }
 
 type Port struct {
-	Label           string `hcl:",label"`
-	Value           int    `hcl:"static,optional"`
-	To              int    `hcl:"to,optional"`
-	HostNetwork     string `hcl:"host_network,optional"`
-	IgnoreCollision bool   `hcl:"ignore_collision,optional"`
+	Label           string `dumb-hcl:",label"`
+	Value           int    `dumb-hcl:"static,optional"`
+	To              int    `dumb-hcl:"to,optional"`
+	HostNetwork     string `dumb-hcl:"host_network,optional"`
+	IgnoreCollision bool   `dumb-hcl:"ignore_collision,optional"`
 }
 
 type DNSConfig struct {
-	Servers  []string `mapstructure:"servers" hcl:"servers,optional"`
-	Searches []string `mapstructure:"searches" hcl:"searches,optional"`
-	Options  []string `mapstructure:"options" hcl:"options,optional"`
+	Servers  []string `mapstructure:"servers" dumb-hcl:"servers,optional"`
+	Searches []string `mapstructure:"searches" dumb-hcl:"searches,optional"`
+	Options  []string `mapstructure:"options" dumb-hcl:"options,optional"`
 }
 type CNIConfig struct {
-	Args map[string]string `hcl:"args,optional"`
+	Args map[string]string `dumb-hcl:"args,optional"`
 }
 
 // NetworkResource is used to describe required network
 // resources of a given task.
 type NetworkResource struct {
-	Mode          string     `hcl:"mode,optional"`
-	Device        string     `hcl:"device,optional"`
-	CIDR          string     `hcl:"cidr,optional"`
-	IP            string     `hcl:"ip,optional"`
-	DNS           *DNSConfig `hcl:"dns,block"`
-	ReservedPorts []Port     `hcl:"reserved_ports,block"`
-	DynamicPorts  []Port     `hcl:"port,block"`
-	Hostname      string     `hcl:"hostname,optional"`
+	Mode          string     `dumb-hcl:"mode,optional"`
+	Device        string     `dumb-hcl:"device,optional"`
+	CIDR          string     `dumb-hcl:"cidr,optional"`
+	IP            string     `dumb-hcl:"ip,optional"`
+	DNS           *DNSConfig `dumb-hcl:"dns,block"`
+	ReservedPorts []Port     `dumb-hcl:"reserved_ports,block"`
+	DynamicPorts  []Port     `dumb-hcl:"port,block"`
+	Hostname      string     `dumb-hcl:"hostname,optional"`
 
 	// COMPAT(0.13)
-	// XXX Deprecated. Please do not use. The field will be removed in Nomad
+	// XXX Deprecated. Please do not use. The field will be removed in Dumb Nomad
 	// 0.13 and is only being kept to allow any references to be removed before
 	// then.
-	MBits *int       `hcl:"mbits,optional"`
-	CNI   *CNIConfig `hcl:"cni,block"`
+	MBits *int       `dumb-hcl:"mbits,optional"`
+	CNI   *CNIConfig `dumb-hcl:"cni,block"`
 }
 
 // Megabits should not be used.
 //
 // COMPAT(0.13)
-// Deprecated. Please do not use. The method will be removed in Nomad
+// Deprecated. Please do not use. The method will be removed in Dumb Nomad
 // 0.13 and is only being kept to allow any references to be removed before
 // then.
 func (n *NetworkResource) Megabits() int {
@@ -307,18 +307,18 @@ type RequestedDevice struct {
 	// * "gpu"
 	// * "nvidia/gpu"
 	// * "nvidia/gpu/GTX2080Ti"
-	Name string `hcl:",label"`
+	Name string `dumb-hcl:",label"`
 
 	// Count is the number of requested devices
-	Count *uint64 `hcl:"count,optional"`
+	Count *uint64 `dumb-hcl:"count,optional"`
 
 	// Constraints are a set of constraints to apply when selecting the device
 	// to use.
-	Constraints []*Constraint `hcl:"constraint,block"`
+	Constraints []*Constraint `dumb-hcl:"constraint,block"`
 
 	// Affinities are a set of affinites to apply when selecting the device
 	// to use.
-	Affinities []*Affinity `hcl:"affinity,block"`
+	Affinities []*Affinity `dumb-hcl:"affinity,block"`
 }
 
 func (d *RequestedDevice) Canonicalize() {

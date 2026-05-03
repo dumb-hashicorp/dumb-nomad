@@ -10,5 +10,5 @@ export default function setPolicy(policy) {
   clientToken.save();
 
   window.localStorage.clear();
-  window.localStorage.nomadTokenSecret = clientToken.secretId;
+  window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 }

@@ -10,15 +10,15 @@ import (
 	"sort"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-memdb"
-	"github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/scheduler/feasible"
-	"github.com/hashicorp/nomad/scheduler/reconciler"
-	sstructs "github.com/hashicorp/nomad/scheduler/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-memdb"
+	"github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/feasible"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/reconciler"
+	sstructs "github.com/dumb-hashicorp/dumb-nomad/scheduler/structs"
 )
 
 const (
@@ -622,7 +622,7 @@ func (s *GenericScheduler) computePlacements(
 				// create a new allocation with the same name. We need to
 				// generate a new index and use this. The log message is useful
 				// for debugging and development, but could be removed in a
-				// future version of Nomad.
+				// future version of Dumb Nomad.
 				if taskGroupNameIndex.IsDuplicate(allocIndex) {
 					oldAllocName := newAllocName
 					newAllocName = taskGroupNameIndex.Next(1)[0]

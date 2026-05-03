@@ -13,11 +13,11 @@ import (
 	"time"
 
 	"github.com/go-jose/go-jose/v3"
-	"github.com/hashicorp/nomad/nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
 	"github.com/shoenig/test/must"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 func TestHTTP_Keyring_CRUD(t *testing.T) {
@@ -50,7 +50,7 @@ func TestHTTP_Keyring_CRUD(t *testing.T) {
 		must.NoError(t, err)
 		obj, err = s.Server.KeyringRequest(respW, req)
 		must.NoError(t, err)
-		must.NotEq(t, "", respW.HeaderMap.Get("X-Nomad-Index"))
+		must.NotEq(t, "", respW.HeaderMap.Get("X-Dumb Nomad-Index"))
 		rotateResp := obj.(structs.KeyringRotateRootKeyResponse)
 		must.NotNil(t, rotateResp.Key)
 		must.True(t, rotateResp.Key.IsActive())
@@ -64,7 +64,7 @@ func TestHTTP_Keyring_CRUD(t *testing.T) {
 		must.NoError(t, err)
 		obj, err = s.Server.KeyringRequest(respW, req)
 		must.NoError(t, err)
-		must.NotEq(t, "", respW.HeaderMap.Get("X-Nomad-Index"))
+		must.NotEq(t, "", respW.HeaderMap.Get("X-Dumb Nomad-Index"))
 		rotateResp = obj.(structs.KeyringRotateRootKeyResponse)
 		must.NotNil(t, rotateResp.Key)
 		must.True(t, rotateResp.Key.IsPrepublished())
@@ -180,7 +180,7 @@ func TestHTTP_Keyring_OIDCDisco_Enabled(t *testing.T) {
 	ci.Parallel(t)
 
 	// Set OIDCIssuer to a valid looking (but fake) issuer
-	const testIssuer = "https://oidc.test.nomadproject.io"
+	const testIssuer = "https://oidc.test.dumb-nomadproject.io"
 
 	cb := func(c *Config) {
 		c.Server.OIDCIssuer = testIssuer

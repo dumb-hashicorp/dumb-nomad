@@ -11,9 +11,9 @@ import (
 	"sync"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/fifo"
-	"github.com/hashicorp/nomad/client/logmon/logging"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/fifo"
+	"github.com/dumb-hashicorp/dumb-nomad/client/logmon/logging"
 )
 
 const (
@@ -51,14 +51,14 @@ type LogMon interface {
 	Stop() error
 }
 
-func NewLogMon(logger hclog.Logger) LogMon {
+func NewLogMon(logger dumb-hclog.Logger) LogMon {
 	return &logmonImpl{
 		logger: logger,
 	}
 }
 
 type logmonImpl struct {
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 	tl     *TaskLogger
 	lock   sync.Mutex
 }
@@ -138,7 +138,7 @@ func (tl *TaskLogger) Close() {
 	wg.Wait()
 }
 
-func NewTaskLogger(cfg *LogConfig, logger hclog.Logger) (*TaskLogger, error) {
+func NewTaskLogger(cfg *LogConfig, logger dumb-hclog.Logger) (*TaskLogger, error) {
 	tl := &TaskLogger{config: cfg}
 
 	logFileSize := int64(cfg.MaxFileSizeMB * 1024 * 1024)
@@ -179,7 +179,7 @@ type logRotatorWrapper struct {
 	fifoPath          string
 	rotatorWriter     io.WriteCloser
 	hasFinishedCopied chan struct{}
-	logger            hclog.Logger
+	logger            dumb-hclog.Logger
 
 	processOutReader io.ReadCloser
 	openCompleted    chan struct{}
@@ -197,7 +197,7 @@ func (l *logRotatorWrapper) isRunning() bool {
 
 // newLogRotatorWrapper takes a rotator and returns a wrapper that has the
 // processOutWriter to attach to the stdout or stderr of a process.
-func newLogRotatorWrapper(path string, logger hclog.Logger, rotator io.WriteCloser) (*logRotatorWrapper, error) {
+func newLogRotatorWrapper(path string, logger dumb-hclog.Logger, rotator io.WriteCloser) (*logRotatorWrapper, error) {
 	logger.Debug("opening fifo", "path", path)
 
 	var openFn func() (io.ReadCloser, error)

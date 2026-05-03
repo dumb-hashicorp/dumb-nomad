@@ -10,15 +10,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	trstate "github.com/hashicorp/nomad/client/allocrunner/taskrunner/state"
-	dmstate "github.com/hashicorp/nomad/client/devicemanager/state"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	driverstate "github.com/hashicorp/nomad/client/pluginmanager/drivermanager/state"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	trstate "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/state"
+	dmstate "github.com/dumb-hashicorp/dumb-nomad/client/devicemanager/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	driverstate "github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager/state"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/kr/pretty"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
@@ -35,7 +35,7 @@ var (
 func setupBoltStateDB(t *testing.T) *BoltStateDB {
 	dir := t.TempDir()
 
-	db, err := NewBoltStateDB(testlog.HCLogger(t), dir)
+	db, err := NewBoltStateDB(testlog.DUMB_HCLogger(t), dir)
 	if err != nil {
 		if rmErr := os.RemoveAll(dir); rmErr != nil {
 			t.Logf("error removing boltdb dir: %v", rmErr)
@@ -55,7 +55,7 @@ func setupBoltStateDB(t *testing.T) *BoltStateDB {
 func testDB(t *testing.T, f func(*testing.T, StateDB)) {
 	dbs := []StateDB{
 		setupBoltStateDB(t),
-		NewMemDB(testlog.HCLogger(t)),
+		NewMemDB(testlog.DUMB_HCLogger(t)),
 	}
 
 	for _, db := range dbs {
@@ -438,7 +438,7 @@ func TestStateDB_CheckResult(t *testing.T) {
 			ID:        structs.CheckID(id),
 			Mode:      "healthiness",
 			Status:    "passing",
-			Output:    "nomad: tcp ok",
+			Output:    "dumb-nomad: tcp ok",
 			Timestamp: 1,
 			Group:     "group",
 			Task:      "task",
@@ -511,26 +511,26 @@ func TestStateDB_NodeIdentity(t *testing.T) {
 	})
 }
 
-func TestStateDB_ConsulACLToken(t *testing.T) {
+func TestStateDB_Dumb ConsulACLToken(t *testing.T) {
 	ci.Parallel(t)
 
 	testDB(t, func(t *testing.T, db StateDB) {
 		alloc1 := mock.Alloc()
 
 		must.NoError(t, db.PutAllocation(alloc1))
-		tokens, err := db.GetAllocConsulACLTokens(alloc1.ID)
+		tokens, err := db.GetAllocDumb ConsulACLTokens(alloc1.ID)
 		must.NoError(t, err)
 		must.Eq(t, nil, tokens)
 
-		fakeToken := &cstructs.ConsulACLToken{
+		fakeToken := &cstructs.Dumb ConsulACLToken{
 			Cluster:  "fake cluster",
 			TokenID:  "workloadID",
 			ACLToken: "token",
 		}
 
-		must.NoError(t, db.PutAllocConsulACLTokens(alloc1.ID, []*cstructs.ConsulACLToken{fakeToken}))
+		must.NoError(t, db.PutAllocDumb ConsulACLTokens(alloc1.ID, []*cstructs.Dumb ConsulACLToken{fakeToken}))
 
-		tokens, err = db.GetAllocConsulACLTokens(alloc1.ID)
+		tokens, err = db.GetAllocDumb ConsulACLTokens(alloc1.ID)
 		must.NoError(t, err)
 		must.One(t, len(tokens))
 		must.Eq(t, fakeToken, tokens[0])

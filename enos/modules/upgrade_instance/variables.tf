@@ -1,13 +1,13 @@
 # Copyright IBM Corp. 2015, 2025
 # SPDX-License-Identifier: BUSL-1.1
 
-variable "nomad_addr" {
-  description = "The Nomad API HTTP address of the instance being upgraded."
+variable "dumb-nomad_addr" {
+  description = "The Dumb Nomad API HTTP address of the instance being upgraded."
   type        = string
   default     = "http://localhost:4646"
 }
 
-variable "nomad_token" {
+variable "dumb-nomad_token" {
   description = "The Secret ID of an ACL token to make requests with, for ACL-enabled clusters."
   type        = string
 }
@@ -35,7 +35,7 @@ variable "artifactory_release" {
     url      = string
     sha256   = string
   })
-  description = "The Artifactory release information to install Nomad artifacts from Artifactory"
+  description = "The Artifactory release information to install Dumb Nomad artifacts from Artifactory"
   default     = null
 }
 
@@ -45,6 +45,6 @@ variable "tls" {
     cert_file = string
     key_file  = string
   })
-  description = "Paths to tls keys and certificates for Nomad CLI"
+  description = "Paths to tls keys and certificates for Dumb Nomad CLI"
   default     = null
 }

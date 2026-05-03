@@ -6,8 +6,8 @@ package hostvolumemanager
 import (
 	"context"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // this file is for fingerprinting *volumes*
@@ -25,7 +25,7 @@ type VolumeMap map[string]*structs.ClientHostVolumeConfig
 //
 // Since it may mutate the map, the caller should make a copy
 // or acquire a lock as appropriate for their context.
-func UpdateVolumeMap(log hclog.Logger, volumes VolumeMap, name string, vol *structs.ClientHostVolumeConfig) (changed bool) {
+func UpdateVolumeMap(log dumb-hclog.Logger, volumes VolumeMap, name string, vol *structs.ClientHostVolumeConfig) (changed bool) {
 	current, exists := volumes[name]
 	if vol == nil {
 		if exists {

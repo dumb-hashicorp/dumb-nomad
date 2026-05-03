@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -22,7 +22,7 @@ type PluginStatusCommand struct {
 
 func (c *PluginStatusCommand) Help() string {
 	helpText := `
-Usage nomad plugin status [options] <plugin>
+Usage dumb-nomad plugin status [options] <plugin>
 
   Display status information about a plugin. If no plugin id is given,
   a list of all plugins will be displayed.

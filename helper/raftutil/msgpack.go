@@ -9,8 +9,8 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // fixTime converts any suspected time.Time binary string representation to time.Time

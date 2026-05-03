@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import { generateNetworks, generatePorts } from '../common';
 
 const genResources = (CPU, Memory) => ({
@@ -15,7 +15,7 @@ const genResources = (CPU, Memory) => ({
 });
 
 export function topoSmall(server) {
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
   server.createList('node-pool', 4);
   server.createList('node', 12, {
     datacenter: 'dc1',
@@ -52,7 +52,7 @@ export function topoSmall(server) {
 }
 
 export function topoMedium(server) {
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
   server.createList('node', 10, {
     datacenter: 'us-west-1',
     status: 'ready',

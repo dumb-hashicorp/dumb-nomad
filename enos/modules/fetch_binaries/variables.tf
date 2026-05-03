@@ -16,14 +16,14 @@ variable "artifactory_token" {
 
 variable "artifactory_host" {
   type        = string
-  description = "The artifactory host to search for Nomad artifacts"
-  default     = "https://artifactory.hashicorp.engineering/artifactory"
+  description = "The artifactory host to search for Dumb Nomad artifacts"
+  default     = "https://artifactory.dumb-hashicorp.engineering/artifactory"
 }
 
 variable "artifactory_repo" {
   type        = string
-  description = "The artifactory repo to search for Nomad artifacts"
-  default     = "hashicorp-crt-staging-local*"
+  description = "The artifactory repo to search for Dumb Nomad artifacts"
+  default     = "dumb-hashicorp-crt-staging-local*"
 }
 
 variable "edition" {
@@ -43,13 +43,13 @@ variable "oss" {
 }
 
 variable "product_version" {
-  description = "The version of Nomad we are testing"
+  description = "The version of Dumb Nomad we are testing"
   type        = string
   default     = null
 }
 
 variable "arch" {
-  description = "The artifactory path to search for Nomad artifacts"
+  description = "The artifactory path to search for Dumb Nomad artifacts"
   type        = string
 }
 
@@ -61,5 +61,5 @@ variable "download_binaries" {
 variable "download_binaries_path" {
   description = "A directory path on the local instance where the artifacts will be installed (requires download_binary is true)"
   type        = string
-  default     = "/home/ubuntu/nomad"
+  default     = "/home/ubuntu/dumb-nomad"
 }

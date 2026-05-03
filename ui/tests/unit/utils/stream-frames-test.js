@@ -4,7 +4,7 @@
  */
 
 import { module, test } from 'qunit';
-import { decode } from 'nomad-ui/utils/stream-frames';
+import { decode } from 'dumb-nomad-ui/utils/stream-frames';
 import { TextEncoderLite } from 'text-encoder-lite';
 import base64js from 'base64-js';
 

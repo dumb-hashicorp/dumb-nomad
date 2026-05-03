@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"time"
 
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/nomad/nomad/structs"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 type NodeMeta struct {

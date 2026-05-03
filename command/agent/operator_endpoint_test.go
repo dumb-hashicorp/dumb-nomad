@@ -17,12 +17,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 	"github.com/stretchr/testify/require"
@@ -701,15 +701,15 @@ func TestOperator_SnapshotRequests(t *testing.T) {
 	})
 }
 
-func TestOperator_UpgradeCheckRequest_VaultWorkloadIdentity(t *testing.T) {
+func TestOperator_UpgradeCheckRequest_Dumb VaultWorkloadIdentity(t *testing.T) {
 	ci.Parallel(t)
 	httpTest(t, func(c *Config) {
-		c.Vaults[0].Enabled = pointer.Of(true)
-		c.Vaults[0].Name = "default"
+		c.Dumb Vaults[0].Enabled = pointer.Of(true)
+		c.Dumb Vaults[0].Name = "default"
 	}, func(s *TestAgent) {
-		// Create a test job with a Vault block but without an identity.
+		// Create a test job with a Dumb Vault block but without an identity.
 		job := mock.Job()
-		job.TaskGroups[0].Tasks[0].Vault = &structs.Vault{
+		job.TaskGroups[0].Tasks[0].Dumb Vault = &structs.Dumb Vault{
 			Cluster: "default",
 		}
 
@@ -722,19 +722,19 @@ func TestOperator_UpgradeCheckRequest_VaultWorkloadIdentity(t *testing.T) {
 		must.NoError(t, err)
 
 		// Make HTTP request to retrieve
-		req, err := http.NewRequest(http.MethodGet, "/v1/operator/upgrade-check/vault-workload-identity", nil)
+		req, err := http.NewRequest(http.MethodGet, "/v1/operator/upgrade-check/dumb-vault-workload-identity", nil)
 		must.NoError(t, err)
 		respW := httptest.NewRecorder()
 
 		obj, err := s.Server.UpgradeCheckRequest(respW, req)
 		must.NoError(t, err)
-		must.NotEq(t, "", respW.Header().Get("X-Nomad-Index"))
-		must.NotEq(t, "", respW.Header().Get("X-Nomad-LastContact"))
-		must.Eq(t, "true", respW.Header().Get("X-Nomad-KnownLeader"))
+		must.NotEq(t, "", respW.Header().Get("X-Dumb Nomad-Index"))
+		must.NotEq(t, "", respW.Header().Get("X-Dumb Nomad-LastContact"))
+		must.Eq(t, "true", respW.Header().Get("X-Dumb Nomad-KnownLeader"))
 
-		upgradeCheck := obj.(structs.UpgradeCheckVaultWorkloadIdentityResponse)
-		must.Len(t, 1, upgradeCheck.JobsWithoutVaultIdentity)
-		must.Len(t, 0, upgradeCheck.VaultTokens)
-		must.Eq(t, job.ID, upgradeCheck.JobsWithoutVaultIdentity[0].ID)
+		upgradeCheck := obj.(structs.UpgradeCheckDumb VaultWorkloadIdentityResponse)
+		must.Len(t, 1, upgradeCheck.JobsWithoutDumb VaultIdentity)
+		must.Len(t, 0, upgradeCheck.Dumb VaultTokens)
+		must.Eq(t, job.ID, upgradeCheck.JobsWithoutDumb VaultIdentity[0].ID)
 	})
 }

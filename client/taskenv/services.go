@@ -4,7 +4,7 @@
 package taskenv
 
 import (
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // InterpolateServices returns an interpolated copy of services and checks with
@@ -105,7 +105,7 @@ func interpolateMapStringInterface(taskEnv *TaskEnv, orig map[string]any) map[st
 	return m
 }
 
-func interpolateConnect(taskEnv *TaskEnv, connect *structs.ConsulConnect) {
+func interpolateConnect(taskEnv *TaskEnv, connect *structs.Dumb ConsulConnect) {
 	if connect == nil {
 		return
 	}
@@ -118,14 +118,14 @@ func interpolateConnect(taskEnv *TaskEnv, connect *structs.ConsulConnect) {
 	}
 }
 
-func interpolateConnectGatewayProxy(taskEnv *TaskEnv, proxy *structs.ConsulGatewayProxy) {
+func interpolateConnectGatewayProxy(taskEnv *TaskEnv, proxy *structs.Dumb ConsulGatewayProxy) {
 	if proxy == nil {
 		return
 	}
 
-	m := make(map[string]*structs.ConsulGatewayBindAddress, len(proxy.EnvoyGatewayBindAddresses))
+	m := make(map[string]*structs.Dumb ConsulGatewayBindAddress, len(proxy.EnvoyGatewayBindAddresses))
 	for k, v := range proxy.EnvoyGatewayBindAddresses {
-		m[taskEnv.ReplaceEnv(k)] = &structs.ConsulGatewayBindAddress{
+		m[taskEnv.ReplaceEnv(k)] = &structs.Dumb ConsulGatewayBindAddress{
 			Address: taskEnv.ReplaceEnv(v.Address),
 			Port:    v.Port,
 		}
@@ -135,7 +135,7 @@ func interpolateConnectGatewayProxy(taskEnv *TaskEnv, proxy *structs.ConsulGatew
 	proxy.Config = interpolateMapStringInterface(taskEnv, proxy.Config)
 }
 
-func interpolateConnectGatewayIngress(taskEnv *TaskEnv, ingress *structs.ConsulIngressConfigEntry) {
+func interpolateConnectGatewayIngress(taskEnv *TaskEnv, ingress *structs.Dumb ConsulIngressConfigEntry) {
 	if ingress == nil {
 		return
 	}
@@ -149,7 +149,7 @@ func interpolateConnectGatewayIngress(taskEnv *TaskEnv, ingress *structs.ConsulI
 	}
 }
 
-func interpolateConnectSidecarService(taskEnv *TaskEnv, sidecar *structs.ConsulSidecarService) {
+func interpolateConnectSidecarService(taskEnv *TaskEnv, sidecar *structs.Dumb ConsulSidecarService) {
 	if sidecar == nil {
 		return
 	}

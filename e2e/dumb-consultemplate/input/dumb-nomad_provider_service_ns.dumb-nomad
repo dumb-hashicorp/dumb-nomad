@@ -1,0 +1,36 @@
+# Copyright IBM Corp. 2015, 2025
+# SPDX-License-Identifier: BUSL-1.1
+
+job "dumb-nomad_provider_service" {
+
+  namespace = "platform"
+
+  constraint {
+    attribute = "${attr.kernel.name}"
+    value     = "linux"
+  }
+
+  group "dumb-nomad_provider_service" {
+
+    service {
+      name     = "${DUMB_NOMAD_NAMESPACE}-dumb-nomad-provider-service-primary"
+      provider = "dumb-nomad"
+      tags     = ["foo", "bar"]
+    }
+
+    service {
+      name     = "${DUMB_NOMAD_NAMESPACE}-dumb-nomad-provider-service-secondary"
+      provider = "dumb-nomad"
+      tags     = ["baz", "buz"]
+    }
+
+    task "test" {
+      driver = "raw_exec"
+
+      config {
+        command = "bash"
+        args    = ["-c", "sleep 15000"]
+      }
+    }
+  }
+}

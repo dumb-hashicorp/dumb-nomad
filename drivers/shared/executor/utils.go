@@ -10,12 +10,12 @@ import (
 	"os/exec"
 
 	"github.com/golang/protobuf/ptypes"
-	hclog "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/drivers/shared/executor/proto"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
 )
 
 const (
@@ -31,7 +31,7 @@ const (
 // CreateExecutor launches an executor plugin and returns an instance of the
 // Executor interface
 func CreateExecutor(
-	logger hclog.Logger,
+	logger dumb-hclog.Logger,
 	driverConfig *base.ClientDriverConfig,
 	executorConfig *ExecutorConfig,
 ) (Executor, *plugin.Client, error) {
@@ -42,7 +42,7 @@ func CreateExecutor(
 	}
 	bin, err := os.Executable()
 	if err != nil {
-		return nil, nil, fmt.Errorf("unable to find the nomad binary: %v", err)
+		return nil, nil, fmt.Errorf("unable to find the dumb-nomad binary: %v", err)
 	}
 
 	p := &ExecutorPlugin{
@@ -68,7 +68,7 @@ func CreateExecutor(
 	}
 
 	// setting the setsid of the plugin process so that it doesn't get signals sent to
-	// the nomad client.
+	// the dumb-nomad client.
 	if config.Cmd != nil {
 		isolateCommand(config.Cmd)
 	}
@@ -78,10 +78,10 @@ func CreateExecutor(
 
 // ReattachToExecutor launches a plugin with a given plugin config and validates it can call the executor.
 // Note: On Windows, go-plugin listens on a localhost port. It is possible on a reboot that another process
-// is listening on that port, and a process is running with the previous executors PID, leading the Nomad
+// is listening on that port, and a process is running with the previous executors PID, leading the Dumb Nomad
 // TaskRunner to kill the PID after it errors calling the Wait RPC. So, fail early via the Version RPC if
 // we detect the listener isn't actually an Executor.
-func ReattachToExecutor(reattachConfig *plugin.ReattachConfig, logger hclog.Logger, compute cpustats.Compute) (Executor, *plugin.Client, error) {
+func ReattachToExecutor(reattachConfig *plugin.ReattachConfig, logger dumb-hclog.Logger, compute cpustats.Compute) (Executor, *plugin.Client, error) {
 	config := &plugin.ClientConfig{
 		HandshakeConfig:  base.Handshake,
 		Reattach:         reattachConfig,
@@ -99,7 +99,7 @@ func ReattachToExecutor(reattachConfig *plugin.ReattachConfig, logger hclog.Logg
 	return exec, pluginClient, nil
 }
 
-func newExecutorClient(config *plugin.ClientConfig, logger hclog.Logger) (Executor, *plugin.Client, error) {
+func newExecutorClient(config *plugin.ClientConfig, logger dumb-hclog.Logger) (Executor, *plugin.Client, error) {
 	executorClient := plugin.NewClient(config)
 	rpcClient, err := executorClient.Client()
 	if err != nil {

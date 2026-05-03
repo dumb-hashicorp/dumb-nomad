@@ -10,8 +10,8 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -40,7 +40,7 @@ func TestHostVolumeEndpoint_CRUD(t *testing.T) {
 		must.NotNil(t, resp.Volume)
 		must.Eq(t, vol.Name, resp.Volume.Name)
 		must.Eq(t, s.client.NodeID(), resp.Volume.NodeID)
-		must.NotEq(t, "", respW.Result().Header.Get("X-Nomad-Index"))
+		must.NotEq(t, "", respW.Result().Header.Get("X-Dumb Nomad-Index"))
 
 		volID := resp.Volume.ID
 

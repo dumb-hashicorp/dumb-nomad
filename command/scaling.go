@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 // Ensure ScalingCommand satisfies the cli.Command interface.
@@ -20,7 +20,7 @@ type ScalingCommand struct {
 // Help satisfies the cli.Command Help function.
 func (s *ScalingCommand) Help() string {
 	helpText := `
-Usage: nomad scaling <subcommand> [options]
+Usage: dumb-nomad scaling <subcommand> [options]
 
   This command groups subcommands for interacting with the scaling API.
 
@@ -31,7 +31,7 @@ Usage: nomad scaling <subcommand> [options]
 
 // Synopsis satisfies the cli.Command Synopsis function.
 func (s *ScalingCommand) Synopsis() string {
-	return "Interact with the Nomad scaling endpoint"
+	return "Interact with the Dumb Nomad scaling endpoint"
 }
 
 // Name returns the name of this command.

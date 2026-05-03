@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/go-hclog"
-	trstate "github.com/hashicorp/nomad/client/allocrunner/taskrunner/state"
-	"github.com/hashicorp/nomad/client/state"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	trstate "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
 	"github.com/posener/complete"
 )
 
@@ -20,7 +20,7 @@ type OperatorClientStateCommand struct {
 
 func (c *OperatorClientStateCommand) Help() string {
 	helpText := `
-Usage: nomad operator client-state <path_to_nomad_dir>
+Usage: dumb-nomad operator client-state <path_to_dumb-nomad_dir>
 
   Emits a representation of the stored client state in JSON format.
 `
@@ -35,19 +35,19 @@ func (c *OperatorClientStateCommand) AutocompleteArgs() complete.Predictor {
 }
 
 func (c *OperatorClientStateCommand) Synopsis() string {
-	return "Dump the nomad client state"
+	return "Dump the dumb-nomad client state"
 }
 func (c *OperatorClientStateCommand) Name() string { return "operator client-state" }
 
 func (c *OperatorClientStateCommand) Run(args []string) int {
 	if len(args) != 1 {
-		c.Ui.Error("This command takes one argument: <nomad-data-dir>")
+		c.Ui.Error("This command takes one argument: <dumb-nomad-data-dir>")
 		c.Ui.Error(commandErrorText(c))
 
 		return 1
 	}
 
-	logger := hclog.L()
+	logger := dumb-hclog.L()
 	db, err := state.NewBoltStateDB(logger, args[0])
 	if err != nil {
 		c.Ui.Error(fmt.Sprintf("failed to open client state: %v", err))

@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/asset"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/asset"
 	"github.com/shoenig/test/must"
 )
 
@@ -99,21 +99,21 @@ func TestInitCommand_listTemplates(t *testing.T) {
 
 	jobCmd := &JobInitCommand{Meta: Meta{Ui: ui}}
 	jobCmd.Run([]string{"-address=" + url, "-list-templates"})
-	expectedOutput := "No variables in nomad/job-templates\n"
+	expectedOutput := "No variables in dumb-nomad/job-templates\n"
 	must.StrContains(t, ui.ErrorWriter.String(), expectedOutput)
 
 	varCmd := &VarPutCommand{Meta: Meta{Ui: ui}}
 	// Set up 3 job template variables
 	for i := 1; i <= 3; i++ {
 		templateName := fmt.Sprintf("template-%d", i)
-		must.Eq(t, 0, varCmd.Run([]string{"-address=" + url, "-out=json", "nomad/job-templates/" + templateName, "k1=v1", "k2=v2", "k3=v3"}))
+		must.Eq(t, 0, varCmd.Run([]string{"-address=" + url, "-out=json", "dumb-nomad/job-templates/" + templateName, "k1=v1", "k2=v2", "k3=v3"}))
 	}
 	ui.ErrorWriter.Reset()
 	ui.OutputWriter.Reset()
 
 	jobCmd = &JobInitCommand{Meta: Meta{Ui: ui}}
 	must.Eq(t, 0, jobCmd.Run([]string{"-address=" + url, "-list-templates"}))
-	expectedOutput = "Use nomad job init -template=<template> with any of the following:\n  template-1\n  template-2\n  template-3\n"
+	expectedOutput = "Use dumb-nomad job init -template=<template> with any of the following:\n  template-1\n  template-2\n  template-3\n"
 	must.StrContains(t, ui.OutputWriter.String(), expectedOutput)
 }
 
@@ -133,8 +133,8 @@ func TestInitCommand_fromJobTemplate(t *testing.T) {
 	}`
 
 	// Set up job template variables
-	varCmd.Run([]string{"-address=" + url, "-out=json", "nomad/job-templates/invalid-template", "k1=v1"})
-	varCmd.Run([]string{"-address=" + url, "-out=json", "nomad/job-templates/valid-template", "template=" + tinyJob})
+	varCmd.Run([]string{"-address=" + url, "-out=json", "dumb-nomad/job-templates/invalid-template", "k1=v1"})
+	varCmd.Run([]string{"-address=" + url, "-out=json", "dumb-nomad/job-templates/valid-template", "template=" + tinyJob})
 	ui.ErrorWriter.Reset()
 	ui.OutputWriter.Reset()
 
@@ -164,7 +164,7 @@ func TestInitCommand_fromJobTemplate(t *testing.T) {
 	must.Eq(t, string(content), string(tinyJob))
 
 	ui.ErrorWriter.Reset()
-	expectedOutput := "Initializing a job template from valid-template\nExample job file written to example.nomad.hcl\n"
+	expectedOutput := "Initializing a job template from valid-template\nExample job file written to example.dumb-nomad.dumb-hcl\n"
 	must.StrContains(t, ui.OutputWriter.String(), expectedOutput)
 }
 
@@ -172,7 +172,7 @@ func TestInitCommand_customFilename(t *testing.T) {
 	ci.Parallel(t)
 	ui := cli.NewMockUi()
 	cmd := &JobInitCommand{Meta: Meta{Ui: ui}}
-	filename := "custom.nomad"
+	filename := "custom.dumb-nomad"
 
 	// Ensure we change the cwd back
 	origDir, err := os.Getwd()

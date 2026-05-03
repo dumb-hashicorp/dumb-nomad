@@ -12,8 +12,8 @@ import (
 	"time"
 
 	humanize "github.com/dustin/go-humanize"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -34,8 +34,8 @@ type AllocFSCommand struct {
 
 func (f *AllocFSCommand) Help() string {
 	helpText := `
-Usage: nomad alloc fs [options] <allocation> <path>
-Alias: nomad fs
+Usage: dumb-nomad alloc fs [options] <allocation> <path>
+Alias: dumb-nomad fs
 
   fs displays either the contents of an allocation directory for the passed
   allocation, or displays the file at the given path. The path is relative to

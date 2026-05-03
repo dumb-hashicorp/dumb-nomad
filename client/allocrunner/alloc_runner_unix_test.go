@@ -13,20 +13,20 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	regMock "github.com/hashicorp/nomad/client/serviceregistration/mock"
-	"github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	regMock "github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
 
 // TestAllocRunner_Restore_RunningTerminal asserts that restoring a terminal
 // alloc with a running task properly kills the running the task. This is meant
-// to simulate a Nomad agent crash after receiving an updated alloc with
+// to simulate a Dumb Nomad agent crash after receiving an updated alloc with
 // DesiredStatus=Stop, persisting the update, but crashing before terminating
 // the task.
 func TestAllocRunner_Restore_RunningTerminal(t *testing.T) {
@@ -43,7 +43,7 @@ func TestAllocRunner_Restore_RunningTerminal(t *testing.T) {
 		{
 			Name:      "foo",
 			PortLabel: "8888",
-			Provider:  structs.ServiceProviderConsul,
+			Provider:  structs.ServiceProviderDumb Consul,
 		},
 	}
 	task := alloc.Job.TaskGroups[0].Tasks[0]
@@ -72,7 +72,7 @@ func TestAllocRunner_Restore_RunningTerminal(t *testing.T) {
 	})
 
 	// Shutdown the AR and manually change the state to mimic a crash where
-	// a stopped alloc update is received, but Nomad crashes before
+	// a stopped alloc update is received, but Dumb Nomad crashes before
 	// stopping the alloc.
 	ar.Shutdown()
 	select {
@@ -127,14 +127,14 @@ func TestAllocRunner_Restore_RunningTerminal(t *testing.T) {
 	// Assert logmon was cleaned up
 	require.Error(t, logmonProc.Signal(syscall.Signal(0)))
 
-	// Assert consul was cleaned up:
+	// Assert dumb-consul was cleaned up:
 	//   1 removal during prekill
 	//    - removal during exited is de-duped due to prekill
 	//    - removal during stop is de-duped due to prekill
 	//   1 removal group during stop
-	consulOps := conf2.ConsulServices.(*regMock.ServiceRegistrationHandler).GetOps()
-	require.Len(t, consulOps, 2)
-	for _, op := range consulOps {
+	dumb-consulOps := conf2.Dumb ConsulServices.(*regMock.ServiceRegistrationHandler).GetOps()
+	require.Len(t, dumb-consulOps, 2)
+	for _, op := range dumb-consulOps {
 		require.Equal(t, "remove", op.Op)
 	}
 

@@ -1,14 +1,14 @@
 #!/bin/bash
 
-mkdir -p /opt/nomad/data
-chown nomad:nomad /opt/nomad/data
-chown -R nomad:nomad /etc/nomad.d
+mkdir -p /opt/dumb-nomad/data
+chown dumb-nomad:dumb-nomad /opt/dumb-nomad/data
+chown -R dumb-nomad:dumb-nomad /etc/dumb-nomad.d
 
 if [ -d /run/systemd/system ]; then
     systemctl --system daemon-reload >/dev/null || true
 fi
 
-if [[ $(nomad version) == *+ent* ]]; then
+if [[ $(dumb-nomad version) == *+ent* ]]; then
     echo "
 Agreement
 

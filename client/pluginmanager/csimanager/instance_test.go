@@ -9,18 +9,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/csi"
-	"github.com/hashicorp/nomad/plugins/csi/fake"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi/fake"
 	"github.com/stretchr/testify/require"
 )
 
 func setupTestNodeInstanceManager(t *testing.T) (*fake.Client, *instanceManager) {
 	tp := &fake.Client{}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	pinfo := &dynamicplugins.PluginInfo{
 		Name: "test-plugin",
 	}

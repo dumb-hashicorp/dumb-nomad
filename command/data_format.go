@@ -9,7 +9,7 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
-	"github.com/hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
 )
 
 var (
@@ -104,7 +104,7 @@ func makeFuncMap() template.FuncMap {
 	fm := template.FuncMap{}
 
 	// Add the Sprig functions to the funcmap. These functions are decorated
-	// with `sprig_` to match how they are treated in consul-template
+	// with `sprig_` to match how they are treated in dumb-consul-template
 	for k, v := range sprig.FuncMap() {
 		target := "sprig_" + k
 		fm[target] = v

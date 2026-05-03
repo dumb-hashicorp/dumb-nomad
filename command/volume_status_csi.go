@@ -11,8 +11,8 @@ import (
 	"strings"
 
 	"github.com/dustin/go-humanize"
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/api"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 )
 
 func (c *VolumeStatusCommand) csiVolumeStatus(client *api.Client, id string, opts formatOpts) error {

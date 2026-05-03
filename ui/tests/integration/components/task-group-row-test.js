@@ -7,9 +7,9 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { click, find, render, settled, waitUntil } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import { startMirage } from 'nomad-ui/initializers/ember-cli-mirage';
-import { initialize as fragmentSerializerInitializer } from 'nomad-ui/initializers/fragment-serializer';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { startMirage } from 'dumb-nomad-ui/initializers/ember-cli-mirage';
+import { initialize as fragmentSerializerInitializer } from 'dumb-nomad-ui/initializers/fragment-serializer';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 
 const jobName = 'test-job';
 const jobId = JSON.stringify([jobName, 'default']);
@@ -66,7 +66,7 @@ module('Integration | Component | task group row', function (hooks) {
 
     managementToken = this.server.create('token');
     clientToken = this.server.create('token');
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
   });
 
   hooks.afterEach(function () {
@@ -187,7 +187,7 @@ module('Integration | Component | task group row', function (hooks) {
 
   test('When the current ACL token does not have the namespace:scale-job or namespace:submit-job policy rule', async function (assert) {
     makeJob(this.server, { noActiveDeployment: true });
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
     this.token.fetchSelfTokenAndPolicies.perform();
     await settled();
 

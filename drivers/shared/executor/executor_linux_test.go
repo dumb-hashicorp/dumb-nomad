@@ -17,18 +17,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/drivers/shared/capabilities"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	tu "github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/capabilities"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	tu "github.com/dumb-hashicorp/dumb-nomad/testutil"
 	lconfigs "github.com/opencontainers/runc/libcontainer/configs"
 	"github.com/opencontainers/runc/libcontainer/devices"
 	"github.com/opencontainers/runtime-spec/specs-go"
@@ -81,7 +81,7 @@ func testExecutorCommandWithChroot(t *testing.T) *testExecCmd {
 	task := alloc.Job.TaskGroups[0].Tasks[0]
 	taskEnv := taskenv.NewBuilder(mock.Node(), alloc, task, "global").Build()
 
-	allocDir := allocdir.NewAllocDir(testlog.HCLogger(t), os.TempDir(), os.TempDir(), alloc.ID)
+	allocDir := allocdir.NewAllocDir(testlog.DUMB_HCLogger(t), os.TempDir(), os.TempDir(), alloc.ID)
 	if err := allocDir.Build(); err != nil {
 		t.Fatalf("AllocDir.Build() failed: %v", err)
 	}
@@ -95,7 +95,7 @@ func testExecutorCommandWithChroot(t *testing.T) *testExecCmd {
 		Env:     taskEnv.List(),
 		TaskDir: td.Dir,
 		Resources: &drivers.Resources{
-			NomadResources: alloc.AllocatedResources.Tasks[task.Name],
+			Dumb NomadResources: alloc.AllocatedResources.Tasks[task.Name],
 			LinuxResources: &drivers.LinuxResources{
 				CpusetCgroupPath: cgroupslib.LinuxResourcesPath(
 					alloc.ID,
@@ -160,7 +160,7 @@ func TestExecutor_Isolation_PID_and_IPC_hostMode(t *testing.T) {
 	execCmd.ModePID = "host" // disable PID namespace
 	execCmd.ModeIPC = "host" // disable IPC namespace
 
-	executor := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	executor := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("SIGKILL", 0)
 
 	ps, err := executor.Launch(execCmd)
@@ -203,7 +203,7 @@ func TestExecutor_IsolationAndConstraints(t *testing.T) {
 	execCmd.ModePID = "private"
 	execCmd.ModeIPC = "private"
 
-	executor := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	executor := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("SIGKILL", 0)
 
 	ps, err := executor.Launch(execCmd)
@@ -225,7 +225,7 @@ func TestExecutor_IsolationAndConstraints(t *testing.T) {
 	data, err := os.ReadFile(memLimits)
 	r.NoError(err)
 
-	expectedMemLim := strconv.Itoa(int(execCmd.Resources.NomadResources.Memory.MemoryMB * 1024 * 1024))
+	expectedMemLim := strconv.Itoa(int(execCmd.Resources.Dumb NomadResources.Memory.MemoryMB * 1024 * 1024))
 	actualMemLim := strings.TrimSpace(string(data))
 	r.Equal(actualMemLim, expectedMemLim)
 
@@ -240,7 +240,7 @@ func TestExecutor_IsolationAndConstraints(t *testing.T) {
 	r.NoError(executor.Shutdown("", 0))
 	executor.Wait(context.Background())
 
-	// Check if Nomad has actually removed the cgroups
+	// Check if Dumb Nomad has actually removed the cgroups
 	tu.WaitForResult(func() (bool, error) {
 		_, err = os.Stat(memLimits)
 		if err == nil {
@@ -294,7 +294,7 @@ func TestExecutor_OOMKilled(t *testing.T) {
 	execCmd.ModePID = "private"
 	execCmd.ModeIPC = "private"
 
-	executor := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	executor := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("SIGKILL", 0)
 
 	ps, err := executor.Launch(execCmd)
@@ -327,7 +327,7 @@ func TestExecutor_CgroupPaths(t *testing.T) {
 
 	execCmd.ResourceLimits = true
 
-	executor := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	executor := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("SIGKILL", 0)
 
 	ps, err := executor.Launch(execCmd)
@@ -351,7 +351,7 @@ func TestExecutor_CgroupPaths(t *testing.T) {
 			}
 			lines := strings.Split(output, "\n")
 			for _, line := range lines {
-				// Every cgroup entry should be /nomad/$ALLOC_ID
+				// Every cgroup entry should be /dumb-nomad/$ALLOC_ID
 				if line == "" {
 					continue
 				}
@@ -363,8 +363,8 @@ func TestExecutor_CgroupPaths(t *testing.T) {
 				if strings.Contains(line, ":rdma:") || strings.Contains(line, ":misc:") || strings.Contains(line, "::") {
 					continue
 				}
-				if !strings.Contains(line, ":/nomad/") {
-					return false, fmt.Errorf("Not a member of the alloc's cgroup: expected=...:/nomad/... -- found=%q", line)
+				if !strings.Contains(line, ":/dumb-nomad/") {
+					return false, fmt.Errorf("Not a member of the alloc's cgroup: expected=...:/dumb-nomad/... -- found=%q", line)
 				}
 
 			}
@@ -505,7 +505,7 @@ func TestExecutor_EscapeContainer(t *testing.T) {
 
 	execCmd.ResourceLimits = true
 
-	executor := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	executor := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("SIGKILL", 0)
 
 	_, err := executor.Launch(execCmd)
@@ -530,7 +530,7 @@ func TestExecutor_EscapeContainer(t *testing.T) {
 }
 
 // TestExecutor_DoesNotInheritOomScoreAdj asserts that the exec processes do not
-// inherit the oom_score_adj value of Nomad agent/executor process
+// inherit the oom_score_adj value of Dumb Nomad agent/executor process
 func TestExecutor_DoesNotInheritOomScoreAdj(t *testing.T) {
 	ci.Parallel(t)
 	testutil.ExecCompatible(t)
@@ -555,7 +555,7 @@ func TestExecutor_DoesNotInheritOomScoreAdj(t *testing.T) {
 	execCmd.Cmd = "/bin/bash"
 	execCmd.Args = []string{"-c", "cat /proc/self/oom_score_adj"}
 
-	executor := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	executor := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("SIGKILL", 0)
 
 	_, err = executor.Launch(execCmd)
@@ -638,7 +638,7 @@ CapAmb: 0000000000000400`,
 			execCmd.Cmd = "/bin/bash"
 			execCmd.Args = []string{"-c", "cat /proc/$$/status"}
 
-			capsBasis := capabilities.NomadDefaults()
+			capsBasis := capabilities.Dumb NomadDefaults()
 			capsAllowed := capsBasis.Slice(true)
 			if c.capDrop != nil || c.capAdd != nil {
 				calcCaps, err := capabilities.Calculate(
@@ -649,7 +649,7 @@ CapAmb: 0000000000000400`,
 				execCmd.Capabilities = capsAllowed
 			}
 
-			executor := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+			executor := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 			defer executor.Shutdown("SIGKILL", 0)
 
 			_, err := executor.Launch(execCmd)
@@ -697,7 +697,7 @@ func TestExecutor_ClientCleanup(t *testing.T) {
 	execCmd, allocDir := testExecCmd.command, testExecCmd.allocDir
 	defer allocDir.Destroy()
 
-	executor := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	executor := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("", 0)
 
 	// Need to run a command which will produce continuous output but not
@@ -816,7 +816,7 @@ func TestExecutor_WorkDir(t *testing.T) {
 	execCmd.WorkDir = workDir
 	execCmd.Cmd = "/bin/pwd"
 
-	executor := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	executor := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("SIGKILL", 0)
 
 	ps, err := executor.Launch(execCmd)
@@ -847,7 +847,7 @@ func TestExecutor_UserEnv(t *testing.T) {
 	execCmd.ResourceLimits = true
 	defer allocDir.Destroy()
 
-	executor := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	executor := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("SIGKILL", 0)
 
 	ps, err := executor.Launch(execCmd)
@@ -878,7 +878,7 @@ func TestExecutor_LogNameEnv(t *testing.T) {
 	execCmd.ResourceLimits = true
 	defer allocDir.Destroy()
 
-	executor := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	executor := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 	defer executor.Shutdown("SIGKILL", 0)
 
 	ps, err := executor.Launch(execCmd)
@@ -904,7 +904,7 @@ func TestExecCommand_getCgroupOr_off(t *testing.T) {
 	}
 
 	ec := new(ExecCommand)
-	result := ec.getCgroupOr("cpuset", "/sys/fs/cgroup/cpuset/nomad/abc123")
+	result := ec.getCgroupOr("cpuset", "/sys/fs/cgroup/cpuset/dumb-nomad/abc123")
 	must.Eq(t, "", result)
 }
 
@@ -919,10 +919,10 @@ func TestExecCommand_getCgroupOr_v1_absolute(t *testing.T) {
 		ec := &ExecCommand{
 			OverrideCgroupV1: nil,
 		}
-		result := ec.getCgroupOr("pids", "/sys/fs/cgroup/pids/nomad/abc123")
-		must.Eq(t, result, "/sys/fs/cgroup/pids/nomad/abc123")
-		result2 := ec.getCgroupOr("cpuset", "/sys/fs/cgroup/cpuset/nomad/abc123")
-		must.Eq(t, result2, "/sys/fs/cgroup/cpuset/nomad/abc123")
+		result := ec.getCgroupOr("pids", "/sys/fs/cgroup/pids/dumb-nomad/abc123")
+		must.Eq(t, result, "/sys/fs/cgroup/pids/dumb-nomad/abc123")
+		result2 := ec.getCgroupOr("cpuset", "/sys/fs/cgroup/cpuset/dumb-nomad/abc123")
+		must.Eq(t, result2, "/sys/fs/cgroup/cpuset/dumb-nomad/abc123")
 
 	})
 
@@ -933,9 +933,9 @@ func TestExecCommand_getCgroupOr_v1_absolute(t *testing.T) {
 				"cpuset": "/sys/fs/cgroup/cpuset/custom/path",
 			},
 		}
-		result := ec.getCgroupOr("pids", "/sys/fs/cgroup/pids/nomad/abc123")
+		result := ec.getCgroupOr("pids", "/sys/fs/cgroup/pids/dumb-nomad/abc123")
 		must.Eq(t, result, "/sys/fs/cgroup/pids/custom/path")
-		result2 := ec.getCgroupOr("cpuset", "/sys/fs/cgroup/cpuset/nomad/abc123")
+		result2 := ec.getCgroupOr("cpuset", "/sys/fs/cgroup/cpuset/dumb-nomad/abc123")
 		must.Eq(t, result2, "/sys/fs/cgroup/cpuset/custom/path")
 	})
 }
@@ -953,9 +953,9 @@ func TestExecCommand_getCgroupOr_v1_relative(t *testing.T) {
 			"cpuset": "custom/path",
 		},
 	}
-	result := ec.getCgroupOr("pids", "/sys/fs/cgroup/pids/nomad/abc123")
+	result := ec.getCgroupOr("pids", "/sys/fs/cgroup/pids/dumb-nomad/abc123")
 	must.Eq(t, result, "/sys/fs/cgroup/pids/custom/path")
-	result2 := ec.getCgroupOr("cpuset", "/sys/fs/cgroup/cpuset/nomad/abc123")
+	result2 := ec.getCgroupOr("cpuset", "/sys/fs/cgroup/cpuset/dumb-nomad/abc123")
 	must.Eq(t, result2, "/sys/fs/cgroup/cpuset/custom/path")
 }
 
@@ -1014,7 +1014,7 @@ func TestExecutor_CleanOldProcessesInCGroup(t *testing.T) {
 
 	// Run the executor normally and make sure the process that was originally running
 	// as part of the CGroup was killed, and only the executor's process is running.
-	execInterface := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	execInterface := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 	executor := execInterface.(*LibcontainerExecutor)
 	defer executor.Shutdown("SIGKILL", 0)
 
@@ -1054,7 +1054,7 @@ func TestExecutor_SignalCatching(t *testing.T) {
 	execCmd.ModePID = "private"
 	execCmd.ModeIPC = "private"
 
-	execInterface := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	execInterface := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 
 	ps, err := execInterface.Launch(execCmd)
 	must.NoError(t, err)
@@ -1090,7 +1090,7 @@ func TestCgroupDeviceRules(t *testing.T) {
 			TaskPath:    "/dev/fuse",
 			Permissions: "rwm",
 		})
-	execInterface := NewExecutorWithIsolation(testlog.HCLogger(t), compute)
+	execInterface := NewExecutorWithIsolation(testlog.DUMB_HCLogger(t), compute)
 	executor := execInterface.(*LibcontainerExecutor)
 	cfg, err := executor.newLibcontainerConfig(command)
 	must.NoError(t, err)
@@ -1107,7 +1107,7 @@ func TestCgroupDeviceRules(t *testing.T) {
 func TestExecutor_clampCPUShares(t *testing.T) {
 
 	le := &LibcontainerExecutor{
-		logger:  testlog.HCLogger(t),
+		logger:  testlog.DUMB_HCLogger(t),
 		compute: cpustats.Compute{TotalCompute: 12000},
 	}
 

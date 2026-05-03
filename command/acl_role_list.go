@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -23,7 +23,7 @@ type ACLRoleListCommand struct {
 // Help satisfies the cli.Command Help function.
 func (a *ACLRoleListCommand) Help() string {
 	helpText := `
-Usage: nomad acl role list [options]
+Usage: dumb-nomad acl role list [options]
 
   List is used to list existing ACL roles.
 

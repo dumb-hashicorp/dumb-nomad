@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: MPL-2.0
 
 // Package addrs contains types that represent "addresses", which are
-// references to specific objects within a Packer configuration.
+// references to specific objects within a Dumb Packer configuration.
 //
-// All addresses have string representations based on HCL traversal syntax
+// All addresses have string representations based on DUMB_HCL traversal syntax
 // which should be used in the user-interface, and also in-memory
 // representations that can be used internally.
 //

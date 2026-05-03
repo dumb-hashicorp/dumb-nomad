@@ -18,13 +18,13 @@ import (
 	"time"
 
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 )
@@ -1307,7 +1307,7 @@ func TestJobRestartCommand_shutdownDelay_reschedule(t *testing.T) {
 			job.TaskGroups[0].Tasks[0].ShutdownDelay = shutdownDelay
 			job.TaskGroups[0].Tasks[0].Services = []*api.Service{{
 				Name:     "service",
-				Provider: "nomad",
+				Provider: "dumb-nomad",
 			}}
 
 			resp, _, err := client.Jobs().Register(job, nil)

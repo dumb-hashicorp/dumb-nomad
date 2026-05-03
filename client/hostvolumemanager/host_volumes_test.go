@@ -13,18 +13,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-version"
-	cstate "github.com/hashicorp/nomad/client/state"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-version"
+	cstate "github.com/dumb-hashicorp/dumb-nomad/client/state"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
 
 func TestHostVolumeManager(t *testing.T) {
-	log := testlog.HCLogger(t)
+	log := testlog.DUMB_HCLogger(t)
 	errDB := &cstate.ErrDB{}
 	memDB := cstate.NewMemDB(log)
 	node := newFakeNode(t)
@@ -269,7 +269,7 @@ func assertNotLocked(t *testing.T, hvm *HostVolumeManager, name string) {
 }
 
 func TestHostVolumeManager_restoreFromState(t *testing.T) {
-	log := testlog.HCLogger(t)
+	log := testlog.DUMB_HCLogger(t)
 	hostPath := t.TempDir()
 
 	vol1 := &cstructs.HostVolumeState{
@@ -399,7 +399,7 @@ func TestHostVolumeManager_restoreFromState(t *testing.T) {
 
 type fakeNode struct {
 	vols VolumeMap
-	log  hclog.Logger
+	log  dumb-hclog.Logger
 }
 
 func (n *fakeNode) updateVol(name string, volume *structs.ClientHostVolumeConfig) {
@@ -409,7 +409,7 @@ func (n *fakeNode) updateVol(name string, volume *structs.ClientHostVolumeConfig
 func newFakeNode(t *testing.T) *fakeNode {
 	return &fakeNode{
 		vols: make(VolumeMap),
-		log:  testlog.HCLogger(t),
+		log:  testlog.DUMB_HCLogger(t),
 	}
 }
 
@@ -422,13 +422,13 @@ func timeout(t *testing.T) context.Context {
 }
 
 // logRecorder is here so we can assert that stdout/stderr appear in logs
-func logRecorder(t *testing.T) (hclog.Logger, func() string) {
+func logRecorder(t *testing.T) (dumb-hclog.Logger, func() string) {
 	t.Helper()
 	buf := &bytes.Buffer{}
-	logger := hclog.New(&hclog.LoggerOptions{
+	logger := dumb-hclog.New(&dumb-hclog.LoggerOptions{
 		Name:            "log-recorder",
 		Output:          buf,
-		Level:           hclog.Debug,
+		Level:           dumb-hclog.Debug,
 		IncludeLocation: true,
 		DisableTime:     true,
 	})

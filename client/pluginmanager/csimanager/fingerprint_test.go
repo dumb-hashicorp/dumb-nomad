@@ -8,8 +8,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/csi"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi"
 	"github.com/stretchr/testify/require"
 )
 
@@ -62,7 +62,7 @@ func TestBuildBasicFingerprint_Node(t *testing.T) {
 				MaxVolumes: 5,
 				AccessibleTopology: &csi.Topology{
 					Segments: map[string]string{
-						"com.hashicorp.nomad/node-id": "foobar",
+						"com.dumb-hashicorp.dumb-nomad/node-id": "foobar",
 					},
 				},
 			},
@@ -80,7 +80,7 @@ func TestBuildBasicFingerprint_Node(t *testing.T) {
 					MaxVolumes: 5,
 					AccessibleTopology: &structs.CSITopology{
 						Segments: map[string]string{
-							"com.hashicorp.nomad/node-id": "foobar",
+							"com.dumb-hashicorp.dumb-nomad/node-id": "foobar",
 						},
 					},
 				},

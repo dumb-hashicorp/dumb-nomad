@@ -16,7 +16,7 @@ import {
   visitable,
 } from 'ember-cli-page-object';
 
-import pageSizeSelect from 'nomad-ui/tests/pages/components/page-size-select';
+import pageSizeSelect from 'dumb-nomad-ui/tests/pages/components/page-size-select';
 
 const heliosFacet = (scope) => ({
   scope,

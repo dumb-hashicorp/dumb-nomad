@@ -100,8 +100,8 @@
 // Global keyboard hint style
 
 [data-shortcut] {
-  background: lighten($nomad-green, 25%);
-  border: 1px solid $nomad-green-dark;
+  background: lighten($dumb-nomad-green, 25%);
+  border: 1px solid $dumb-nomad-green-dark;
   content: attr(data-shortcut);
   display: block;
   position: absolute;

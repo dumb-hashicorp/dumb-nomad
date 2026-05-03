@@ -15,7 +15,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -156,11 +156,11 @@ func TestBuildClientAssertionJWT_ClientSecret(t *testing.T) {
 }
 
 func TestBuildClientAssertionJWT_PrivateKey(t *testing.T) {
-	nomadKey := generateTestPrivateKey(t)
-	nomadKeyPath := writeTestPrivateKeyToFile(t, nomadKey)
-	nomadKID := "anything"
-	nomadCert := generateTestCertificate(t, nomadKey)
-	nomadCertPath := writeTestCertToFile(t, nomadCert)
+	dumb-nomadKey := generateTestPrivateKey(t)
+	dumb-nomadKeyPath := writeTestPrivateKeyToFile(t, dumb-nomadKey)
+	dumb-nomadKID := "anything"
+	dumb-nomadCert := generateTestCertificate(t, dumb-nomadKey)
+	dumb-nomadCertPath := writeTestCertToFile(t, dumb-nomadCert)
 	nonKeyCertFile := path.Join(t.TempDir(), "bad.key.cert.pem")
 	must.NoError(t, os.WriteFile(nonKeyCertFile, []byte("not a key or cert"), 0644))
 
@@ -186,8 +186,8 @@ func TestBuildClientAssertionJWT_PrivateKey(t *testing.T) {
 					Audience:     []string{"test-audience"},
 					KeyAlgorithm: "RS256",
 					PrivateKey: &structs.OIDCClientAssertionKey{
-						PemKey: encodeTestPrivateKey(nomadKey),
-						KeyID:  nomadKID,
+						PemKey: encodeTestPrivateKey(dumb-nomadKey),
+						KeyID:  dumb-nomadKID,
 					},
 				},
 			},
@@ -202,8 +202,8 @@ func TestBuildClientAssertionJWT_PrivateKey(t *testing.T) {
 					Audience:     []string{"test-audience"},
 					KeyAlgorithm: "RS256",
 					PrivateKey: &structs.OIDCClientAssertionKey{
-						PemKey:  encodeTestPrivateKey(nomadKey),
-						PemCert: encodeTestCert(nomadCert),
+						PemKey:  encodeTestPrivateKey(dumb-nomadKey),
+						PemCert: encodeTestCert(dumb-nomadCert),
 					},
 				},
 			},
@@ -218,8 +218,8 @@ func TestBuildClientAssertionJWT_PrivateKey(t *testing.T) {
 					Audience:     []string{"test-audience"},
 					KeyAlgorithm: "RS256",
 					PrivateKey: &structs.OIDCClientAssertionKey{
-						PemKey:      encodeTestPrivateKey(nomadKey),
-						PemCertFile: nomadCertPath,
+						PemKey:      encodeTestPrivateKey(dumb-nomadKey),
+						PemCertFile: dumb-nomadCertPath,
 					},
 				},
 			},
@@ -234,8 +234,8 @@ func TestBuildClientAssertionJWT_PrivateKey(t *testing.T) {
 					Audience:     []string{"test-audience"},
 					KeyAlgorithm: "RS256",
 					PrivateKey: &structs.OIDCClientAssertionKey{
-						PemKeyFile: nomadKeyPath,
-						KeyID:      nomadKID,
+						PemKeyFile: dumb-nomadKeyPath,
+						KeyID:      dumb-nomadKID,
 					},
 				},
 			},
@@ -251,8 +251,8 @@ func TestBuildClientAssertionJWT_PrivateKey(t *testing.T) {
 					Audience:     []string{"test-audience"},
 					KeyAlgorithm: "RS256",
 					PrivateKey: &structs.OIDCClientAssertionKey{
-						PemKeyFile: nomadKeyPath + "/invalid",
-						KeyID:      nomadKID,
+						PemKeyFile: dumb-nomadKeyPath + "/invalid",
+						KeyID:      dumb-nomadKID,
 					},
 				},
 			},
@@ -270,7 +270,7 @@ func TestBuildClientAssertionJWT_PrivateKey(t *testing.T) {
 					KeyAlgorithm: "RS256",
 					PrivateKey: &structs.OIDCClientAssertionKey{
 						PemKeyFile: nonKeyCertFile,
-						KeyID:      nomadKID,
+						KeyID:      dumb-nomadKID,
 					},
 				},
 			},
@@ -286,7 +286,7 @@ func TestBuildClientAssertionJWT_PrivateKey(t *testing.T) {
 					Audience:     []string{"test-audience"},
 					KeyAlgorithm: "RS256",
 					PrivateKey: &structs.OIDCClientAssertionKey{
-						PemKey:      encodeTestPrivateKey(nomadKey),
+						PemKey:      encodeTestPrivateKey(dumb-nomadKey),
 						PemCertFile: nonKeyCertFile,
 					},
 				},
@@ -299,7 +299,7 @@ func TestBuildClientAssertionJWT_PrivateKey(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.config.Canonicalize() // inherits clientSecret from OIDCClientAssertion
-			jwt, err := BuildClientAssertionJWT(tt.config, nomadKey, nomadKID)
+			jwt, err := BuildClientAssertionJWT(tt.config, dumb-nomadKey, dumb-nomadKID)
 			if tt.wantErr {
 				must.Error(t, err)
 				must.StrContains(t, err.Error(), tt.expectedErr)
@@ -311,9 +311,9 @@ func TestBuildClientAssertionJWT_PrivateKey(t *testing.T) {
 	}
 }
 
-func TestBuildClientAssertionJWT_NomadKey(t *testing.T) {
-	nomadKey := generateTestPrivateKey(t)
-	nomadKID := "anything"
+func TestBuildClientAssertionJWT_Dumb NomadKey(t *testing.T) {
+	dumb-nomadKey := generateTestPrivateKey(t)
+	dumb-nomadKID := "anything"
 
 	tests := []struct {
 		name    string
@@ -328,11 +328,11 @@ func TestBuildClientAssertionJWT_NomadKey(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "nomad key source",
+			name: "dumb-nomad key source",
 			config: &structs.ACLAuthMethodConfig{
 				OIDCClientID: "test-client-id",
 				OIDCClientAssertion: &structs.OIDCClientAssertion{
-					KeySource:    structs.OIDCKeySourceNomad,
+					KeySource:    structs.OIDCKeySourceDumb Nomad,
 					KeyAlgorithm: "RS256",
 					Audience:     []string{"test-audience"},
 				},
@@ -344,7 +344,7 @@ func TestBuildClientAssertionJWT_NomadKey(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.config.Canonicalize() // inherits clientSecret from OIDCClientAssertion
-			jwt, err := BuildClientAssertionJWT(tt.config, nomadKey, nomadKID)
+			jwt, err := BuildClientAssertionJWT(tt.config, dumb-nomadKey, dumb-nomadKID)
 			if tt.wantErr {
 				must.Error(t, err)
 			} else {
@@ -356,11 +356,11 @@ func TestBuildClientAssertionJWT_NomadKey(t *testing.T) {
 }
 
 func TestBuildClientAssertionJWT_PrivateKeyExpiredCert(t *testing.T) {
-	nomadKey := generateTestPrivateKey(t)
-	nomadInvalidKey := generateInvalidTestPrivateKey(t)
-	nomadKID := "anything"
-	nomadCert := generateTestCertificate(t, nomadKey)
-	nomadExpiredCert := generateExpiredTestCertificate(t, nomadKey)
+	dumb-nomadKey := generateTestPrivateKey(t)
+	dumb-nomadInvalidKey := generateInvalidTestPrivateKey(t)
+	dumb-nomadKID := "anything"
+	dumb-nomadCert := generateTestCertificate(t, dumb-nomadKey)
+	dumb-nomadExpiredCert := generateExpiredTestCertificate(t, dumb-nomadKey)
 
 	tests := []struct {
 		name        string
@@ -377,8 +377,8 @@ func TestBuildClientAssertionJWT_PrivateKeyExpiredCert(t *testing.T) {
 					Audience:     []string{"test-audience"},
 					KeyAlgorithm: "RS256",
 					PrivateKey: &structs.OIDCClientAssertionKey{
-						PemKey:  encodeTestPrivateKey(nomadInvalidKey),
-						PemCert: encodeTestCert(nomadCert),
+						PemKey:  encodeTestPrivateKey(dumb-nomadInvalidKey),
+						PemCert: encodeTestCert(dumb-nomadCert),
 					},
 				},
 			},
@@ -394,8 +394,8 @@ func TestBuildClientAssertionJWT_PrivateKeyExpiredCert(t *testing.T) {
 					Audience:     []string{"test-audience"},
 					KeyAlgorithm: "RS256",
 					PrivateKey: &structs.OIDCClientAssertionKey{
-						PemKey:  encodeTestPrivateKey(nomadKey),
-						PemCert: encodeTestCert(nomadExpiredCert),
+						PemKey:  encodeTestPrivateKey(dumb-nomadKey),
+						PemCert: encodeTestCert(dumb-nomadExpiredCert),
 					},
 				},
 			},
@@ -407,7 +407,7 @@ func TestBuildClientAssertionJWT_PrivateKeyExpiredCert(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			tt.config.Canonicalize() // inherits clientSecret from OIDCClientAssertion
-			jwt, err := BuildClientAssertionJWT(tt.config, nomadKey, nomadKID)
+			jwt, err := BuildClientAssertionJWT(tt.config, dumb-nomadKey, dumb-nomadKID)
 			if tt.wantErr {
 				must.Error(t, err)
 				must.StrContains(t, err.Error(), tt.expectedErr)

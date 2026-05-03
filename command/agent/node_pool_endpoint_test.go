@@ -11,9 +11,9 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp/cmpopts"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -43,7 +43,7 @@ func TestHTTP_NodePool_List(t *testing.T) {
 		must.SliceLen(t, 5, obj.([]*structs.NodePool))
 
 		// Verify response index.
-		gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Nomad-Index"), 10, 64)
+		gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Dumb Nomad-Index"), 10, 64)
 		must.NoError(t, err)
 		must.NonZero(t, gotIndex)
 	})
@@ -79,7 +79,7 @@ func TestHTTP_NodePool_Info(t *testing.T) {
 			)))
 
 			// Verify response index.
-			gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Nomad-Index"), 10, 64)
+			gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Dumb Nomad-Index"), 10, 64)
 			must.NoError(t, err)
 			must.NonZero(t, gotIndex)
 		})
@@ -97,7 +97,7 @@ func TestHTTP_NodePool_Info(t *testing.T) {
 			must.Eq(t, structs.NodePoolAll, obj.(*structs.NodePool).Name)
 
 			// Verify response index.
-			gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Nomad-Index"), 10, 64)
+			gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Dumb Nomad-Index"), 10, 64)
 			must.NoError(t, err)
 			must.NonZero(t, gotIndex)
 		})
@@ -113,7 +113,7 @@ func TestHTTP_NodePool_Info(t *testing.T) {
 			must.ErrorContains(t, err, "not found")
 
 			// Verify response index.
-			gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Nomad-Index"), 10, 64)
+			gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Dumb Nomad-Index"), 10, 64)
 			must.NoError(t, err)
 			must.NonZero(t, gotIndex)
 		})
@@ -135,7 +135,7 @@ func TestHTTP_NodePool_Create(t *testing.T) {
 		must.Nil(t, obj)
 
 		// Verify response index.
-		gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Nomad-Index"), 10, 64)
+		gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Dumb Nomad-Index"), 10, 64)
 		must.NoError(t, err)
 		must.NonZero(t, gotIndex)
 
@@ -183,7 +183,7 @@ func TestHTTP_NodePool_Update(t *testing.T) {
 			must.Nil(t, obj)
 
 			// Verify response index.
-			gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Nomad-Index"), 10, 64)
+			gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Dumb Nomad-Index"), 10, 64)
 			must.NoError(t, err)
 			must.NonZero(t, gotIndex)
 
@@ -227,7 +227,7 @@ func TestHTTP_NodePool_Update(t *testing.T) {
 			must.Nil(t, obj)
 
 			// Verify response index.
-			gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Nomad-Index"), 10, 64)
+			gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Dumb Nomad-Index"), 10, 64)
 			must.NoError(t, err)
 			must.NonZero(t, gotIndex)
 
@@ -409,7 +409,7 @@ func TestHTTP_NodePool_NodesList(t *testing.T) {
 					}
 
 					// Verify response index.
-					gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Nomad-Index"), 10, 64)
+					gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Dumb Nomad-Index"), 10, 64)
 					must.NoError(t, err)
 					must.NonZero(t, gotIndex)
 				})
@@ -456,7 +456,7 @@ func TestHTTP_NodePool_JobsList(t *testing.T) {
 		must.SliceLen(t, 2, obj.([]*structs.JobListStub))
 
 		// Verify response index.
-		gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Nomad-Index"), 10, 64)
+		gotIndex, err := strconv.ParseUint(respW.HeaderMap.Get("X-Dumb Nomad-Index"), 10, 64)
 		must.NoError(t, err)
 		must.NonZero(t, gotIndex)
 

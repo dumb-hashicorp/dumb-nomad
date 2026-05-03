@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/helper/users"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users"
 )
 
 var (
@@ -36,11 +36,11 @@ type Validator struct {
 	// DeniedHostGids configures which host gids are disallowed
 	deniedGIDs *idset.Set[GroupID]
 
-	// logger will log to the Nomad agent
-	logger hclog.Logger
+	// logger will log to the Dumb Nomad agent
+	logger dumb-hclog.Logger
 }
 
-func NewValidator(logger hclog.Logger, deniedHostUIDs, deniedHostGIDs string) (*Validator, error) {
+func NewValidator(logger dumb-hclog.Logger, deniedHostUIDs, deniedHostGIDs string) (*Validator, error) {
 	valLogger := logger.Named("id_validator")
 
 	err := validateIDRange("deniedHostUIDs", deniedHostUIDs)

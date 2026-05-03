@@ -10,16 +10,16 @@ import (
 	"path/filepath"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	arstate "github.com/hashicorp/nomad/client/allocrunner/state"
-	trstate "github.com/hashicorp/nomad/client/allocrunner/taskrunner/state"
-	dmstate "github.com/hashicorp/nomad/client/devicemanager/state"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	driverstate "github.com/hashicorp/nomad/client/pluginmanager/drivermanager/state"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/boltdd"
-	"github.com/hashicorp/nomad/nomad/structs"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	arstate "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/state"
+	trstate "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/state"
+	dmstate "github.com/dumb-hashicorp/dumb-nomad/client/devicemanager/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	driverstate "github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/boltdd"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"go.etcd.io/bbolt"
 )
 
@@ -37,7 +37,7 @@ allocations/
 	 |--> acknowledged_state -> acknowledgedStateEntry{*arstate.State}
 	 |--> alloc_volumes -> allocVolumeStatesEntry{arstate.AllocVolumes}
      |--> alloc_identities -> allocIdentitiesEntry{}
-     |--> alloc_consul_acl_token_identities -> consulACLTokensEntry{}
+     |--> alloc_dumb-consul_acl_token_identities -> dumb-consulACLTokensEntry{}
    |--> task-<name>/
       |--> local_state -> *trstate.LocalState # Local-only state
       |--> task_state  -> *structs.TaskState  # Syncs to servers
@@ -101,9 +101,9 @@ var (
 	// under
 	allocIdentityKey = []byte("alloc_identities")
 
-	// allocConsulACLTokeKey is the key []*structs.ConsulACLTokens is stored
+	// allocDumb ConsulACLTokeKey is the key []*structs.Dumb ConsulACLTokens is stored
 	// under
-	allocConsulACLTokenKey = []byte("alloc_consul_acl_token_identities")
+	allocDumb ConsulACLTokenKey = []byte("alloc_dumb-consul_acl_token_identities")
 
 	// checkResultsBucket is the bucket name in which check query results are stored
 	checkResultsBucket = []byte("check_results")
@@ -159,13 +159,13 @@ func taskBucketName(taskName string) []byte {
 }
 
 // NewStateDBFunc creates a StateDB given a state directory.
-type NewStateDBFunc func(logger hclog.Logger, stateDir string) (StateDB, error)
+type NewStateDBFunc func(logger dumb-hclog.Logger, stateDir string) (StateDB, error)
 
 // GetStateDBFactory returns a func for creating a StateDB
 func GetStateDBFactory(devMode bool) NewStateDBFunc {
 	// Return a noop state db implementation when in debug mode
 	if devMode {
-		return func(hclog.Logger, string) (StateDB, error) {
+		return func(dumb-hclog.Logger, string) (StateDB, error) {
 			return NoopDB{}, nil
 		}
 	}
@@ -173,17 +173,17 @@ func GetStateDBFactory(devMode bool) NewStateDBFunc {
 	return NewBoltStateDB
 }
 
-// BoltStateDB persists and restores Nomad client state in a boltdb. All
+// BoltStateDB persists and restores Dumb Nomad client state in a boltdb. All
 // methods are safe for concurrent access.
 type BoltStateDB struct {
 	stateDir string
 	db       *boltdd.DB
-	logger   hclog.Logger
+	logger   dumb-hclog.Logger
 }
 
 // NewBoltStateDB creates or opens an existing boltdb state file or returns an
 // error.
-func NewBoltStateDB(logger hclog.Logger, stateDir string) (StateDB, error) {
+func NewBoltStateDB(logger dumb-hclog.Logger, stateDir string) (StateDB, error) {
 	fn := filepath.Join(stateDir, "state.db")
 
 	// Check to see if the DB already exists
@@ -199,7 +199,7 @@ func NewBoltStateDB(logger hclog.Logger, stateDir string) (StateDB, error) {
 	// Create or open the boltdb state database
 	db, err := boltdd.Open(fn, 0600, timeout)
 	if err == bbolt.ErrTimeout {
-		return nil, fmt.Errorf("timed out while opening database, is another Nomad process accessing data_dir %s?", stateDir)
+		return nil, fmt.Errorf("timed out while opening database, is another Dumb Nomad process accessing data_dir %s?", stateDir)
 	} else if err != nil {
 		return nil, fmt.Errorf("failed to create state database: %v", err)
 	}
@@ -581,30 +581,30 @@ func (s *BoltStateDB) GetAllocIdentities(allocID string) ([]*structs.SignedWorkl
 	return entry.Identities, nil
 }
 
-// allocConsulACLTokenEntry wraps the ACLtokens so we can safely add more
+// allocDumb ConsulACLTokenEntry wraps the ACLtokens so we can safely add more
 // state in the future without needing a new entry type
-type allocConsulACLTokenEntry struct {
-	Tokens []*cstructs.ConsulACLToken
+type allocDumb ConsulACLTokenEntry struct {
+	Tokens []*cstructs.Dumb ConsulACLToken
 }
 
-// PutAllocConsulACLTokens strores all Consul ACL tokens for an alloc.
-func (s *BoltStateDB) PutAllocConsulACLTokens(allocID string, tokens []*cstructs.ConsulACLToken, opts ...WriteOption) error {
+// PutAllocDumb ConsulACLTokens strores all Dumb Consul ACL tokens for an alloc.
+func (s *BoltStateDB) PutAllocDumb ConsulACLTokens(allocID string, tokens []*cstructs.Dumb ConsulACLToken, opts ...WriteOption) error {
 	return s.updateWithOptions(opts, func(tx *boltdd.Tx) error {
 		allocBkt, err := getAllocationBucket(tx, allocID)
 		if err != nil {
 			return err
 		}
 
-		entry := allocConsulACLTokenEntry{
+		entry := allocDumb ConsulACLTokenEntry{
 			Tokens: tokens,
 		}
-		return allocBkt.Put(allocConsulACLTokenKey, &entry)
+		return allocBkt.Put(allocDumb ConsulACLTokenKey, &entry)
 	})
 }
 
-// GetAllocConsulACLTokens returns all Consul ACL tokens for an alloc.
-func (s *BoltStateDB) GetAllocConsulACLTokens(allocID string) ([]*cstructs.ConsulACLToken, error) {
-	var entry allocConsulACLTokenEntry
+// GetAllocDumb ConsulACLTokens returns all Dumb Consul ACL tokens for an alloc.
+func (s *BoltStateDB) GetAllocDumb ConsulACLTokens(allocID string) ([]*cstructs.Dumb ConsulACLToken, error) {
+	var entry allocDumb ConsulACLTokenEntry
 
 	err := s.db.View(func(tx *boltdd.Tx) error {
 		allAllocsBkt := tx.Bucket(allocationsBucketName)
@@ -617,7 +617,7 @@ func (s *BoltStateDB) GetAllocConsulACLTokens(allocID string) ([]*cstructs.Consu
 			return nil // No previous state for this alloc
 		}
 
-		return allocBkt.Get(allocConsulACLTokenKey, &entry)
+		return allocBkt.Get(allocDumb ConsulACLTokenKey, &entry)
 	})
 
 	if boltdd.IsErrNotFound(err) {

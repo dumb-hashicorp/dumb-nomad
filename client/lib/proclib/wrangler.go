@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-// Task records the unique coordinates of a task from the perspective of a Nomad
+// Task records the unique coordinates of a task from the perspective of a Dumb Nomad
 // client running the task, that is to say (alloc_id, task_name). Also indicates
 // whether the task is making use of reserved cpu cores.
 type Task struct {

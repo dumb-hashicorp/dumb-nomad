@@ -6,10 +6,10 @@
 package catalog
 
 import (
-	"github.com/hashicorp/nomad/drivers/docker"
-	"github.com/hashicorp/nomad/drivers/java"
-	"github.com/hashicorp/nomad/drivers/qemu"
-	"github.com/hashicorp/nomad/drivers/rawexec"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/docker"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/java"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/qemu"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/rawexec"
 )
 
 // This file is where all builtin plugins should be registered in the catalog.

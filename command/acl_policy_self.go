@@ -19,7 +19,7 @@ type ACLPolicySelfCommand struct {
 
 func (c *ACLPolicySelfCommand) Help() string {
 	helpText := `
-Usage: nomad acl policy self
+Usage: dumb-nomad acl policy self
 
   Self is used to fetch information about the policy assigned to the current
   workload identity or ACL token.

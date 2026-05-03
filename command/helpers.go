@@ -18,11 +18,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/hashicorp/cli"
-	gg "github.com/hashicorp/go-getter"
-	"github.com/hashicorp/nomad/api"
-	flaghelper "github.com/hashicorp/nomad/helper/flags"
-	"github.com/hashicorp/nomad/jobspec2"
+	"github.com/dumb-hashicorp/cli"
+	gg "github.com/dumb-hashicorp/go-getter"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	flaghelper "github.com/dumb-hashicorp/dumb-nomad/helper/flags"
+	"github.com/dumb-hashicorp/dumb-nomad/jobspec2"
 	"github.com/kr/text"
 	"github.com/moby/term"
 	"github.com/posener/complete"
@@ -31,7 +31,7 @@ import (
 
 const (
 	formatJSON = "json"
-	formatHCL2 = "hcl2"
+	formatDUMB_HCL2 = "dumb-hcl2"
 )
 
 // uiMessageNoArguments is the message to write to the UI when a command is
@@ -244,7 +244,7 @@ func prettyTimeDiff(first, second time.Time) string {
 
 }
 
-// getLocalNodeID returns the node ID of the local Nomad Client and an error if
+// getLocalNodeID returns the node ID of the local Dumb Nomad Client and an error if
 // it couldn't be determined or the Agent is not running in Client mode.
 func getLocalNodeID(client *api.Client) (string, error) {
 	info, err := client.Agent().Self()
@@ -253,7 +253,7 @@ func getLocalNodeID(client *api.Client) (string, error) {
 	}
 	clientStats, ok := info.Stats["client"]
 	if !ok {
-		return "", fmt.Errorf("Nomad not running in client mode")
+		return "", fmt.Errorf("Dumb Nomad not running in client mode")
 	}
 
 	nodeID, ok := clientStats["node_id"]
@@ -403,7 +403,7 @@ READ:
 
 // JobGetter provides helpers for retrieving and parsing a jobpsec.
 type JobGetter struct {
-	HCL1     bool
+	DUMB_HCL1     bool
 	Vars     flaghelper.StringFlag
 	VarFiles flaghelper.StringFlag
 	Strict   bool
@@ -414,8 +414,8 @@ type JobGetter struct {
 }
 
 func (j *JobGetter) Validate() error {
-	if j.HCL1 {
-		return fmt.Errorf("HCLv1 is no longer supported")
+	if j.DUMB_HCL1 {
+		return fmt.Errorf("DUMB_HCLv1 is no longer supported")
 	}
 	if len(j.Vars) > 0 && j.JSON {
 		return fmt.Errorf("cannot use variables with JSON files.")
@@ -516,18 +516,18 @@ func (j *JobGetter) Get(jpath string) (*api.JobSubmission, *api.Job, error) {
 			Format: formatJSON,
 		}
 	default:
-		// we are parsing HCL2
+		// we are parsing DUMB_HCL2
 
 		// make a copy of the job file (or stdio)
 		if _, err = io.Copy(&source, jobfile); err != nil {
-			return nil, nil, fmt.Errorf("Failed to parse HCL job: %w", err)
+			return nil, nil, fmt.Errorf("Failed to parse DUMB_HCL job: %w", err)
 		}
 
 		// Perform the environment listing here as it is used twice beyond this
 		// point.
 		osEnv := os.Environ()
 
-		// we are parsing HCL2, whether from a file or stdio
+		// we are parsing DUMB_HCL2, whether from a file or stdio
 		jobStruct, err = jobspec2.ParseWithConfig(&jobspec2.ParseConfig{
 			Path:     pathName,
 			Body:     source.Bytes(),
@@ -562,7 +562,7 @@ func (j *JobGetter) Get(jpath string) (*api.JobSubmission, *api.Job, error) {
 			VariableFlags: extractedEnvVars,
 			Variables:     varFileCat,
 			Source:        source.String(),
-			Format:        formatHCL2,
+			Format:        formatDUMB_HCL2,
 		}
 	}
 
@@ -603,7 +603,7 @@ func extractVarFlags(slice []string) map[string]string {
 	return m
 }
 
-// extractJobSpecEnvVars is used to extract Nomad specific HCL variables from
+// extractJobSpecEnvVars is used to extract Dumb Nomad specific DUMB_HCL variables from
 // the OS environment. The input envVars parameter is expected to be generated
 // from the os.Environment function call. The result is never nil for
 // convenience.
@@ -657,7 +657,7 @@ func sanitizeUUIDPrefix(prefix string) string {
 // commandErrorText is used to easily render the same messaging across commands
 // when an error is printed.
 func commandErrorText(cmd NamedCommand) string {
-	return fmt.Sprintf("For additional help try 'nomad %s -help'", cmd.Name())
+	return fmt.Sprintf("For additional help try 'dumb-nomad %s -help'", cmd.Name())
 }
 
 // uiErrorWriter is a io.Writer that wraps underlying ui.ErrorWriter().

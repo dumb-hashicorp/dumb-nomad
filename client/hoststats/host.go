@@ -8,16 +8,16 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	"github.com/hashicorp/nomad/plugins/device"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/disk"
 	"github.com/shirou/gopsutil/v3/host"
 	"github.com/shirou/gopsutil/v3/mem"
 )
 
-// HostStats represents resource usage stats of the host running a Nomad client
+// HostStats represents resource usage stats of the host running a Dumb Nomad client
 type HostStats struct {
 	Memory           *MemoryStats
 	CPU              []*CPUStats
@@ -84,13 +84,13 @@ type HostStatsCollector struct {
 	// squelch logspam.
 	badParts map[string]struct{}
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 // NewHostStatsCollector returns a HostStatsCollector. The allocDir is passed in
 // so that we can present the disk related statistics for the mountpoint where
 // the allocation directory lives
-func NewHostStatsCollector(logger hclog.Logger, top *numalib.Topology, allocDir string, deviceStatsCollector DeviceStatsCollector) *HostStatsCollector {
+func NewHostStatsCollector(logger dumb-hclog.Logger, top *numalib.Topology, allocDir string, deviceStatsCollector DeviceStatsCollector) *HostStatsCollector {
 	return &HostStatsCollector{
 		logger:               logger.Named("host_stats"),
 		top:                  top,

@@ -4,7 +4,7 @@
 package jobspec2
 
 // pointerOf returns a pointer to "a". It is duplicated from the helper package
-// to isolate the jobspec2 package from the rest of Nomad.
+// to isolate the jobspec2 package from the rest of Dumb Nomad.
 func pointerOf[A any](a A) *A {
 	return &a
 }

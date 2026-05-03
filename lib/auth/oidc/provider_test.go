@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cap/oidc"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/cap/oidc"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -23,7 +23,7 @@ func TestProviderCache(t *testing.T) {
 	oidcTestProvider.SetClientCreds("bob", "ssshhhh")
 	_, _, tpAlg, _ := oidcTestProvider.SigningKeys()
 
-	// Create a mocked auth-method; avoiding the mock as the hashicorp/cap lib
+	// Create a mocked auth-method; avoiding the mock as the dumb-hashicorp/cap lib
 	// performs validation on certain fields.
 	authMethod := structs.ACLAuthMethod{
 		Name:          "test-oidc-auth-method",

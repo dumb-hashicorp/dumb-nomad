@@ -12,15 +12,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	ctestutils "github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/drivers/shared/capabilities"
-	"github.com/hashicorp/nomad/drivers/shared/executor"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	dtestutil "github.com/hashicorp/nomad/plugins/drivers/testutils"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	ctestutils "github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/capabilities"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	dtestutil "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sys/unix"
 )
@@ -153,7 +153,7 @@ func TestExec_dnsConfig(t *testing.T) {
 			name: "full",
 			cfg: &drivers.DNSConfig{
 				Servers:  []string{"1.1.1.1", "1.0.0.1"},
-				Searches: []string{"local.test", "node.consul"},
+				Searches: []string{"local.test", "node.dumb-consul"},
 				Options:  []string{"ndots:2", "edns0"},
 			},
 		},
@@ -272,8 +272,8 @@ func TestExecDriver_Capabilities(t *testing.T) {
 			if tc.AllowList != "" {
 				config.AllowCaps = strings.Split(tc.AllowList, ",")
 			} else {
-				// inherit HCL defaults if not set
-				config.AllowCaps = capabilities.NomadDefaults().Slice(true)
+				// inherit DUMB_HCL defaults if not set
+				config.AllowCaps = capabilities.Dumb NomadDefaults().Slice(true)
 			}
 
 			var data []byte
@@ -282,7 +282,7 @@ func TestExecDriver_Capabilities(t *testing.T) {
 				PluginConfig: data,
 				AgentConfig: &base.AgentConfig{
 					Driver: &base.ClientDriverConfig{
-						Topology: d.(*Driver).nomadConfig.Topology,
+						Topology: d.(*Driver).dumb-nomadConfig.Topology,
 					},
 				},
 			}

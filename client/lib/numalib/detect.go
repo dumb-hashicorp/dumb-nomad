@@ -4,8 +4,8 @@
 package numalib
 
 import (
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
 )
 
 // A SystemScanner represents one methodology of detecting CPU hardware on a
@@ -25,7 +25,7 @@ func Scan(scanners []SystemScanner) *Topology {
 	return top
 }
 
-// ConfigScanner provides override values coming from Nomad Client configuration.
+// ConfigScanner provides override values coming from Dumb Nomad Client configuration.
 // This scanner must run last as the client configuration has the final say if
 // values there are set by an operator.
 type ConfigScanner struct {
@@ -35,7 +35,7 @@ type ConfigScanner struct {
 	//
 	// Only meaningful on Linux, this value can be used to override the set of
 	// CPU core IDs we may make use of. Normally these are detected by reading
-	// Nomad parent cgroup cpuset interface file.
+	// Dumb Nomad parent cgroup cpuset interface file.
 	ReservableCores *idset.Set[hw.CoreID]
 
 	// TotalCompute comes from client.cpu_total_compute.
@@ -43,19 +43,19 @@ type ConfigScanner struct {
 	// Used to set the total MHz of available CPU bandwidth on a system. This
 	// value is used by the scheduler for fitment, and by the client for computing
 	// task / alloc / client resource utilization. Therefor this value:
-	//  - Should NOT be set if Nomad was able to fingerprint a value.
+	//  - Should NOT be set if Dumb Nomad was able to fingerprint a value.
 	//  - Should NOT be used to over/under provision compute resources.
 	TotalCompute hw.MHz
 
 	// ReservedCores comes from client.reserved.cores.
 	//
-	// Used to withhold a set of cores from being used by Nomad for scheduling.
+	// Used to withhold a set of cores from being used by Dumb Nomad for scheduling.
 	ReservedCores *idset.Set[hw.CoreID]
 
 	// ReservedCompute comes from client.reserved.cpu.
 	//
 	// Used to withhold an amount of MHz of CPU bandwidth from being used by
-	// Nomad for scheduling.
+	// Dumb Nomad for scheduling.
 	ReservedCompute hw.MHz
 }
 

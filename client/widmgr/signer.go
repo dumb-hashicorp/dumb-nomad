@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	"github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 type RPCer interface {
@@ -71,7 +71,7 @@ func (s *Signer) SignIdentities(minIndex uint64, req []*structs.WorkloadIdentity
 
 	// Default to using the node secret, but if the node identity token is set,
 	// this will be used instead. This handles the case where the node is
-	// upgraded before the Nomad servers and should be removed in Nomad 1.13.
+	// upgraded before the Dumb Nomad servers and should be removed in Dumb Nomad 1.13.
 	authToken := s.nodeSecret
 
 	if id := s.nodeIdentityToken.Load(); id != nil {

@@ -10,8 +10,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper/hcl"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/dumb-hcl"
 	"github.com/posener/complete"
 )
 
@@ -29,7 +29,7 @@ func (c *NodePoolApplyCommand) Synopsis() string {
 
 func (c *NodePoolApplyCommand) Help() string {
 	helpText := `
-Usage: nomad node pool apply [options] <input>
+Usage: dumb-nomad node pool apply [options] <input>
 
   Apply is used to create or update a node pool. The specification file is read
   from stdin by specifying "-", otherwise a path to the file is expected.
@@ -60,7 +60,7 @@ func (c *NodePoolApplyCommand) AutocompleteFlags() complete.Flags {
 
 func (c *NodePoolApplyCommand) AutocompleteArgs() complete.Predictor {
 	return complete.PredictOr(
-		complete.PredictFiles("*.hcl"),
+		complete.PredictFiles("*.dumb-hcl"),
 		complete.PredictFiles("*.json"),
 	)
 }
@@ -95,9 +95,9 @@ func (c *NodePoolApplyCommand) Run(args []string) int {
 			c.Ui.Error(fmt.Sprintf("Failed to read stdin: %v", err))
 			return 1
 		}
-		// Set .hcl extension so the decoder doesn't fail.
+		// Set .dumb-hcl extension so the decoder doesn't fail.
 		if !jsonInput {
-			path = "stdin.nomad.hcl"
+			path = "stdin.dumb-nomad.dumb-hcl"
 		}
 	default:
 		content, err = os.ReadFile(path)
@@ -112,10 +112,10 @@ func (c *NodePoolApplyCommand) Run(args []string) int {
 	if jsonInput {
 		err = json.Unmarshal(content, &poolSpec.NodePool)
 	} else {
-		hclParser := hcl.NewParser()
+		dumb-hclParser := dumb-hcl.NewParser()
 
-		if hclDiags := hclParser.Parse(content, &poolSpec, path); hclDiags.HasErrors() {
-			err = hclDiags
+		if dumb-hclDiags := dumb-hclParser.Parse(content, &poolSpec, path); dumb-hclDiags.HasErrors() {
+			err = dumb-hclDiags
 		}
 	}
 	if err != nil {
@@ -141,5 +141,5 @@ func (c *NodePoolApplyCommand) Run(args []string) int {
 }
 
 type nodePoolSpec struct {
-	NodePool *api.NodePool `hcl:"node_pool,block"`
+	NodePool *api.NodePool `dumb-hcl:"node_pool,block"`
 }

@@ -9,10 +9,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/state"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/state"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/require"
 )
 
@@ -67,7 +67,7 @@ func TestHTTP_CSIParseSecrets(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		req, _ := http.NewRequest(http.MethodGet, "/v1/plugin/csi/foo", nil)
-		req.Header.Add("X-Nomad-CSI-Secrets", tc.val)
+		req.Header.Add("X-Dumb Nomad-CSI-Secrets", tc.val)
 		require.Equal(t, tc.expect, parseCSISecrets(req), tc.val)
 	}
 }

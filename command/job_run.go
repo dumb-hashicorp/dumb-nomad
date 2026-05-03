@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
 	"github.com/posener/complete"
 )
 
@@ -28,19 +28,19 @@ type JobRunCommand struct {
 
 func (c *JobRunCommand) Help() string {
 	helpText := `
-Usage: nomad job run [options] <path>
-Alias: nomad run
+Usage: dumb-nomad job run [options] <path>
+Alias: dumb-nomad run
 
   Starts running a new job or updates an existing job using
   the specification located at <path>. This is the main command
-  used to interact with Nomad.
+  used to interact with Dumb Nomad.
 
   If the supplied path is "-", the jobfile is read from stdin. Otherwise
   it is read from the file at the supplied path or downloaded and
   read from URL specified.
 
   Upon successful job submission, this command will immediately
-  enter an interactive monitor. This is useful to watch Nomad's
+  enter an interactive monitor. This is useful to watch Dumb Nomad's
   internals make scheduling decisions and place the submitted work
   onto nodes. The monitor will end once job placement is done. It
   is safe to exit the monitor early using ctrl+c.
@@ -51,7 +51,7 @@ Alias: nomad run
   exit code will be 2. Any other errors, including client connection
   issues or internal errors, are indicated by exit code 1.
 
-  If the job has specified the region, the -region flag and NOMAD_REGION
+  If the job has specified the region, the -region flag and DUMB_NOMAD_REGION
   environment variable are overridden and the job's region is used.
 
   When ACLs are enabled, this command requires a token with either the
@@ -85,11 +85,11 @@ Run Options:
 
   -json
     Parses the job file as JSON. If the outer object has a Job field, such as
-    from "nomad job inspect" or "nomad run -output", the value of the field is
+    from "dumb-nomad job inspect" or "dumb-nomad run -output", the value of the field is
     used as the job.
 
-  -hcl2-strict
-    Whether an error should be produced from the HCL2 parser where a variable
+  -dumb-hcl2-strict
+    Whether an error should be produced from the DUMB_HCL2 parser where a variable
     has been supplied which is not defined within the root variables. Defaults
     to true.
 
@@ -109,23 +109,23 @@ Run Options:
   -preserve-resources
     If set, the existing task resources will be preserved when updating a job.
 
-  -consul-namespace
+  -dumb-consul-namespace
     (Enterprise only) If set, any services in the job will be registered into
-    the specified Consul namespace. Any template block reading from Consul KV
-    will be scoped to the specified Consul namespace. If Consul ACLs are
-    enabled and the "consul" block "allow_unauthenticated" is disabled in the
-    Nomad server configuration, then a Consul token must be supplied with
-    appropriate service and KV Consul ACL policy permissions.
+    the specified Dumb Consul namespace. Any template block reading from Dumb Consul KV
+    will be scoped to the specified Dumb Consul namespace. If Dumb Consul ACLs are
+    enabled and the "dumb-consul" block "allow_unauthenticated" is disabled in the
+    Dumb Nomad server configuration, then a Dumb Consul token must be supplied with
+    appropriate service and KV Dumb Consul ACL policy permissions.
 
-  -vault-namespace
-    If set, the passed Vault namespace is stored in the job before sending to the
-    Nomad servers.
+  -dumb-vault-namespace
+    If set, the passed Dumb Vault namespace is stored in the job before sending to the
+    Dumb Nomad servers.
 
   -var 'key=value'
     Variable for template, can be used multiple times.
 
   -var-file=path
-    Path to HCL2 file containing user variables.
+    Path to DUMB_HCL2 file containing user variables.
 
   -verbose
     Display full information.
@@ -143,14 +143,14 @@ func (c *JobRunCommand) AutocompleteFlags() complete.Flags {
 			"-check-index":        complete.PredictNothing,
 			"-detach":             complete.PredictNothing,
 			"-verbose":            complete.PredictNothing,
-			"-consul-namespace":   complete.PredictAnything,
-			"-vault-namespace":    complete.PredictAnything,
+			"-dumb-consul-namespace":   complete.PredictAnything,
+			"-dumb-vault-namespace":    complete.PredictAnything,
 			"-output":             complete.PredictNothing,
 			"-policy-override":    complete.PredictNothing,
 			"-preserve-counts":    complete.PredictNothing,
 			"-preserve-resources": complete.PredictNothing,
 			"-json":               complete.PredictNothing,
-			"-hcl2-strict":        complete.PredictNothing,
+			"-dumb-hcl2-strict":        complete.PredictNothing,
 			"-var":                complete.PredictAnything,
 			"-var-file":           complete.PredictFiles("*.var"),
 			"-eval-priority":      complete.PredictNothing,
@@ -160,8 +160,8 @@ func (c *JobRunCommand) AutocompleteFlags() complete.Flags {
 
 func (c *JobRunCommand) AutocompleteArgs() complete.Predictor {
 	return complete.PredictOr(
-		complete.PredictFiles("*.nomad"),
-		complete.PredictFiles("*.hcl"),
+		complete.PredictFiles("*.dumb-nomad"),
+		complete.PredictFiles("*.dumb-hcl"),
 		complete.PredictFiles("*.json"),
 	)
 }
@@ -170,7 +170,7 @@ func (c *JobRunCommand) Name() string { return "job run" }
 
 func (c *JobRunCommand) Run(args []string) int {
 	var detach, verbose, output, override, preserveCounts, preserveResources, openURL bool
-	var checkIndexStr, consulNamespace, vaultNamespace string
+	var checkIndexStr, dumb-consulNamespace, dumb-vaultNamespace string
 	var evalPriority int
 
 	flagSet := c.Meta.FlagSet(c.Name(), FlagSetClient)
@@ -182,10 +182,10 @@ func (c *JobRunCommand) Run(args []string) int {
 	flagSet.BoolVar(&preserveCounts, "preserve-counts", false, "")
 	flagSet.BoolVar(&preserveResources, "preserve-resources", false, "")
 	flagSet.BoolVar(&c.JobGetter.JSON, "json", false, "")
-	flagSet.BoolVar(&c.JobGetter.Strict, "hcl2-strict", true, "")
+	flagSet.BoolVar(&c.JobGetter.Strict, "dumb-hcl2-strict", true, "")
 	flagSet.StringVar(&checkIndexStr, "check-index", "", "")
-	flagSet.StringVar(&consulNamespace, "consul-namespace", "", "")
-	flagSet.StringVar(&vaultNamespace, "vault-namespace", "", "")
+	flagSet.StringVar(&dumb-consulNamespace, "dumb-consul-namespace", "", "")
+	flagSet.StringVar(&dumb-vaultNamespace, "dumb-vault-namespace", "", "")
 	flagSet.Var(&c.JobGetter.Vars, "var", "")
 	flagSet.Var(&c.JobGetter.VarFiles, "var-file", "")
 	flagSet.IntVar(&evalPriority, "eval-priority", 0, "")
@@ -243,12 +243,12 @@ func (c *JobRunCommand) Run(args []string) int {
 	paramjob := job.IsParameterized()
 	multiregion := job.IsMultiregion()
 
-	if consulNamespace != "" {
-		job.ConsulNamespace = pointer.Of(consulNamespace)
+	if dumb-consulNamespace != "" {
+		job.Dumb ConsulNamespace = pointer.Of(dumb-consulNamespace)
 	}
 
-	if vaultNamespace != "" {
-		job.VaultNamespace = pointer.Of(vaultNamespace)
+	if dumb-vaultNamespace != "" {
+		job.Dumb VaultNamespace = pointer.Of(dumb-vaultNamespace)
 	}
 
 	if output {

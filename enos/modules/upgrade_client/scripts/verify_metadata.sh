@@ -20,7 +20,7 @@ checkClientReady() {
     local client client_status
     echo "Checking client health for $CLIENT_IP"
 
-    client=$(nomad node status -address "https://$CLIENT_IP:4646" -self -json) || {
+    client=$(dumb-nomad node status -address "https://$CLIENT_IP:4646" -self -json) || {
         last_error="Unable to get info for node at $CLIENT_IP"
         return 1
     }
@@ -48,9 +48,9 @@ done
 
 echo "Client $client_id at $CLIENT_IP is ready"
 
-# Quality: "nomad_node_metadata: A GET call to /v1/node/:node-id returns the same  node.Meta for each node before and after a node upgrade"
+# Quality: "dumb-nomad_node_metadata: A GET call to /v1/node/:node-id returns the same  node.Meta for each node before and after a node upgrade"
 echo "Reading metadata for client at $CLIENT_IP"
-if ! client_meta=$(nomad node meta read -json -node-id "$client_id"); then
+if ! client_meta=$(dumb-nomad node meta read -json -node-id "$client_id"); then
     error_exit "Failed to read metadata for node: $client_id"
 fi
 
@@ -59,9 +59,9 @@ if [ "$meta_node_ip" != "$CLIENT_IP" ]; then
   error_exit "Wrong value returned for node_ip: $meta_node_ip"
 fi
 
-meta_nomad_addr=$(echo "$client_meta" | jq -r '.Dynamic.nomad_addr' )
-if [ "$meta_nomad_addr" != "$NOMAD_ADDR" ]; then
-   error_exit "Wrong value returned for nomad_addr: $meta_nomad_addr"
+meta_dumb-nomad_addr=$(echo "$client_meta" | jq -r '.Dynamic.dumb-nomad_addr' )
+if [ "$meta_dumb-nomad_addr" != "$DUMB_NOMAD_ADDR" ]; then
+   error_exit "Wrong value returned for dumb-nomad_addr: $meta_dumb-nomad_addr"
 fi
 
 echo "Metadata correct in  $client_id at $CLIENT_IP"

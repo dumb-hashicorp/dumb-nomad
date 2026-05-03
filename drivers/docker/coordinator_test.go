@@ -14,10 +14,10 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/image"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -92,7 +92,7 @@ func TestDockerCoordinator_ConcurrentPulls(t *testing.T) {
 	mock := newMockImageClient(mapping, 10*time.Millisecond)
 	config := &dockerCoordinatorConfig{
 		ctx:         context.Background(),
-		logger:      testlog.HCLogger(t),
+		logger:      testlog.DUMB_HCLogger(t),
 		cleanup:     true,
 		client:      mock,
 		removeDelay: 100 * time.Millisecond,
@@ -144,7 +144,7 @@ func TestDockerCoordinator_Pull_Remove(t *testing.T) {
 	mock := newMockImageClient(mapping, 10*time.Millisecond)
 	config := &dockerCoordinatorConfig{
 		ctx:         context.Background(),
-		logger:      testlog.HCLogger(t),
+		logger:      testlog.DUMB_HCLogger(t),
 		cleanup:     true,
 		client:      mock,
 		removeDelay: 1 * time.Millisecond,
@@ -216,7 +216,7 @@ func TestDockerCoordinator_Remove_Cancel(t *testing.T) {
 	mock := newMockImageClient(mapping, 1*time.Millisecond)
 	config := &dockerCoordinatorConfig{
 		ctx:         context.Background(),
-		logger:      testlog.HCLogger(t),
+		logger:      testlog.DUMB_HCLogger(t),
 		cleanup:     true,
 		client:      mock,
 		removeDelay: 100 * time.Millisecond,
@@ -265,7 +265,7 @@ func TestDockerCoordinator_No_Cleanup(t *testing.T) {
 	mock := newMockImageClient(mapping, 1*time.Millisecond)
 	config := &dockerCoordinatorConfig{
 		ctx:         context.Background(),
-		logger:      testlog.HCLogger(t),
+		logger:      testlog.DUMB_HCLogger(t),
 		cleanup:     false,
 		client:      mock,
 		removeDelay: 1 * time.Millisecond,
@@ -305,7 +305,7 @@ func TestDockerCoordinator_Cleanup_HonorsCtx(t *testing.T) {
 	mock := newMockImageClient(mapping, 1*time.Millisecond)
 	config := &dockerCoordinatorConfig{
 		ctx:         ctx,
-		logger:      testlog.HCLogger(t),
+		logger:      testlog.DUMB_HCLogger(t),
 		cleanup:     true,
 		client:      mock,
 		removeDelay: 1 * time.Millisecond,
@@ -358,7 +358,7 @@ func TestDockerCoordinator_PullImage_ProgressError(t *testing.T) {
 	mock := newMockImageClient(mapping, 1*time.Millisecond)
 	config := &dockerCoordinatorConfig{
 		ctx:         driverCtx,
-		logger:      testlog.HCLogger(t),
+		logger:      testlog.DUMB_HCLogger(t),
 		cleanup:     true,
 		client:      mock,
 		removeDelay: 1 * time.Millisecond,
@@ -415,7 +415,7 @@ func TestDockerCoordinator_PullImage_Timeouts(t *testing.T) {
 			mock := newMockImageClient(mapping, tc.pullDelay)
 			config := &dockerCoordinatorConfig{
 				ctx:         driverCtx,
-				logger:      testlog.HCLogger(t),
+				logger:      testlog.DUMB_HCLogger(t),
 				cleanup:     true,
 				client:      mock,
 				removeDelay: 1 * time.Millisecond,

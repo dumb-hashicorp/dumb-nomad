@@ -5,7 +5,7 @@
 
 import { module, test } from 'qunit';
 import { ServerError, ForbiddenError } from '@ember-data/adapter/error';
-import messageFromAdapterError from 'nomad-ui/utils/message-from-adapter-error';
+import messageFromAdapterError from 'dumb-nomad-ui/utils/message-from-adapter-error';
 
 const testCases = [
   {

@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/nomad/ci"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
@@ -37,15 +37,15 @@ func TestHandler(t *testing.T) {
 	}
 
 	metricKeySuffix += ";" + "hook_name=test_hook_name"
-	sampleName = "nomad_test.client.test_hook.prerun.elapsed" + metricKeySuffix
-	counterSuccessName = "nomad_test.client.test_hook.prerun.success" + metricKeySuffix
-	counterFailureName = "nomad_test.client.test_hook.prerun.failed" + metricKeySuffix
+	sampleName = "dumb-nomad_test.client.test_hook.prerun.elapsed" + metricKeySuffix
+	counterSuccessName = "dumb-nomad_test.client.test_hook.prerun.success" + metricKeySuffix
+	counterFailureName = "dumb-nomad_test.client.test_hook.prerun.failed" + metricKeySuffix
 
 	// Create an in-memory sink and global, so we can actually look at and test
 	// the metrics we emit.
 	inMemorySink := metrics.NewInmemSink(10*time.Millisecond, 50*time.Millisecond)
 
-	_, err := metrics.NewGlobal(metrics.DefaultConfig("nomad_test"), inMemorySink)
+	_, err := metrics.NewGlobal(metrics.DefaultConfig("dumb-nomad_test"), inMemorySink)
 	must.NoError(t, err)
 
 	// Emit hook related metrics where the supplied error is nil and check that
@@ -69,7 +69,7 @@ func TestHandler(t *testing.T) {
 	// leftovers from the previous test.
 	inMemorySink = metrics.NewInmemSink(10*time.Millisecond, 50*time.Millisecond)
 
-	_, err = metrics.NewGlobal(metrics.DefaultConfig("nomad_test"), inMemorySink)
+	_, err = metrics.NewGlobal(metrics.DefaultConfig("dumb-nomad_test"), inMemorySink)
 	must.NoError(t, err)
 
 	// Emit a hook related metrics where the supplied error is non-nil and
@@ -99,7 +99,7 @@ func TestNoOpHandler(t *testing.T) {
 	// metrics are emitted.
 	inMemorySink := metrics.NewInmemSink(10*time.Millisecond, 50*time.Millisecond)
 
-	_, err := metrics.NewGlobal(metrics.DefaultConfig("nomad_test"), inMemorySink)
+	_, err := metrics.NewGlobal(metrics.DefaultConfig("dumb-nomad_test"), inMemorySink)
 	must.NoError(t, err)
 
 	// Call the function with a non-nil error and check the results of the

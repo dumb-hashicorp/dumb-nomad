@@ -9,10 +9,10 @@ import { inject as service } from '@ember/service';
 import RSVP from 'rsvp';
 import Route from '@ember/routing/route';
 import { collect } from '@ember/object/computed';
-import { watchAll } from 'nomad-ui/utils/properties/watch';
-import WithWatchers from 'nomad-ui/mixins/with-watchers';
-import notifyForbidden from 'nomad-ui/utils/notify-forbidden';
-import WithForbiddenState from 'nomad-ui/mixins/with-forbidden-state';
+import { watchAll } from 'dumb-nomad-ui/utils/properties/watch';
+import WithWatchers from 'dumb-nomad-ui/mixins/with-watchers';
+import notifyForbidden from 'dumb-nomad-ui/utils/notify-forbidden';
+import WithForbiddenState from 'dumb-nomad-ui/mixins/with-forbidden-state';
 import { action } from '@ember/object';
 
 export default class IndexRoute extends Route.extend(

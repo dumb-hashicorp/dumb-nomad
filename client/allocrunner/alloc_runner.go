@@ -10,38 +10,38 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner/hookstats"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/allocrunner/state"
-	"github.com/hashicorp/nomad/client/allocrunner/tasklifecycle"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/consul"
-	"github.com/hashicorp/nomad/client/devicemanager"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	cinterfaces "github.com/hashicorp/nomad/client/interfaces"
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
-	"github.com/hashicorp/nomad/client/lib/proclib"
-	"github.com/hashicorp/nomad/client/pluginmanager/csimanager"
-	"github.com/hashicorp/nomad/client/pluginmanager/drivermanager"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks/checkstore"
-	"github.com/hashicorp/nomad/client/serviceregistration/wrapper"
-	cstate "github.com/hashicorp/nomad/client/state"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/client/vaultclient"
-	"github.com/hashicorp/nomad/client/widmgr"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/users/dynamic"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/device"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/hookstats"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/tasklifecycle"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/client/devicemanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	cinterfaces "github.com/dumb-hashicorp/dumb-nomad/client/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/proclib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/csimanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks/checkstore"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/wrapper"
+	cstate "github.com/dumb-hashicorp/dumb-nomad/client/state"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dumb-vaultclient"
+	"github.com/dumb-hashicorp/dumb-nomad/client/widmgr"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users/dynamic"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 // allocRunner is used to run all the tasks in a given allocation
@@ -84,16 +84,16 @@ type allocRunner struct {
 	// update.
 	allocUpdatedCh chan *structs.Allocation
 
-	// consulServicesHandler is used by the consul service hook for registering
+	// dumb-consulServicesHandler is used by the dumb-consul service hook for registering
 	// services and checks
-	consulServicesHandler serviceregistration.Handler
+	dumb-consulServicesHandler serviceregistration.Handler
 
-	// consulProxiesClientFunc gets a client used by the envoy version hook for
-	// looking up supported envoy versions of the consul agent.
-	consulProxiesClientFunc consul.SupportedProxiesAPIFunc
+	// dumb-consulProxiesClientFunc gets a client used by the envoy version hook for
+	// looking up supported envoy versions of the dumb-consul agent.
+	dumb-consulProxiesClientFunc dumb-consul.SupportedProxiesAPIFunc
 
-	// vaultClientFunc is used to get the client used to manage Vault tokens
-	vaultClientFunc vaultclient.VaultClientFunc
+	// dumb-vaultClientFunc is used to get the client used to manage Dumb Vault tokens
+	dumb-vaultClientFunc dumb-vaultclient.Dumb VaultClientFunc
 
 	// hookStatsHandler is used by certain hooks to emit telemetry data, if the
 	// operator has not disabled this functionality.
@@ -201,7 +201,7 @@ type allocRunner struct {
 	shutdownDelayCancelFn context.CancelFunc
 
 	// rpcClient is the RPC Client that should be used by the allocrunner and its
-	// hooks to communicate with Nomad Servers.
+	// hooks to communicate with Dumb Nomad Servers.
 	rpcClient config.RPCer
 
 	// serviceRegWrapper is the handler wrapper that is used by service hooks
@@ -243,9 +243,9 @@ func NewAllocRunner(config *config.AllocRunnerConfig) (interfaces.AllocRunner, e
 		alloc:                    alloc,
 		clientConfig:             config.ClientConfig,
 		clientBaseLabels:         config.BaseLabels,
-		consulServicesHandler:    config.ConsulServices,
-		consulProxiesClientFunc:  config.ConsulProxiesFunc,
-		vaultClientFunc:          config.VaultFunc,
+		dumb-consulServicesHandler:    config.Dumb ConsulServices,
+		dumb-consulProxiesClientFunc:  config.Dumb ConsulProxiesFunc,
+		dumb-vaultClientFunc:          config.Dumb VaultFunc,
 		tasks:                    make(map[string]*taskrunner.TaskRunner, len(tg.Tasks)),
 		waitCh:                   make(chan struct{}),
 		destroyCh:                make(chan struct{}),
@@ -334,9 +334,9 @@ func (ar *allocRunner) initTaskRunners(tasks []*structs.Task) error {
 			StateDB:             ar.stateDB,
 			StateUpdater:        ar,
 			DynamicRegistry:     ar.dynamicRegistry,
-			ConsulServices:      ar.consulServicesHandler,
-			ConsulProxiesFunc:   ar.consulProxiesClientFunc,
-			VaultFunc:           ar.vaultClientFunc,
+			Dumb ConsulServices:      ar.dumb-consulServicesHandler,
+			Dumb ConsulProxiesFunc:   ar.dumb-consulProxiesClientFunc,
+			Dumb VaultFunc:           ar.dumb-vaultClientFunc,
 			DeviceStatsReporter: ar.deviceStatsReporter,
 			CSIManager:          ar.csiManager,
 			DeviceManager:       ar.devicemanager,
@@ -473,7 +473,7 @@ func (ar *allocRunner) GetAllocDir() allocdir.Interface {
 // Run.
 func (ar *allocRunner) Restore() error {
 	// Retrieve deployment status to avoid reseting it across agent
-	// restarts. Once a deployment status is set Nomad no longer monitors
+	// restarts. Once a deployment status is set Dumb Nomad no longer monitors
 	// alloc health, so we must persist deployment state across restarts.
 	ds, err := ar.stateDB.GetDeploymentStatus(ar.id)
 	if err != nil {

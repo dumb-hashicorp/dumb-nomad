@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -70,7 +70,7 @@ func TestTlsCertCreateCommandDefaults_fileCreate(t *testing.T) {
 	caCmd := &TLSCACreateCommand{Meta: Meta{Ui: ui}}
 
 	// Setup CA keys
-	caCmd.Run([]string{"nomad"})
+	caCmd.Run([]string{"dumb-nomad"})
 
 	type testcase struct {
 		name      string
@@ -89,11 +89,11 @@ func TestTlsCertCreateCommandDefaults_fileCreate(t *testing.T) {
 		{"server0",
 			"server",
 			[]string{"-server"},
-			"global-server-nomad.pem",
-			"global-server-nomad-key.pem",
-			"server.global.nomad",
+			"global-server-dumb-nomad.pem",
+			"global-server-dumb-nomad-key.pem",
+			"server.global.dumb-nomad",
 			[]string{
-				"server.global.nomad",
+				"server.global.dumb-nomad",
 				"localhost",
 			},
 			[]net.IP{{127, 0, 0, 1}},
@@ -102,11 +102,11 @@ func TestTlsCertCreateCommandDefaults_fileCreate(t *testing.T) {
 		{"server0-region1",
 			"server",
 			[]string{"-server", "-region", "region1"},
-			"region1-server-nomad.pem",
-			"region1-server-nomad-key.pem",
-			"server.region1.nomad",
+			"region1-server-dumb-nomad.pem",
+			"region1-server-dumb-nomad-key.pem",
+			"server.region1.dumb-nomad",
 			[]string{
-				"server.region1.nomad",
+				"server.region1.dumb-nomad",
 				"localhost",
 			},
 			[]net.IP{{127, 0, 0, 1}},
@@ -115,11 +115,11 @@ func TestTlsCertCreateCommandDefaults_fileCreate(t *testing.T) {
 		{"client0",
 			"client",
 			[]string{"-client"},
-			"global-client-nomad.pem",
-			"global-client-nomad-key.pem",
-			"client.global.nomad",
+			"global-client-dumb-nomad.pem",
+			"global-client-dumb-nomad-key.pem",
+			"client.global.dumb-nomad",
 			[]string{
-				"client.global.nomad",
+				"client.global.dumb-nomad",
 				"localhost",
 			},
 			[]net.IP{{127, 0, 0, 1}},
@@ -128,11 +128,11 @@ func TestTlsCertCreateCommandDefaults_fileCreate(t *testing.T) {
 		{"cli0",
 			"cli",
 			[]string{"-cli"},
-			"global-cli-nomad.pem",
-			"global-cli-nomad-key.pem",
-			"cli.global.nomad",
+			"global-cli-dumb-nomad.pem",
+			"global-cli-dumb-nomad-key.pem",
+			"cli.global.dumb-nomad",
 			[]string{
-				"cli.global.nomad",
+				"cli.global.dumb-nomad",
 				"localhost",
 			},
 			[]net.IP(nil),
@@ -188,39 +188,39 @@ func TestTlsRecordPreparation(t *testing.T) {
 		expectedextKeyUsage []x509.ExtKeyUsage
 		expectedPrefix      string
 	}
-	// The default values are region = global and domain = nomad.
+	// The default values are region = global and domain = dumb-nomad.
 	cases := []testcase{
 		{
 			name:                "server0",
 			certType:            "server",
 			regionName:          "global",
-			domain:              "nomad",
+			domain:              "dumb-nomad",
 			dnsNames:            []string{},
 			ipAddresses:         []string{},
 			expectedipAddresses: []net.IP{net.ParseIP("127.0.0.1")},
 			expectedDNSNames: []string{
-				"server.global.nomad",
+				"server.global.dumb-nomad",
 				"localhost",
 			},
-			expectedName:        "server.global.nomad",
+			expectedName:        "server.global.dumb-nomad",
 			expectedextKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
-			expectedPrefix:      "global-server-nomad",
+			expectedPrefix:      "global-server-dumb-nomad",
 		},
 		{
 			name:                "server0-region1",
 			certType:            "server",
 			regionName:          "region1",
-			domain:              "nomad",
+			domain:              "dumb-nomad",
 			dnsNames:            []string{},
 			ipAddresses:         []string{},
 			expectedipAddresses: []net.IP{net.ParseIP("127.0.0.1")},
 			expectedDNSNames: []string{
-				"server.region1.nomad",
+				"server.region1.dumb-nomad",
 				"localhost",
 			},
-			expectedName:        "server.region1.nomad",
+			expectedName:        "server.region1.dumb-nomad",
 			expectedextKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
-			expectedPrefix:      "region1-server-nomad",
+			expectedPrefix:      "region1-server-dumb-nomad",
 		},
 		{
 			name:                "server0-domain1",
@@ -242,66 +242,66 @@ func TestTlsRecordPreparation(t *testing.T) {
 			name:                "server0-dns",
 			certType:            "server",
 			regionName:          "global",
-			domain:              "nomad",
+			domain:              "dumb-nomad",
 			dnsNames:            []string{"server.global.foo"},
 			ipAddresses:         []string{},
 			expectedipAddresses: []net.IP{net.ParseIP("127.0.0.1")},
 			expectedDNSNames: []string{
 				"server.global.foo",
-				"server.global.nomad",
+				"server.global.dumb-nomad",
 				"localhost",
 			},
-			expectedName:        "server.global.nomad",
+			expectedName:        "server.global.dumb-nomad",
 			expectedextKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
-			expectedPrefix:      "global-server-nomad",
+			expectedPrefix:      "global-server-dumb-nomad",
 		},
 		{
 			name:                "server0-ips",
 			certType:            "server",
 			regionName:          "global",
-			domain:              "nomad",
+			domain:              "dumb-nomad",
 			dnsNames:            []string{},
 			ipAddresses:         []string{"10.0.0.1"},
 			expectedipAddresses: []net.IP{net.ParseIP("10.0.0.1"), net.ParseIP("127.0.0.1")},
 			expectedDNSNames: []string{
-				"server.global.nomad",
+				"server.global.dumb-nomad",
 				"localhost",
 			},
-			expectedName:        "server.global.nomad",
+			expectedName:        "server.global.dumb-nomad",
 			expectedextKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
-			expectedPrefix:      "global-server-nomad",
+			expectedPrefix:      "global-server-dumb-nomad",
 		},
 		{
 			name:                "client0",
 			certType:            "client",
 			regionName:          "global",
-			domain:              "nomad",
+			domain:              "dumb-nomad",
 			dnsNames:            []string{},
 			ipAddresses:         []string{},
 			expectedipAddresses: []net.IP{net.ParseIP("127.0.0.1")},
 			expectedDNSNames: []string{
-				"client.global.nomad",
+				"client.global.dumb-nomad",
 				"localhost",
 			},
-			expectedName:        "client.global.nomad",
+			expectedName:        "client.global.dumb-nomad",
 			expectedextKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth},
-			expectedPrefix:      "global-client-nomad",
+			expectedPrefix:      "global-client-dumb-nomad",
 		},
 		{
 			name:                "cli0",
 			certType:            "cli",
 			regionName:          "global",
-			domain:              "nomad",
+			domain:              "dumb-nomad",
 			dnsNames:            []string{},
 			ipAddresses:         []string{},
 			expectedipAddresses: []net.IP(nil),
 			expectedDNSNames: []string{
-				"cli.global.nomad",
+				"cli.global.dumb-nomad",
 				"localhost",
 			},
-			expectedName:        "cli.global.nomad",
+			expectedName:        "cli.global.dumb-nomad",
 			expectedextKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageClientAuth, x509.ExtKeyUsageServerAuth},
-			expectedPrefix:      "global-cli-nomad",
+			expectedPrefix:      "global-cli-dumb-nomad",
 		},
 	}
 

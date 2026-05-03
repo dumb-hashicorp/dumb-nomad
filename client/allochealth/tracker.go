@@ -11,21 +11,21 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/consul/api"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks/checkstore"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-consul/api"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks/checkstore"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (
 	// AllocHealthEventSource is the source used for emitting task events
 	AllocHealthEventSource = "Alloc Unhealthy"
 
-	// checkLookupInterval is the pace at which we check if the Consul or Nomad
+	// checkLookupInterval is the pace at which we check if the Dumb Consul or Dumb Nomad
 	// checks for an allocation are healthy or unhealthy.
 	checkLookupInterval = 500 * time.Millisecond
 )
@@ -48,27 +48,27 @@ type Tracker struct {
 	minHealthyTime time.Duration
 
 	// checkLookupInterval is the repeated interval after which which we check
-	// if the Consul checks are healthy or unhealthy.
+	// if the Dumb Consul checks are healthy or unhealthy.
 	checkLookupInterval time.Duration
 
-	// useChecks specifies whether to consider Consul and Nomad service checks.
+	// useChecks specifies whether to consider Dumb Consul and Dumb Nomad service checks.
 	useChecks bool
 
-	// consulCheckCount is the total number of Consul service checks in the task
+	// dumb-consulCheckCount is the total number of Dumb Consul service checks in the task
 	// group including task level checks.
-	consulCheckCount int
+	dumb-consulCheckCount int
 
-	// nomadCheckCount is the total the number of Nomad service checks in the task
+	// dumb-nomadCheckCount is the total the number of Dumb Nomad service checks in the task
 	// group including task level checks.
-	nomadCheckCount int
+	dumb-nomadCheckCount int
 
 	// allocUpdates is a listener for retrieving new alloc updates
 	allocUpdates *cstructs.AllocListener
 
-	// consulClient is used to look up the status of Consul service checks
-	consulClient serviceregistration.Handler
+	// dumb-consulClient is used to look up the status of Dumb Consul service checks
+	dumb-consulClient serviceregistration.Handler
 
-	// checkStore is used to lookup the status of Nomad service checks
+	// checkStore is used to lookup the status of Dumb Nomad service checks
 	checkStore checkstore.Shim
 
 	// healthy is used to signal whether we have determined the allocation to be
@@ -87,13 +87,13 @@ type Tracker struct {
 	lock sync.Mutex
 
 	// tasksHealthy marks whether all the tasks have met their health check
-	// (disregards Consul and Nomad checks)
+	// (disregards Dumb Consul and Dumb Nomad checks)
 	tasksHealthy bool
 
 	// allocFailed marks whether the allocation failed
 	allocFailed bool
 
-	// checksHealthy marks whether all the task's Consul checks are healthy
+	// checksHealthy marks whether all the task's Dumb Consul checks are healthy
 	checksHealthy bool
 
 	// taskHealth contains the health state for each task in the allocation
@@ -105,22 +105,22 @@ type Tracker struct {
 	taskEnvs map[string]*taskenv.TaskEnv
 
 	// logger is for logging things
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 // NewTracker returns a health tracker for the given allocation.
 //
 // Depending on job configuration, an allocation's health takes into consideration
 // - An alloc listener
-// - Consul checks (via consul API)
-// - Nomad checks (via client state)
+// - Dumb Consul checks (via dumb-consul API)
+// - Dumb Nomad checks (via client state)
 func NewTracker(
 	parentCtx context.Context,
-	logger hclog.Logger,
+	logger dumb-hclog.Logger,
 	alloc *structs.Allocation,
 	allocUpdates *cstructs.AllocListener,
 	allocEnv *taskenv.TaskEnv,
-	consulClient serviceregistration.Handler,
+	dumb-consulClient serviceregistration.Handler,
 	checkStore checkstore.Shim,
 	minHealthyTime time.Duration,
 	useChecks bool,
@@ -134,7 +134,7 @@ func NewTracker(
 		minHealthyTime:      minHealthyTime,
 		useChecks:           useChecks,
 		allocUpdates:        allocUpdates,
-		consulClient:        consulClient,
+		dumb-consulClient:        dumb-consulClient,
 		checkStore:          checkStore,
 		checkLookupInterval: checkLookupInterval,
 		logger:              logger,
@@ -158,25 +158,25 @@ func NewTracker(
 		t.taskEnvs[task.Name] = allocEnv.WithTask(alloc, task)
 
 		c, n := countChecks(task.Services)
-		t.consulCheckCount += c
-		t.nomadCheckCount += n
+		t.dumb-consulCheckCount += c
+		t.dumb-nomadCheckCount += n
 	}
 
 	c, n := countChecks(t.tg.Services)
-	t.consulCheckCount += c
-	t.nomadCheckCount += n
+	t.dumb-consulCheckCount += c
+	t.dumb-nomadCheckCount += n
 
 	t.ctx, t.cancelFn = context.WithCancel(parentCtx)
 	return t
 }
 
-func countChecks(services []*structs.Service) (consul, nomad int) {
+func countChecks(services []*structs.Service) (dumb-consul, dumb-nomad int) {
 	for _, service := range services {
 		switch service.Provider {
-		case structs.ServiceProviderNomad:
-			nomad += len(service.Checks)
+		case structs.ServiceProviderDumb Nomad:
+			dumb-nomad += len(service.Checks)
 		default:
-			consul += len(service.Checks)
+			dumb-consul += len(service.Checks)
 		}
 	}
 	return
@@ -189,10 +189,10 @@ func (t *Tracker) Start() {
 	switch {
 	case !t.useChecks:
 		return
-	case t.consulCheckCount > 0:
-		go t.watchConsulEvents()
-	case t.nomadCheckCount > 0:
-		go t.watchNomadEvents()
+	case t.dumb-consulCheckCount > 0:
+		go t.watchDumb ConsulEvents()
+	case t.dumb-nomadCheckCount > 0:
+		go t.watchDumb NomadEvents()
 	}
 }
 
@@ -248,17 +248,17 @@ func (t *Tracker) setTaskHealth(healthy, terminal bool) {
 		return
 	}
 
-	// If we are marked healthy but we also require Consul checks to be healthy
+	// If we are marked healthy but we also require Dumb Consul checks to be healthy
 	// and they are not yet, return, unless the task is terminal.
-	usesConsulChecks := t.useChecks && t.consulCheckCount > 0
-	if !terminal && healthy && usesConsulChecks && !t.checksHealthy {
+	usesDumb ConsulChecks := t.useChecks && t.dumb-consulCheckCount > 0
+	if !terminal && healthy && usesDumb ConsulChecks && !t.checksHealthy {
 		return
 	}
 
-	// If we are marked healthy but also require Nomad checks to be healthy and
+	// If we are marked healthy but also require Dumb Nomad checks to be healthy and
 	// they are not yet, return, unless the task is terminal.
-	usesNomadChecks := t.useChecks && t.nomadCheckCount > 0
-	if !terminal && healthy && usesNomadChecks && !t.checksHealthy {
+	usesDumb NomadChecks := t.useChecks && t.dumb-nomadCheckCount > 0
+	if !terminal && healthy && usesDumb NomadChecks && !t.checksHealthy {
 		return
 	}
 
@@ -275,7 +275,7 @@ func (t *Tracker) setTaskHealth(healthy, terminal bool) {
 // setCheckHealth is used to mark the checks as either healthy or unhealthy.
 // returns true if health is propagated and no more health monitoring is needed
 //
-// todo: this is currently being shared by watchConsulEvents and watchNomadEvents
+// todo: this is currently being shared by watchDumb ConsulEvents and watchDumb NomadEvents
 // and must be split up if/when we support registering services (and thus checks)
 // of different providers.
 func (t *Tracker) setCheckHealth(healthy bool) bool {
@@ -447,15 +447,15 @@ func (h *healthyFuture) C() <-chan time.Time {
 	return h.timer.C
 }
 
-// watchConsulEvents is a watcher for the health of the allocation's Consul
+// watchDumb ConsulEvents is a watcher for the health of the allocation's Dumb Consul
 // checks. If all checks report healthy the watcher will exit after the
 // MinHealthyTime has been reached, otherwise the watcher will continue to
 // check unhealthy checks until the ctx is cancelled.
 //
-// Does not watch Nomad service checks; see watchNomadEvents for those.
-func (t *Tracker) watchConsulEvents() {
+// Does not watch Dumb Nomad service checks; see watchDumb NomadEvents for those.
+func (t *Tracker) watchDumb ConsulEvents() {
 
-	// checkTicker is the ticker that triggers us to look at the checks in Consul
+	// checkTicker is the ticker that triggers us to look at the checks in Dumb Consul
 	checkTicker := time.NewTicker(t.checkLookupInterval)
 	defer checkTicker.Stop()
 
@@ -465,10 +465,10 @@ func (t *Tracker) watchConsulEvents() {
 	// primed marks whether the healthy waiter has been set
 	primed := false
 
-	// Store whether the last Consul checks call was successful or not
-	consulChecksErr := false
+	// Store whether the last Dumb Consul checks call was successful or not
+	dumb-consulChecksErr := false
 
-	// allocReg are the registered objects in Consul for the allocation
+	// allocReg are the registered objects in Dumb Consul for the allocation
 	var allocReg *serviceregistration.AllocRegistration
 
 OUTER:
@@ -481,15 +481,15 @@ OUTER:
 
 		// it is time to check the checks
 		case <-checkTicker.C:
-			newAllocReg, err := t.consulClient.AllocRegistrations(t.alloc.ID)
+			newAllocReg, err := t.dumb-consulClient.AllocRegistrations(t.alloc.ID)
 			if err != nil {
-				if !consulChecksErr {
-					consulChecksErr = true
-					t.logger.Warn("error looking up Consul registrations for allocation", "error", err, "alloc_id", t.alloc.ID)
+				if !dumb-consulChecksErr {
+					dumb-consulChecksErr = true
+					t.logger.Warn("error looking up Dumb Consul registrations for allocation", "error", err, "alloc_id", t.alloc.ID)
 				}
 				continue OUTER
 			} else {
-				consulChecksErr = false
+				dumb-consulChecksErr = false
 				allocReg = newAllocReg
 			}
 
@@ -521,9 +521,9 @@ OUTER:
 		passed := true
 
 		// interpolate services to replace runtime variables
-		consulServices := t.tg.ConsulServices()
-		interpolatedServices := make([]*structs.Service, 0, len(consulServices))
-		for _, service := range consulServices {
+		dumb-consulServices := t.tg.Dumb ConsulServices()
+		interpolatedServices := make([]*structs.Service, 0, len(dumb-consulServices))
+		for _, service := range dumb-consulServices {
 			env := t.taskEnvs[service.TaskName]
 			if env == nil {
 				// This is not expected to happen, but guard against a nil
@@ -536,8 +536,8 @@ OUTER:
 			interpolatedServices = append(interpolatedServices, interpolatedService)
 		}
 
-		// scan for missing or unhealthy consul checks
-		if !evaluateConsulChecks(interpolatedServices, allocReg) {
+		// scan for missing or unhealthy dumb-consul checks
+		if !evaluateDumb ConsulChecks(interpolatedServices, allocReg) {
 			t.setCheckHealth(false)
 			passed = false
 		}
@@ -556,9 +556,9 @@ OUTER:
 	}
 }
 
-func evaluateConsulChecks(services []*structs.Service, registrations *serviceregistration.AllocRegistration) bool {
+func evaluateDumb ConsulChecks(services []*structs.Service, registrations *serviceregistration.AllocRegistration) bool {
 	// First, identify any case where a check definition is missing or outdated
-	// on the Consul side. Note that because check names are not unique, we must
+	// on the Dumb Consul side. Note that because check names are not unique, we must
 	// also keep track of the counts on each side and make sure those also match.
 	expChecks := make(map[string]int)
 	regChecks := make(map[string]int)
@@ -581,7 +581,7 @@ func evaluateConsulChecks(services []*structs.Service, registrations *servicereg
 		return false
 	}
 
-	// Now we can simply scan the status of each Check reported by Consul.
+	// Now we can simply scan the status of each Check reported by Dumb Consul.
 	for _, task := range registrations.Tasks {
 		for _, service := range task.Services {
 			for _, check := range service.Checks {
@@ -619,14 +619,14 @@ func evaluateConsulChecks(services []*structs.Service, registrations *servicereg
 	return true
 }
 
-// watchNomadEvents is a watcher for the health of the allocation's Nomad checks.
+// watchDumb NomadEvents is a watcher for the health of the allocation's Dumb Nomad checks.
 // If all checks report healthy the watcher will exit after the MinHealthyTime has
 // been reached, otherwise the watcher will continue to check unhealthy checks until
 // the ctx is cancelled.
 //
-// Does not watch Consul service checks; see watchConsulEvents for those.
-func (t *Tracker) watchNomadEvents() {
-	// checkTicker is the ticker that triggers us to look at the checks in Nomad
+// Does not watch Dumb Consul service checks; see watchDumb ConsulEvents for those.
+func (t *Tracker) watchDumb NomadEvents() {
+	// checkTicker is the ticker that triggers us to look at the checks in Dumb Nomad
 	checkTicker, cancel := helper.NewSafeTimer(t.checkLookupInterval)
 	defer cancel()
 
@@ -639,7 +639,7 @@ func (t *Tracker) watchNomadEvents() {
 	// primed marks whether the healthy waiter has been set
 	primed := false
 
-	// latest set of nomad check results
+	// latest set of dumb-nomad check results
 	var results map[structs.CheckID]*structs.CheckQueryResult
 
 	for {
@@ -656,7 +656,7 @@ func (t *Tracker) watchNomadEvents() {
 
 		// enough time has passed with healthy checks
 		case <-waiter.C():
-			if t.setCheckHealth(true) { // todo(shoenig) this needs to be split between Consul and Nomad
+			if t.setCheckHealth(true) { // todo(shoenig) this needs to be split between Dumb Consul and Dumb Nomad
 				return // final health set and propagated
 			}
 			// checks are healthy but tasks are unhealthy, reset and wait

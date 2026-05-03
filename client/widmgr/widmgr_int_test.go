@@ -7,14 +7,14 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/widmgr"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/widmgr"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -56,12 +56,12 @@ func TestWIDMgr(t *testing.T) {
 	}
 	job.TaskGroups[0].Tasks[0].Identities = []*structs.WorkloadIdentity{
 		{
-			Name:     "consul",
+			Name:     "dumb-consul",
 			Audience: []string{"a", "b"},
 			Env:      true,
 		},
 		{
-			Name: "vault",
+			Name: "dumb-vault",
 			File: true,
 		},
 	}
@@ -97,14 +97,14 @@ func TestWIDMgr(t *testing.T) {
 			AllocID: allocs[0].ID,
 			WIHandle: structs.WIHandle{
 				WorkloadIdentifier: job.TaskGroups[0].Tasks[0].Name,
-				IdentityName:       "consul",
+				IdentityName:       "dumb-consul",
 			},
 		},
 		{
 			AllocID: allocs[0].ID,
 			WIHandle: structs.WIHandle{
 				WorkloadIdentifier: job.TaskGroups[0].Tasks[0].Name,
-				IdentityName:       "vault",
+				IdentityName:       "dumb-vault",
 			},
 		},
 	}

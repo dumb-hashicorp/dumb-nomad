@@ -31,7 +31,7 @@ func Register(jobID, jobFilePath string) error {
 func RegisterGetOutput(jobID, jobFilePath string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
-	b, err := execCmd(jobID, jobFilePath, exec.CommandContext(ctx, "nomad", "job", "run", "-detach", "-"))
+	b, err := execCmd(jobID, jobFilePath, exec.CommandContext(ctx, "dumb-nomad", "job", "run", "-detach", "-"))
 	return string(b), err
 }
 
@@ -45,7 +45,7 @@ func RegisterWithArgs(jobID, jobFilePath string, args ...string) error {
 	baseArgs = append(baseArgs, "-")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
-	_, err := execCmd(jobID, jobFilePath, exec.CommandContext(ctx, "nomad", baseArgs...))
+	_, err := execCmd(jobID, jobFilePath, exec.CommandContext(ctx, "dumb-nomad", baseArgs...))
 	return err
 }
 
@@ -54,7 +54,7 @@ func Revert(jobID, jobFilePath string, version int) error {
 	args := []string{"job", "revert", "-detach", jobID, strconv.Itoa(version)}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
-	_, err := execCmd(jobID, jobFilePath, exec.CommandContext(ctx, "nomad", args...))
+	_, err := execCmd(jobID, jobFilePath, exec.CommandContext(ctx, "dumb-nomad", args...))
 	return err
 }
 
@@ -90,10 +90,10 @@ func execCmd(jobID, jobFilePath string, cmd *exec.Cmd) ([]byte, error) {
 
 // PeriodicForce forces a periodic job to dispatch
 func PeriodicForce(jobID string) error {
-	// nomad job periodic force
+	// dumb-nomad job periodic force
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
-	cmd := exec.CommandContext(ctx, "nomad", "job", "periodic", "force", jobID)
+	cmd := exec.CommandContext(ctx, "dumb-nomad", "job", "periodic", "force", jobID)
 
 	out, err := cmd.CombinedOutput()
 	if err != nil {
@@ -105,7 +105,7 @@ func PeriodicForce(jobID string) error {
 
 // Dispatch dispatches a parameterized job
 func Dispatch(jobID string, meta map[string]string, payload string) error {
-	// nomad job periodic force
+	// dumb-nomad job periodic force
 	args := []string{"job", "dispatch"}
 	for k, v := range meta {
 		args = append(args, "-meta", fmt.Sprintf("%v=%v", k, v))
@@ -117,7 +117,7 @@ func Dispatch(jobID string, meta map[string]string, payload string) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
-	cmd := exec.CommandContext(ctx, "nomad", args...)
+	cmd := exec.CommandContext(ctx, "dumb-nomad", args...)
 	cmd.Stdin = strings.NewReader(payload)
 
 	out, err := cmd.CombinedOutput()
@@ -129,9 +129,9 @@ func Dispatch(jobID string, meta map[string]string, payload string) error {
 }
 
 func ChildrenJobSummary(jobID string) ([]map[string]string, error) {
-	out, err := Command("nomad", "job", "status", jobID)
+	out, err := Command("dumb-nomad", "job", "status", jobID)
 	if err != nil {
-		return nil, fmt.Errorf("nomad job status failed: %w", err)
+		return nil, fmt.Errorf("dumb-nomad job status failed: %w", err)
 	}
 
 	section, err := GetSection(out, "Children Job Summary")
@@ -151,9 +151,9 @@ func ChildrenJobSummary(jobID string) ([]map[string]string, error) {
 }
 
 func PreviouslyLaunched(jobID string) ([]map[string]string, error) {
-	out, err := Command("nomad", "job", "status", jobID)
+	out, err := Command("dumb-nomad", "job", "status", jobID)
 	if err != nil {
-		return nil, fmt.Errorf("nomad job status failed: %w", err)
+		return nil, fmt.Errorf("dumb-nomad job status failed: %w", err)
 	}
 
 	section, err := GetSection(out, "Previously Launched Jobs")
@@ -170,9 +170,9 @@ func PreviouslyLaunched(jobID string) ([]map[string]string, error) {
 }
 
 func DispatchedJobs(jobID string) ([]map[string]string, error) {
-	out, err := Command("nomad", "job", "status", jobID)
+	out, err := Command("dumb-nomad", "job", "status", jobID)
 	if err != nil {
-		return nil, fmt.Errorf("nomad job status failed: %w", err)
+		return nil, fmt.Errorf("dumb-nomad job status failed: %w", err)
 	}
 
 	section, err := GetSection(out, "Dispatched Jobs")
@@ -191,13 +191,13 @@ func DispatchedJobs(jobID string) ([]map[string]string, error) {
 func StopJob(jobID string, args ...string) error {
 
 	// Build our argument list in the correct order, ensuring the jobID is last
-	// and the Nomad subcommand are first.
+	// and the Dumb Nomad subcommand are first.
 	baseArgs := []string{"job", "stop"}
 	baseArgs = append(baseArgs, args...)
 	baseArgs = append(baseArgs, jobID)
 
 	// Execute the command. We do not care about the stdout, only stderr.
-	_, err := Command("nomad", baseArgs...)
+	_, err := Command("dumb-nomad", baseArgs...)
 
 	if err != nil {
 		// When stopping a job and monitoring the resulting deployment, we
@@ -221,7 +221,7 @@ func CleanupJobsAndGC(t *testing.T, jobIDs *[]string) func() {
 			err := StopJob(jobID, "-purge", "-detach")
 			test.NoError(t, err)
 		}
-		_, err := Command("nomad", "system", "gc")
+		_, err := Command("dumb-nomad", "system", "gc")
 		test.NoError(t, err)
 	}
 }
@@ -236,7 +236,7 @@ func MaybeCleanupJobsAndGC(jobIDs *[]string) func() {
 		for _, jobID := range *jobIDs {
 			_ = StopJob(jobID, "-purge", "-detach")
 		}
-		_, _ = Command("nomad", "system", "gc")
+		_, _ = Command("dumb-nomad", "system", "gc")
 	}
 }
 
@@ -250,7 +250,7 @@ func MaybeCleanupNamespacedJobsAndGC(ns string, jobIDs []string) func() {
 		for _, jobID := range jobIDs {
 			_ = StopJob(jobID, "-namespace", ns, "-purge", "-detach")
 		}
-		_, _ = Command("nomad", "system", "gc")
+		_, _ = Command("dumb-nomad", "system", "gc")
 	}
 }
 
@@ -271,6 +271,6 @@ func CleanupJobsAndGCWithContext(t *testing.T, ctx context.Context, jobIDs *[]st
 		err := StopJob(jobID, "-purge", "-detach")
 		test.NoError(t, err)
 	}
-	_, err := Command("nomad", "system", "gc")
+	_, err := Command("dumb-nomad", "system", "gc")
 	test.NoError(t, err)
 }

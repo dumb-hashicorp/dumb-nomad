@@ -10,8 +10,8 @@ import {
   watchRecord,
   watchRelationship,
   watchAll,
-} from 'nomad-ui/utils/properties/watch';
-import WithWatchers from 'nomad-ui/mixins/with-watchers';
+} from 'dumb-nomad-ui/utils/properties/watch';
+import WithWatchers from 'dumb-nomad-ui/mixins/with-watchers';
 import { action } from '@ember/object';
 
 export default class IndexRoute extends Route.extend(WithWatchers) {

@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/docker/docker/libnetwork/resolvconf"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/shoenig/test/must"
 )
 

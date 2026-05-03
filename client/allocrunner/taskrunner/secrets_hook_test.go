@@ -14,25 +14,25 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	trtesting "github.com/hashicorp/nomad/client/allocrunner/taskrunner/testing"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper/bufconndialer"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	structsc "github.com/hashicorp/nomad/nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	trtesting "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/testing"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/bufconndialer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	structsc "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
 	"github.com/shoenig/test/must"
 )
 
-func TestSecretsHook_Prestart_Nomad(t *testing.T) {
+func TestSecretsHook_Prestart_Dumb Nomad(t *testing.T) {
 	ci.Parallel(t)
 
-	t.Run("nomad provider successfully renders valid secrets", func(t *testing.T) {
+	t.Run("dumb-nomad provider successfully renders valid secrets", func(t *testing.T) {
 		secretsResp := `
 		{
 		  "CreateIndex": 812,
@@ -44,21 +44,21 @@ func TestSecretsHook_Prestart_Nomad(t *testing.T) {
 		  "ModifyIndex": 812,
 		  "ModifyTime": 1750782609539170600,
 		  "Namespace": "default",
-		  "Path": "testnomadvar"
+		  "Path": "testdumb-nomadvar"
 		}
 		`
-		count := 0 // CT expects a nomad index header that increments, or else it continues polling
-		nomadServer := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Add("X-Nomad-Index", strconv.Itoa(count))
+		count := 0 // CT expects a dumb-nomad index header that increments, or else it continues polling
+		dumb-nomadServer := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Add("X-Dumb Nomad-Index", strconv.Itoa(count))
 			fmt.Fprintln(w, secretsResp)
 			count += 1
 		}))
-		t.Cleanup(nomadServer.Close)
+		t.Cleanup(dumb-nomadServer.Close)
 
 		l, d := bufconndialer.New()
-		nomadServer.Listener = l
+		dumb-nomadServer.Listener = l
 
-		nomadServer.Start()
+		dumb-nomadServer.Start()
 
 		clientConfig := config.DefaultConfig()
 		clientConfig.TemplateDialer = d
@@ -70,7 +70,7 @@ func TestSecretsHook_Prestart_Nomad(t *testing.T) {
 
 		taskEnv := taskenv.NewBuilder(mock.Node(), alloc, task, clientConfig.Region)
 		conf := &secretsHookConfig{
-			logger:       testlog.HCLogger(t),
+			logger:       testlog.DUMB_HCLogger(t),
 			lifecycle:    trtesting.NewMockTaskHooks(),
 			events:       &trtesting.MockEmitter{},
 			clientConfig: clientConfig,
@@ -79,16 +79,16 @@ func TestSecretsHook_Prestart_Nomad(t *testing.T) {
 		secretHook := newSecretsHook(conf, []*structs.Secret{
 			{
 				Name:     "test_secret",
-				Provider: "nomad",
-				Path:     "testnomadvar",
+				Provider: "dumb-nomad",
+				Path:     "testdumb-nomadvar",
 				Config: map[string]any{
 					"namespace": "default",
 				},
 			},
 			{
 				Name:     "test_secret1",
-				Provider: "nomad",
-				Path:     "testnomadvar1",
+				Provider: "dumb-nomad",
+				Path:     "testdumb-nomadvar1",
 				Config: map[string]any{
 					"namespace": "default",
 				},
@@ -129,21 +129,21 @@ func TestSecretsHook_Prestart_Nomad(t *testing.T) {
 		  "ModifyIndex": 812,
 		  "ModifyTime": 1750782609539170600,
 		  "Namespace": "default",
-		  "Path": "testnomadvar"
+		  "Path": "testdumb-nomadvar"
 		}
 		`
-		count := 0 // CT expects a nomad index header that increments, or else it continues polling
-		nomadServer := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Add("X-Nomad-Index", strconv.Itoa(count))
+		count := 0 // CT expects a dumb-nomad index header that increments, or else it continues polling
+		dumb-nomadServer := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Add("X-Dumb Nomad-Index", strconv.Itoa(count))
 			fmt.Fprintln(w, secretsResp)
 			count += 1
 		}))
-		t.Cleanup(nomadServer.Close)
+		t.Cleanup(dumb-nomadServer.Close)
 
 		l, d := bufconndialer.New()
-		nomadServer.Listener = l
+		dumb-nomadServer.Listener = l
 
-		nomadServer.Start()
+		dumb-nomadServer.Start()
 
 		clientConfig := config.DefaultConfig()
 		clientConfig.TemplateDialer = d
@@ -155,7 +155,7 @@ func TestSecretsHook_Prestart_Nomad(t *testing.T) {
 
 		taskEnv := taskenv.NewBuilder(mock.Node(), alloc, task, clientConfig.Region)
 		conf := &secretsHookConfig{
-			logger:       testlog.HCLogger(t),
+			logger:       testlog.DUMB_HCLogger(t),
 			lifecycle:    trtesting.NewMockTaskHooks(),
 			events:       &trtesting.MockEmitter{},
 			clientConfig: clientConfig,
@@ -164,8 +164,8 @@ func TestSecretsHook_Prestart_Nomad(t *testing.T) {
 		secretHook := newSecretsHook(conf, []*structs.Secret{
 			{
 				Name:     "test_secret",
-				Provider: "nomad",
-				Path:     "testnomadvar",
+				Provider: "dumb-nomad",
+				Path:     "testdumb-nomadvar",
 				Config: map[string]any{
 					"namespace": "default",
 				},
@@ -197,19 +197,19 @@ func TestSecretsHook_Prestart_Nomad(t *testing.T) {
 
 		taskEnv := taskenv.NewBuilder(mock.Node(), alloc, task, clientConfig.Region)
 		conf := &secretsHookConfig{
-			logger:       testlog.HCLogger(t),
+			logger:       testlog.DUMB_HCLogger(t),
 			lifecycle:    trtesting.NewMockTaskHooks(),
 			events:       &trtesting.MockEmitter{},
 			clientConfig: clientConfig,
 			envBuilder:   taskEnv,
 		}
 
-		// give an invalid secret, in this case a nomad secret with bad namespace
+		// give an invalid secret, in this case a dumb-nomad secret with bad namespace
 		secretHook := newSecretsHook(conf, []*structs.Secret{
 			{
 				Name:     "test_secret",
-				Provider: "nomad",
-				Path:     "testnomadvar",
+				Provider: "dumb-nomad",
+				Path:     "testdumb-nomadvar",
 				Config: map[string]any{
 					"namespace": 123,
 				},
@@ -231,7 +231,7 @@ func TestSecretsHook_Prestart_Nomad(t *testing.T) {
 	})
 }
 
-func TestSecretsHook_Prestart_Vault(t *testing.T) {
+func TestSecretsHook_Prestart_Dumb Vault(t *testing.T) {
 	ci.Parallel(t)
 
 	secretsResp := `
@@ -250,21 +250,21 @@ func TestSecretsHook_Prestart_Vault(t *testing.T) {
   }
 }`
 
-	// Start test server to simulate Vault cluster responses.
+	// Start test server to simulate Dumb Vault cluster responses.
 	// reqCh := make(chan any)
-	defaultVaultServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	defaultDumb VaultServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, secretsResp)
 	}))
-	t.Cleanup(defaultVaultServer.Close)
+	t.Cleanup(defaultDumb VaultServer.Close)
 
-	// Setup client with Vault config.
+	// Setup client with Dumb Vault config.
 	clientConfig := config.DefaultConfig()
 	clientConfig.TemplateConfig.DisableSandbox = true
-	clientConfig.VaultConfigs = map[string]*structsc.VaultConfig{
-		structs.VaultDefaultCluster: {
-			Name:    structs.VaultDefaultCluster,
+	clientConfig.Dumb VaultConfigs = map[string]*structsc.Dumb VaultConfig{
+		structs.Dumb VaultDefaultCluster: {
+			Name:    structs.Dumb VaultDefaultCluster,
 			Enabled: pointer.Of(true),
-			Addr:    defaultVaultServer.URL,
+			Addr:    defaultDumb VaultServer.URL,
 		},
 	}
 
@@ -274,7 +274,7 @@ func TestSecretsHook_Prestart_Vault(t *testing.T) {
 
 	taskEnv := taskenv.NewBuilder(mock.Node(), alloc, task, clientConfig.Region)
 	conf := &secretsHookConfig{
-		logger:       testlog.HCLogger(t),
+		logger:       testlog.DUMB_HCLogger(t),
 		lifecycle:    trtesting.NewMockTaskHooks(),
 		events:       &trtesting.MockEmitter{},
 		clientConfig: clientConfig,
@@ -283,7 +283,7 @@ func TestSecretsHook_Prestart_Vault(t *testing.T) {
 	secretHook := newSecretsHook(conf, []*structs.Secret{
 		{
 			Name:     "test_secret",
-			Provider: "vault",
+			Provider: "dumb-vault",
 			Path:     "/test/path",
 			Config: map[string]any{
 				"engine": "kv_v2",
@@ -291,7 +291,7 @@ func TestSecretsHook_Prestart_Vault(t *testing.T) {
 		},
 		{
 			Name:     "test_secret1",
-			Provider: "vault",
+			Provider: "dumb-vault",
 			Path:     "/test/path1",
 			Config: map[string]any{
 				"engine": "kv_v2",
@@ -349,8 +349,8 @@ fi`
 
 		pluginPath := filepath.Join(pluginDir, "test")
 		testPlugin := fmt.Sprintf(basePlugin, `
-				"jobID": "${NOMAD_JOB_ID}",
-				"namespace": "${NOMAD_NAMESPACE}"`)
+				"jobID": "${DUMB_NOMAD_JOB_ID}",
+				"namespace": "${DUMB_NOMAD_NAMESPACE}"`)
 		err = os.WriteFile(pluginPath, []byte(testPlugin), 0755)
 		must.NoError(t, err)
 
@@ -360,12 +360,12 @@ fi`
 
 		taskEnv := taskenv.NewBuilder(mock.Node(), alloc, task, clientConfig.Region)
 		conf := &secretsHookConfig{
-			logger:         testlog.HCLogger(t),
+			logger:         testlog.DUMB_HCLogger(t),
 			lifecycle:      trtesting.NewMockTaskHooks(),
 			events:         &trtesting.MockEmitter{},
 			clientConfig:   clientConfig,
 			envBuilder:     taskEnv,
-			nomadNamespace: "test-namespace",
+			dumb-nomadNamespace: "test-namespace",
 			jobId:          "test-jobid",
 		}
 		secretHook := newSecretsHook(conf, []*structs.Secret{
@@ -374,8 +374,8 @@ fi`
 				Provider: "test",
 				Path:     "/test/path",
 				Env: map[string]string{
-					"NOMAD_NAMESPACE": "incorrect",
-					"NOMAD_JOB_ID":    "also-incorrect",
+					"DUMB_NOMAD_NAMESPACE": "incorrect",
+					"DUMB_NOMAD_JOB_ID":    "also-incorrect",
 				},
 			},
 			{
@@ -409,7 +409,7 @@ fi`
 	})
 
 	t.Run("interpolates secret references in plugin env", func(t *testing.T) {
-		// Setup Nomad variable server that returns a token
+		// Setup Dumb Nomad variable server that returns a token
 		secretsResp := `
 		{
 		  "CreateIndex": 812,
@@ -420,20 +420,20 @@ fi`
 		  "ModifyIndex": 812,
 		  "ModifyTime": 1750782609539170600,
 		  "Namespace": "default",
-		  "Path": "nomad/jobs/creds"
+		  "Path": "dumb-nomad/jobs/creds"
 		}
 		`
 		count := 0
-		nomadServer := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Add("X-Nomad-Index", strconv.Itoa(count))
+		dumb-nomadServer := httptest.NewUnstartedServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Add("X-Dumb Nomad-Index", strconv.Itoa(count))
 			fmt.Fprintln(w, secretsResp)
 			count += 1
 		}))
-		t.Cleanup(nomadServer.Close)
+		t.Cleanup(dumb-nomadServer.Close)
 
 		l, d := bufconndialer.New()
-		nomadServer.Listener = l
-		nomadServer.Start()
+		dumb-nomadServer.Listener = l
+		dumb-nomadServer.Start()
 
 		clientConfig := config.DefaultConfig()
 		clientConfig.TemplateDialer = d
@@ -456,22 +456,22 @@ fi`
 
 		taskEnv := taskenv.NewBuilder(mock.Node(), alloc, task, clientConfig.Region)
 		conf := &secretsHookConfig{
-			logger:         testlog.HCLogger(t),
+			logger:         testlog.DUMB_HCLogger(t),
 			lifecycle:      trtesting.NewMockTaskHooks(),
 			events:         &trtesting.MockEmitter{},
 			clientConfig:   clientConfig,
 			envBuilder:     taskEnv,
-			nomadNamespace: "default",
+			dumb-nomadNamespace: "default",
 			jobId:          "test-job",
 		}
 
-		// First secret: nomad variable that resolves token
+		// First secret: dumb-nomad variable that resolves token
 		// Second secret: plugin that references the resolved token via ${secret.creds.token}
 		secretHook := newSecretsHook(conf, []*structs.Secret{
 			{
 				Name:     "creds",
-				Provider: "nomad",
-				Path:     "nomad/jobs/creds",
+				Provider: "dumb-nomad",
+				Path:     "dumb-nomad/jobs/creds",
 				Config: map[string]any{
 					"namespace": "default",
 				},
@@ -500,7 +500,7 @@ fi`
 
 		secrets := taskEnv.Build().TaskSecrets
 
-		// Verify the nomad variable was resolved
+		// Verify the dumb-nomad variable was resolved
 		must.Eq(t, "my-secret-token", secrets["secret.creds.token"])
 
 		// Verify the plugin received the interpolated token value

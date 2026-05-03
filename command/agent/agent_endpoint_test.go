@@ -23,16 +23,16 @@ import (
 	"testing"
 	"time"
 
-	msgpackrpc "github.com/hashicorp/net-rpc-msgpackrpc/v2"
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	sframer "github.com/hashicorp/nomad/client/lib/streamframer"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/pool"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	msgpackrpc "github.com/dumb-hashicorp/net-rpc-msgpackrpc/v2"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	sframer "github.com/dumb-hashicorp/dumb-nomad/client/lib/streamframer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pool"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -66,21 +66,21 @@ func TestHTTP_AgentSelf(t *testing.T) {
 		self = obj.(agentSelf)
 		require.Equal("<redacted>", self.Config.ACL.ReplicationToken)
 
-		// Check the Consul config
-		require.Empty(self.Config.Consuls[0].Token)
+		// Check the Dumb Consul config
+		require.Empty(self.Config.Dumb Consuls[0].Token)
 
-		// Assign a Consul token and require it is redacted.
-		s.Config.Consuls[0].Token = "badc0deb-adc0-deba-dc0d-ebadc0debadc"
+		// Assign a Dumb Consul token and require it is redacted.
+		s.Config.Dumb Consuls[0].Token = "badc0deb-adc0-deba-dc0d-ebadc0debadc"
 		respW = httptest.NewRecorder()
 		obj, err = s.Server.AgentSelfRequest(respW, req)
 		require.NoError(err)
 		self = obj.(agentSelf)
-		require.Equal("<redacted>", self.Config.Consuls[0].Token)
+		require.Equal("<redacted>", self.Config.Dumb Consuls[0].Token)
 
 		// Check the Circonus config
 		require.Empty(self.Config.Telemetry.CirconusAPIToken)
 
-		// Assign a Consul token and require it is redacted.
+		// Assign a Dumb Consul token and require it is redacted.
 		s.Config.Telemetry.CirconusAPIToken = "badc0deb-adc0-deba-dc0d-ebadc0debadc"
 		respW = httptest.NewRecorder()
 		obj, err = s.Server.AgentSelfRequest(respW, req)
@@ -451,7 +451,7 @@ func TestHTTP_AgentMonitorExport(t *testing.T) {
 	ci.Parallel(t)
 	const expectedText = "log log log log log"
 	dir := t.TempDir()
-	testFile, err := os.CreateTemp(dir, "nomadtests")
+	testFile, err := os.CreateTemp(dir, "dumb-nomadtests")
 	must.NoError(t, err)
 
 	_, err = testFile.Write([]byte(expectedText))
@@ -512,7 +512,7 @@ func TestHTTP_AgentMonitorExport(t *testing.T) {
 			name:        "invalid_service_name",
 			follow:      "true",
 			onDisk:      "false",
-			serviceName: "nomad%",
+			serviceName: "dumb-nomad%",
 
 			config:    config,
 			errCode:   422,
@@ -523,7 +523,7 @@ func TestHTTP_AgentMonitorExport(t *testing.T) {
 			name:        "invalid_logsSince_duration",
 			follow:      "false",
 			onDisk:      "true",
-			serviceName: "nomad",
+			serviceName: "dumb-nomad",
 			logsSince:   "98seconds",
 
 			config:    config,
@@ -549,12 +549,12 @@ func TestHTTP_AgentMonitorExport(t *testing.T) {
 			name:        "onDisk_and_serviceName",
 			follow:      "false",
 			onDisk:      "true",
-			serviceName: "nomad",
+			serviceName: "dumb-nomad",
 			nodeID:      "doesn'tneedtobeuuid",
 
 			config:    config,
 			errCode:   400,
-			errString: "Cannot target journald and nomad log file simultaneously",
+			errString: "Cannot target journald and dumb-nomad log file simultaneously",
 			expectErr: true,
 			want:      expectedText,
 		},
@@ -587,7 +587,7 @@ func TestHTTP_AgentMonitorExport(t *testing.T) {
 
 			config:    nil,
 			errCode:   400,
-			errString: "No nomad log file defined",
+			errString: "No dumb-nomad log file defined",
 			expectErr: true,
 			want:      expectedText,
 		},
@@ -646,7 +646,7 @@ func TestHTTP_AgentMonitorExport(t *testing.T) {
 }
 
 // Scenarios when Pprof requests should be available
-// see https://github.com/hashicorp/nomad/issues/6496
+// see https://github.com/dumb-hashicorp/dumb-nomad/issues/6496
 // +---------------+------------------+--------+------------------+
 // |   Endpoint    |  `enable_debug`  |  ACLs  |  **Available?**  |
 // +---------------+------------------+--------+------------------+
@@ -924,8 +924,8 @@ func TestHTTP_AgentSetServers(t *testing.T) {
 			}
 			defer conn.Close()
 
-			// Write the Nomad RPC byte to set the mode
-			if _, err := conn.Write([]byte{byte(pool.RpcNomad)}); err != nil {
+			// Write the Dumb Nomad RPC byte to set the mode
+			if _, err := conn.Write([]byte{byte(pool.RpcDumb Nomad)}); err != nil {
 				return false, err
 			}
 
@@ -988,8 +988,8 @@ func TestHTTP_AgentSetServers_ACL(t *testing.T) {
 			}
 			defer conn.Close()
 
-			// Write the Consul RPC byte to set the mode
-			if _, err := conn.Write([]byte{byte(pool.RpcNomad)}); err != nil {
+			// Write the Dumb Consul RPC byte to set the mode
+			if _, err := conn.Write([]byte{byte(pool.RpcDumb Nomad)}); err != nil {
 				return false, err
 			}
 

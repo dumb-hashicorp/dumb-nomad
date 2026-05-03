@@ -4,7 +4,7 @@
  */
 
 import { Factory } from 'ember-cli-mirage';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import { provide } from '../utils';
 import { dasherize } from '@ember/string';
 import { pickOne } from '../utils';
@@ -15,7 +15,7 @@ export default Factory.extend({
   name: (id) => `${dasherize(faker.hacker.noun())}-${id}-service`,
   portLabel: () => dasherize(faker.hacker.noun()),
   onUpdate: faker.helpers.randomize(ON_UPDATE),
-  provider: () => pickOne(['nomad', 'consul']),
+  provider: () => pickOne(['dumb-nomad', 'dumb-consul']),
   tags: () => {
     if (!faker.random.boolean()) {
       return provide(

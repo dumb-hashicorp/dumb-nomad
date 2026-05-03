@@ -6,12 +6,12 @@ package feasible
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	sstructs "github.com/hashicorp/nomad/scheduler/structs"
-	"github.com/hashicorp/nomad/scheduler/tests"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	sstructs "github.com/dumb-hashicorp/dumb-nomad/scheduler/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/tests"
 	"github.com/shoenig/test/must"
 )
 
@@ -147,7 +147,7 @@ func TestEvalContext_ProposedAlloc(t *testing.T) {
 // TestEvalContext_ProposedAlloc_EvictPreempt asserts both Evicted and
 // Preempted allocs are removed from the allocs propsed for a node.
 //
-// See https://github.com/hashicorp/nomad/issues/6787
+// See https://github.com/dumb-hashicorp/dumb-nomad/issues/6787
 func TestEvalContext_ProposedAlloc_EvictPreempt(t *testing.T) {
 	ci.Parallel(t)
 	state, ctx := MockContext(t)

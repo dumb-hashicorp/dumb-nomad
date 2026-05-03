@@ -1,4 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright (c) Dumb HashiCorp, Inc.
 // SPDX-License-Identifier: BUSL-1.1
 
 package config
@@ -25,26 +25,26 @@ var validEnvFingerprinters = []string{
 type Fingerprint struct {
 
 	// Name is the fingerprinter identifier that this configuration block
-	// relates to. It is gathered from the HCL block label.
-	Name string `hcl:",key"`
+	// relates to. It is gathered from the DUMB_HCL block label.
+	Name string `dumb-hcl:",key"`
 
 	// RetryInterval specifies the time to wait between fingerprint
 	// attempts.
 	RetryInterval    time.Duration
-	RetryIntervalHCL string `hcl:"retry_interval,optional"`
+	RetryIntervalDUMB_HCL string `dumb-hcl:"retry_interval,optional"`
 
 	// RetryAttempts specifies the maximum number of fingerprint attempts to be
 	// made before the failure is considered terminal.
-	RetryAttempts int `hcl:"retry_attempts,optional"`
+	RetryAttempts int `dumb-hcl:"retry_attempts,optional"`
 
 	// ExitOnFailure indicates whether the fingerprinter should cause the agent
 	// to exit if it fails to correctly perform its fingerprint run. This is
-	// useful if the fingerprinter provides critical information used by Nomad
+	// useful if the fingerprinter provides critical information used by Dumb Nomad
 	// workloads.
-	ExitOnFailure *bool `hcl:"exit_on_failure,optional"`
+	ExitOnFailure *bool `dumb-hcl:"exit_on_failure,optional"`
 
-	// ExtraKeysHCL is used by hcl to surface unexpected keys
-	ExtraKeysHCL []string `hcl:",unusedKeys" json:"-"`
+	// ExtraKeysDUMB_HCL is used by dumb-hcl to surface unexpected keys
+	ExtraKeysDUMB_HCL []string `dumb-hcl:",unusedKeys" json:"-"`
 }
 
 // Copy is used to satisfy to helper.Copyable interface, so we can perform
@@ -78,8 +78,8 @@ func (f *Fingerprint) Merge(z *Fingerprint) *Fingerprint {
 	if z.RetryInterval != 0 {
 		result.RetryInterval = z.RetryInterval
 	}
-	if z.RetryIntervalHCL != "" {
-		result.RetryIntervalHCL = z.RetryIntervalHCL
+	if z.RetryIntervalDUMB_HCL != "" {
+		result.RetryIntervalDUMB_HCL = z.RetryIntervalDUMB_HCL
 	}
 	if z.RetryAttempts != 0 {
 		result.RetryAttempts = z.RetryAttempts
@@ -111,9 +111,9 @@ func (f *Fingerprint) Validate() error {
 	if f.RetryAttempts < -1 {
 		return fmt.Errorf("fingerprint %q retry attempts cannot be less than -1", f.Name)
 	}
-	if len(f.ExtraKeysHCL) > 0 {
+	if len(f.ExtraKeysDUMB_HCL) > 0 {
 		return fmt.Errorf("fingerprint %q contains unknown configuration options: %s",
-			f.Name, strings.Join(f.ExtraKeysHCL, ","))
+			f.Name, strings.Join(f.ExtraKeysDUMB_HCL, ","))
 	}
 
 	return nil

@@ -7,11 +7,11 @@ import (
 	"context"
 	"time"
 
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 )
 
-type TaskConfigSchemaFn func() (*hclspec.Spec, error)
+type TaskConfigSchemaFn func() (*dumb-hclspec.Spec, error)
 type CapabilitiesFn func() (*Capabilities, error)
 type FingerprintFn func(context.Context) (<-chan *Fingerprint, error)
 type RecoverTaskFn func(*TaskHandle) error
@@ -43,7 +43,7 @@ type MockDriverPlugin struct {
 	ExecTaskFn         ExecTaskFn
 }
 
-func (p *MockDriverPlugin) TaskConfigSchema() (*hclspec.Spec, error) {
+func (p *MockDriverPlugin) TaskConfigSchema() (*dumb-hclspec.Spec, error) {
 	return p.TaskConfigSchemaFn()
 }
 

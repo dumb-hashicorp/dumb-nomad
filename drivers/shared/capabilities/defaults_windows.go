@@ -18,7 +18,7 @@ import (
 // Doing this on windows is somewhat tricky, because capabilities differ by
 // runtime, so we have to perform some extra checks.
 func DockerDefaults(ver types.Version) *Set {
-	defaults := NomadDefaults()
+	defaults := Dumb NomadDefaults()
 
 	// Docker CE doesn't include NET_RAW on Windows, Mirantis (aka Docker EE) does
 	if strings.Contains(ver.Platform.Name, "Mirantis") {

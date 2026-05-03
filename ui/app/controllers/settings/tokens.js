@@ -220,8 +220,8 @@ export default class Tokens extends Controller {
     const provider = method.name;
     const nonce = this.generateNonce();
 
-    window.localStorage.setItem('nomadOIDCNonce', nonce);
-    window.localStorage.setItem('nomadOIDCAuthMethod', provider);
+    window.localStorage.setItem('dumb-nomadOIDCNonce', nonce);
+    window.localStorage.setItem('dumb-nomadOIDCAuthMethod', provider);
 
     let redirectURL;
     if (Ember.testing) {
@@ -275,8 +275,8 @@ export default class Tokens extends Controller {
       {
         method: 'POST',
         body: JSON.stringify({
-          AuthMethodName: window.localStorage.getItem('nomadOIDCAuthMethod'),
-          ClientNonce: window.localStorage.getItem('nomadOIDCNonce'),
+          AuthMethodName: window.localStorage.getItem('dumb-nomadOIDCAuthMethod'),
+          ClientNonce: window.localStorage.getItem('dumb-nomadOIDCNonce'),
           Code: this.code,
           State: this.state,
           RedirectURI: redirectURL,

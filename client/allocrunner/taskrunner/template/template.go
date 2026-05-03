@@ -16,24 +16,24 @@ import (
 	"sync"
 	"time"
 
-	ctconf "github.com/hashicorp/consul-template/config"
-	"github.com/hashicorp/consul-template/manager"
-	"github.com/hashicorp/consul-template/renderer"
-	"github.com/hashicorp/consul-template/signals"
-	envparse "github.com/hashicorp/go-envparse"
-	"github.com/hashicorp/go-hclog"
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/nomad/structs"
-	structsc "github.com/hashicorp/nomad/nomad/structs/config"
+	ctconf "github.com/dumb-hashicorp/dumb-consul-template/config"
+	"github.com/dumb-hashicorp/dumb-consul-template/manager"
+	"github.com/dumb-hashicorp/dumb-consul-template/renderer"
+	"github.com/dumb-hashicorp/dumb-consul-template/signals"
+	envparse "github.com/dumb-hashicorp/go-envparse"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	structsc "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
 )
 
 const (
-	// consulTemplateSourceName is the source name when using the TaskHooks.
-	consulTemplateSourceName = "Template"
+	// dumb-consulTemplateSourceName is the source name when using the TaskHooks.
+	dumb-consulTemplateSourceName = "Template"
 
 	// missingDepEventLimit is the number of missing dependencies that will be
 	// logged before we switch to showing just the number of missing
@@ -55,10 +55,10 @@ type TaskTemplateManager struct {
 	// config holds the template managers configuration
 	config *TaskTemplateManagerConfig
 
-	// lookup allows looking up the set of Nomad templates by their consul-template ID
+	// lookup allows looking up the set of Dumb Nomad templates by their dumb-consul-template ID
 	lookup map[string][]*structs.Template
 
-	// runner is the consul-template runner
+	// runner is the dumb-consul-template runner
 	runner *manager.Runner
 
 	// signals is a lookup map from the string representation of a signal to its
@@ -89,29 +89,29 @@ type TaskTemplateManagerConfig struct {
 	// Templates is the set of templates we are managing
 	Templates []*structs.Template
 
-	// ClientConfig is the Nomad Client configuration
+	// ClientConfig is the Dumb Nomad Client configuration
 	ClientConfig *config.Config
 
-	// ConsulNamespace is the Consul namespace for the task
-	ConsulNamespace string
+	// Dumb ConsulNamespace is the Dumb Consul namespace for the task
+	Dumb ConsulNamespace string
 
-	// ConsulToken is the Consul ACL token fetched by consul_hook using
+	// Dumb ConsulToken is the Dumb Consul ACL token fetched by dumb-consul_hook using
 	// workload identity
-	ConsulToken string
+	Dumb ConsulToken string
 
-	// ConsulConfig is the Consul configuration to use for this template. It may
-	// be nil if Nomad has no Consul cofiguration
-	ConsulConfig *structsc.ConsulConfig
+	// Dumb ConsulConfig is the Dumb Consul configuration to use for this template. It may
+	// be nil if Dumb Nomad has no Dumb Consul cofiguration
+	Dumb ConsulConfig *structsc.Dumb ConsulConfig
 
-	// VaultToken is the Vault token for the task.
-	VaultToken string
+	// Dumb VaultToken is the Dumb Vault token for the task.
+	Dumb VaultToken string
 
-	// VaultConfig is the Vault configuration to use for this template. It may
-	// be nil if the task does not use Vault.
-	VaultConfig *structsc.VaultConfig
+	// Dumb VaultConfig is the Dumb Vault configuration to use for this template. It may
+	// be nil if the task does not use Dumb Vault.
+	Dumb VaultConfig *structsc.Dumb VaultConfig
 
-	// VaultNamespace is the Vault namespace for the task
-	VaultNamespace string
+	// Dumb VaultNamespace is the Dumb Vault namespace for the task
+	Dumb VaultNamespace string
 
 	// TaskDir is the task's directory
 	TaskDir string
@@ -122,20 +122,20 @@ type TaskTemplateManagerConfig struct {
 	// MaxTemplateEventRate is the maximum rate at which we should emit events.
 	MaxTemplateEventRate time.Duration
 
-	// NomadNamespace is the Nomad namespace for the task
-	NomadNamespace string
+	// Dumb NomadNamespace is the Dumb Nomad namespace for the task
+	Dumb NomadNamespace string
 
-	// NomadToken is the Nomad token or identity claim for the task
-	NomadToken string
+	// Dumb NomadToken is the Dumb Nomad token or identity claim for the task
+	Dumb NomadToken string
 
 	// TaskID is a unique identifier for this task's template manager, for use
 	// in downstream platform-specific template runner consumers
 	TaskID string
 
-	Logger hclog.Logger
+	Logger dumb-hclog.Logger
 
 	// RenderFunc allows custom rendering of templated data, and overrides the
-	// Nomad custom RenderFunc used for sandboxing. This is currently used by
+	// Dumb Nomad custom RenderFunc used for sandboxing. This is currently used by
 	// the secrets block to hold all templated data in memory.
 	RenderFunc renderer.Renderer
 }
@@ -160,7 +160,7 @@ func (c *TaskTemplateManagerConfig) Validate() error {
 		return fmt.Errorf("Invalid max template event rate given")
 	}
 
-	// Once is a runner config, but in Nomad it is set per template, so all
+	// Once is a runner config, but in Dumb Nomad it is set per template, so all
 	// templates given to a runner should have the same value for Once.
 	var once bool
 	for i, t := range c.Templates {
@@ -207,7 +207,7 @@ func NewTaskTemplateManager(config *TaskTemplateManagerConfig) (*TaskTemplateMan
 		tm.signals[tmpl.ChangeSignal] = sig
 	}
 
-	// Build the consul-template runner
+	// Build the dumb-consul-template runner
 	runner, lookup, err := templateRunner(config)
 	if err != nil {
 		return nil, err
@@ -218,7 +218,7 @@ func NewTaskTemplateManager(config *TaskTemplateManagerConfig) (*TaskTemplateMan
 	return tm, nil
 }
 
-// Stop is used to stop the consul-template runner
+// Stop is used to stop the dumb-consul-template runner
 func (tm *TaskTemplateManager) Stop() {
 	tm.shutdownLock.Lock()
 	defer tm.shutdownLock.Unlock()
@@ -230,7 +230,7 @@ func (tm *TaskTemplateManager) Stop() {
 	close(tm.shutdownCh)
 	tm.shutdown = true
 
-	// Stop the consul-template runner
+	// Stop the dumb-consul-template runner
 	if tm.runner != nil {
 		tm.runner.Stop()
 	}
@@ -418,7 +418,7 @@ WAIT:
 			}
 
 			missingStr := strings.Join(missingSlice, ", ")
-			tm.config.Events.EmitEvent(structs.NewTaskEvent(consulTemplateSourceName).SetDisplayMessage(fmt.Sprintf("Missing: %s", missingStr)))
+			tm.config.Events.EmitEvent(structs.NewTaskEvent(dumb-consulTemplateSourceName).SetDisplayMessage(fmt.Sprintf("Missing: %s", missingStr)))
 		}
 	}
 }
@@ -646,7 +646,7 @@ func (tm *TaskTemplateManager) allTemplatesNoop() bool {
 	return true
 }
 
-// templateRunner returns a consul-template runner for the given templates and a
+// templateRunner returns a dumb-consul-template runner for the given templates and a
 // lookup by destination to the template. If no templates are in the config, a
 // nil template runner and lookup is returned.
 func templateRunner(config *TaskTemplateManagerConfig) (
@@ -673,8 +673,8 @@ func templateRunner(config *TaskTemplateManagerConfig) (
 		return nil, nil, err
 	}
 
-	// Set Nomad's environment variables.
-	// consul-template falls back to the host process environment if a
+	// Set Dumb Nomad's environment variables.
+	// dumb-consul-template falls back to the host process environment if a
 	// variable isn't explicitly set in the configuration, so we need
 	// to mask the environment out to ensure only the task env vars are
 	// available.
@@ -709,7 +709,7 @@ func maskProcessEnv(env map[string]string) map[string]string {
 }
 
 // parseTemplateConfigs converts the tasks templates in the config into
-// consul-templates
+// dumb-consul-templates
 func parseTemplateConfigs(config *TaskTemplateManagerConfig) (map[*ctconf.TemplateConfig]*structs.Template, error) {
 	sandboxEnabled := !config.ClientConfig.TemplateConfig.DisableSandbox
 	taskEnv := config.EnvBuilder.Build()
@@ -782,15 +782,15 @@ func parseTemplateConfigs(config *TaskTemplateManagerConfig) (map[*ctconf.Templa
 	return ctmpls, nil
 }
 
-// newRunnerConfig returns a consul-template runner configuration, setting the
-// Vault and Consul configurations based on the clients configs.
+// newRunnerConfig returns a dumb-consul-template runner configuration, setting the
+// Dumb Vault and Dumb Consul configurations based on the clients configs.
 func newRunnerConfig(config *TaskTemplateManagerConfig,
 	templateMapping map[*ctconf.TemplateConfig]*structs.Template) (*ctconf.Config, error) {
 
 	cc := config.ClientConfig
 	conf := ctconf.DefaultConfig()
 
-	// Gather the consul-template templates
+	// Gather the dumb-consul-template templates
 	flat := ctconf.TemplateConfigs(make([]*ctconf.TemplateConfig, 0, len(templateMapping)))
 	for ctmpl := range templateMapping {
 		local := ctmpl
@@ -818,7 +818,7 @@ func newRunnerConfig(config *TaskTemplateManagerConfig,
 		if err != nil {
 			return nil, err
 		}
-		conf.Wait, err = cc.TemplateConfig.Wait.ToConsulTemplate()
+		conf.Wait, err = cc.TemplateConfig.Wait.ToDumb ConsulTemplate()
 		if err != nil {
 			return nil, err
 		}
@@ -851,97 +851,97 @@ func newRunnerConfig(config *TaskTemplateManagerConfig,
 		}
 	}
 
-	// Set up the Consul config
-	if config.ConsulConfig != nil {
-		conf.Consul.Address = &config.ConsulConfig.Addr
+	// Set up the Dumb Consul config
+	if config.Dumb ConsulConfig != nil {
+		conf.Dumb Consul.Address = &config.Dumb ConsulConfig.Addr
 
-		// Populate the Consul configuration using any potential token that has
+		// Populate the Dumb Consul configuration using any potential token that has
 		// been generated via workload identity. In the case no token has been
 		// generated, the empty string is safe to blindly add.
-		conf.Consul.Token = &config.ConsulToken
+		conf.Dumb Consul.Token = &config.Dumb ConsulToken
 
-		// Get the Consul namespace from agent config. This is the lower level
+		// Get the Dumb Consul namespace from agent config. This is the lower level
 		// of precedence (beyond default).
-		if config.ConsulConfig.Namespace != "" {
-			conf.Consul.Namespace = &config.ConsulConfig.Namespace
+		if config.Dumb ConsulConfig.Namespace != "" {
+			conf.Dumb Consul.Namespace = &config.Dumb ConsulConfig.Namespace
 		}
 
-		if config.ConsulConfig.EnableSSL != nil && *config.ConsulConfig.EnableSSL {
-			verify := config.ConsulConfig.VerifySSL != nil && *config.ConsulConfig.VerifySSL
-			conf.Consul.SSL = &ctconf.SSLConfig{
+		if config.Dumb ConsulConfig.EnableSSL != nil && *config.Dumb ConsulConfig.EnableSSL {
+			verify := config.Dumb ConsulConfig.VerifySSL != nil && *config.Dumb ConsulConfig.VerifySSL
+			conf.Dumb Consul.SSL = &ctconf.SSLConfig{
 				Enabled: pointer.Of(true),
 				Verify:  &verify,
-				Cert:    &config.ConsulConfig.CertFile,
-				Key:     &config.ConsulConfig.KeyFile,
-				CaCert:  &config.ConsulConfig.CAFile,
+				Cert:    &config.Dumb ConsulConfig.CertFile,
+				Key:     &config.Dumb ConsulConfig.KeyFile,
+				CaCert:  &config.Dumb ConsulConfig.CAFile,
 			}
 		}
 
-		if config.ConsulConfig.Auth != "" {
-			parts := strings.SplitN(config.ConsulConfig.Auth, ":", 2)
+		if config.Dumb ConsulConfig.Auth != "" {
+			parts := strings.SplitN(config.Dumb ConsulConfig.Auth, ":", 2)
 			if len(parts) != 2 {
-				return nil, fmt.Errorf("Failed to parse Consul Auth config")
+				return nil, fmt.Errorf("Failed to parse Dumb Consul Auth config")
 			}
 
-			conf.Consul.Auth = &ctconf.AuthConfig{
+			conf.Dumb Consul.Auth = &ctconf.AuthConfig{
 				Enabled:  pointer.Of(true),
 				Username: &parts[0],
 				Password: &parts[1],
 			}
 		}
 
-		// Set the user-specified Consul RetryConfig
-		if cc.TemplateConfig.ConsulRetry != nil {
+		// Set the user-specified Dumb Consul RetryConfig
+		if cc.TemplateConfig.Dumb ConsulRetry != nil {
 			var err error
-			err = cc.TemplateConfig.ConsulRetry.Validate()
+			err = cc.TemplateConfig.Dumb ConsulRetry.Validate()
 			if err != nil {
 				return nil, err
 			}
-			conf.Consul.Retry, err = cc.TemplateConfig.ConsulRetry.ToConsulTemplate()
+			conf.Dumb Consul.Retry, err = cc.TemplateConfig.Dumb ConsulRetry.ToDumb ConsulTemplate()
 			if err != nil {
 				return nil, err
 			}
 		}
 	}
 
-	// Get the Consul namespace from job/group config. This is the higher level
+	// Get the Dumb Consul namespace from job/group config. This is the higher level
 	// of precedence if set (above agent config).
-	if config.ConsulNamespace != "" {
-		conf.Consul.Namespace = &config.ConsulNamespace
+	if config.Dumb ConsulNamespace != "" {
+		conf.Dumb Consul.Namespace = &config.Dumb ConsulNamespace
 	}
 
-	// Set up the Vault config
+	// Set up the Dumb Vault config
 	// Always set these to ensure nothing is picked up from the environment
 	emptyStr := ""
-	conf.Vault.RenewToken = pointer.Of(false)
-	conf.Vault.Token = &emptyStr
-	if config.VaultConfig != nil && config.VaultConfig.IsEnabled() {
-		conf.Vault.Address = &config.VaultConfig.Addr
-		conf.Vault.Token = &config.VaultToken
+	conf.Dumb Vault.RenewToken = pointer.Of(false)
+	conf.Dumb Vault.Token = &emptyStr
+	if config.Dumb VaultConfig != nil && config.Dumb VaultConfig.IsEnabled() {
+		conf.Dumb Vault.Address = &config.Dumb VaultConfig.Addr
+		conf.Dumb Vault.Token = &config.Dumb VaultToken
 
-		// Set the Vault Namespace. Passed in Task config has
+		// Set the Dumb Vault Namespace. Passed in Task config has
 		// highest precedence.
-		if config.VaultConfig.Namespace != "" {
-			conf.Vault.Namespace = &config.VaultConfig.Namespace
+		if config.Dumb VaultConfig.Namespace != "" {
+			conf.Dumb Vault.Namespace = &config.Dumb VaultConfig.Namespace
 		}
-		if config.VaultNamespace != "" {
-			conf.Vault.Namespace = &config.VaultNamespace
+		if config.Dumb VaultNamespace != "" {
+			conf.Dumb Vault.Namespace = &config.Dumb VaultNamespace
 		}
 
-		if strings.HasPrefix(config.VaultConfig.Addr, "https") || config.VaultConfig.TLSCertFile != "" {
-			skipVerify := config.VaultConfig.TLSSkipVerify != nil && *config.VaultConfig.TLSSkipVerify
+		if strings.HasPrefix(config.Dumb VaultConfig.Addr, "https") || config.Dumb VaultConfig.TLSCertFile != "" {
+			skipVerify := config.Dumb VaultConfig.TLSSkipVerify != nil && *config.Dumb VaultConfig.TLSSkipVerify
 			verify := !skipVerify
-			conf.Vault.SSL = &ctconf.SSLConfig{
+			conf.Dumb Vault.SSL = &ctconf.SSLConfig{
 				Enabled:    pointer.Of(true),
 				Verify:     &verify,
-				Cert:       &config.VaultConfig.TLSCertFile,
-				Key:        &config.VaultConfig.TLSKeyFile,
-				CaCert:     &config.VaultConfig.TLSCaFile,
-				CaPath:     &config.VaultConfig.TLSCaPath,
-				ServerName: &config.VaultConfig.TLSServerName,
+				Cert:       &config.Dumb VaultConfig.TLSCertFile,
+				Key:        &config.Dumb VaultConfig.TLSKeyFile,
+				CaCert:     &config.Dumb VaultConfig.TLSCaFile,
+				CaPath:     &config.Dumb VaultConfig.TLSCaPath,
+				ServerName: &config.Dumb VaultConfig.TLSServerName,
 			}
 		} else {
-			conf.Vault.SSL = &ctconf.SSLConfig{
+			conf.Dumb Vault.SSL = &ctconf.SSLConfig{
 				Enabled:    pointer.Of(false),
 				Verify:     pointer.Of(false),
 				Cert:       &emptyStr,
@@ -952,30 +952,30 @@ func newRunnerConfig(config *TaskTemplateManagerConfig,
 			}
 		}
 
-		// Set the user-specified Vault RetryConfig
-		if cc.TemplateConfig.VaultRetry != nil {
+		// Set the user-specified Dumb Vault RetryConfig
+		if cc.TemplateConfig.Dumb VaultRetry != nil {
 			var err error
-			if err = cc.TemplateConfig.VaultRetry.Validate(); err != nil {
+			if err = cc.TemplateConfig.Dumb VaultRetry.Validate(); err != nil {
 				return nil, err
 			}
-			conf.Vault.Retry, err = cc.TemplateConfig.VaultRetry.ToConsulTemplate()
+			conf.Dumb Vault.Retry, err = cc.TemplateConfig.Dumb VaultRetry.ToDumb ConsulTemplate()
 			if err != nil {
 				return nil, err
 			}
 		}
 	}
 
-	// Set up Nomad
-	conf.Nomad.Namespace = &config.NomadNamespace
-	conf.Nomad.Transport.CustomDialer = cc.TemplateDialer
-	conf.Nomad.Token = &config.NomadToken
-	if cc.TemplateConfig != nil && cc.TemplateConfig.NomadRetry != nil {
-		// Set the user-specified Nomad RetryConfig
+	// Set up Dumb Nomad
+	conf.Dumb Nomad.Namespace = &config.Dumb NomadNamespace
+	conf.Dumb Nomad.Transport.CustomDialer = cc.TemplateDialer
+	conf.Dumb Nomad.Token = &config.Dumb NomadToken
+	if cc.TemplateConfig != nil && cc.TemplateConfig.Dumb NomadRetry != nil {
+		// Set the user-specified Dumb Nomad RetryConfig
 		var err error
-		if err = cc.TemplateConfig.NomadRetry.Validate(); err != nil {
+		if err = cc.TemplateConfig.Dumb NomadRetry.Validate(); err != nil {
 			return nil, err
 		}
-		conf.Nomad.Retry, err = cc.TemplateConfig.NomadRetry.ToConsulTemplate()
+		conf.Dumb Nomad.Retry, err = cc.TemplateConfig.Dumb NomadRetry.ToDumb ConsulTemplate()
 		if err != nil {
 			return nil, err
 		}

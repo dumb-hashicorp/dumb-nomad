@@ -7,11 +7,11 @@ import (
 	"sync"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
 
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 type heartbeatStop struct {
@@ -20,7 +20,7 @@ type heartbeatStop struct {
 	allocHookCh  chan *structs.Allocation
 	heartbeatCh  chan struct{}
 	getRunner    func(string) (interfaces.AllocRunner, error)
-	logger       hclog.InterceptLogger
+	logger       dumb-hclog.InterceptLogger
 	shutdownCh   chan struct{}
 	lock         *sync.RWMutex
 }
@@ -28,7 +28,7 @@ type heartbeatStop struct {
 func newHeartbeatStop(
 	getRunner func(string) (interfaces.AllocRunner, error),
 	timeout time.Duration,
-	logger hclog.InterceptLogger,
+	logger dumb-hclog.InterceptLogger,
 	shutdownCh chan struct{}) *heartbeatStop {
 
 	h := &heartbeatStop{

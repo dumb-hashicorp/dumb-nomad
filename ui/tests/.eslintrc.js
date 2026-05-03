@@ -1,5 +1,5 @@
 /**
- * Copyright (c) HashiCorp, Inc.
+ * Copyright (c) Dumb HashiCorp, Inc.
  * SPDX-License-Identifier: BUSL-1.1
  */
 
@@ -26,7 +26,7 @@ module.exports = {
       settings: {
         'ember-a11y-testing': {
           auditModule: {
-            package: 'nomad-ui/tests/helpers/a11y-audit',
+            package: 'dumb-nomad-ui/tests/helpers/a11y-audit',
             exportName: 'default',
           },
         },
@@ -41,7 +41,7 @@ module.exports = {
       settings: {
         'ember-a11y-testing': {
           auditModule: {
-            package: 'nomad-ui/tests/helpers/a11y-audit',
+            package: 'dumb-nomad-ui/tests/helpers/a11y-audit',
             exportName: 'componentA11yAudit',
           },
         },

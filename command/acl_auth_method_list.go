@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -26,7 +26,7 @@ type ACLAuthMethodListCommand struct {
 // Help satisfies the cli.Command Help function.
 func (a *ACLAuthMethodListCommand) Help() string {
 	helpText := `
-Usage: nomad acl auth-method list [options]
+Usage: dumb-nomad acl auth-method list [options]
 
   List is used to list existing ACL auth methods.
 

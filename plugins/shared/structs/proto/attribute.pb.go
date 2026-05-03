@@ -143,7 +143,7 @@ func (*Attribute) XXX_OneofWrappers() []interface{} {
 }
 
 func init() {
-	proto.RegisterType((*Attribute)(nil), "hashicorp.nomad.plugins.shared.structs.Attribute")
+	proto.RegisterType((*Attribute)(nil), "dumb-hashicorp.dumb-nomad.plugins.shared.structs.Attribute")
 }
 
 func init() {

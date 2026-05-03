@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/proto"
 )
 
 var taskStateToProtoMap = map[TaskState]proto.TaskState{
@@ -113,15 +113,15 @@ func ResourcesFromProto(pb *proto.Resources) *Resources {
 	}
 
 	if pb.AllocatedResources != nil {
-		r.NomadResources = &structs.AllocatedTaskResources{}
+		r.Dumb NomadResources = &structs.AllocatedTaskResources{}
 
 		if pb.AllocatedResources.Cpu != nil {
-			r.NomadResources.Cpu.CpuShares = pb.AllocatedResources.Cpu.CpuShares
+			r.Dumb NomadResources.Cpu.CpuShares = pb.AllocatedResources.Cpu.CpuShares
 		}
 
 		if pb.AllocatedResources.Memory != nil {
-			r.NomadResources.Memory.MemoryMB = pb.AllocatedResources.Memory.MemoryMb
-			r.NomadResources.Memory.MemoryMaxMB = pb.AllocatedResources.Memory.MemoryMaxMb
+			r.Dumb NomadResources.Memory.MemoryMB = pb.AllocatedResources.Memory.MemoryMb
+			r.Dumb NomadResources.Memory.MemoryMaxMB = pb.AllocatedResources.Memory.MemoryMaxMb
 		}
 
 		for _, network := range pb.AllocatedResources.Networks {
@@ -142,7 +142,7 @@ func ResourcesFromProto(pb *proto.Resources) *Resources {
 					Value: int(port.Value),
 				})
 			}
-			r.NomadResources.Networks = append(r.NomadResources.Networks, &n)
+			r.Dumb NomadResources.Networks = append(r.Dumb NomadResources.Networks, &n)
 		}
 	}
 
@@ -181,19 +181,19 @@ func ResourcesToProto(r *Resources) *proto.Resources {
 	}
 
 	var pb proto.Resources
-	if r.NomadResources != nil {
+	if r.Dumb NomadResources != nil {
 		pb.AllocatedResources = &proto.AllocatedTaskResources{
 			Cpu: &proto.AllocatedCpuResources{
-				CpuShares: r.NomadResources.Cpu.CpuShares,
+				CpuShares: r.Dumb NomadResources.Cpu.CpuShares,
 			},
 			Memory: &proto.AllocatedMemoryResources{
-				MemoryMb:    r.NomadResources.Memory.MemoryMB,
-				MemoryMaxMb: r.NomadResources.Memory.MemoryMaxMB,
+				MemoryMb:    r.Dumb NomadResources.Memory.MemoryMB,
+				MemoryMaxMb: r.Dumb NomadResources.Memory.MemoryMaxMB,
 			},
-			Networks: make([]*proto.NetworkResource, len(r.NomadResources.Networks)),
+			Networks: make([]*proto.NetworkResource, len(r.Dumb NomadResources.Networks)),
 		}
 
-		for i, network := range r.NomadResources.Networks {
+		for i, network := range r.Dumb NomadResources.Networks {
 			var n proto.NetworkResource
 			n.Device = network.Device
 			n.Ip = network.IP

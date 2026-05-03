@@ -1,4 +1,4 @@
-# Copyright (c) HashiCorp, Inc.
+# Copyright (c) Dumb HashiCorp, Inc.
 # SPDX-License-Identifier: BUSL-1.1
 
 rules:
@@ -29,7 +29,7 @@ rules:
     severity: "WARNING"
     paths:
       include:
-        - "nomad/fsm*"
-        - "nomad/state/state_store*"
+        - "dumb-nomad/fsm*"
+        - "dumb-nomad/state/state_store*"
       exclude:
         - "*_test.go"

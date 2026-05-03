@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -20,7 +20,7 @@ type OperatorRootKeyringRotateCommand struct {
 
 func (c *OperatorRootKeyringRotateCommand) Help() string {
 	helpText := `
-Usage: nomad operator root keyring rotate [options]
+Usage: dumb-nomad operator root keyring rotate [options]
 
   Generate a new encryption key for all future variables.
 
@@ -102,7 +102,7 @@ func (c *OperatorRootKeyringRotateCommand) Run(args []string) int {
 
 	client, err := c.Meta.Client()
 	if err != nil {
-		c.Ui.Error(fmt.Sprintf("Error creating nomad cli client: %s", err))
+		c.Ui.Error(fmt.Sprintf("Error creating dumb-nomad cli client: %s", err))
 		return 1
 	}
 

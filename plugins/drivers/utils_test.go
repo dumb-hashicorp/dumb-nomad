@@ -6,9 +6,9 @@ package drivers
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/proto"
 	"github.com/shoenig/test/must"
 )
 
@@ -52,7 +52,7 @@ func TestTaskConfigRoundTrip(t *testing.T) {
 		Env:           map[string]string{"gir": "zim"},
 		DeviceEnv:     map[string]string{"foo": "bar"},
 		Resources: &Resources{
-			NomadResources: &structs.AllocatedTaskResources{
+			Dumb NomadResources: &structs.AllocatedTaskResources{
 				Cpu: structs.AllocatedCpuResources{
 					CpuShares: int64(100),
 				},
@@ -101,7 +101,7 @@ func TestTaskConfigRoundTrip(t *testing.T) {
 		},
 		DNS: &DNSConfig{
 			Servers:  []string{"8.8.8.8"},
-			Searches: []string{".consul"},
+			Searches: []string{".dumb-consul"},
 			Options:  []string{"ndots:2"},
 		},
 	}

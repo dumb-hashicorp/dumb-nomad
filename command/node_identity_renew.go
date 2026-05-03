@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -17,7 +17,7 @@ type NodeIdentityRenewCommand struct {
 
 func (n *NodeIdentityRenewCommand) Help() string {
 	helpText := `
-Usage: nomad node identity renew [options] <node_id>
+Usage: dumb-nomad node identity renew [options] <node_id>
 
   Instruct a node to renew its identity at the next heartbeat. This command only
   applies to client agents.

@@ -9,16 +9,16 @@ import (
 	"testing"
 
 	"github.com/docker/docker/api/types"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/stretchr/testify/require"
 )
 
-func TestSet_NomadDefaults(t *testing.T) {
+func TestSet_Dumb NomadDefaults(t *testing.T) {
 	ci.Parallel(t)
 
-	result := NomadDefaults()
+	result := Dumb NomadDefaults()
 	require.Len(t, result.Slice(false), 13)
-	defaults := strings.ToLower(HCLSpecLiteral)
+	defaults := strings.ToLower(DUMB_HCLSpecLiteral)
 	for _, c := range result.Slice(false) {
 		require.Contains(t, defaults, c)
 	}
@@ -50,10 +50,10 @@ func TestCaps_Calculate(t *testing.T) {
 	}{
 		{
 			name:      "the default setting",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    nil,
 			capDrop:   nil,
-			exp:       NomadDefaults().Slice(true),
+			exp:       Dumb NomadDefaults().Slice(true),
 			err:       nil,
 		},
 		{
@@ -61,7 +61,7 @@ func TestCaps_Calculate(t *testing.T) {
 			allowCaps: []string{"all"},
 			capAdd:    nil,
 			capDrop:   nil,
-			exp:       NomadDefaults().Slice(true),
+			exp:       Dumb NomadDefaults().Slice(true),
 			err:       nil,
 		},
 		{
@@ -82,16 +82,16 @@ func TestCaps_Calculate(t *testing.T) {
 		},
 		{
 			name:      "allow defaults and add redundant",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    []string{"chown", "KILL"},
 			capDrop:   nil,
-			exp:       NomadDefaults().Slice(true),
+			exp:       Dumb NomadDefaults().Slice(true),
 			err:       nil,
 		},
 		{
 			skip:      true,
 			name:      "allow defaults and add all",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    []string{"all"},
 			capDrop:   nil,
 			exp:       nil,
@@ -99,7 +99,7 @@ func TestCaps_Calculate(t *testing.T) {
 		},
 		{
 			name:      "allow defaults and drop all",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    nil,
 			capDrop:   []string{"all"},
 			exp:       []string{},
@@ -107,7 +107,7 @@ func TestCaps_Calculate(t *testing.T) {
 		},
 		{
 			name:      "allow defaults and drop all and add back some",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    []string{"chown", "fowner"},
 			capDrop:   []string{"all"},
 			exp:       []string{"CAP_CHOWN", "CAP_FOWNER"},
@@ -115,7 +115,7 @@ func TestCaps_Calculate(t *testing.T) {
 		},
 		{
 			name:      "add disallowed",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    []string{"chown", "net_raw"},
 			capDrop:   nil,
 			exp:       nil,
@@ -123,7 +123,7 @@ func TestCaps_Calculate(t *testing.T) {
 		},
 		{
 			name:      "drop some",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    nil,
 			capDrop:   []string{"chown", "fowner", "CAP_KILL", "SYS_CHROOT", "mknod", "dac_override"},
 			exp:       []string{"CAP_AUDIT_WRITE", "CAP_FSETID", "CAP_NET_BIND_SERVICE", "CAP_SETFCAP", "CAP_SETGID", "CAP_SETPCAP", "CAP_SETUID"},
@@ -131,7 +131,7 @@ func TestCaps_Calculate(t *testing.T) {
 		},
 		{
 			name:      "drop all",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    nil,
 			capDrop:   []string{"all"},
 			exp:       []string{},
@@ -139,7 +139,7 @@ func TestCaps_Calculate(t *testing.T) {
 		},
 		{
 			name:      "drop all and add back",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    []string{"chown", "mknod"},
 			capDrop:   []string{"all"},
 			exp:       []string{"CAP_CHOWN", "CAP_MKNOD"},
@@ -147,7 +147,7 @@ func TestCaps_Calculate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			caps, err := Calculate(NomadDefaults(), tc.allowCaps, tc.capAdd, tc.capDrop)
+			caps, err := Calculate(Dumb NomadDefaults(), tc.allowCaps, tc.capAdd, tc.capDrop)
 			if !tc.skip {
 				require.Equal(t, tc.err, err)
 				require.Equal(t, tc.exp, caps)
@@ -178,7 +178,7 @@ func TestCaps_Delta(t *testing.T) {
 	}{
 		{
 			name:      "the default setting",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    nil,
 			capDrop:   nil,
 			expAdd:    []string{},
@@ -208,7 +208,7 @@ func TestCaps_Delta(t *testing.T) {
 		},
 		{
 			name:      "allow default add from default",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    []string{"chown", "KILL"},
 			capDrop:   nil,
 			expAdd:    []string{"chown", "kill"},
@@ -217,7 +217,7 @@ func TestCaps_Delta(t *testing.T) {
 		},
 		{
 			name:      "allow default add disallowed",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    []string{"chown", "net_raw"},
 			capDrop:   nil,
 			expAdd:    nil,
@@ -226,7 +226,7 @@ func TestCaps_Delta(t *testing.T) {
 		},
 		{
 			name:      "allow default drop from default",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    nil,
 			capDrop:   []string{"chown", "fowner", "CAP_KILL", "SYS_CHROOT", "mknod", "dac_override"},
 			expAdd:    []string{},
@@ -235,7 +235,7 @@ func TestCaps_Delta(t *testing.T) {
 		},
 		{
 			name:      "allow default drop all",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    nil,
 			capDrop:   []string{"all"},
 			expAdd:    []string{},
@@ -244,7 +244,7 @@ func TestCaps_Delta(t *testing.T) {
 		},
 		{
 			name:      "task drop all and add back",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    []string{"chown", "fowner"},
 			capDrop:   []string{"all"},
 			expAdd:    []string{"chown", "fowner"},
@@ -272,7 +272,7 @@ func TestCaps_Delta(t *testing.T) {
 		{
 			skip:      true,
 			name:      "add all atop defaults",
-			allowCaps: NomadDefaults().Slice(false),
+			allowCaps: Dumb NomadDefaults().Slice(false),
 			capAdd:    []string{"all"},
 			capDrop:   nil,
 			expAdd:    nil,

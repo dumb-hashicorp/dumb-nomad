@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -17,7 +17,7 @@ type JobDeploymentsCommand struct {
 
 func (c *JobDeploymentsCommand) Help() string {
 	helpText := `
-Usage: nomad job deployments [options] <job>
+Usage: dumb-nomad job deployments [options] <job>
 
   Deployments is used to display the deployments for a particular job.
 

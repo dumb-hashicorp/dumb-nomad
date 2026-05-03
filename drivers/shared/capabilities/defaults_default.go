@@ -13,7 +13,7 @@ import "github.com/docker/docker/api/types"
 //
 // https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities
 func DockerDefaults(ver types.Version) *Set {
-	defaults := NomadDefaults()
+	defaults := Dumb NomadDefaults()
 	defaults.Add("NET_RAW")
 	return defaults
 }

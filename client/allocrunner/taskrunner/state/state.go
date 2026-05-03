@@ -6,10 +6,10 @@ package state
 import (
 	"maps"
 
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
-// LocalState is Task state which is persisted for use when restarting Nomad
+// LocalState is Task state which is persisted for use when restarting Dumb Nomad
 // agents.
 type LocalState struct {
 	Hooks map[string]*HookState

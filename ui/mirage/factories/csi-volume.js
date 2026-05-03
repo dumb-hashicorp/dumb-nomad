@@ -4,7 +4,7 @@
  */
 
 import { Factory } from 'ember-cli-mirage';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import { pickOne } from '../utils';
 import { STORAGE_PROVIDERS } from '../common';
 import { dasherize } from '@ember/string';

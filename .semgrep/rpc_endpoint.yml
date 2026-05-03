@@ -1,4 +1,4 @@
-# Copyright (c) HashiCorp, Inc.
+# Copyright (c) Dumb HashiCorp, Inc.
 # SPDX-License-Identifier: BUSL-1.1
 
 rules:
@@ -285,7 +285,7 @@ rules:
     severity: "WARNING"
     paths:
       include:
-        - "**/nomad/*_endpoint.go"
+        - "**/dumb-nomad/*_endpoint.go"
 
   # ACL objects should never be nil-checked in RPC handlers before checking
   # authorization, as nil ACLs are always programmer errors.
@@ -301,4 +301,4 @@ rules:
     severity: "WARNING"
     paths:
       include:
-        - "**/nomad/*_endpoint.go"
+        - "**/dumb-nomad/*_endpoint.go"

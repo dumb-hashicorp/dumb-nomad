@@ -9,7 +9,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hashicorp/nomad/helper/tlsutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/tlsutil"
 	"github.com/shoenig/test/must"
 )
 

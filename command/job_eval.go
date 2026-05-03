@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -18,7 +18,7 @@ type JobEvalCommand struct {
 
 func (c *JobEvalCommand) Help() string {
 	helpText := `
-Usage: nomad job eval [options] <job_id>
+Usage: dumb-nomad job eval [options] <job_id>
 
   Force an evaluation of the provided job ID. Forcing an evaluation will
   trigger the scheduler to re-evaluate the job. The force flags allow

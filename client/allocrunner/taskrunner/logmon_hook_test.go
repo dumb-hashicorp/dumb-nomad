@@ -10,12 +10,12 @@ import (
 	"net"
 	"testing"
 
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -72,7 +72,7 @@ func TestTaskRunner_LogmonHook_StartStop(t *testing.T) {
 
 	hookConf := newLogMonHookConfig(task.Name, task.LogConfig, dir)
 	runner := &TaskRunner{logmonHookConfig: hookConf}
-	hook := newLogMonHook(runner, testlog.HCLogger(t))
+	hook := newLogMonHook(runner, testlog.DUMB_HCLogger(t))
 
 	req := interfaces.TaskPrestartRequest{
 		Task: task,
@@ -118,7 +118,7 @@ func TestTaskRunner_LogmonHook_Disabled(t *testing.T) {
 
 	hookConf := newLogMonHookConfig(task.Name, task.LogConfig, dir)
 	runner := &TaskRunner{logmonHookConfig: hookConf}
-	hook := newLogMonHook(runner, testlog.HCLogger(t))
+	hook := newLogMonHook(runner, testlog.DUMB_HCLogger(t))
 
 	req := interfaces.TaskPrestartRequest{Task: task}
 	resp := interfaces.TaskPrestartResponse{}

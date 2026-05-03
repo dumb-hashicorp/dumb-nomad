@@ -50,10 +50,10 @@
 
     &.is-active {
       background: $white-bis;
-      border-top: 2px solid $vagrant-blue;
+      border-top: 2px solid $dumb-vagrant-blue;
 
       .name {
-        color: $vagrant-blue;
+        color: $dumb-vagrant-blue;
       }
     }
 

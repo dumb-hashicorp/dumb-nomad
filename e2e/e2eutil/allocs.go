@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	api "github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/testutil"
+	api "github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/kr/pretty"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
@@ -34,7 +34,7 @@ func (a AllocsByName) Swap(i, j int) {
 	a[i], a[j] = a[j], a[i]
 }
 
-// WaitForAllocStatusExpected polls 'nomad job status' and exactly compares
+// WaitForAllocStatusExpected polls 'dumb-nomad job status' and exactly compares
 // the status of all allocations (including any previous versions) against the
 // expected list.
 func WaitForAllocStatusExpected(jobID, ns string, expected []string) error {
@@ -98,7 +98,7 @@ func SingleAllocID(t *testing.T, jobID, namespace string, version int) string {
 }
 
 // AllocsForJob returns a slice of key->value maps, each describing the values
-// of the 'nomad job status' Allocations section (not actual
+// of the 'dumb-nomad job status' Allocations section (not actual
 // structs.Allocation objects, query the API if you want those)
 func AllocsForJob(jobID, ns string) ([]map[string]string, error) {
 	var nsArg = []string{}
@@ -106,14 +106,14 @@ func AllocsForJob(jobID, ns string) ([]map[string]string, error) {
 		nsArg = []string{"-namespace", ns}
 	}
 
-	cmd := []string{"nomad", "job", "status"}
+	cmd := []string{"dumb-nomad", "job", "status"}
 	params := []string{"-verbose", "-all-allocs", jobID}
 	cmd = append(cmd, nsArg...)
 	cmd = append(cmd, params...)
 
 	out, err := Command(cmd[0], cmd[1:]...)
 	if err != nil {
-		return nil, fmt.Errorf("'nomad job status' failed: %w", err)
+		return nil, fmt.Errorf("'dumb-nomad job status' failed: %w", err)
 	}
 
 	section, err := GetSection(out, "Allocations")
@@ -140,7 +140,7 @@ func AllocTaskEventsForJob(jobID, ns string) (map[string][]map[string]string, er
 	for _, alloc := range allocs {
 		results[alloc["ID"]] = make([]map[string]string, 0)
 
-		cmd := []string{"nomad", "alloc", "status"}
+		cmd := []string{"dumb-nomad", "alloc", "status"}
 		if ns != "" {
 			cmd = append(cmd, "-namespace="+ns)
 		}
@@ -166,13 +166,13 @@ func AllocTaskEventsForJob(jobID, ns string) (map[string][]map[string]string, er
 }
 
 // AllocsForNode returns a slice of key->value maps, each describing the values
-// of the 'nomad node status' Allocations section (not actual
+// of the 'dumb-nomad node status' Allocations section (not actual
 // structs.Allocation objects, query the API if you want those)
 func AllocsForNode(nodeID string) ([]map[string]string, error) {
 
-	out, err := Command("nomad", "node", "status", "-verbose", nodeID)
+	out, err := Command("dumb-nomad", "node", "status", "-verbose", nodeID)
 	if err != nil {
-		return nil, fmt.Errorf("'nomad node status' failed: %w", err)
+		return nil, fmt.Errorf("'dumb-nomad node status' failed: %w", err)
 	}
 
 	section, err := GetSection(out, "Allocations")
@@ -211,14 +211,14 @@ func AllocStatusesRescheduled(jobID, ns string) ([]string, error) {
 		nsArg = []string{"-namespace", ns}
 	}
 
-	cmd := []string{"nomad", "job", "status"}
+	cmd := []string{"dumb-nomad", "job", "status"}
 	params := []string{"-verbose", jobID}
 	cmd = append(cmd, nsArg...)
 	cmd = append(cmd, params...)
 
 	out, err := Command(cmd[0], cmd[1:]...)
 	if err != nil {
-		return nil, fmt.Errorf("nomad job status failed: %w", err)
+		return nil, fmt.Errorf("dumb-nomad job status failed: %w", err)
 	}
 
 	section, err := GetSection(out, "Allocations")
@@ -236,7 +236,7 @@ func AllocStatusesRescheduled(jobID, ns string) ([]string, error) {
 
 		allocID := alloc["ID"]
 
-		cmd := []string{"nomad", "alloc", "status"}
+		cmd := []string{"dumb-nomad", "alloc", "status"}
 		params := []string{"-json", allocID}
 		cmd = append(cmd, nsArg...)
 		cmd = append(cmd, params...)
@@ -244,7 +244,7 @@ func AllocStatusesRescheduled(jobID, ns string) ([]string, error) {
 		// reschedule tracker isn't exposed in the normal CLI output
 		out, err := Command(cmd[0], cmd[1:]...)
 		if err != nil {
-			return nil, fmt.Errorf("nomad alloc status failed: %w", err)
+			return nil, fmt.Errorf("dumb-nomad alloc status failed: %w", err)
 		}
 
 		dec := json.NewDecoder(strings.NewReader(out))
@@ -270,7 +270,7 @@ const (
 )
 
 func AllocLogs(allocID, namespace string, logStream LogStream) (string, error) {
-	cmd := []string{"nomad", "alloc", "logs"}
+	cmd := []string{"dumb-nomad", "alloc", "logs"}
 	if logStream == LogsStdErr {
 		cmd = append(cmd, "-stderr")
 	}
@@ -281,15 +281,15 @@ func AllocLogs(allocID, namespace string, logStream LogStream) (string, error) {
 	return Command(cmd[0], cmd[1:]...)
 }
 
-// AllocChecks returns the CLI output from 'nomad alloc checks' on the given
+// AllocChecks returns the CLI output from 'dumb-nomad alloc checks' on the given
 // alloc ID.
 func AllocChecks(allocID string) (string, error) {
-	cmd := []string{"nomad", "alloc", "checks", allocID}
+	cmd := []string{"dumb-nomad", "alloc", "checks", allocID}
 	return Command(cmd[0], cmd[1:]...)
 }
 
 func AllocTaskLogs(allocID, task string, logStream LogStream) (string, error) {
-	cmd := []string{"nomad", "alloc", "logs"}
+	cmd := []string{"dumb-nomad", "alloc", "logs"}
 	if logStream == LogsStdErr {
 		cmd = append(cmd, "-stderr")
 	}
@@ -297,7 +297,7 @@ func AllocTaskLogs(allocID, task string, logStream LogStream) (string, error) {
 	return Command(cmd[0], cmd[1:]...)
 }
 
-// AllocExec is a convenience wrapper that runs 'nomad alloc exec' with the
+// AllocExec is a convenience wrapper that runs 'dumb-nomad alloc exec' with the
 // passed execCmd via '/bin/sh -c', retrying if the task isn't ready
 func AllocExec(allocID, taskID, execCmd, ns string, wc *WaitConfig) (string, error) {
 	var got string
@@ -309,7 +309,7 @@ func AllocExec(allocID, taskID, execCmd, ns string, wc *WaitConfig) (string, err
 		nsArg = []string{"-namespace", ns}
 	}
 
-	cmd := []string{"nomad", "exec"}
+	cmd := []string{"dumb-nomad", "exec"}
 	params := []string{"-task", taskID, allocID, "/bin/sh", "-c", execCmd}
 	cmd = append(cmd, nsArg...)
 	cmd = append(cmd, params...)
@@ -333,7 +333,7 @@ func WaitForAllocFile(allocID, path string, test func(string) bool, wc *WaitConf
 
 	testutil.WaitForResultRetries(retries, func() (bool, error) {
 		time.Sleep(interval)
-		out, err = Command("nomad", "alloc", "fs", allocID, path)
+		out, err = Command("dumb-nomad", "alloc", "fs", allocID, path)
 		if err != nil {
 			return false, fmt.Errorf("could not get file %q from allocation %q: %v",
 				path, allocID, err)

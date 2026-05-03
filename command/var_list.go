@@ -10,7 +10,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -27,7 +27,7 @@ type VarListCommand struct {
 
 func (c *VarListCommand) Help() string {
 	helpText := `
-Usage: nomad var list [options] <prefix>
+Usage: dumb-nomad var list [options] <prefix>
 
   List is used to list available variables. Supplying an optional prefix,
   filters the list to variables having a path starting with the prefix.

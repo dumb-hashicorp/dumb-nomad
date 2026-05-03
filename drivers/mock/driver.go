@@ -14,15 +14,15 @@ import (
 	"sync"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/drivers/shared/eventer"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/eventer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 )
 
 const (
@@ -49,7 +49,7 @@ var (
 	// plugin catalog.
 	PluginConfig = &loader.InternalPluginConfig{
 		Config:  map[string]interface{}{},
-		Factory: func(ctx context.Context, l hclog.Logger) interface{} { return NewMockDriver(ctx, l) },
+		Factory: func(ctx context.Context, l dumb-hclog.Logger) interface{} { return NewMockDriver(ctx, l) },
 	}
 
 	// pluginInfo is the response returned for the PluginInfo RPC
@@ -60,55 +60,55 @@ var (
 		Name:              pluginName,
 	}
 
-	// configSpec is the hcl specification returned by the ConfigSchema RPC
-	configSpec = hclspec.NewObject(map[string]*hclspec.Spec{
-		"fs_isolation": hclspec.NewDefault(
-			hclspec.NewAttr("fs_isolation", "string", false),
-			hclspec.NewLiteral(fmt.Sprintf("%q", fsisolation.None)),
+	// configSpec is the dumb-hcl specification returned by the ConfigSchema RPC
+	configSpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"fs_isolation": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("fs_isolation", "string", false),
+			dumb-hclspec.NewLiteral(fmt.Sprintf("%q", fsisolation.None)),
 		),
-		"shutdown_periodic_after": hclspec.NewDefault(
-			hclspec.NewAttr("shutdown_periodic_after", "bool", false),
-			hclspec.NewLiteral("false"),
+		"shutdown_periodic_after": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("shutdown_periodic_after", "bool", false),
+			dumb-hclspec.NewLiteral("false"),
 		),
-		"shutdown_periodic_duration": hclspec.NewAttr("shutdown_periodic_duration", "number", false),
+		"shutdown_periodic_duration": dumb-hclspec.NewAttr("shutdown_periodic_duration", "number", false),
 	})
 
-	// taskConfigSpec is the hcl specification for the driver config section of
+	// taskConfigSpec is the dumb-hcl specification for the driver config section of
 	// a task within a job. It is returned in the TaskConfigSchema RPC
-	taskConfigSpec = hclspec.NewObject(map[string]*hclspec.Spec{
-		"start_error":             hclspec.NewAttr("start_error", "string", false),
-		"start_error_recoverable": hclspec.NewAttr("start_error_recoverable", "bool", false),
-		"start_block_for":         hclspec.NewAttr("start_block_for", "string", false),
-		"kill_after":              hclspec.NewAttr("kill_after", "string", false),
-		"plugin_exit_after":       hclspec.NewAttr("plugin_exit_after", "string", false),
-		"driver_ip":               hclspec.NewAttr("driver_ip", "string", false),
-		"driver_advertise":        hclspec.NewAttr("driver_advertise", "bool", false),
-		"driver_port_map":         hclspec.NewAttr("driver_port_map", "string", false),
+	taskConfigSpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"start_error":             dumb-hclspec.NewAttr("start_error", "string", false),
+		"start_error_recoverable": dumb-hclspec.NewAttr("start_error_recoverable", "bool", false),
+		"start_block_for":         dumb-hclspec.NewAttr("start_block_for", "string", false),
+		"kill_after":              dumb-hclspec.NewAttr("kill_after", "string", false),
+		"plugin_exit_after":       dumb-hclspec.NewAttr("plugin_exit_after", "string", false),
+		"driver_ip":               dumb-hclspec.NewAttr("driver_ip", "string", false),
+		"driver_advertise":        dumb-hclspec.NewAttr("driver_advertise", "bool", false),
+		"driver_port_map":         dumb-hclspec.NewAttr("driver_port_map", "string", false),
 
-		"run_for":                hclspec.NewAttr("run_for", "string", false),
-		"exit_code":              hclspec.NewAttr("exit_code", "number", false),
-		"exit_signal":            hclspec.NewAttr("exit_signal", "number", false),
-		"exit_err_msg":           hclspec.NewAttr("exit_err_msg", "string", false),
-		"signal_error":           hclspec.NewAttr("signal_error", "string", false),
-		"stdout_string":          hclspec.NewAttr("stdout_string", "string", false),
-		"stdout_repeat":          hclspec.NewAttr("stdout_repeat", "number", false),
-		"stdout_repeat_duration": hclspec.NewAttr("stdout_repeat_duration", "string", false),
-		"stderr_string":          hclspec.NewAttr("stderr_string", "string", false),
-		"stderr_repeat":          hclspec.NewAttr("stderr_repeat", "number", false),
-		"stderr_repeat_duration": hclspec.NewAttr("stderr_repeat_duration", "string", false),
+		"run_for":                dumb-hclspec.NewAttr("run_for", "string", false),
+		"exit_code":              dumb-hclspec.NewAttr("exit_code", "number", false),
+		"exit_signal":            dumb-hclspec.NewAttr("exit_signal", "number", false),
+		"exit_err_msg":           dumb-hclspec.NewAttr("exit_err_msg", "string", false),
+		"signal_error":           dumb-hclspec.NewAttr("signal_error", "string", false),
+		"stdout_string":          dumb-hclspec.NewAttr("stdout_string", "string", false),
+		"stdout_repeat":          dumb-hclspec.NewAttr("stdout_repeat", "number", false),
+		"stdout_repeat_duration": dumb-hclspec.NewAttr("stdout_repeat_duration", "string", false),
+		"stderr_string":          dumb-hclspec.NewAttr("stderr_string", "string", false),
+		"stderr_repeat":          dumb-hclspec.NewAttr("stderr_repeat", "number", false),
+		"stderr_repeat_duration": dumb-hclspec.NewAttr("stderr_repeat_duration", "string", false),
 
-		"exec_command": hclspec.NewBlock("exec_command", false, hclspec.NewObject(map[string]*hclspec.Spec{
-			"run_for":                hclspec.NewAttr("run_for", "string", false),
-			"exit_code":              hclspec.NewAttr("exit_code", "number", false),
-			"exit_signal":            hclspec.NewAttr("exit_signal", "number", false),
-			"exit_err_msg":           hclspec.NewAttr("exit_err_msg", "string", false),
-			"signal_error":           hclspec.NewAttr("signal_error", "string", false),
-			"stdout_string":          hclspec.NewAttr("stdout_string", "string", false),
-			"stdout_repeat":          hclspec.NewAttr("stdout_repeat", "number", false),
-			"stdout_repeat_duration": hclspec.NewAttr("stdout_repeat_duration", "string", false),
-			"stderr_string":          hclspec.NewAttr("stderr_string", "string", false),
-			"stderr_repeat":          hclspec.NewAttr("stderr_repeat", "number", false),
-			"stderr_repeat_duration": hclspec.NewAttr("stderr_repeat_duration", "string", false),
+		"exec_command": dumb-hclspec.NewBlock("exec_command", false, dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+			"run_for":                dumb-hclspec.NewAttr("run_for", "string", false),
+			"exit_code":              dumb-hclspec.NewAttr("exit_code", "number", false),
+			"exit_signal":            dumb-hclspec.NewAttr("exit_signal", "number", false),
+			"exit_err_msg":           dumb-hclspec.NewAttr("exit_err_msg", "string", false),
+			"signal_error":           dumb-hclspec.NewAttr("signal_error", "string", false),
+			"stdout_string":          dumb-hclspec.NewAttr("stdout_string", "string", false),
+			"stdout_repeat":          dumb-hclspec.NewAttr("stdout_repeat", "number", false),
+			"stdout_repeat_duration": dumb-hclspec.NewAttr("stdout_repeat_duration", "string", false),
+			"stderr_string":          dumb-hclspec.NewAttr("stderr_string", "string", false),
+			"stderr_repeat":          dumb-hclspec.NewAttr("stderr_repeat", "number", false),
+			"stderr_repeat_duration": dumb-hclspec.NewAttr("stderr_repeat_duration", "string", false),
 		})),
 	})
 )
@@ -144,12 +144,12 @@ type Driver struct {
 	// lastMu guards access to last[Driver]TaskConfig
 	lastMu sync.Mutex
 
-	// logger will log to the Nomad agent
-	logger hclog.Logger
+	// logger will log to the Dumb Nomad agent
+	logger dumb-hclog.Logger
 }
 
 // NewMockDriver returns a new DriverPlugin implementation
-func NewMockDriver(ctx context.Context, logger hclog.Logger) drivers.DriverPlugin {
+func NewMockDriver(ctx context.Context, logger dumb-hclog.Logger) drivers.DriverPlugin {
 	logger = logger.Named(pluginName)
 
 	capabilities := &drivers.Capabilities{
@@ -282,7 +282,7 @@ func (d *Driver) PluginInfo() (*base.PluginInfoResponse, error) {
 	return pluginInfo, nil
 }
 
-func (d *Driver) ConfigSchema() (*hclspec.Spec, error) {
+func (d *Driver) ConfigSchema() (*dumb-hclspec.Spec, error) {
 	return configSpec, nil
 }
 
@@ -307,7 +307,7 @@ func (d *Driver) SetConfig(cfg *base.Config) error {
 	return nil
 }
 
-func (d *Driver) TaskConfigSchema() (*hclspec.Spec, error) {
+func (d *Driver) TaskConfigSchema() (*dumb-hclspec.Spec, error) {
 	return taskConfigSpec, nil
 }
 

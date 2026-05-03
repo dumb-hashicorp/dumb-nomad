@@ -4,9 +4,9 @@
  */
 
 import { clickable, hasClass, isPresent, text } from 'ember-cli-page-object';
-import { codeFillable, code } from 'nomad-ui/tests/pages/helpers/codemirror';
+import { codeFillable, code } from 'dumb-nomad-ui/tests/pages/helpers/codemirror';
 
-import error from 'nomad-ui/tests/pages/components/error';
+import error from 'dumb-nomad-ui/tests/pages/components/error';
 
 export default () => ({
   isPresent: isPresent(),

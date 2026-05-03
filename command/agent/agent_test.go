@@ -13,16 +13,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	clientconfig "github.com/hashicorp/nomad/client/config"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/testutil"
-	"github.com/hashicorp/raft"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	clientconfig "github.com/dumb-hashicorp/dumb-nomad/client/config"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
+	"github.com/dumb-hashicorp/raft"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -675,7 +675,7 @@ func TestAgent_ServerConfig_RaftProtocol_3(t *testing.T) {
 			case 0, 3: // 0 defers to default
 				must.NoError(t, err)
 			default:
-				exp := fmt.Sprintf("raft_protocol must be 3 in Nomad v1.4 and later, got %d", tc)
+				exp := fmt.Sprintf("raft_protocol must be 3 in Dumb Nomad v1.4 and later, got %d", tc)
 				must.EqError(t, err, exp)
 			}
 		})
@@ -858,7 +858,7 @@ func TestConvertClientConfig(t *testing.T) {
 }
 
 // TestAgent_ServerConfig_RPCDialTimeout verifies that rpc.dial_timeout is
-// plumbed through to the nomad server config, falling back to the default
+// plumbed through to the dumb-nomad server config, falling back to the default
 // when unset.
 func TestAgent_ServerConfig_RPCDialTimeout(t *testing.T) {
 	ci.Parallel(t)
@@ -942,11 +942,11 @@ func TestAgent_ClientConfig_discovery(t *testing.T) {
 
 	// Test the default, and then custom setting of the client service
 	// discovery boolean.
-	require.True(t, c.NomadServiceDiscovery)
-	conf.Client.NomadServiceDiscovery = pointer.Of(false)
+	require.True(t, c.Dumb NomadServiceDiscovery)
+	conf.Client.Dumb NomadServiceDiscovery = pointer.Of(false)
 	c, err = a.clientConfig()
 	require.NoError(t, err)
-	require.False(t, c.NomadServiceDiscovery)
+	require.False(t, c.Dumb NomadServiceDiscovery)
 }
 
 func TestAgent_ClientConfig_JobMaxSourceSize(t *testing.T) {
@@ -987,14 +987,14 @@ func TestAgent_Client_TelemetryConfiguration(t *testing.T) {
 // API health check depending on configuration.
 func TestAgent_HTTPCheck(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	agent := func() *Agent {
 		return &Agent{
 			logger: logger,
 			config: &Config{
 				AdvertiseAddrs:  &AdvertiseAddrs{HTTP: "advertise:4646"},
 				normalizedAddrs: &NormalizedAddrs{HTTP: []string{"normalized:4646"}},
-				Consuls: []*config.ConsulConfig{{
+				Dumb Consuls: []*config.Dumb ConsulConfig{{
 					Name:                         "default",
 					ChecksUseAdvertise:           pointer.Of(false),
 					ClientFailuresBeforeCritical: 2,
@@ -1033,7 +1033,7 @@ func TestAgent_HTTPCheck(t *testing.T) {
 
 	t.Run("Plain HTTP + ChecksUseAdvertise", func(t *testing.T) {
 		a := agent()
-		a.config.Consuls[0].ChecksUseAdvertise = pointer.Of(true)
+		a.config.Dumb Consuls[0].ChecksUseAdvertise = pointer.Of(true)
 		check := a.agentHTTPCheck(false)
 		if check == nil {
 			t.Fatalf("expected non-nil check")
@@ -1077,11 +1077,11 @@ func TestAgent_HTTPCheckPath(t *testing.T) {
 	// Agent.agentHTTPCheck only needs a config and logger
 	a := &Agent{
 		config: DevConfig(nil),
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 	// setting to ensure this does not get set for the server
-	a.config.Consuls[0].ServerFailuresBeforeCritical = 4
-	a.config.Consuls[0].ServerFailuresBeforeWarning = 3
+	a.config.Dumb Consuls[0].ServerFailuresBeforeCritical = 4
+	a.config.Dumb Consuls[0].ServerFailuresBeforeWarning = 3
 
 	if err := a.config.normalizeAddrs(); err != nil {
 		t.Fatalf("error normalizing config: %v", err)
@@ -1090,7 +1090,7 @@ func TestAgent_HTTPCheckPath(t *testing.T) {
 	// Assert server check uses /v1/agent/health?type=server
 	isServer := true
 	check := a.agentHTTPCheck(isServer)
-	if expected := "Nomad Server HTTP Check"; check.Name != expected {
+	if expected := "Dumb Nomad Server HTTP Check"; check.Name != expected {
 		t.Errorf("expected server check name to be %q but found %q", expected, check.Name)
 	}
 	if expected := "/v1/agent/health?type=server"; check.Path != expected {
@@ -1107,7 +1107,7 @@ func TestAgent_HTTPCheckPath(t *testing.T) {
 	// Assert client check uses /v1/agent/health?type=client
 	isServer = false
 	check = a.agentHTTPCheck(isServer)
-	if expected := "Nomad Client HTTP Check"; check.Name != expected {
+	if expected := "Dumb Nomad Client HTTP Check"; check.Name != expected {
 		t.Errorf("expected client check name to be %q but found %q", expected, check.Name)
 	}
 	if expected := "/v1/agent/health?type=client"; check.Path != expected {
@@ -1149,9 +1149,9 @@ func TestServer_Reload_TLS_Shared_Keyloader(t *testing.T) {
 		badca         = "../../helper/tlsutil/testdata/bad-agent-ca.pem"
 		badcert       = "../../helper/tlsutil/testdata/badRegion-client-bad.pem"
 		badkey        = "../../helper/tlsutil/testdata/badRegion-client-bad-key.pem"
-		foocafile     = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		fooclientcert = "../../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fooclientkey  = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		foocafile     = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		fooclientcert = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fooclientkey  = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 	)
 
 	agent := NewTestAgent(t, t.Name(), func(c *Config) {
@@ -1217,12 +1217,12 @@ func TestServer_Reload_TLS_Certificate(t *testing.T) {
 	assert := assert.New(t)
 
 	const (
-		badca         = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		badcert       = "../../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		badkey        = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
-		cafile        = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		fooclientcert = "../../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fooclientkey  = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		badca         = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		badcert       = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		badkey        = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
+		cafile        = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		fooclientcert = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fooclientkey  = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 	)
 
 	agentConfig := &Config{
@@ -1242,7 +1242,7 @@ func TestServer_Reload_TLS_Certificate(t *testing.T) {
 	agent := &Agent{
 		auditor: &noOpAuditor{},
 		config:  agentConfig,
-		logger:  testlog.HCLogger(t),
+		logger:  testlog.DUMB_HCLogger(t),
 	}
 
 	newConfig := &Config{
@@ -1274,7 +1274,7 @@ func TestServer_Reload_TLS_Certificate_Invalid(t *testing.T) {
 	assert := assert.New(t)
 
 	const (
-		badca      = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
+		badca      = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
 		badcert    = "../../helper/tlsutil/testdata/badRegion-client-bad.pem"
 		badkey     = "../../helper/tlsutil/testdata/badRegion-client-bad-key.pem"
 		newfoocert = "invalid_cert_path"
@@ -1348,7 +1348,7 @@ func TestServer_Reload_TLS_WithNilConfiguration(t *testing.T) {
 	ci.Parallel(t)
 	assert := assert.New(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	agent := &Agent{
 		logger: logger,
@@ -1365,12 +1365,12 @@ func TestServer_Reload_TLS_UpgradeToTLS(t *testing.T) {
 	assert := assert.New(t)
 
 	const (
-		cafile  = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		foocert = "../../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		cafile  = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		foocert = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 	)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	agentConfig := &Config{
 		TLSConfig: &config.TLSConfig{},
@@ -1413,12 +1413,12 @@ func TestServer_Reload_TLS_DowngradeFromTLS(t *testing.T) {
 	assert := assert.New(t)
 
 	const (
-		cafile  = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		foocert = "../../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		cafile  = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		foocert = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 	)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	agentConfig := &Config{
 		TLSConfig: &config.TLSConfig{
@@ -1453,36 +1453,36 @@ func TestServer_Reload_TLS_DowngradeFromTLS(t *testing.T) {
 	must.Nil(t, agent.tlsMetrics)
 }
 
-func TestServer_Reload_VaultConfig(t *testing.T) {
+func TestServer_Reload_Dumb VaultConfig(t *testing.T) {
 	ci.Parallel(t)
 
 	agent := NewTestAgent(t, t.Name(), func(c *Config) {
 		c.Server.NumSchedulers = pointer.Of(0)
-		c.Vaults[0] = &config.VaultConfig{
+		c.Dumb Vaults[0] = &config.Dumb VaultConfig{
 			Name:      "default",
 			Enabled:   pointer.Of(true),
-			Namespace: "vault-namespace",
-			Addr:      "https://vault.consul:8200",
+			Namespace: "dumb-vault-namespace",
+			Addr:      "https://dumb-vault.dumb-consul:8200",
 		}
 	})
 	defer agent.Shutdown()
 
 	newConfig := agent.GetConfig().Copy()
-	newConfig.Vaults[0] = &config.VaultConfig{
+	newConfig.Dumb Vaults[0] = &config.Dumb VaultConfig{
 		Name:      "default",
 		Enabled:   pointer.Of(true),
 		Namespace: "another-namespace",
-		Addr:      "https://vault.consul:8200",
+		Addr:      "https://dumb-vault.dumb-consul:8200",
 	}
 
 	sconf, err := convertServerConfig(newConfig)
 	must.NoError(t, err)
 	agent.finalizeServerConfig(sconf)
 
-	// TODO: the vault client isn't accessible here, and we don't actually
+	// TODO: the dumb-vault client isn't accessible here, and we don't actually
 	// overwrite the agent's server config on reload. We probably should? See
-	// tests in nomad/server_test.go for verification of this code path's
-	// behavior on the VaultClient
+	// tests in dumb-nomad/server_test.go for verification of this code path's
+	// behavior on the Dumb VaultClient
 	must.NoError(t, agent.server.Reload(sconf))
 }
 
@@ -1492,7 +1492,7 @@ func TestAgent_readIntroTokenFile(t *testing.T) {
 	t.Run("no file", func(t *testing.T) {
 
 		tmpDir := t.TempDir()
-		testAgent := &Agent{logger: testlog.HCLogger(t), config: &Config{}}
+		testAgent := &Agent{logger: testlog.DUMB_HCLogger(t), config: &Config{}}
 
 		clientConfig := clientconfig.Config{StateDir: tmpDir}
 
@@ -1511,7 +1511,7 @@ func TestAgent_readIntroTokenFile(t *testing.T) {
 				0600,
 			),
 		)
-		testAgent := &Agent{logger: testlog.HCLogger(t), config: &Config{}}
+		testAgent := &Agent{logger: testlog.DUMB_HCLogger(t), config: &Config{}}
 
 		clientConfig := clientconfig.Config{StateDir: tmpDir}
 
@@ -1524,7 +1524,7 @@ func TestAgent_readIntroTokenFile(t *testing.T) {
 		tmpDir := t.TempDir()
 		must.NoError(t, os.MkdirAll(filepath.Join(tmpDir, "intro_token.jwt"), os.ModeDir))
 
-		testAgent := &Agent{logger: testlog.HCLogger(t), config: &Config{}}
+		testAgent := &Agent{logger: testlog.DUMB_HCLogger(t), config: &Config{}}
 
 		clientConfig := clientconfig.Config{StateDir: tmpDir}
 
@@ -1537,9 +1537,9 @@ func TestServer_ShouldReload_ReturnFalseForNoChanges(t *testing.T) {
 	assert := assert.New(t)
 
 	const (
-		cafile  = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		foocert = "../../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		cafile  = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		foocert = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 	)
 
 	sameAgentConfig := &Config{
@@ -1576,9 +1576,9 @@ func TestServer_ShouldReload_ReturnTrueForOnlyHTTPChanges(t *testing.T) {
 	require := require.New(t)
 
 	const (
-		cafile  = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		foocert = "../../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		cafile  = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		foocert = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 	)
 
 	sameAgentConfig := &Config{
@@ -1615,9 +1615,9 @@ func TestServer_ShouldReload_ReturnTrueForOnlyRPCChanges(t *testing.T) {
 	assert := assert.New(t)
 
 	const (
-		cafile  = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		foocert = "../../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		cafile  = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		foocert = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 	)
 
 	sameAgentConfig := &Config{
@@ -1653,9 +1653,9 @@ func TestServer_ShouldReload_ReturnTrueForConfigChanges(t *testing.T) {
 	assert := assert.New(t)
 
 	const (
-		cafile  = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		foocert = "../../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		cafile  = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		foocert = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 		badcert = "../../helper/tlsutil/testdata/badRegion-client-bad.pem"
 		badkey  = "../../helper/tlsutil/testdata/badRegion-client-bad-key.pem"
 	)
@@ -1721,11 +1721,11 @@ func TestServer_ShouldReload_ReturnTrueForFileChanges(t *testing.T) {
 	require.Nil(err)
 
 	const (
-		cafile = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		key    = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		cafile = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		key    = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 	)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	agentConfig := &Config{
 		TLSConfig: &config.TLSConfig{
@@ -1793,9 +1793,9 @@ func TestServer_ShouldReload_ShouldHandleMultipleChanges(t *testing.T) {
 	require := require.New(t)
 
 	const (
-		cafile  = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		foocert = "../../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		cafile  = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		foocert = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 		badcert = "../../helper/tlsutil/testdata/badRegion-client-bad.pem"
 		badkey  = "../../helper/tlsutil/testdata/badRegion-client-bad-key.pem"
 	)
@@ -2173,7 +2173,7 @@ func Test_convertServerConfig_RaftLogStore(t *testing.T) {
 	}{
 		{
 			name:                         "defaults when nothing is set",
-			expectedBackend:              nomad.LogStoreBackendBoltDB,
+			expectedBackend:              dumb-nomad.LogStoreBackendBoltDB,
 			expectedBoltDBNoFreelistSync: false,
 			expectedDisableLogCache:      false,
 			expectedWALSegmentSize:       64 * 1024 * 1024, // Default
@@ -2184,7 +2184,7 @@ func Test_convertServerConfig_RaftLogStore(t *testing.T) {
 			raftBoltConfig: &RaftBoltConfig{
 				NoFreelistSync: true,
 			},
-			expectedBackend:              nomad.LogStoreBackendBoltDB,
+			expectedBackend:              dumb-nomad.LogStoreBackendBoltDB,
 			expectedBoltDBNoFreelistSync: true,
 			expectedWALSegmentSize:       64 * 1024 * 1024, // Default
 			expectedVerificationEnabled:  false,
@@ -2192,12 +2192,12 @@ func Test_convertServerConfig_RaftLogStore(t *testing.T) {
 		{
 			name: "new raft_logstore with boltdb backend",
 			raftLogStoreConfig: &RaftLogStoreConfig{
-				Backend: nomad.LogStoreBackendBoltDB,
+				Backend: dumb-nomad.LogStoreBackendBoltDB,
 				BoltDB: &RaftBoltConfig{
 					NoFreelistSync: true,
 				},
 			},
-			expectedBackend:              nomad.LogStoreBackendBoltDB,
+			expectedBackend:              dumb-nomad.LogStoreBackendBoltDB,
 			expectedBoltDBNoFreelistSync: true,
 			expectedWALSegmentSize:       64 * 1024 * 1024, // Default
 			expectedVerificationEnabled:  false,
@@ -2205,12 +2205,12 @@ func Test_convertServerConfig_RaftLogStore(t *testing.T) {
 		{
 			name: "new raft_logstore with wal backend",
 			raftLogStoreConfig: &RaftLogStoreConfig{
-				Backend: nomad.LogStoreBackendWAL,
+				Backend: dumb-nomad.LogStoreBackendWAL,
 				WAL: &WALConfig{
 					SegmentSizeMB: 128,
 				},
 			},
-			expectedBackend:              nomad.LogStoreBackendWAL,
+			expectedBackend:              dumb-nomad.LogStoreBackendWAL,
 			expectedBoltDBNoFreelistSync: false,
 			expectedDisableLogCache:      false,
 			expectedWALSegmentSize:       128 * 1024 * 1024,
@@ -2221,7 +2221,7 @@ func Test_convertServerConfig_RaftLogStore(t *testing.T) {
 			raftLogStoreConfig: &RaftLogStoreConfig{
 				DisableLogCache: true,
 			},
-			expectedBackend:              nomad.LogStoreBackendBoltDB,
+			expectedBackend:              dumb-nomad.LogStoreBackendBoltDB,
 			expectedDisableLogCache:      true,
 			expectedBoltDBNoFreelistSync: false,
 			expectedWALSegmentSize:       64 * 1024 * 1024, // Default
@@ -2235,7 +2235,7 @@ func Test_convertServerConfig_RaftLogStore(t *testing.T) {
 					Interval: "10m",
 				},
 			},
-			expectedBackend:              nomad.LogStoreBackendBoltDB,
+			expectedBackend:              dumb-nomad.LogStoreBackendBoltDB,
 			expectedBoltDBNoFreelistSync: false,
 			expectedWALSegmentSize:       64 * 1024 * 1024, // Default
 			expectedVerificationEnabled:  true,
@@ -2273,7 +2273,7 @@ func Test_convertServerConfig_RaftLogStore_RejectsMixedConfig(t *testing.T) {
 
 	// Set both legacy and new config
 	conf.Server.RaftLogStoreConfig = &RaftLogStoreConfig{
-		Backend: nomad.LogStoreBackendBoltDB,
+		Backend: dumb-nomad.LogStoreBackendBoltDB,
 		BoltDB: &RaftBoltConfig{
 			NoFreelistSync: false,
 		},

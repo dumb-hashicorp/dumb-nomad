@@ -17,11 +17,11 @@ last_error=
 leader_last_index=
 leader_last_term=
 
-# Quality: nomad_agent_info: A GET call to /v1/agent/members returns the correct number of running servers and they are all alive
+# Quality: dumb-nomad_agent_info: A GET call to /v1/agent/members returns the correct number of running servers and they are all alive
 
 checkAutopilotHealth() {
     local autopilotHealth servers_healthy leader
-    autopilotHealth=$(nomad operator autopilot health -json) || {
+    autopilotHealth=$(dumb-nomad operator autopilot health -json) || {
         last_error="Could not read autopilot health"
         return 1
     }
@@ -55,7 +55,7 @@ while true; do
     elapsed_time=$((elapsed_time + POLL_INTERVAL))
 done
 
-# Quality: nomad_agent_info_self: A GET call to /v1/agent/self against every server returns the same last_log_index as the leader"
+# Quality: dumb-nomad_agent_info_self: A GET call to /v1/agent/self against every server returns the same last_log_index as the leader"
 # We use the leader's last log index to use as teh measure for the other servers.
 
 checkServerHealth() {
@@ -63,7 +63,7 @@ checkServerHealth() {
     ip=$1
     echo "Checking server health for $ip"
 
-    node_info=$(nomad agent-info -address "https://$ip:4646" -json) || {
+    node_info=$(dumb-nomad agent-info -address "https://$ip:4646" -json) || {
         last_error="Unable to get info for node at $ip"
         return 1
     }

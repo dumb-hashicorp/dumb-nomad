@@ -20,16 +20,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	clienttestutil "github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/testtask"
-	"github.com/hashicorp/nomad/helper/users"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/plugins/base"
-	basePlug "github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	dtestutil "github.com/hashicorp/nomad/plugins/drivers/testutils"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	clienttestutil "github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testtask"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	basePlug "github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	dtestutil "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sys/unix"
@@ -160,7 +160,7 @@ func TestRawExecDriver_StartWaitStop(t *testing.T) {
 		PluginConfig: data,
 		AgentConfig: &base.AgentConfig{
 			Driver: &base.ClientDriverConfig{
-				Topology: d.nomadConfig.Topology,
+				Topology: d.dumb-nomadConfig.Topology,
 			},
 		},
 	}
@@ -432,7 +432,7 @@ func TestRawExecDriver_StartWaitRecoverWaitStop(t *testing.T) {
 		PluginConfig: data,
 		AgentConfig: &base.AgentConfig{
 			Driver: &base.ClientDriverConfig{
-				Topology: d.nomadConfig.Topology,
+				Topology: d.dumb-nomadConfig.Topology,
 			},
 		},
 	}
@@ -571,7 +571,7 @@ func TestRawExec_Validate(t *testing.T) {
 			PluginConfig: data,
 			AgentConfig: &base.AgentConfig{
 				Driver: &base.ClientDriverConfig{
-					Topology: d.nomadConfig.Topology,
+					Topology: d.dumb-nomadConfig.Topology,
 				},
 			},
 		}

@@ -4,7 +4,7 @@
  */
 
 import { Factory } from 'ember-cli-mirage';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import { pickOne } from '../utils';
 
 const REF_TIME = new Date();
@@ -19,7 +19,7 @@ export default Factory.extend({
     return faker.hacker.noun();
   },
 
-  // Nanosecond timestamps matching the Nomad API format
+  // Nanosecond timestamps matching the Dumb Nomad API format
   modifyTime: () => faker.date.past(2 / 365, REF_TIME) * 1000000,
   createTime() {
     return (

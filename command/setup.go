@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type SetupCommand struct {
@@ -16,13 +16,13 @@ type SetupCommand struct {
 // Help satisfies the cli.Command Help function.
 func (c *SetupCommand) Help() string {
 	helpText := `
-Usage: nomad setup <subcommand> [options] [args]
+Usage: dumb-nomad setup <subcommand> [options] [args]
 
   This command groups helper subcommands used for setting up external tools.
 
-  Setup Consul for Nomad:
+  Setup Dumb Consul for Dumb Nomad:
 
-      $ nomad setup consul -y
+      $ dumb-nomad setup dumb-consul -y
 
   Please see the individual subcommand help for detailed usage information.
 `

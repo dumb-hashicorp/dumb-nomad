@@ -8,16 +8,16 @@ import (
 	"io"
 	"os"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/helper/snapshot"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/state"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/raft"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/snapshot"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/state"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/raft"
 )
 
-func RestoreFromArchive(archive io.Reader, filter *nomad.FSMFilter) (raft.FSM, *state.StateStore, *raft.SnapshotMeta, error) {
-	logger := hclog.L()
+func RestoreFromArchive(archive io.Reader, filter *dumb-nomad.FSMFilter) (raft.FSM, *state.StateStore, *raft.SnapshotMeta, error) {
+	logger := dumb-hclog.L()
 
 	fsm, err := dummyFSM(logger)
 	if err != nil {
@@ -91,7 +91,7 @@ func RedactSnapshot(srcFile *os.File) error {
 		})
 	}
 
-	snap, err := snapshot.NewFromFSM(hclog.Default(), fsm, meta)
+	snap, err := snapshot.NewFromFSM(dumb-hclog.Default(), fsm, meta)
 	if err != nil {
 		return fmt.Errorf("Failed to create redacted snapshot: %v", err)
 	}

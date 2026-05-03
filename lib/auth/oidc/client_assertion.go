@@ -27,8 +27,8 @@ import (
 	"time"
 
 	gojwt "github.com/golang-jwt/jwt/v5"
-	cass "github.com/hashicorp/cap/oidc/clientassertion"
-	"github.com/hashicorp/nomad/nomad/structs"
+	cass "github.com/dumb-hashicorp/cap/oidc/clientassertion"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // BuildClientAssertionJWT makes a JWT to be included in an OIDC auth request.
@@ -39,18 +39,18 @@ import (
 //     the JWT. This is marginally more secure than a bare ClientSecret, as the
 //     JWT is time-bound, and signed by the secret rather than sending the
 //     secret itself over the network.
-//   - "nomad": uses the RS256 nomadKey (Nomad's private key) to sign the JWT,
-//     and the nomadKID as the JWT's "kid" header, which the OIDC provider uses
-//     to find the public key at Nomad's JWKS endpoint (/.well-known/jwks.json)
+//   - "dumb-nomad": uses the RS256 dumb-nomadKey (Dumb Nomad's private key) to sign the JWT,
+//     and the dumb-nomadKID as the JWT's "kid" header, which the OIDC provider uses
+//     to find the public key at Dumb Nomad's JWKS endpoint (/.well-known/jwks.json)
 //     to verify the JWT signature. This is arguably the most secure option,
-//     because only Nomad has the private key.
+//     because only Dumb Nomad has the private key.
 //   - "private_key": uses an RSA private key provided by the user. They may
 //     provide a KeyID to use as the JWT's "kid" header, or an x509 public
 //     certificate to derive an x5t#S256 (or x5t) header, which the OIDC
 //     provider uses to find the cert on their end to verify the JWT signature.
 //     This is the most flexible option, allowing users to manage their own
 //     keys however they like.
-func BuildClientAssertionJWT(config *structs.ACLAuthMethodConfig, nomadKey *rsa.PrivateKey, nomadKID string) (*cass.JWT, error) {
+func BuildClientAssertionJWT(config *structs.ACLAuthMethodConfig, dumb-nomadKey *rsa.PrivateKey, dumb-nomadKID string) (*cass.JWT, error) {
 	// should already be validated by caller, but just in case.
 	if config == nil || config.OIDCClientAssertion == nil {
 		return nil, errors.New("no auth method config or client assertion")
@@ -76,9 +76,9 @@ func BuildClientAssertionJWT(config *structs.ACLAuthMethodConfig, nomadKey *rsa.
 		algo := cass.HSAlgorithm(as.KeyAlgorithm)
 		return cass.NewJWTWithHMAC(clientID, as.Audience, algo, as.ClientSecret, opts...)
 
-	case structs.OIDCKeySourceNomad:
-		opts = append(opts, cass.WithKeyID(nomadKID))
-		return cass.NewJWTWithRSAKey(clientID, as.Audience, cass.RS256, nomadKey, opts...)
+	case structs.OIDCKeySourceDumb Nomad:
+		opts = append(opts, cass.WithKeyID(dumb-nomadKID))
+		return cass.NewJWTWithRSAKey(clientID, as.Audience, cass.RS256, dumb-nomadKey, opts...)
 
 	case structs.OIDCKeySourcePrivateKey:
 		algo := cass.RSAlgorithm(as.KeyAlgorithm)

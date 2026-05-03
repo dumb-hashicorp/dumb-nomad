@@ -7,7 +7,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/hashicorp/nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
 )
 
 type FingerprintFn func(context.Context) (<-chan *FingerprintResponse, error)

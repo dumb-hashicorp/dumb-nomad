@@ -14,9 +14,9 @@ import {
   visitable,
 } from 'ember-cli-page-object';
 
-import allocations from 'nomad-ui/tests/pages/components/allocations';
-import error from 'nomad-ui/tests/pages/components/error';
-import { multiFacet } from 'nomad-ui/tests/pages/components/facet';
+import allocations from 'dumb-nomad-ui/tests/pages/components/allocations';
+import error from 'dumb-nomad-ui/tests/pages/components/error';
+import { multiFacet } from 'dumb-nomad-ui/tests/pages/components/facet';
 
 export default create({
   visit: visitable('/jobs/:id/allocations'),

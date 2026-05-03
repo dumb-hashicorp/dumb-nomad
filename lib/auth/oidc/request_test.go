@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cap/oidc"
+	"github.com/dumb-hashicorp/cap/oidc"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 )

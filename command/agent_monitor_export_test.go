@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/agent"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
 	"github.com/shoenig/test/must"
 )
 
@@ -59,8 +59,8 @@ func TestMonitorExportCommand_Fails(t *testing.T) {
 		},
 		{
 			name:      "setting both on-disk and service-name",
-			cmdArgs:   []string{"-address=" + url, "-on-disk=true", "-service-name=nomad"},
-			errString: "journald and nomad log file simultaneously",
+			cmdArgs:   []string{"-address=" + url, "-on-disk=true", "-service-name=dumb-nomad"},
+			errString: "journald and dumb-nomad log file simultaneously",
 		},
 		{
 			name:      "setting neither on-disk nor service-name",
@@ -68,9 +68,9 @@ func TestMonitorExportCommand_Fails(t *testing.T) {
 			errString: "One of -service-name or -on-disk must be set",
 		},
 		{
-			name:      "requires nomad in service name",
+			name:      "requires dumb-nomad in service name",
 			cmdArgs:   []string{"-address=" + url, "-service-name=docker.path"},
-			errString: "does not include 'nomad'",
+			errString: "does not include 'dumb-nomad'",
 		},
 	}
 

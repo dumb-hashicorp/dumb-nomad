@@ -13,16 +13,16 @@ import (
 	"time"
 
 	csipbv1 "github.com/container-storage-interface/spec/lib/go/csi"
-	"github.com/hashicorp/go-hclog"
-	multierror "github.com/hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	multierror "github.com/dumb-hashicorp/go-multierror"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/hashicorp/nomad/helper/grpc-middleware/logging"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/grpc-middleware/logging"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 )
 
 // PluginTypeCSI implements the CSI plugin interface
@@ -67,7 +67,7 @@ type Topology struct {
 }
 
 // CSIControllerClient defines the minimal CSI Controller Plugin interface used
-// by nomad to simplify the interface required for testing.
+// by dumb-nomad to simplify the interface required for testing.
 type CSIControllerClient interface {
 	ControllerGetCapabilities(ctx context.Context, in *csipbv1.ControllerGetCapabilitiesRequest, opts ...grpc.CallOption) (*csipbv1.ControllerGetCapabilitiesResponse, error)
 	ControllerPublishVolume(ctx context.Context, in *csipbv1.ControllerPublishVolumeRequest, opts ...grpc.CallOption) (*csipbv1.ControllerPublishVolumeResponse, error)
@@ -83,7 +83,7 @@ type CSIControllerClient interface {
 }
 
 // CSINodeClient defines the minimal CSI Node Plugin interface used
-// by nomad to simplify the interface required for testing.
+// by dumb-nomad to simplify the interface required for testing.
 type CSINodeClient interface {
 	NodeGetCapabilities(ctx context.Context, in *csipbv1.NodeGetCapabilitiesRequest, opts ...grpc.CallOption) (*csipbv1.NodeGetCapabilitiesResponse, error)
 	NodeGetInfo(ctx context.Context, in *csipbv1.NodeGetInfoRequest, opts ...grpc.CallOption) (*csipbv1.NodeGetInfoResponse, error)
@@ -100,7 +100,7 @@ type client struct {
 	identityClient   csipbv1.IdentityClient
 	controllerClient CSIControllerClient
 	nodeClient       CSINodeClient
-	logger           hclog.Logger
+	logger           dumb-hclog.Logger
 }
 
 func (c *client) Close() error {
@@ -110,7 +110,7 @@ func (c *client) Close() error {
 	return nil
 }
 
-func NewClient(addr string, logger hclog.Logger) CSIPlugin {
+func NewClient(addr string, logger dumb-hclog.Logger) CSIPlugin {
 	return &client{
 		addr:   addr,
 		logger: logger,
@@ -156,7 +156,7 @@ func (c *client) ensureConnected(ctx context.Context) error {
 	}
 }
 
-func newGrpcConn(addr string, logger hclog.Logger) (*grpc.ClientConn, error) {
+func newGrpcConn(addr string, logger dumb-hclog.Logger) (*grpc.ClientConn, error) {
 	// after DialContext returns w/ initial connection, closing this
 	// context is a no-op
 	connectCtx, cancel := context.WithTimeout(context.Background(), time.Second*1)
@@ -181,7 +181,7 @@ func newGrpcConn(addr string, logger hclog.Logger) (*grpc.ClientConn, error) {
 	return conn, nil
 }
 
-// PluginInfo describes the type and version of a plugin as required by the nomad
+// PluginInfo describes the type and version of a plugin as required by the dumb-nomad
 // base.BasePlugin interface.
 func (c *client) PluginInfo() (*base.PluginInfoResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
@@ -198,7 +198,7 @@ func (c *client) PluginInfo() (*base.PluginInfoResponse, error) {
 	}
 
 	return &base.PluginInfoResponse{
-		Type:              PluginTypeCSI,     // note: this isn't a Nomad go-plugin type
+		Type:              PluginTypeCSI,     // note: this isn't a Dumb Nomad go-plugin type
 		PluginApiVersions: []string{"1.0.0"}, // TODO(tgross): we want to fingerprint spec version, but this isn't included as a field from the plugins
 		PluginVersion:     version,
 		Name:              name,
@@ -207,7 +207,7 @@ func (c *client) PluginInfo() (*base.PluginInfoResponse, error) {
 
 // ConfigSchema returns the schema for parsing the plugins configuration as
 // required by the base.BasePlugin interface. It will always return nil.
-func (c *client) ConfigSchema() (*hclspec.Spec, error) {
+func (c *client) ConfigSchema() (*dumb-hclspec.Spec, error) {
 	return nil, nil
 }
 
@@ -830,7 +830,7 @@ func (c *client) NodeUnstageVolume(ctx context.Context, volumeID string, staging
 		return err
 	}
 	// These errors should not be returned during production use but exist as aids
-	// during Nomad development
+	// during Dumb Nomad development
 	if volumeID == "" {
 		return fmt.Errorf("missing volumeID")
 	}
@@ -895,7 +895,7 @@ func (c *client) NodeUnpublishVolume(ctx context.Context, volumeID, targetPath s
 		return err
 	}
 	// These errors should not be returned during production use but exist as aids
-	// during Nomad development
+	// during Dumb Nomad development
 	if volumeID == "" {
 		return fmt.Errorf("missing volumeID")
 	}

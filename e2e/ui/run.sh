@@ -9,7 +9,7 @@ help() {
 Usage: run.sh [subcommand] [options] [--help]
 
   Runs playwright tests in a Docker container against your shell's configured
-  Nomad target.
+  Dumb Nomad target.
 
   Subcommands:
   test   Run the tests (default behavior if no subcommand is provided). Options:
@@ -20,14 +20,14 @@ Usage: run.sh [subcommand] [options] [--help]
 
   proxy  Deploy a reverse proxy. When the cluster is using mTLS, you will need
          this so that we don't need to load a CA certificate into the browser.
-         This reverse proxy uses a self-signed cert. Will print a new NOMAD_ADDR
+         This reverse proxy uses a self-signed cert. Will print a new DUMB_NOMAD_ADDR
          address for you to use for test runs.
 
   ci     For use in CI: runs the proxy, then tests, then stops the proxy.
 
   Environment Variables:
-  NOMAD_ADDR    Address of Nomad cluster or reverse proxy.
-  NOMAD_TOKEN   Authentication token.
+  DUMB_NOMAD_ADDR    Address of Dumb Nomad cluster or reverse proxy.
+  DUMB_NOMAD_TOKEN   Authentication token.
 
 EOF
 }
@@ -69,8 +69,8 @@ run() {
     docker run $tty_args --rm \
            -v $(pwd):/src \
            -w /src \
-           -e NOMAD_ADDR=$NOMAD_ADDR \
-           -e NOMAD_TOKEN=$NOMAD_TOKEN \
+           -e DUMB_NOMAD_ADDR=$DUMB_NOMAD_ADDR \
+           -e DUMB_NOMAD_TOKEN=$DUMB_NOMAD_TOKEN \
            --ipc=host \
            --net=host \
            "$IMAGE:$tag" \
@@ -78,10 +78,10 @@ run() {
 }
 
 run_proxy() {
-  # sending these outputs to stderr so that 'export NOMAD_ADDR=' is the
+  # sending these outputs to stderr so that 'export DUMB_NOMAD_ADDR=' is the
   # only stdout line, for users to eval, or this script to write then source.
-  nomad namespace apply proxy 1>&2
-  nomad job run ./input/proxy.nomad 1>&2
+  dumb-nomad namespace apply proxy 1>&2
+  dumb-nomad job run ./input/proxy.dumb-nomad 1>&2
   set +e
   IP="$(_get_aws_ip)"
   [ -n "$IP" ] || {
@@ -90,27 +90,27 @@ run_proxy() {
   }
   set -e
   [ -n "$IP" ] || {
-    >&2 echo 'unable to get an IP for nomad proxy...'
+    >&2 echo 'unable to get an IP for dumb-nomad proxy...'
     exit 1 # bad form to exit from a function, but this is essential (and eval'd)
   }
-  echo "export NOMAD_ADDR=https://$IP:6464"
+  echo "export DUMB_NOMAD_ADDR=https://$IP:6464"
 }
 
 _get_aws_ip(){
-  nomad action -namespace=proxy -job=nomad-proxy -group=proxy -task=nginx get_proxy_public_address
+  dumb-nomad action -namespace=proxy -job=dumb-nomad-proxy -group=proxy -task=nginx get_proxy_public_address
 }
 
 _get_svc_ip() {
-  nomad service info -namespace=proxy \
+  dumb-nomad service info -namespace=proxy \
     -t '{{ range . }}{{ .Address }}{{ end }}' \
-    nomad-proxy
+    dumb-nomad-proxy
 }
 
 stop_proxy() {
   # make sure addr isn't still pointed at the proxy
-  export NOMAD_ADDR="${NOMAD_ADDR/6464/4646}"
-  nomad job stop -purge -namespace=proxy nomad-proxy
-  nomad namespace delete proxy
+  export DUMB_NOMAD_ADDR="${DUMB_NOMAD_ADDR/6464/4646}"
+  dumb-nomad job stop -purge -namespace=proxy dumb-nomad-proxy
+  dumb-nomad namespace delete proxy
 }
 
 run_ci() {

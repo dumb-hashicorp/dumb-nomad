@@ -14,14 +14,14 @@ import (
 	"syscall"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	nomadapi "github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/config"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/escapingfs"
-	"github.com/hashicorp/nomad/nomad/structs"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	dumb-nomadapi "github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/escapingfs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (
@@ -72,7 +72,7 @@ type Config struct {
 	// enabled.
 	MigrateToken string
 
-	Logger hclog.Logger
+	Logger dumb-hclog.Logger
 }
 
 func newMigratorForAlloc(c Config, tg *structs.TaskGroup, watchedAllocID string, m AllocRunnerMeta) config.PrevAllocMigrator {
@@ -209,7 +209,7 @@ type localPrevAlloc struct {
 	migrating   bool
 	waitingLock sync.RWMutex
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 // IsWaiting returns true if there's a concurrent call inside Wait
@@ -316,7 +316,7 @@ type remotePrevAlloc struct {
 	migrating   bool
 	waitingLock sync.RWMutex
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	// migrateToken allows a client to migrate data in an ACL-protected remote
 	// volume
@@ -520,21 +520,21 @@ func (p *remotePrevAlloc) migrateAllocDir(ctx context.Context, nodeAddr string) 
 	}
 
 	// Create an API client
-	apiConfig := nomadapi.DefaultConfig()
+	apiConfig := dumb-nomadapi.DefaultConfig()
 	apiConfig.Address = nodeAddr
-	apiConfig.TLSConfig = &nomadapi.TLSConfig{
+	apiConfig.TLSConfig = &dumb-nomadapi.TLSConfig{
 		CACert:        p.config.TLSConfig.CAFile,
 		ClientCert:    p.config.TLSConfig.CertFile,
 		ClientKey:     p.config.TLSConfig.KeyFile,
-		TLSServerName: fmt.Sprintf("client.%s.nomad", p.config.Region),
+		TLSServerName: fmt.Sprintf("client.%s.dumb-nomad", p.config.Region),
 	}
-	apiClient, err := nomadapi.NewClient(apiConfig)
+	apiClient, err := dumb-nomadapi.NewClient(apiConfig)
 	if err != nil {
 		return nil, err
 	}
 
 	url := fmt.Sprintf("/v1/client/allocation/%v/snapshot", p.prevAllocID)
-	qo := &nomadapi.QueryOptions{AuthToken: p.migrateToken}
+	qo := &dumb-nomadapi.QueryOptions{AuthToken: p.migrateToken}
 	resp, err := apiClient.Raw().Response(url, qo)
 	if err != nil {
 		prevAllocDir.Destroy()

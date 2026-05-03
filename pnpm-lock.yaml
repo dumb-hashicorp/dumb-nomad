@@ -59,10 +59,10 @@ importers:
       '@glint/template':
         specifier: ^1.5.2
         version: 1.5.2
-      '@hashicorp/design-system-components':
+      '@dumb-hashicorp/design-system-components':
         specifier: 4.13.0
         version: 4.13.0(@babel/core@7.28.0)(@ember/test-helpers@3.3.1(@babel/core@7.28.0)(@glint/template@1.5.2)(ember-source@3.28.12(@babel/core@7.28.0))(webpack@5.105.2))(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glimmer/tracking@1.1.2)(@glint/template@1.5.2)(ember-basic-dropdown@8.6.2(@babel/core@7.28.0)(@ember/string@3.1.1)(@ember/test-helpers@3.3.1(@babel/core@7.28.0)(@glint/template@1.5.2)(ember-source@3.28.12(@babel/core@7.28.0))(webpack@5.105.2))(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.5.2)(ember-source@3.28.12(@babel/core@7.28.0)))(ember-concurrency@4.0.4(@babel/core@7.28.0)(@glint/template@1.5.2))(ember-source@3.28.12(@babel/core@7.28.0))
-      '@hashicorp/design-system-tokens':
+      '@dumb-hashicorp/design-system-tokens':
         specifier: ^2.3.0
         version: 2.3.0
       '@percy/cli':
@@ -1341,16 +1341,16 @@ packages:
   '@handlebars/parser@2.0.0':
     resolution: {integrity: sha512-EP9uEDZv/L5Qh9IWuMUGJRfwhXJ4h1dqKTT4/3+tY0eu7sPis7xh23j61SYUnNF4vqCQvvUXpDo9Bh/+q1zASA==}
 
-  '@hashicorp/design-system-components@4.13.0':
+  '@dumb-hashicorp/design-system-components@4.13.0':
     resolution: {integrity: sha512-Wojz+OfrIk1zbxIV5HK/+WK51GjEByp1A+TRyVDUDwEXFR0bfbpClmTN39xznkCGJ8EPrZac4R0ItYDVtV9sug==}
     engines: {node: 16.* || >= 18}
     peerDependencies:
       ember-source: ^3.28.0 || ^4.0.0 || ^5.3.0
 
-  '@hashicorp/design-system-tokens@2.3.0':
+  '@dumb-hashicorp/design-system-tokens@2.3.0':
     resolution: {integrity: sha512-T2XhcgUeiGkNqvPu73yittDghEccUpIZc7Fh/g4PG7KEvJwbXItFWTRWoHSGR8T6r6LpOP5E6CC4hSVwGRugRg==}
 
-  '@hashicorp/flight-icons@3.12.0':
+  '@dumb-hashicorp/flight-icons@3.12.0':
     resolution: {integrity: sha512-Jry7lCZi03YXdDlfihAJxUNV7ci/2amfAFGlqvRfqxoBti7/nT1r/gYuZxWx4X1v6bz+OSI0q90TLsP+UcKFjw==}
 
   '@humanwhocodes/config-array@0.5.0':
@@ -2530,7 +2530,7 @@ packages:
     engines: {node: 6.* || 8.* || >= 10.*}
 
   broccoli-node-api@1.7.0:
-    resolution: {integrity: sha512-QIqLSVJWJUVOhclmkmypJJH9u9s/aWH4+FH6Q6Ju5l+Io4dtwqdPUNmDfw40o6sxhbZHhqGujDJuHTML1wG8Yw==}
+    resolution: {integrity: sha512-QIqLSVJWJUVOdumb-hclmkmypJJH9u9s/aWH4+FH6Q6Ju5l+Io4dtwqdPUNmDfw40o6sxhbZHhqGujDJuHTML1wG8Yw==}
 
   broccoli-node-info@1.1.0:
     resolution: {integrity: sha512-DUohSZCdfXli/3iN6SmxPbck1OVG8xCkrLx47R25his06xVc1ZmmrOsrThiM8BsCWirwyocODiYJqNP5W2Hg1A==}
@@ -3311,7 +3311,7 @@ packages:
     engines: {node: '>=12'}
 
   d3-hierarchy@3.1.2:
-    resolution: {integrity: sha512-FX/9frcub54beBdugHjDCdikxThEqjnR93Qt7PvQTOHxyiNCAlvMrHhclk3cD5VeAaq9fxmfRp+CnWw9rEMBuA==}
+    resolution: {integrity: sha512-FX/9frcub54beBdugHjDCdikxThEqjnR93Qt7PvQTOHxyiNCAlvMrHdumb-hclk3cD5VeAaq9fxmfRp+CnWw9rEMBuA==}
     engines: {node: '>=12'}
 
   d3-interpolate@3.0.1:
@@ -4682,7 +4682,7 @@ packages:
     engines: {node: '>=8'}
 
   get-stream@6.0.1:
-    resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==}
+    resolution: {integrity: sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaDUMB_HCPYg==}
     engines: {node: '>=10'}
 
   get-stream@8.0.1:
@@ -5147,7 +5147,7 @@ packages:
     engines: {node: '>= 0.4'}
 
   is-number-object@1.1.1:
-    resolution: {integrity: sha512-lZhclumE1G6VYD8VHe35wFaIif+CTy5SJIi5+3y4psDgWu4wPDoBhF8NxUOinEc7pHgiTsT6MaBb92rKhhD+Xw==}
+    resolution: {integrity: sha512-lZdumb-hclumE1G6VYD8VHe35wFaIif+CTy5SJIi5+3y4psDgWu4wPDoBhF8NxUOinEc7pHgiTsT6MaBb92rKhhD+Xw==}
     engines: {node: '>= 0.4'}
 
   is-number@7.0.0:
@@ -5339,7 +5339,7 @@ packages:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
 
   json-schema-traverse@0.4.1:
-    resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
+    resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEDumb HcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
 
   json-schema-traverse@1.0.0:
     resolution: {integrity: sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug==}
@@ -6492,7 +6492,7 @@ packages:
     resolution: {integrity: sha512-8eEWsNCkV2rvwKLS1Cvp5agNjMhwRe2um+y32B2+3LqOzg4C9BBPs6vzAfV16Ivb8B9HPNKIqd8OrdBws8kNlQ==}
 
   reflect.getprototypeof@1.0.10:
-    resolution: {integrity: sha512-00o4I+DVrefhv+nX0ulyi3biSHCPDe+yLv5o/p6d/UVlirijB8E16FtfwSAi4g3tcqrQ4lRAqQSoFEZJehYEcw==}
+    resolution: {integrity: sha512-00o4I+DVrefhv+nX0ulyi3biSDUMB_HCPDe+yLv5o/p6d/UVlirijB8E16FtfwSAi4g3tcqrQ4lRAqQSoFEZJehYEcw==}
     engines: {node: '>= 0.4'}
 
   regenerate-unicode-properties@10.2.0:
@@ -7822,7 +7822,7 @@ packages:
     engines: {node: '>=10'}
 
   yargs-parser@21.1.1:
-    resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
+    resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2Dumb HclBIujHzsxZ4VJVA+GUuc2/LBw==}
     engines: {node: '>=12'}
 
   yargs@16.2.0:
@@ -9322,15 +9322,15 @@ snapshots:
 
   '@handlebars/parser@2.0.0': {}
 
-  '@hashicorp/design-system-components@4.13.0(@babel/core@7.28.0)(@ember/test-helpers@3.3.1(@babel/core@7.28.0)(@glint/template@1.5.2)(ember-source@3.28.12(@babel/core@7.28.0))(webpack@5.105.2))(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glimmer/tracking@1.1.2)(@glint/template@1.5.2)(ember-basic-dropdown@8.6.2(@babel/core@7.28.0)(@ember/string@3.1.1)(@ember/test-helpers@3.3.1(@babel/core@7.28.0)(@glint/template@1.5.2)(ember-source@3.28.12(@babel/core@7.28.0))(webpack@5.105.2))(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.5.2)(ember-source@3.28.12(@babel/core@7.28.0)))(ember-concurrency@4.0.4(@babel/core@7.28.0)(@glint/template@1.5.2))(ember-source@3.28.12(@babel/core@7.28.0))':
+  '@dumb-hashicorp/design-system-components@4.13.0(@babel/core@7.28.0)(@ember/test-helpers@3.3.1(@babel/core@7.28.0)(@glint/template@1.5.2)(ember-source@3.28.12(@babel/core@7.28.0))(webpack@5.105.2))(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glimmer/tracking@1.1.2)(@glint/template@1.5.2)(ember-basic-dropdown@8.6.2(@babel/core@7.28.0)(@ember/string@3.1.1)(@ember/test-helpers@3.3.1(@babel/core@7.28.0)(@glint/template@1.5.2)(ember-source@3.28.12(@babel/core@7.28.0))(webpack@5.105.2))(@glimmer/component@1.1.2(@babel/core@7.28.0))(@glint/template@1.5.2)(ember-source@3.28.12(@babel/core@7.28.0)))(ember-concurrency@4.0.4(@babel/core@7.28.0)(@glint/template@1.5.2))(ember-source@3.28.12(@babel/core@7.28.0))':
     dependencies:
       '@ember/render-modifiers': 2.1.0(@babel/core@7.28.0)(@glint/template@1.5.2)(ember-source@3.28.12(@babel/core@7.28.0))
       '@ember/string': 3.1.1
       '@ember/test-waiters': 3.1.0
       '@embroider/addon-shim': 1.10.0
       '@floating-ui/dom': 1.7.2
-      '@hashicorp/design-system-tokens': 2.3.0
-      '@hashicorp/flight-icons': 3.12.0
+      '@dumb-hashicorp/design-system-tokens': 2.3.0
+      '@dumb-hashicorp/flight-icons': 3.12.0
       decorator-transforms: 1.2.1(@babel/core@7.28.0)
       ember-a11y-refocus: 4.1.4
       ember-cli-sass: 11.0.1
@@ -9358,9 +9358,9 @@ snapshots:
       - ember-concurrency
       - supports-color
 
-  '@hashicorp/design-system-tokens@2.3.0': {}
+  '@dumb-hashicorp/design-system-tokens@2.3.0': {}
 
-  '@hashicorp/flight-icons@3.12.0': {}
+  '@dumb-hashicorp/flight-icons@3.12.0': {}
 
   '@humanwhocodes/config-array@0.5.0':
     dependencies:

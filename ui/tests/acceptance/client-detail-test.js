@@ -19,13 +19,13 @@ import { assign } from '@ember/polyfills';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import { formatBytes, formatHertz } from 'nomad-ui/utils/units';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import { formatBytes, formatHertz } from 'dumb-nomad-ui/utils/units';
 import moment from 'moment';
-import ClientDetail from 'nomad-ui/tests/pages/clients/detail';
-import Clients from 'nomad-ui/tests/pages/clients/list';
-import Jobs from 'nomad-ui/tests/pages/jobs/list';
-import Layout from 'nomad-ui/tests/pages/layout';
+import ClientDetail from 'dumb-nomad-ui/tests/pages/clients/detail';
+import Clients from 'dumb-nomad-ui/tests/pages/clients/list';
+import Jobs from 'dumb-nomad-ui/tests/pages/jobs/list';
+import Layout from 'dumb-nomad-ui/tests/pages/layout';
 
 let node;
 let managementToken;
@@ -53,7 +53,7 @@ module('Acceptance | client detail', function (hooks) {
     managementToken = server.create('token');
     clientToken = server.create('token');
 
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
 
     // Related models
     server.create('agent');
@@ -420,7 +420,7 @@ module('Acceptance | client detail', function (hooks) {
   });
 
   test('node metadata is uneditable by default', async function (assert) {
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
     node = server.create('node', 'forceIPv4', 'withMeta');
     await ClientDetail.visit({ id: node.id });
 
@@ -429,7 +429,7 @@ module('Acceptance | client detail', function (hooks) {
   });
 
   test('node metadata is editable by managers', async function (assert) {
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
     node = server.create('node', 'forceIPv4', 'withMeta');
     await ClientDetail.visit({ id: node.id });
 
@@ -441,7 +441,7 @@ module('Acceptance | client detail', function (hooks) {
   });
 
   test('metadata can be added and removed', async function (assert) {
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
     node = server.create('node', 'forceIPv4', 'withMeta');
     await ClientDetail.visit({ id: node.id });
 
@@ -479,7 +479,7 @@ module('Acceptance | client detail', function (hooks) {
   });
 
   test('metadata can be edited', async function (assert) {
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
     node = server.create(
       'node',
       {
@@ -998,7 +998,7 @@ module('Acceptance | client detail', function (hooks) {
 
     await ClientDetail.drainPopover.submit();
 
-    const got = JSON.parse(window.localStorage.nomadDrainOptions);
+    const got = JSON.parse(window.localStorage.dumb-nomadDrainOptions);
     const want = {
       deadlineEnabled: true,
       customDuration: '1h40m20s',
@@ -1200,7 +1200,7 @@ module('Acceptance | client detail', function (hooks) {
   });
 
   test('toggling eligibility and node drain are disabled when the active ACL token does not permit node write', async function (assert) {
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     await ClientDetail.visit({ id: node.id });
     assert.ok(ClientDetail.eligibilityToggle.isDisabled);
@@ -1344,7 +1344,7 @@ module('Acceptance | client detail (multi-namespace)', function (hooks) {
   });
 
   test('when the node has allocations on different namespaces, the associated jobs are fetched correctly', async function (assert) {
-    window.localStorage.nomadActiveNamespace = 'other-namespace';
+    window.localStorage.dumb-nomadActiveNamespace = 'other-namespace';
 
     await ClientDetail.visit({ id: node.id });
 

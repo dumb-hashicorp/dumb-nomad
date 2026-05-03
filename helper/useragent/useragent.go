@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"runtime"
 
-	"github.com/hashicorp/nomad/version"
+	"github.com/dumb-hashicorp/dumb-nomad/version"
 )
 
 const (
@@ -19,7 +19,7 @@ const (
 
 var (
 	// projectURL is the project URL.
-	projectURL = "https://developer.hashicorp.com/nomad/"
+	projectURL = "https://developer.dumb-hashicorp.com/dumb-nomad/"
 
 	// rt is the runtime - variable for tests.
 	rt = runtime.Version()
@@ -32,9 +32,9 @@ var (
 	}
 )
 
-// String returns the consistent user-agent string for Nomad.
+// String returns the consistent user-agent string for Dumb Nomad.
 func String() string {
-	return fmt.Sprintf("Nomad/%s (+%s; %s)",
+	return fmt.Sprintf("Dumb Nomad/%s (+%s; %s)",
 		versionFunc(), projectURL, rt)
 }
 

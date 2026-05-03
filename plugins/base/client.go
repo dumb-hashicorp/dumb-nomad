@@ -7,9 +7,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hashicorp/nomad/helper/pluginutils/grpcutils"
-	"github.com/hashicorp/nomad/plugins/base/proto"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/grpcutils"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 )
 
 // BasePluginClient implements the client side of a remote base plugin, using
@@ -47,7 +47,7 @@ func (b *BasePluginClient) PluginInfo() (*PluginInfoResponse, error) {
 	return resp, nil
 }
 
-func (b *BasePluginClient) ConfigSchema() (*hclspec.Spec, error) {
+func (b *BasePluginClient) ConfigSchema() (*dumb-hclspec.Spec, error) {
 	presp, err := b.Client.ConfigSchema(b.DoneCtx, &proto.ConfigSchemaRequest{})
 	if err != nil {
 		return nil, grpcutils.HandleGrpcErr(err, b.DoneCtx)
@@ -60,7 +60,7 @@ func (b *BasePluginClient) SetConfig(c *Config) error {
 	// Send the config
 	_, err := b.Client.SetConfig(b.DoneCtx, &proto.SetConfigRequest{
 		MsgpackConfig:    c.PluginConfig,
-		NomadConfig:      c.AgentConfig.toProto(),
+		Dumb NomadConfig:      c.AgentConfig.toProto(),
 		PluginApiVersion: c.ApiVersion,
 	})
 

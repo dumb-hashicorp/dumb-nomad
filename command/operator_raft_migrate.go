@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/helper/raftutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/raftutil"
 	"github.com/posener/complete"
 )
 
@@ -18,9 +18,9 @@ type OperatorRaftMigrateCommand struct {
 
 func (c *OperatorRaftMigrateCommand) Help() string {
 	helpText := `
-Usage: nomad operator raft migrate-backend <path to nomad data dir>
+Usage: dumb-nomad operator raft migrate-backend <path to dumb-nomad data dir>
 
-  Migrate the raft log store from BoltDB to the WAL backend. The Nomad server
+  Migrate the raft log store from BoltDB to the WAL backend. The Dumb Nomad server
   must be stopped before running this command.
 
   The command copies all raft log entries and stable store keys from the
@@ -42,8 +42,8 @@ Usage: nomad operator raft migrate-backend <path to nomad data dir>
   Then start the server.
 
   This command requires file system permissions to access the data directory on
-  disk. The Nomad server locks access to the data directory, so this command
-  cannot be run on a data directory that is being used by a running Nomad server.
+  disk. The Dumb Nomad server locks access to the data directory, so this command
+  cannot be run on a data directory that is being used by a running Dumb Nomad server.
 
 Options:
 
@@ -95,7 +95,7 @@ func (c *OperatorRaftMigrateCommand) Run(args []string) int {
 
 	if !yes {
 		c.Ui.Output(fmt.Sprintf("This will migrate the raft log store in %s from BoltDB to WAL.", raftDir))
-		c.Ui.Output("The Nomad server must be stopped. The old raft.db will be preserved as raft.db.migrated.<timestamp>.")
+		c.Ui.Output("The Dumb Nomad server must be stopped. The old raft.db will be preserved as raft.db.migrated.<timestamp>.")
 		c.Ui.Output("")
 
 		confirm, err := c.Ui.Ask("Type 'yes' to confirm migration: ")

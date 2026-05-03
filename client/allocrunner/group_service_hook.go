@@ -8,22 +8,22 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	"github.com/hashicorp/nomad/client/serviceregistration/wrapper"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/command/agent/consul"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/wrapper"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (
 	groupServiceHookName = "group_services"
 )
 
-// groupServiceHook manages task group Consul service registration and
+// groupServiceHook manages task group Dumb Consul service registration and
 // deregistration.
 type groupServiceHook struct {
 	allocID          string
@@ -37,7 +37,7 @@ type groupServiceHook struct {
 	networkStatus    structs.NetworkStatus
 	shutdownDelayCtx context.Context
 
-	// providerNamespace is the Nomad or Consul namespace in which service
+	// providerNamespace is the Dumb Nomad or Dumb Consul namespace in which service
 	// registrations will be made. This field may be updated.
 	providerNamespace string
 
@@ -47,7 +47,7 @@ type groupServiceHook struct {
 
 	hookResources *cstructs.AllocHookResources
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	// The following fields may be updated
 	canary   bool
@@ -66,9 +66,9 @@ type groupServiceHookConfig struct {
 	restarter        serviceregistration.WorkloadRestarter
 	networkStatus    structs.NetworkStatus
 	shutdownDelayCtx context.Context
-	logger           hclog.Logger
+	logger           dumb-hclog.Logger
 
-	// providerNamespace is the Nomad or Consul namespace in which service
+	// providerNamespace is the Dumb Nomad or Dumb Consul namespace in which service
 	// registrations will be made.
 	providerNamespace string
 
@@ -264,7 +264,7 @@ func (h *groupServiceHook) Postrun() error {
 	return nil
 }
 
-// deregisterLocked will deregister services from Consul/Nomad service provider.
+// deregisterLocked will deregister services from Dumb Consul/Dumb Nomad service provider.
 //
 // caller must hold h.lock
 func (h *groupServiceHook) deregisterLocked() {
@@ -285,11 +285,11 @@ func (h *groupServiceHook) deregisterLocked() {
 //
 // caller must hold h.lock
 func (h *groupServiceHook) getWorkloadServicesLocked() *serviceregistration.WorkloadServices {
-	allocTokens := h.hookResources.GetConsulTokens()
+	allocTokens := h.hookResources.GetDumb ConsulTokens()
 
 	tokens := map[string]string{}
 	for _, service := range h.services {
-		cluster := service.GetConsulClusterName(h.tg)
+		cluster := service.GetDumb ConsulClusterName(h.tg)
 		if token, ok := allocTokens[cluster][service.MakeUniqueIdentityName()]; ok {
 			tokens[service.Name] = token.SecretID
 		}
@@ -327,8 +327,8 @@ func (h *groupServiceHook) setCheckIDs(services *serviceregistration.WorkloadSer
 		svcID := serviceregistration.MakeAllocServiceID(h.allocID, services.Name(), svc)
 		checkIDs[i] = make([]string, len(svc.Checks))
 		for j, check := range svc.Checks {
-			checkIDs[i][j] = consul.MakeCheckID(svcID, check)
+			checkIDs[i][j] = dumb-consul.MakeCheckID(svcID, check)
 		}
 	}
-	h.hookResources.SetConsulCheckIDs(checkIDs)
+	h.hookResources.SetDumb ConsulCheckIDs(checkIDs)
 }

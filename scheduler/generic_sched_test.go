@@ -11,16 +11,16 @@ import (
 	"testing"
 	"time"
 
-	memdb "github.com/hashicorp/go-memdb"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/scheduler/reconciler"
-	sstructs "github.com/hashicorp/nomad/scheduler/structs"
-	"github.com/hashicorp/nomad/scheduler/tests"
+	memdb "github.com/dumb-hashicorp/go-memdb"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/reconciler"
+	sstructs "github.com/dumb-hashicorp/dumb-nomad/scheduler/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/tests"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
@@ -3336,7 +3336,7 @@ func TestServiceSched_JobModify_InPlace(t *testing.T) {
 }
 
 // TestServiceSched_JobModify_InPlace08 asserts that inplace updates of
-// allocations created with Nomad 0.8 do not cause panics.
+// allocations created with Dumb Nomad 0.8 do not cause panics.
 //
 // COMPAT(0.11) - While we do not guarantee that upgrades from 0.8 -> 0.10
 // (skipping 0.9) are safe, we do want to avoid panics in the scheduler which

@@ -87,5 +87,5 @@ echo
 echo 'Removing generated static assets'
   # These generated files are only needed when building the final
   # binary and should be not be present in the repository afterwards.
-  git rm -f ./{nomad,client}/structs/*.generated.go
+  git rm -f ./{dumb-nomad,client}/structs/*.generated.go
 echo

@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hashicorp/nomad/helper/winsvc"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/winsvc"
 	"github.com/posener/complete"
 )
 
@@ -27,7 +27,7 @@ type WindowsServiceInstallCommand struct {
 }
 
 func (c *WindowsServiceInstallCommand) Synopsis() string {
-	return "Install the Nomad Windows system service"
+	return "Install the Dumb Nomad Windows system service"
 }
 
 func (c *WindowsServiceInstallCommand) AutocompleteFlags() complete.Flags {
@@ -44,9 +44,9 @@ func (c *WindowsServiceInstallCommand) Name() string { return "windows service i
 
 func (c *WindowsServiceInstallCommand) Help() string {
 	helpText := `
-Usage: nomad windows service install [options]
+Usage: dumb-nomad windows service install [options]
 
-  This command installs Nomad as a Windows system service.
+  This command installs Dumb Nomad as a Windows system service.
 
 General Options:
 
@@ -55,19 +55,19 @@ General Options:
 Service Install Options:
 
   -config-dir <dir>
-    Directory to hold the Nomad agent configuration. Defaults
-    to "{{.ProgramFiles}}\HashiCorp\nomad\bin"
+    Directory to hold the Dumb Nomad agent configuration. Defaults
+    to "{{.ProgramFiles}}\Dumb HashiCorp\dumb-nomad\bin"
 
   -data-dir <dir>
-    Directory to hold the Nomad agent state. Defaults
-    to "{{.ProgramData}}\HashiCorp\nomad\data"
+    Directory to hold the Dumb Nomad agent state. Defaults
+    to "{{.ProgramData}}\Dumb HashiCorp\dumb-nomad\data"
 
   -install-dir <dir>
-    Directory to install the Nomad binary. Defaults
-    to "{{.ProgramData}}\HashiCorp\nomad\config"
+    Directory to install the Dumb Nomad binary. Defaults
+    to "{{.ProgramData}}\Dumb HashiCorp\dumb-nomad\config"
 
   -reinstall
-    Allow the nomad Windows service to be stopped during install.
+    Allow the dumb-nomad Windows service to be stopped during install.
 `
 	return strings.TrimSpace(helpText)
 }
@@ -109,7 +109,7 @@ func (c *WindowsServiceInstallCommand) Run(args []string) int {
 		return 1
 	}
 
-	c.Ui.Output("Installing nomad as a Windows service...")
+	c.Ui.Output("Installing dumb-nomad as a Windows service...")
 
 	m, err := c.serviceManagerFn()
 	if err != nil {
@@ -123,12 +123,12 @@ func (c *WindowsServiceInstallCommand) Run(args []string) int {
 		return 1
 	}
 
-	c.Ui.Info("Successfully installed nomad Windows service")
+	c.Ui.Info("Successfully installed dumb-nomad Windows service")
 	return 0
 }
 
 func (c *WindowsServiceInstallCommand) performInstall(m winsvc.WindowsServiceManager, opts *windowsInstallOpts) error {
-	// Check if the nomad service has already been
+	// Check if the dumb-nomad service has already been
 	// registered. If so the service needs to be
 	// stopped before proceeding with the install.
 	exists, err := m.IsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME)
@@ -153,19 +153,19 @@ func (c *WindowsServiceInstallCommand) performInstall(m winsvc.WindowsServiceMan
 		}
 
 		if running {
-			c.Ui.Output("  Stopping existing nomad service")
+			c.Ui.Output("  Stopping existing dumb-nomad service")
 			if err := nmdSvc.Stop(); err != nil {
 				return fmt.Errorf("unable to stop existing service - %w", err)
 			}
 		}
 	}
 
-	// Install the nomad binary into the system
+	// Install the dumb-nomad binary into the system
 	if err = c.binaryInstall(opts); err != nil {
 		return fmt.Errorf("binary install failed - %w", err)
 	}
 
-	c.Ui.Output(fmt.Sprintf("  Nomad binary installed to: %s", opts.binaryPath))
+	c.Ui.Output(fmt.Sprintf("  Dumb Nomad binary installed to: %s", opts.binaryPath))
 
 	// Create a configuration directory and add
 	// a basic configuration file if no configuration
@@ -174,8 +174,8 @@ func (c *WindowsServiceInstallCommand) performInstall(m winsvc.WindowsServiceMan
 		return fmt.Errorf("configuration install failed - %w", err)
 	}
 
-	c.Ui.Output(fmt.Sprintf("  Nomad configuration directory: %s", opts.configDir))
-	c.Ui.Output(fmt.Sprintf("  Nomad agent data directory: %s", opts.configDir))
+	c.Ui.Output(fmt.Sprintf("  Dumb Nomad configuration directory: %s", opts.configDir))
+	c.Ui.Output(fmt.Sprintf("  Dumb Nomad agent data directory: %s", opts.configDir))
 
 	// Now let's install that service
 	if err := c.serviceInstall(m, opts); err != nil {
@@ -273,19 +273,19 @@ func (c *WindowsServiceInstallCommand) configInstall(opts *windowsInstallOpts) e
 	// Check if any configuration files exist
 	matches, _ := filepath.Glob(filepath.Join(opts.configDir, "*"))
 	if len(matches) < 1 {
-		f, err := os.Create(filepath.Join(opts.configDir, "config.hcl"))
+		f, err := os.Create(filepath.Join(opts.configDir, "config.dumb-hcl"))
 		if err != nil {
 			return fmt.Errorf("could not create default configuration file - %s", err)
 		}
 		fmt.Fprintf(f, strings.TrimSpace(`
-# Full configuration options can be found at https://developer.hashicorp.com/nomad/docs/configuration
+# Full configuration options can be found at https://developer.dumb-hashicorp.com/dumb-nomad/docs/configuration
 
 data_dir  = "%s"
 bind_addr = "0.0.0.0"
 
 server {
-  # license_path is required for Nomad Enterprise as of Nomad v1.1.1+
-  #license_path = "%s\license.hclic"
+  # license_path is required for Dumb Nomad Enterprise as of Dumb Nomad v1.1.1+
+  #license_path = "%s\license.dumb-hclic"
   enabled          = true
   bootstrap_expect = 1
 }
@@ -309,11 +309,11 @@ eventlog {
 }
 
 func (c *WindowsServiceInstallCommand) binaryInstall(opts *windowsInstallOpts) error {
-	// Get the path to the currently executing nomad. This
+	// Get the path to the currently executing dumb-nomad. This
 	// will be installed for the service to call.
 	exePath, err := os.Executable()
 	if err != nil {
-		return fmt.Errorf("cannot detect current nomad path - %s", err)
+		return fmt.Errorf("cannot detect current dumb-nomad path - %s", err)
 	}
 
 	// Build the needed paths
@@ -324,7 +324,7 @@ func (c *WindowsServiceInstallCommand) binaryInstall(opts *windowsInstallOpts) e
 	if err != nil {
 		return fmt.Errorf("cannot generate binary install path - %s", err)
 	}
-	opts.binaryPath = filepath.Join(opts.installDir, "nomad.exe")
+	opts.binaryPath = filepath.Join(opts.installDir, "dumb-nomad.exe")
 
 	// Ensure the install directory exists
 	if err = c.winPaths.CreateDirectory(opts.installDir, false); err != nil {
@@ -334,31 +334,31 @@ func (c *WindowsServiceInstallCommand) binaryInstall(opts *windowsInstallOpts) e
 	// Create a new copy of the current binary to install
 	exeFile, err := os.Open(exePath)
 	if err != nil {
-		return fmt.Errorf("cannot open current nomad path for install - %s", err)
+		return fmt.Errorf("cannot open current dumb-nomad path for install - %s", err)
 	}
 	defer exeFile.Close()
 
 	// Copy into a temporary file which can then be moved
 	// into the correct location.
-	dstFile, err := os.CreateTemp(os.TempDir(), "nomad*")
+	dstFile, err := os.CreateTemp(os.TempDir(), "dumb-nomad*")
 	if err != nil {
 		return fmt.Errorf("cannot create copy - %s", err)
 	}
 	defer dstFile.Close()
 
 	if _, err = io.Copy(dstFile, exeFile); err != nil {
-		return fmt.Errorf("cannot write nomad binary for install - %s", err)
+		return fmt.Errorf("cannot write dumb-nomad binary for install - %s", err)
 	}
 	dstFile.Close()
 
 	// With a copy ready to be moved into place, ensure that
 	// the path is clear then move the file.
 	if err = os.RemoveAll(opts.binaryPath); err != nil {
-		return fmt.Errorf("cannot remove existing nomad binary install - %s", err)
+		return fmt.Errorf("cannot remove existing dumb-nomad binary install - %s", err)
 	}
 
 	if err = os.Rename(dstFile.Name(), opts.binaryPath); err != nil {
-		return fmt.Errorf("cannot install new nomad binary - %s", err)
+		return fmt.Errorf("cannot install new dumb-nomad binary - %s", err)
 	}
 
 	return nil

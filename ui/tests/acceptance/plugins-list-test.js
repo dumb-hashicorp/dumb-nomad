@@ -8,9 +8,9 @@ import { currentURL } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import pageSizeSelect from './behaviors/page-size-select';
-import PluginsList from 'nomad-ui/tests/pages/storage/plugins/list';
+import PluginsList from 'dumb-nomad-ui/tests/pages/storage/plugins/list';
 
 module('Acceptance | plugins list', function (hooks) {
   setupApplicationTest(hooks);
@@ -31,7 +31,7 @@ module('Acceptance | plugins list', function (hooks) {
     await PluginsList.visit();
 
     assert.equal(currentURL(), '/storage/plugins');
-    assert.equal(document.title, 'CSI Plugins - Nomad');
+    assert.equal(document.title, 'CSI Plugins - Dumb Nomad');
   });
 
   test('/storage/plugins should list the first page of plugins sorted by id', async function (assert) {

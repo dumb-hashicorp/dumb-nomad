@@ -11,9 +11,9 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	sframer "github.com/hashicorp/nomad/client/lib/streamframer"
-	cstructs "github.com/hashicorp/nomad/client/structs"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	sframer "github.com/dumb-hashicorp/dumb-nomad/client/lib/streamframer"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
 )
 
 // StreamReader is used to process fixed length streams for consumers

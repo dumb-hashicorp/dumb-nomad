@@ -6,13 +6,13 @@
 // @ts-check
 
 import Controller from '@ember/controller';
-import WithNamespaceResetting from 'nomad-ui/mixins/with-namespace-resetting';
+import WithNamespaceResetting from 'dumb-nomad-ui/mixins/with-namespace-resetting';
 import { alias } from '@ember/object/computed';
 import { action, computed } from '@ember/object';
 import classic from 'ember-classic-decorator';
 import { tracked } from '@glimmer/tracking';
 
-import { serialize } from 'nomad-ui/utils/qp-serialize';
+import { serialize } from 'dumb-nomad-ui/utils/qp-serialize';
 
 const alertClassFallback = 'is-info';
 

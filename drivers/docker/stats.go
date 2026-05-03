@@ -13,11 +13,11 @@ import (
 	"time"
 
 	containerapi "github.com/docker/docker/api/types/container"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/drivers/docker/util"
-	"github.com/hashicorp/nomad/helper"
-	nstructs "github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/docker/util"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	nstructs "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (

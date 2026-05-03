@@ -87,7 +87,7 @@ export default class VariablesVariableIndexController extends Controller {
       this.model.pathLinkedEntities?.job ||
       this.model.pathLinkedEntities?.group ||
       this.model.pathLinkedEntities?.task ||
-      this.model.path === 'nomad/jobs'
+      this.model.path === 'dumb-nomad/jobs'
     );
   }
 

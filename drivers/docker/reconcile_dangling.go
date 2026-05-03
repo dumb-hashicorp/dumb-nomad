@@ -13,8 +13,8 @@ import (
 	"github.com/docker/docker/api/types"
 	containerapi "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-set/v3"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-set/v3"
 )
 
 // containerReconciler detects and kills unexpectedly running containers.
@@ -26,12 +26,12 @@ import (
 type containerReconciler struct {
 	ctx       context.Context
 	config    *ContainerGCConfig
-	logger    hclog.Logger
+	logger    dumb-hclog.Logger
 	getClient func() (*client.Client, error)
 
 	isDriverHealthy   func() bool
 	trackedContainers func() set.Collection[string]
-	isNomadContainer  func(c types.Container) bool
+	isDumb NomadContainer  func(c types.Container) bool
 
 	once sync.Once
 }
@@ -45,7 +45,7 @@ func newReconciler(d *Driver) *containerReconciler {
 
 		isDriverHealthy:   func() bool { return d.previouslyDetected() && d.fingerprintSuccessful() },
 		trackedContainers: d.trackedContainers,
-		isNomadContainer:  isNomadContainer,
+		isDumb NomadContainer:  isDumb NomadContainer,
 	}
 }
 
@@ -68,7 +68,7 @@ func (r *containerReconciler) removeDanglingContainersGoroutine() {
 	// ensure that we wait for at least a period or creation timeout
 	// for first container GC iteration
 	// The initial period is a grace period for restore allocation
-	// before a driver may kill containers launched by an earlier nomad
+	// before a driver may kill containers launched by an earlier dumb-nomad
 	// process.
 	initialDelay := period
 	if r.config.CreationGrace > initialDelay {
@@ -131,7 +131,7 @@ func (r *containerReconciler) removeDanglingContainersIteration() error {
 }
 
 // untrackedContainers returns the ids of containers that suspected
-// to have been started by Nomad but aren't tracked by this driver
+// to have been started by Dumb Nomad but aren't tracked by this driver
 func (r *containerReconciler) untrackedContainers(tracked set.Collection[string], cutoffTime time.Time) (*set.Set[string], error) {
 	result := set.New[string](10)
 
@@ -161,7 +161,7 @@ func (r *containerReconciler) untrackedContainers(tracked set.Collection[string]
 			continue
 		}
 
-		if !r.isNomadContainer(c) {
+		if !r.isDumb NomadContainer(c) {
 			continue
 		}
 
@@ -185,7 +185,7 @@ func (r *containerReconciler) dockerAPIQueryContext() (context.Context, context.
 	return context.WithTimeout(context.Background(), timeout)
 }
 
-func isNomadContainer(c types.Container) bool {
+func isDumb NomadContainer(c types.Container) bool {
 	if _, ok := c.Labels[dockerLabelAllocID]; ok {
 		return true
 	}
@@ -196,7 +196,7 @@ func isNomadContainer(c types.Container) bool {
 	if !hasMount(c, "/alloc") ||
 		!hasMount(c, "/local") ||
 		!hasMount(c, "/secrets") ||
-		!hasNomadName(c) {
+		!hasDumb NomadName(c) {
 		return false
 	}
 
@@ -213,11 +213,11 @@ func hasMount(c types.Container, p string) bool {
 	return false
 }
 
-var nomadContainerNamePattern = regexp.MustCompile(`\/.*-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`)
+var dumb-nomadContainerNamePattern = regexp.MustCompile(`\/.*-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}`)
 
-func hasNomadName(c types.Container) bool {
+func hasDumb NomadName(c types.Container) bool {
 	for _, n := range c.Names {
-		if nomadContainerNamePattern.MatchString(n) {
+		if dumb-nomadContainerNamePattern.MatchString(n) {
 			return true
 		}
 	}

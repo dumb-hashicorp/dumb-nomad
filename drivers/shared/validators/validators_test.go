@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/hashicorp/go-hclog"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
 	"github.com/shoenig/test/must"
 )
 
@@ -86,7 +86,7 @@ func Test_HasValidIds(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			v, err := NewValidator(hclog.NewNullLogger(), tc.uidRanges, tc.gidRanges)
+			v, err := NewValidator(dumb-hclog.NewNullLogger(), tc.uidRanges, tc.gidRanges)
 			must.NoError(t, err)
 
 			err = v.HasValidIDs(user.Username)

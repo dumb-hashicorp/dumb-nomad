@@ -11,8 +11,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
@@ -35,14 +35,14 @@ func TestNodePoolApplyCommand_Run(t *testing.T) {
 	ui := cli.NewMockUi()
 	cmd := &NodePoolApplyCommand{Meta: Meta{Ui: ui}}
 
-	// Create node pool with HCL file.
-	hclTestFile := `
+	// Create node pool with DUMB_HCL file.
+	dumb-hclTestFile := `
 node_pool "dev" {
   description = "dev node pool"
 }`
-	file, err := os.CreateTemp(t.TempDir(), "node-pool-test-*.hcl")
+	file, err := os.CreateTemp(t.TempDir(), "node-pool-test-*.dumb-hcl")
 	must.NoError(t, err)
-	_, err = file.WriteString(hclTestFile)
+	_, err = file.WriteString(dumb-hclTestFile)
 	must.NoError(t, err)
 
 	// Run command.
@@ -58,7 +58,7 @@ node_pool "dev" {
 	// Update node pool.
 	file.Truncate(0)
 	file.Seek(0, 0)
-	hclTestFile = `
+	dumb-hclTestFile = `
 node_pool "dev" {
   description       = "dev node pool"
   node_identity_ttl = "720h"
@@ -67,7 +67,7 @@ node_pool "dev" {
     test = "true"
   }
 }`
-	_, err = file.WriteString(hclTestFile)
+	_, err = file.WriteString(dumb-hclTestFile)
 	must.NoError(t, err)
 
 	// Run command.
@@ -130,7 +130,7 @@ func TestNodePoolApplyCommand_Run_fail(t *testing.T) {
 		},
 		{
 			name:           "file doesn't exist",
-			args:           []string{"doesn-exist.hcl"},
+			args:           []string{"doesn-exist.dumb-hcl"},
 			expectedOutput: "no such file",
 			expectedCode:   1,
 		},
@@ -142,9 +142,9 @@ func TestNodePoolApplyCommand_Run_fail(t *testing.T) {
 			expectedCode:   1,
 		},
 		{
-			name:           "invalid hcl",
-			args:           []string{"invalid.hcl"},
-			input:          "not HCL",
+			name:           "invalid dumb-hcl",
+			args:           []string{"invalid.dumb-hcl"},
+			input:          "not DUMB_HCL",
 			expectedOutput: "Failed to parse input",
 			expectedCode:   1,
 		},
@@ -156,22 +156,22 @@ func TestNodePoolApplyCommand_Run_fail(t *testing.T) {
 			expectedCode:   1,
 		},
 		{
-			name:           "valid hcl with json flag",
-			args:           []string{"-json", "valid.hcl"},
+			name:           "valid dumb-hcl with json flag",
+			args:           []string{"-json", "valid.dumb-hcl"},
 			input:          `node_pool "dev" {}`,
 			expectedOutput: "Failed to parse input",
 			expectedCode:   1,
 		},
 		{
-			name:           "invalid node pool hcl",
-			args:           []string{"invalid.hcl"},
+			name:           "invalid node pool dumb-hcl",
+			args:           []string{"invalid.dumb-hcl"},
 			input:          `not_a_node_pool "dev" {}`,
 			expectedOutput: "Failed to parse input",
 			expectedCode:   1,
 		},
 		{
 			name:           "invalid node pool",
-			args:           []string{"-address", url, "invalid_node_pool.hcl"},
+			args:           []string{"-address", url, "invalid_node_pool.dumb-hcl"},
 			input:          `node_pool "invalid name" {}`,
 			expectedOutput: "Error applying node pool",
 			expectedCode:   1,

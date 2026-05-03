@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hashicorp/nomad/client/interfaces"
-	"github.com/hashicorp/nomad/helper/escapingfs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/escapingfs"
 )
 
 // noopReplacer is a noop version of taskenv.TaskEnv.ReplaceEnv.

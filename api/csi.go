@@ -33,7 +33,7 @@ func (v *CSIVolumes) List(q *QueryOptions) ([]*CSIVolumeListStub, *QueryMeta, er
 }
 
 // ListExternal returns all CSI volumes, as understood by the external storage
-// provider. These volumes may or may not be currently registered with Nomad.
+// provider. These volumes may or may not be currently registered with Dumb Nomad.
 // The response is paginated by the plugin and accepts the
 // QueryOptions.PerPage and QueryOptions.NextToken fields.
 func (v *CSIVolumes) ListExternal(pluginID string, q *QueryOptions) (*CSIVolumeListExternalResponse, *QueryMeta, error) {
@@ -73,7 +73,7 @@ func (v *CSIVolumes) Info(id string, q *QueryOptions) (*CSIVolume, *QueryMeta, e
 	return &resp, qm, nil
 }
 
-// Register registers a single CSIVolume with Nomad. The volume must already
+// Register registers a single CSIVolume with Dumb Nomad. The volume must already
 // exist in the external storage provider.
 func (v *CSIVolumes) Register(vol *CSIVolume, w *WriteOptions) (*WriteMeta, error) {
 	req := &CSIVolumeRegisterRequest{
@@ -83,7 +83,7 @@ func (v *CSIVolumes) Register(vol *CSIVolume, w *WriteOptions) (*WriteMeta, erro
 	return meta, err
 }
 
-// RegisterOpts registers a single CSIVolume with Nomad. The volume must already
+// RegisterOpts registers a single CSIVolume with Dumb Nomad. The volume must already
 // exist in the external storage provider. It expects a single volume in the
 // request.
 func (v *CSIVolumes) RegisterOpts(req *CSIVolumeRegisterRequest, w *WriteOptions) (*CSIVolumeRegisterResponse, *WriteMeta, error) {
@@ -97,14 +97,14 @@ func (v *CSIVolumes) RegisterOpts(req *CSIVolumeRegisterRequest, w *WriteOptions
 	return resp, meta, err
 }
 
-// Deregister deregisters a single CSIVolume from Nomad. The volume will not be deleted from the external storage provider.
+// Deregister deregisters a single CSIVolume from Dumb Nomad. The volume will not be deleted from the external storage provider.
 func (v *CSIVolumes) Deregister(id string, force bool, w *WriteOptions) error {
 	_, err := v.client.delete(fmt.Sprintf("/v1/volume/csi/%v?force=%t", url.PathEscape(id), force), nil, nil, w)
 	return err
 }
 
 // Create creates a single CSIVolume in an external storage provider and
-// registers it with Nomad. You do not need to call Register if this call is
+// registers it with Dumb Nomad. You do not need to call Register if this call is
 // successful.
 func (v *CSIVolumes) Create(vol *CSIVolume, w *WriteOptions) ([]*CSIVolume, *WriteMeta, error) {
 	req := CSIVolumeCreateRequest{
@@ -116,7 +116,7 @@ func (v *CSIVolumes) Create(vol *CSIVolume, w *WriteOptions) ([]*CSIVolume, *Wri
 }
 
 // CreateOpts creates a single CSIVolume in an external storage provider and
-// registers it with Nomad. You do not need to call Register if this call is
+// registers it with Dumb Nomad. You do not need to call Register if this call is
 // successful. It expects a single volume in the request.
 func (v *CSIVolumes) CreateOpts(req *CSIVolumeCreateRequest, w *WriteOptions) (*CSIVolumeCreateResponse, *WriteMeta, error) {
 	if w == nil {
@@ -132,7 +132,7 @@ func (v *CSIVolumes) CreateOpts(req *CSIVolumeCreateRequest, w *WriteOptions) (*
 // passed as an argument here is for the storage provider's ID, so a volume
 // that's already been deregistered can be deleted.
 //
-// Deprecated: will be removed in Nomad 1.4.0
+// Deprecated: will be removed in Dumb Nomad 1.4.0
 func (v *CSIVolumes) Delete(externalVolID string, w *WriteOptions) error {
 	_, err := v.client.delete(fmt.Sprintf("/v1/volume/csi/%v/delete", url.PathEscape(externalVolID)), nil, nil, w)
 	return err
@@ -151,7 +151,7 @@ func (v *CSIVolumes) DeleteOpts(req *CSIVolumeDeleteRequest, w *WriteOptions) er
 	return err
 }
 
-// Detach causes Nomad to attempt to detach a CSI volume from a client
+// Detach causes Dumb Nomad to attempt to detach a CSI volume from a client
 // node. This is used in the case that the node is temporarily lost and the
 // allocations are unable to drop their claims automatically.
 func (v *CSIVolumes) Detach(volID, nodeID string, w *WriteOptions) error {
@@ -213,7 +213,7 @@ func (v *CSIVolumes) ListSnapshotsOpts(req *CSISnapshotListRequest) (*CSISnapsho
 
 // ListSnapshots lists external storage volume snapshots.
 //
-// Deprecated: will be removed in Nomad 1.4.0
+// Deprecated: will be removed in Dumb Nomad 1.4.0
 func (v *CSIVolumes) ListSnapshots(pluginID string, secrets string, q *QueryOptions) (*CSISnapshotListResponse, *QueryMeta, error) {
 	var resp *CSISnapshotListResponse
 
@@ -238,7 +238,7 @@ func (v *CSIVolumes) ListSnapshots(pluginID string, secrets string, q *QueryOpti
 }
 
 // CSIVolumeAttachmentMode chooses the type of storage api that will be used to
-// interact with the device. (Duplicated in nomad/structs/csi.go)
+// interact with the device. (Duplicated in dumb-nomad/structs/csi.go)
 type CSIVolumeAttachmentMode string
 
 const (
@@ -248,7 +248,7 @@ const (
 )
 
 // CSIVolumeAccessMode indicates how a volume should be used in a storage topology
-// e.g whether the provider should make the volume available concurrently. (Duplicated in nomad/structs/csi.go)
+// e.g whether the provider should make the volume available concurrently. (Duplicated in dumb-nomad/structs/csi.go)
 type CSIVolumeAccessMode string
 
 const (
@@ -270,14 +270,14 @@ const (
 type CSIMountOptions struct {
 	// FSType is an optional field that allows an operator to specify the type
 	// of the filesystem.
-	FSType string `hcl:"fs_type,optional"`
+	FSType string `dumb-hcl:"fs_type,optional"`
 
 	// MountFlags contains additional options that may be used when mounting the
 	// volume by the plugin. This may contain sensitive data and should not be
 	// leaked.
-	MountFlags []string `hcl:"mount_flags,optional"`
+	MountFlags []string `dumb-hcl:"mount_flags,optional"`
 
-	ExtraKeysHCL []string `hcl1:",unusedKeys" json:"-"` // report unexpected keys
+	ExtraKeysDUMB_HCL []string `dumb-hcl1:",unusedKeys" json:"-"` // report unexpected keys
 }
 
 func (o *CSIMountOptions) Merge(p *CSIMountOptions) {
@@ -294,7 +294,7 @@ func (o *CSIMountOptions) Merge(p *CSIMountOptions) {
 
 // CSISecrets contain optional additional credentials that may be needed by
 // the storage provider. These values will be redacted when reported in the
-// API or in Nomad's logs.
+// API or in Dumb Nomad's logs.
 type CSISecrets map[string]string
 
 func (o *QueryOptions) SetHeadersFromCSISecrets(secrets CSISecrets) {
@@ -305,7 +305,7 @@ func (o *QueryOptions) SetHeadersFromCSISecrets(secrets CSISecrets) {
 	if o.Headers == nil {
 		o.Headers = map[string]string{}
 	}
-	o.Headers["X-Nomad-CSI-Secrets"] = strings.Join(pairs, ",")
+	o.Headers["X-Dumb Nomad-CSI-Secrets"] = strings.Join(pairs, ",")
 }
 
 func (o *WriteOptions) SetHeadersFromCSISecrets(secrets CSISecrets) {
@@ -316,40 +316,40 @@ func (o *WriteOptions) SetHeadersFromCSISecrets(secrets CSISecrets) {
 	if o.Headers == nil {
 		o.Headers = map[string]string{}
 	}
-	o.Headers["X-Nomad-CSI-Secrets"] = strings.Join(pairs, ",")
+	o.Headers["X-Dumb Nomad-CSI-Secrets"] = strings.Join(pairs, ",")
 }
 
-// CSIVolume is used for serialization, see also nomad/structs/csi.go
+// CSIVolume is used for serialization, see also dumb-nomad/structs/csi.go
 type CSIVolume struct {
 	ID         string
 	Name       string
-	ExternalID string `mapstructure:"external_id" hcl:"external_id"`
+	ExternalID string `mapstructure:"external_id" dumb-hcl:"external_id"`
 	Namespace  string
 
 	// RequestedTopologies are the topologies submitted as options to
 	// the storage provider at the time the volume was created. After
 	// volumes are created, this field is ignored.
-	RequestedTopologies *CSITopologyRequest `hcl:"topology_request"`
+	RequestedTopologies *CSITopologyRequest `dumb-hcl:"topology_request"`
 
 	// Topologies are the topologies returned by the storage provider,
 	// based on the RequestedTopologies and what the storage provider
 	// could support. This value cannot be set by the user.
 	Topologies []*CSITopology
 
-	AccessMode     CSIVolumeAccessMode     `hcl:"access_mode"`
-	AttachmentMode CSIVolumeAttachmentMode `hcl:"attachment_mode"`
-	MountOptions   *CSIMountOptions        `hcl:"mount_options"`
-	Secrets        CSISecrets              `mapstructure:"secrets" hcl:"secrets"`
-	Parameters     map[string]string       `mapstructure:"parameters" hcl:"parameters"`
-	Context        map[string]string       `mapstructure:"context" hcl:"context"`
-	Capacity       int64                   `hcl:"-"`
+	AccessMode     CSIVolumeAccessMode     `dumb-hcl:"access_mode"`
+	AttachmentMode CSIVolumeAttachmentMode `dumb-hcl:"attachment_mode"`
+	MountOptions   *CSIMountOptions        `dumb-hcl:"mount_options"`
+	Secrets        CSISecrets              `mapstructure:"secrets" dumb-hcl:"secrets"`
+	Parameters     map[string]string       `mapstructure:"parameters" dumb-hcl:"parameters"`
+	Context        map[string]string       `mapstructure:"context" dumb-hcl:"context"`
+	Capacity       int64                   `dumb-hcl:"-"`
 
 	// These fields are used as part of the volume creation request
-	RequestedCapacityMin  int64                  `hcl:"capacity_min"`
-	RequestedCapacityMax  int64                  `hcl:"capacity_max"`
-	RequestedCapabilities []*CSIVolumeCapability `hcl:"capability"`
-	CloneID               string                 `mapstructure:"clone_id" hcl:"clone_id"`
-	SnapshotID            string                 `mapstructure:"snapshot_id" hcl:"snapshot_id"`
+	RequestedCapacityMin  int64                  `dumb-hcl:"capacity_min"`
+	RequestedCapacityMax  int64                  `dumb-hcl:"capacity_max"`
+	RequestedCapabilities []*CSIVolumeCapability `dumb-hcl:"capability"`
+	CloneID               string                 `mapstructure:"clone_id" dumb-hcl:"clone_id"`
+	SnapshotID            string                 `mapstructure:"snapshot_id" dumb-hcl:"snapshot_id"`
 
 	// ReadAllocs is a map of allocation IDs for tracking reader claim status.
 	// The Allocation value will always be nil; clients can populate this data
@@ -366,7 +366,7 @@ type CSIVolume struct {
 
 	// Schedulable is true if all the denormalized plugin health fields are true
 	Schedulable         bool
-	PluginID            string `mapstructure:"plugin_id" hcl:"plugin_id"`
+	PluginID            string `mapstructure:"plugin_id" dumb-hcl:"plugin_id"`
 	Provider            string
 	ProviderVersion     string
 	ControllerRequired  bool
@@ -384,15 +384,15 @@ type CSIVolume struct {
 	// ModifyTime stored as UnixNano
 	ModifyTime int64
 
-	// ExtraKeysHCL is used by the hcl parser to report unexpected keys
-	ExtraKeysHCL []string `hcl1:",unusedKeys" json:"-"`
+	// ExtraKeysDUMB_HCL is used by the dumb-hcl parser to report unexpected keys
+	ExtraKeysDUMB_HCL []string `dumb-hcl1:",unusedKeys" json:"-"`
 }
 
 // CSIVolumeCapability is a requested attachment and access mode for a
 // volume
 type CSIVolumeCapability struct {
-	AccessMode     CSIVolumeAccessMode     `mapstructure:"access_mode" hcl:"access_mode"`
-	AttachmentMode CSIVolumeAttachmentMode `mapstructure:"attachment_mode" hcl:"attachment_mode"`
+	AccessMode     CSIVolumeAccessMode     `mapstructure:"access_mode" dumb-hcl:"access_mode"`
+	AttachmentMode CSIVolumeAttachmentMode `mapstructure:"attachment_mode" dumb-hcl:"attachment_mode"`
 }
 
 // CSIVolumeIndexSort is a helper used for sorting volume stubs by creation
@@ -411,7 +411,7 @@ func (v CSIVolumeIndexSort) Swap(i, j int) {
 	v[i], v[j] = v[j], v[i]
 }
 
-// CSIVolumeListStub omits allocations. See also nomad/structs/csi.go
+// CSIVolumeListStub omits allocations. See also dumb-nomad/structs/csi.go
 type CSIVolumeListStub struct {
 	ID                  string
 	Namespace           string
@@ -524,7 +524,7 @@ type CSISnapshot struct {
 	SizeBytes              int64  // value from storage provider
 	CreateTime             int64  // value from storage provider
 	IsReady                bool   // value from storage provider
-	SourceVolumeID         string // Nomad volume ID
+	SourceVolumeID         string // Dumb Nomad volume ID
 	PluginID               string // CSI plugin ID
 
 	// These field are only used during snapshot creation and will not be
@@ -580,7 +580,7 @@ type CSIPlugins struct {
 	client *Client
 }
 
-// CSIPlugin is used for serialization, see also nomad/structs/csi.go
+// CSIPlugin is used for serialization, see also dumb-nomad/structs/csi.go
 type CSIPlugin struct {
 	ID                 string
 	Provider           string

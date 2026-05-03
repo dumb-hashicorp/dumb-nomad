@@ -11,11 +11,11 @@ import (
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // diffResultCount is a test helper struct that makes it easier to specify an
@@ -178,7 +178,7 @@ func TestDiffSystemAllocsForNode_Stops(t *testing.T) {
 	// existing non-terminal allocs for this version should be updated in-place
 
 	// TODO(tgross): *unless* there's another alloc for the same job already on
-	// the node. See https://github.com/hashicorp/nomad/pull/16097
+	// the node. See https://github.com/dumb-hashicorp/dumb-nomad/pull/16097
 	oldJob := new(structs.Job)
 	*oldJob = *job
 	oldJob.JobModifyIndex -= 1
@@ -193,7 +193,7 @@ func TestDiffSystemAllocsForNode_Stops(t *testing.T) {
 		{
 			// extraneous alloc for old version of job should be updated
 			// TODO(tgross): this should actually be stopped.
-			// See https://github.com/hashicorp/nomad/pull/16097
+			// See https://github.com/dumb-hashicorp/dumb-nomad/pull/16097
 			ID:     uuid.Generate(),
 			NodeID: node.ID,
 			Name:   "my-job.web[0]",
@@ -652,7 +652,7 @@ func TestNodeDeployments(t *testing.T) {
 
 	// Create three live nodes, one of which is old
 	nodes := []*structs.Node{{ID: "foo"}, {ID: "bar"}, {ID: "baz"}}
-	nodes[2].Attributes = map[string]string{"nomad.version": "1.8.20+ent"}
+	nodes[2].Attributes = map[string]string{"dumb-nomad.version": "1.8.20+ent"}
 
 	// Stopped job to make sure we handle these correctly
 	stoppedJob := job.Copy()

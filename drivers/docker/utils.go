@@ -309,7 +309,7 @@ func parseVolumeSpecWindows(volBind string) (hostPath string, containerPath stri
 
 func parseVolumeSpecLinux(volBind string) (hostPath string, containerPath string, mode string, err error) {
 	// using internal parser to preserve old parsing behavior.  Docker
-	// parser has additional validators (e.g. mode validity) and accepts invalid output (per Nomad),
+	// parser has additional validators (e.g. mode validity) and accepts invalid output (per Dumb Nomad),
 	// e.g. single path entry to be treated as a container path entry with an auto-generated host-path.
 	//
 	// Reconsider updating to use Docker parser when ready to make incompatible changes.

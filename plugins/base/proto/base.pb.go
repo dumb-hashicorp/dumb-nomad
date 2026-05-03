@@ -7,7 +7,7 @@ import (
 	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
-	hclspec "github.com/hashicorp/nomad/plugins/shared/hclspec"
+	dumb-hclspec "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -25,7 +25,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-// PluginType enumerates the type of plugins Nomad supports
+// PluginType enumerates the type of plugins Dumb Nomad supports
 type PluginType int32
 
 const (
@@ -112,15 +112,15 @@ func (m *PluginInfoRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_PluginInfoRequest proto.InternalMessageInfo
 
 // PluginInfoResponse returns basic information about the plugin such
-// that Nomad can decide whether to load the plugin or not.
+// that Dumb Nomad can decide whether to load the plugin or not.
 type PluginInfoResponse struct {
 	// type indicates what type of plugin this is.
-	Type PluginType `protobuf:"varint,1,opt,name=type,proto3,enum=hashicorp.nomad.plugins.base.proto.PluginType" json:"type,omitempty"`
-	// plugin_api_versions indicates the versions of the Nomad Plugin API
+	Type PluginType `protobuf:"varint,1,opt,name=type,proto3,enum=dumb-hashicorp.dumb-nomad.plugins.base.proto.PluginType" json:"type,omitempty"`
+	// plugin_api_versions indicates the versions of the Dumb Nomad Plugin API
 	// this plugin supports.
 	PluginApiVersions []string `protobuf:"bytes,2,rep,name=plugin_api_versions,json=pluginApiVersions,proto3" json:"plugin_api_versions,omitempty"`
 	// plugin_version is the semver version of this individual plugin.
-	// This is divorce from Nomad’s development and versioning.
+	// This is divorce from Dumb Nomad’s development and versioning.
 	PluginVersion string `protobuf:"bytes,3,opt,name=plugin_version,json=pluginVersion,proto3" json:"plugin_version,omitempty"`
 	// name is the name of the plugin
 	Name                 string   `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
@@ -217,7 +217,7 @@ var xxx_messageInfo_ConfigSchemaRequest proto.InternalMessageInfo
 // ConfigSchemaResponse returns the plugins configuration schema.
 type ConfigSchemaResponse struct {
 	// spec is the plugins configuration schema
-	Spec                 *hclspec.Spec `protobuf:"bytes,1,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec                 *dumb-hclspec.Spec `protobuf:"bytes,1,opt,name=spec,proto3" json:"spec,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
 	XXX_unrecognized     []byte        `json:"-"`
 	XXX_sizecache        int32         `json:"-"`
@@ -248,7 +248,7 @@ func (m *ConfigSchemaResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ConfigSchemaResponse proto.InternalMessageInfo
 
-func (m *ConfigSchemaResponse) GetSpec() *hclspec.Spec {
+func (m *ConfigSchemaResponse) GetSpec() *dumb-hclspec.Spec {
 	if m != nil {
 		return m.Spec
 	}
@@ -259,8 +259,8 @@ func (m *ConfigSchemaResponse) GetSpec() *hclspec.Spec {
 type SetConfigRequest struct {
 	// msgpack_config is the configuration encoded as MessagePack.
 	MsgpackConfig []byte `protobuf:"bytes,1,opt,name=msgpack_config,json=msgpackConfig,proto3" json:"msgpack_config,omitempty"`
-	// nomad_config is the nomad client configuration sent to all plugins.
-	NomadConfig *NomadConfig `protobuf:"bytes,2,opt,name=nomad_config,json=nomadConfig,proto3" json:"nomad_config,omitempty"`
+	// dumb-nomad_config is the dumb-nomad client configuration sent to all plugins.
+	Dumb NomadConfig *Dumb NomadConfig `protobuf:"bytes,2,opt,name=dumb-nomad_config,json=dumb-nomadConfig,proto3" json:"dumb-nomad_config,omitempty"`
 	// plugin_api_version is the api version to use.
 	PluginApiVersion     string   `protobuf:"bytes,3,opt,name=plugin_api_version,json=pluginApiVersion,proto3" json:"plugin_api_version,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -300,9 +300,9 @@ func (m *SetConfigRequest) GetMsgpackConfig() []byte {
 	return nil
 }
 
-func (m *SetConfigRequest) GetNomadConfig() *NomadConfig {
+func (m *SetConfigRequest) GetDumb NomadConfig() *Dumb NomadConfig {
 	if m != nil {
-		return m.NomadConfig
+		return m.Dumb NomadConfig
 	}
 	return nil
 }
@@ -314,50 +314,50 @@ func (m *SetConfigRequest) GetPluginApiVersion() string {
 	return ""
 }
 
-// NomadConfig is the client configuration sent to all plugins
-type NomadConfig struct {
+// Dumb NomadConfig is the client configuration sent to all plugins
+type Dumb NomadConfig struct {
 	// driver specific configuration sent to all plugins
-	Driver               *NomadDriverConfig `protobuf:"bytes,1,opt,name=driver,proto3" json:"driver,omitempty"`
+	Driver               *Dumb NomadDriverConfig `protobuf:"bytes,1,opt,name=driver,proto3" json:"driver,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}           `json:"-"`
 	XXX_unrecognized     []byte             `json:"-"`
 	XXX_sizecache        int32              `json:"-"`
 }
 
-func (m *NomadConfig) Reset()         { *m = NomadConfig{} }
-func (m *NomadConfig) String() string { return proto.CompactTextString(m) }
-func (*NomadConfig) ProtoMessage()    {}
-func (*NomadConfig) Descriptor() ([]byte, []int) {
+func (m *Dumb NomadConfig) Reset()         { *m = Dumb NomadConfig{} }
+func (m *Dumb NomadConfig) String() string { return proto.CompactTextString(m) }
+func (*Dumb NomadConfig) ProtoMessage()    {}
+func (*Dumb NomadConfig) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19edef855873449e, []int{5}
 }
 
-func (m *NomadConfig) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_NomadConfig.Unmarshal(m, b)
+func (m *Dumb NomadConfig) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Dumb NomadConfig.Unmarshal(m, b)
 }
-func (m *NomadConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_NomadConfig.Marshal(b, m, deterministic)
+func (m *Dumb NomadConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Dumb NomadConfig.Marshal(b, m, deterministic)
 }
-func (m *NomadConfig) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NomadConfig.Merge(m, src)
+func (m *Dumb NomadConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Dumb NomadConfig.Merge(m, src)
 }
-func (m *NomadConfig) XXX_Size() int {
-	return xxx_messageInfo_NomadConfig.Size(m)
+func (m *Dumb NomadConfig) XXX_Size() int {
+	return xxx_messageInfo_Dumb NomadConfig.Size(m)
 }
-func (m *NomadConfig) XXX_DiscardUnknown() {
-	xxx_messageInfo_NomadConfig.DiscardUnknown(m)
+func (m *Dumb NomadConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_Dumb NomadConfig.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_NomadConfig proto.InternalMessageInfo
+var xxx_messageInfo_Dumb NomadConfig proto.InternalMessageInfo
 
-func (m *NomadConfig) GetDriver() *NomadDriverConfig {
+func (m *Dumb NomadConfig) GetDriver() *Dumb NomadDriverConfig {
 	if m != nil {
 		return m.Driver
 	}
 	return nil
 }
 
-// NomadDriverConfig is the driver specific client configuration sent to all
+// Dumb NomadDriverConfig is the driver specific client configuration sent to all
 // driver plugins
-type NomadDriverConfig struct {
+type Dumb NomadDriverConfig struct {
 	// ClientMaxPort is the upper range of the ports that the client uses for
 	// communicating with plugin subsystems over loopback
 	// buf:lint:ignore FIELD_LOWER_SNAKE_CASE
@@ -374,46 +374,46 @@ type NomadDriverConfig struct {
 	XXX_sizecache        int32           `json:"-"`
 }
 
-func (m *NomadDriverConfig) Reset()         { *m = NomadDriverConfig{} }
-func (m *NomadDriverConfig) String() string { return proto.CompactTextString(m) }
-func (*NomadDriverConfig) ProtoMessage()    {}
-func (*NomadDriverConfig) Descriptor() ([]byte, []int) {
+func (m *Dumb NomadDriverConfig) Reset()         { *m = Dumb NomadDriverConfig{} }
+func (m *Dumb NomadDriverConfig) String() string { return proto.CompactTextString(m) }
+func (*Dumb NomadDriverConfig) ProtoMessage()    {}
+func (*Dumb NomadDriverConfig) Descriptor() ([]byte, []int) {
 	return fileDescriptor_19edef855873449e, []int{6}
 }
 
-func (m *NomadDriverConfig) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_NomadDriverConfig.Unmarshal(m, b)
+func (m *Dumb NomadDriverConfig) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Dumb NomadDriverConfig.Unmarshal(m, b)
 }
-func (m *NomadDriverConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_NomadDriverConfig.Marshal(b, m, deterministic)
+func (m *Dumb NomadDriverConfig) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Dumb NomadDriverConfig.Marshal(b, m, deterministic)
 }
-func (m *NomadDriverConfig) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_NomadDriverConfig.Merge(m, src)
+func (m *Dumb NomadDriverConfig) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Dumb NomadDriverConfig.Merge(m, src)
 }
-func (m *NomadDriverConfig) XXX_Size() int {
-	return xxx_messageInfo_NomadDriverConfig.Size(m)
+func (m *Dumb NomadDriverConfig) XXX_Size() int {
+	return xxx_messageInfo_Dumb NomadDriverConfig.Size(m)
 }
-func (m *NomadDriverConfig) XXX_DiscardUnknown() {
-	xxx_messageInfo_NomadDriverConfig.DiscardUnknown(m)
+func (m *Dumb NomadDriverConfig) XXX_DiscardUnknown() {
+	xxx_messageInfo_Dumb NomadDriverConfig.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_NomadDriverConfig proto.InternalMessageInfo
+var xxx_messageInfo_Dumb NomadDriverConfig proto.InternalMessageInfo
 
-func (m *NomadDriverConfig) GetClientMaxPort() uint32 {
+func (m *Dumb NomadDriverConfig) GetClientMaxPort() uint32 {
 	if m != nil {
 		return m.ClientMaxPort
 	}
 	return 0
 }
 
-func (m *NomadDriverConfig) GetClientMinPort() uint32 {
+func (m *Dumb NomadDriverConfig) GetClientMinPort() uint32 {
 	if m != nil {
 		return m.ClientMinPort
 	}
 	return 0
 }
 
-func (m *NomadDriverConfig) GetTopology() *ClientTopology {
+func (m *Dumb NomadDriverConfig) GetTopology() *ClientTopology {
 	if m != nil {
 		return m.Topology
 	}
@@ -547,7 +547,7 @@ type ClientTopologyCore struct {
 	SocketId             uint32    `protobuf:"varint,1,opt,name=socket_id,json=socketId,proto3" json:"socket_id,omitempty"`
 	NodeId               uint32    `protobuf:"varint,2,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
 	CoreId               uint32    `protobuf:"varint,3,opt,name=core_id,json=coreId,proto3" json:"core_id,omitempty"`
-	CoreGrade            CoreGrade `protobuf:"varint,4,opt,name=core_grade,json=coreGrade,proto3,enum=hashicorp.nomad.plugins.base.proto.CoreGrade" json:"core_grade,omitempty"`
+	CoreGrade            CoreGrade `protobuf:"varint,4,opt,name=core_grade,json=coreGrade,proto3,enum=dumb-hashicorp.dumb-nomad.plugins.base.proto.CoreGrade" json:"core_grade,omitempty"`
 	Disable              bool      `protobuf:"varint,5,opt,name=disable,proto3" json:"disable,omitempty"`
 	BaseSpeed            uint64    `protobuf:"varint,6,opt,name=base_speed,json=baseSpeed,proto3" json:"base_speed,omitempty"`
 	MaxSpeed             uint64    `protobuf:"varint,7,opt,name=max_speed,json=maxSpeed,proto3" json:"max_speed,omitempty"`
@@ -671,19 +671,19 @@ func (m *SetConfigResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_SetConfigResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterEnum("hashicorp.nomad.plugins.base.proto.PluginType", PluginType_name, PluginType_value)
-	proto.RegisterEnum("hashicorp.nomad.plugins.base.proto.CoreGrade", CoreGrade_name, CoreGrade_value)
-	proto.RegisterType((*PluginInfoRequest)(nil), "hashicorp.nomad.plugins.base.proto.PluginInfoRequest")
-	proto.RegisterType((*PluginInfoResponse)(nil), "hashicorp.nomad.plugins.base.proto.PluginInfoResponse")
-	proto.RegisterType((*ConfigSchemaRequest)(nil), "hashicorp.nomad.plugins.base.proto.ConfigSchemaRequest")
-	proto.RegisterType((*ConfigSchemaResponse)(nil), "hashicorp.nomad.plugins.base.proto.ConfigSchemaResponse")
-	proto.RegisterType((*SetConfigRequest)(nil), "hashicorp.nomad.plugins.base.proto.SetConfigRequest")
-	proto.RegisterType((*NomadConfig)(nil), "hashicorp.nomad.plugins.base.proto.NomadConfig")
-	proto.RegisterType((*NomadDriverConfig)(nil), "hashicorp.nomad.plugins.base.proto.NomadDriverConfig")
-	proto.RegisterType((*ClientTopology)(nil), "hashicorp.nomad.plugins.base.proto.ClientTopology")
-	proto.RegisterType((*ClientTopologySLIT)(nil), "hashicorp.nomad.plugins.base.proto.ClientTopologySLIT")
-	proto.RegisterType((*ClientTopologyCore)(nil), "hashicorp.nomad.plugins.base.proto.ClientTopologyCore")
-	proto.RegisterType((*SetConfigResponse)(nil), "hashicorp.nomad.plugins.base.proto.SetConfigResponse")
+	proto.RegisterEnum("dumb-hashicorp.dumb-nomad.plugins.base.proto.PluginType", PluginType_name, PluginType_value)
+	proto.RegisterEnum("dumb-hashicorp.dumb-nomad.plugins.base.proto.CoreGrade", CoreGrade_name, CoreGrade_value)
+	proto.RegisterType((*PluginInfoRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.base.proto.PluginInfoRequest")
+	proto.RegisterType((*PluginInfoResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.base.proto.PluginInfoResponse")
+	proto.RegisterType((*ConfigSchemaRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.base.proto.ConfigSchemaRequest")
+	proto.RegisterType((*ConfigSchemaResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.base.proto.ConfigSchemaResponse")
+	proto.RegisterType((*SetConfigRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.base.proto.SetConfigRequest")
+	proto.RegisterType((*Dumb NomadConfig)(nil), "dumb-hashicorp.dumb-nomad.plugins.base.proto.Dumb NomadConfig")
+	proto.RegisterType((*Dumb NomadDriverConfig)(nil), "dumb-hashicorp.dumb-nomad.plugins.base.proto.Dumb NomadDriverConfig")
+	proto.RegisterType((*ClientTopology)(nil), "dumb-hashicorp.dumb-nomad.plugins.base.proto.ClientTopology")
+	proto.RegisterType((*ClientTopologySLIT)(nil), "dumb-hashicorp.dumb-nomad.plugins.base.proto.ClientTopologySLIT")
+	proto.RegisterType((*ClientTopologyCore)(nil), "dumb-hashicorp.dumb-nomad.plugins.base.proto.ClientTopologyCore")
+	proto.RegisterType((*SetConfigResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.base.proto.SetConfigResponse")
 }
 
 func init() {
@@ -778,7 +778,7 @@ func NewBasePluginClient(cc grpc.ClientConnInterface) BasePluginClient {
 
 func (c *basePluginClient) PluginInfo(ctx context.Context, in *PluginInfoRequest, opts ...grpc.CallOption) (*PluginInfoResponse, error) {
 	out := new(PluginInfoResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.base.proto.BasePlugin/PluginInfo", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.base.proto.BasePlugin/PluginInfo", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -787,7 +787,7 @@ func (c *basePluginClient) PluginInfo(ctx context.Context, in *PluginInfoRequest
 
 func (c *basePluginClient) ConfigSchema(ctx context.Context, in *ConfigSchemaRequest, opts ...grpc.CallOption) (*ConfigSchemaResponse, error) {
 	out := new(ConfigSchemaResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.base.proto.BasePlugin/ConfigSchema", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.base.proto.BasePlugin/ConfigSchema", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -796,7 +796,7 @@ func (c *basePluginClient) ConfigSchema(ctx context.Context, in *ConfigSchemaReq
 
 func (c *basePluginClient) SetConfig(ctx context.Context, in *SetConfigRequest, opts ...grpc.CallOption) (*SetConfigResponse, error) {
 	out := new(SetConfigResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.base.proto.BasePlugin/SetConfig", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.base.proto.BasePlugin/SetConfig", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -841,7 +841,7 @@ func _BasePlugin_PluginInfo_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.base.proto.BasePlugin/PluginInfo",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.base.proto.BasePlugin/PluginInfo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BasePluginServer).PluginInfo(ctx, req.(*PluginInfoRequest))
@@ -859,7 +859,7 @@ func _BasePlugin_ConfigSchema_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.base.proto.BasePlugin/ConfigSchema",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.base.proto.BasePlugin/ConfigSchema",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BasePluginServer).ConfigSchema(ctx, req.(*ConfigSchemaRequest))
@@ -877,7 +877,7 @@ func _BasePlugin_SetConfig_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.base.proto.BasePlugin/SetConfig",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.base.proto.BasePlugin/SetConfig",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(BasePluginServer).SetConfig(ctx, req.(*SetConfigRequest))
@@ -886,7 +886,7 @@ func _BasePlugin_SetConfig_Handler(srv interface{}, ctx context.Context, dec fun
 }
 
 var _BasePlugin_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "hashicorp.nomad.plugins.base.proto.BasePlugin",
+	ServiceName: "dumb-hashicorp.dumb-nomad.plugins.base.proto.BasePlugin",
 	HandlerType: (*BasePluginServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

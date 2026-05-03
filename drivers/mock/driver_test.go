@@ -10,22 +10,22 @@ import (
 	"testing"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/testtask"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	basePlug "github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	dtestutil "github.com/hashicorp/nomad/plugins/drivers/testutils"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testtask"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	basePlug "github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	dtestutil "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
 )
 
 func TestMockDriver_StartWaitRecoverWaitStop(t *testing.T) {
@@ -34,7 +34,7 @@ func TestMockDriver_StartWaitRecoverWaitStop(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	d := NewMockDriver(ctx, logger).(*Driver)
 	harness := dtestutil.NewDriverHarness(t, d)
 	defer harness.Kill()
@@ -129,8 +129,8 @@ func TestMockDriver_StartWaitRecoverWaitStop(t *testing.T) {
 	must.True(t, waitDone)
 }
 
-func mkTestAllocDir(t *testing.T, h *dtestutil.DriverHarness, logger hclog.Logger, tc *drivers.TaskConfig) func() {
-	dir, err := os.MkdirTemp("", "nomad_driver_harness-")
+func mkTestAllocDir(t *testing.T, h *dtestutil.DriverHarness, logger dumb-hclog.Logger, tc *drivers.TaskConfig) func() {
+	dir, err := os.MkdirTemp("", "dumb-nomad_driver_harness-")
 	must.NoError(t, err)
 
 	allocDir := allocdir.NewAllocDir(logger, dir, dir, tc.AllocID)
@@ -155,7 +155,7 @@ func mkTestAllocDir(t *testing.T, h *dtestutil.DriverHarness, logger hclog.Logge
 	alloc := mock.Alloc()
 	alloc.ID = tc.AllocID
 	if tc.Resources != nil {
-		alloc.AllocatedResources.Tasks[task.Name] = tc.Resources.NomadResources
+		alloc.AllocatedResources.Tasks[task.Name] = tc.Resources.Dumb NomadResources
 	}
 
 	taskBuilder := taskenv.NewBuilder(mock.Node(), alloc, task, "global")

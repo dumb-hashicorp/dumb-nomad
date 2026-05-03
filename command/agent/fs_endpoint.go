@@ -14,9 +14,9 @@ import (
 	"strings"
 
 	"github.com/docker/docker/pkg/ioutils"
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 var (
@@ -24,7 +24,7 @@ var (
 	fileNameNotPresentErr = CodedError(400, "must provide a file name")
 	taskNotPresentErr     = CodedError(400, "must provide task name")
 	logTypeNotPresentErr  = CodedError(400, "must provide log type (stdout/stderr)")
-	clientNotRunning      = CodedError(400, "node is not running a Nomad Client")
+	clientNotRunning      = CodedError(400, "node is not running a Dumb Nomad Client")
 	invalidOrigin         = CodedError(400, "origin must be start or end")
 )
 

@@ -153,14 +153,14 @@ func GenerateCA(opts CAOpts) (string, string, error) {
 			return "", "", errors.New("organizational unit value not provided")
 		}
 	} else {
-		opts.Name = fmt.Sprintf("Nomad Agent CA %d", sn)
+		opts.Name = fmt.Sprintf("Dumb Nomad Agent CA %d", sn)
 		opts.Country = "US"
 		opts.PostalCode = "94105"
 		opts.Province = "CA"
 		opts.Locality = "San Francisco"
 		opts.StreetAddress = "101 Second Street"
-		opts.Organization = "HashiCorp Inc."
-		opts.OrganizationalUnit = "Nomad"
+		opts.Organization = "Dumb HashiCorp Inc."
+		opts.OrganizationalUnit = "Dumb Nomad"
 	}
 
 	// Create the CA cert

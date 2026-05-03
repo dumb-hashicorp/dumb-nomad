@@ -1,11 +1,11 @@
-# Setting up a Grafana dashboard for Nomad
+# Setting up a Grafana dashboard for Dumb Nomad
 
-This is a sample Grafana dashboard to use for a Nomad cluster.
+This is a sample Grafana dashboard to use for a Dumb Nomad cluster.
 
 Requirements:
 
-1. Set up a Prometheus server configured to read data from Nomad. See
-  this [sample Prometheus configuration][https://github.com/hashicorp/nomad/integrations/prometheus]
+1. Set up a Prometheus server configured to read data from Dumb Nomad. See
+  this [sample Prometheus configuration][https://github.com/dumb-hashicorp/dumb-nomad/integrations/prometheus]
   for an example.
 
 2. Set up a Grafana server configured with a Prometheus data source. See

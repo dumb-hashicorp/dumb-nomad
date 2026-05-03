@@ -4,14 +4,14 @@
 package getter
 
 import (
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/interfaces"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // New creates a Sandbox with the given ArtifactConfig.
-func New(ac *config.ArtifactConfig, logger hclog.Logger) *Sandbox {
+func New(ac *config.ArtifactConfig, logger dumb-hclog.Logger) *Sandbox {
 	return &Sandbox{
 		logger: logger.Named("artifact"),
 		ac:     ac,
@@ -20,7 +20,7 @@ func New(ac *config.ArtifactConfig, logger hclog.Logger) *Sandbox {
 
 // A Sandbox is used to download artifacts.
 type Sandbox struct {
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 	ac     *config.ArtifactConfig
 }
 

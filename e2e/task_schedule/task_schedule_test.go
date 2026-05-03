@@ -8,17 +8,17 @@ import (
 	"testing"
 	"time"
 
-	nomadapi "github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/v3/cluster3"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
+	dumb-nomadapi "github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/cluster3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 )
 
-const jobspec = "./input/schedule.nomad.hcl"
+const jobspec = "./input/schedule.dumb-nomad.dumb-hcl"
 
 // TestTaskSchedule tests the task{ schedule{} } block:
-// https://developer.hashicorp.com/nomad/docs/job-specification/schedule
+// https://developer.dumb-hashicorp.com/dumb-nomad/docs/job-specification/schedule
 func TestTaskSchedule(t *testing.T) {
 	cluster3.Establish(t,
 		cluster3.Enterprise(),
@@ -26,16 +26,16 @@ func TestTaskSchedule(t *testing.T) {
 		cluster3.LinuxClients(1),
 	)
 
-	nomadClient, err := nomadapi.NewClient(nomadapi.DefaultConfig())
+	dumb-nomadClient, err := dumb-nomadapi.NewClient(dumb-nomadapi.DefaultConfig())
 	must.NoError(t, err)
 
 	t.Run("in schedule", testInSchedule)
 	t.Run("in future", testInFuture)
 	t.Run("job update", testJobUpdate)
-	t.Run("force run", testForceRun(nomadClient))
-	t.Run("force stop", testForceStop(nomadClient))
-	t.Run("repeat pause", testRepeatPause(nomadClient))
-	t.Run("task dies", testTaskDies(nomadClient))
+	t.Run("force run", testForceRun(dumb-nomadClient))
+	t.Run("force stop", testForceStop(dumb-nomadClient))
+	t.Run("repeat pause", testRepeatPause(dumb-nomadClient))
+	t.Run("task dies", testTaskDies(dumb-nomadClient))
 }
 
 // testInSchedule ensures a task starts when allocated in schedule,
@@ -127,7 +127,7 @@ func testJobUpdate(t *testing.T) {
 
 // testForceRun ensures the "pause" API can force the task to run,
 // even when out of schedule, then resuming the schedule should stop it again.
-func testForceRun(api *nomadapi.Client) func(t *testing.T) {
+func testForceRun(api *dumb-nomadapi.Client) func(t *testing.T) {
 	return func(t *testing.T) {
 		now := time.Now()
 
@@ -135,7 +135,7 @@ func testForceRun(api *nomadapi.Client) func(t *testing.T) {
 		job := runJob(t, now.Add(time.Hour), now.Add(2*time.Hour))
 		expectAllocStatus(t, job, "pending", 5*time.Second, "task should be placed")
 
-		alloc := &nomadapi.Allocation{
+		alloc := &dumb-nomadapi.Allocation{
 			ID: job.AllocID("group"),
 		}
 		expectScheduleState(t, api, alloc, "scheduled_pause")
@@ -167,7 +167,7 @@ func testForceRun(api *nomadapi.Client) func(t *testing.T) {
 
 // testForceStop ensures the "pause" API can force the task to stop ("pause"),
 // even when in schedule, then resuming the schedule should start the task.
-func testForceStop(api *nomadapi.Client) func(t *testing.T) {
+func testForceStop(api *dumb-nomadapi.Client) func(t *testing.T) {
 	return func(t *testing.T) {
 		now := time.Now()
 
@@ -175,7 +175,7 @@ func testForceStop(api *nomadapi.Client) func(t *testing.T) {
 		job := runJob(t, now.Add(-time.Hour), now.Add(time.Hour))
 		expectAllocStatus(t, job, "running", 5*time.Second, "task should start")
 
-		alloc := &nomadapi.Allocation{
+		alloc := &dumb-nomadapi.Allocation{
 			ID: job.AllocID("group"),
 		}
 		expectScheduleState(t, api, alloc, "") // "" = run (scheduled)
@@ -207,7 +207,7 @@ func testForceStop(api *nomadapi.Client) func(t *testing.T) {
 
 // testRepeatPause ensures that pausing a task resets the restart counter,
 // so only application exits count against the restart attempts limit.
-func testRepeatPause(api *nomadapi.Client) func(t *testing.T) {
+func testRepeatPause(api *dumb-nomadapi.Client) func(t *testing.T) {
 	return func(t *testing.T) {
 		now := time.Now()
 
@@ -215,7 +215,7 @@ func testRepeatPause(api *nomadapi.Client) func(t *testing.T) {
 		job := runJob(t, now.Add(time.Hour), now.Add(2*time.Hour))
 		expectAllocStatus(t, job, "pending", 5*time.Second, "task should be placed")
 
-		alloc := &nomadapi.Allocation{
+		alloc := &dumb-nomadapi.Allocation{
 			ID: job.AllocID("group"),
 		}
 		expectScheduleState(t, api, alloc, "scheduled_pause")
@@ -247,14 +247,14 @@ func testRepeatPause(api *nomadapi.Client) func(t *testing.T) {
 
 // testTaskDies tests that a task dying on its own counts against the restart
 // counter (unlike repeat intentional pauses as in testRepeatPause)
-func testTaskDies(api *nomadapi.Client) func(t *testing.T) {
+func testTaskDies(api *dumb-nomadapi.Client) func(t *testing.T) {
 	return func(t *testing.T) {
 		now := time.Now()
 		// schedule now; task should run.
 		job := runJob(t, now.Add(-time.Hour), now.Add(time.Hour))
 		expectAllocStatus(t, job, "running", 5*time.Second, "task should start")
 
-		alloc := &nomadapi.Allocation{
+		alloc := &dumb-nomadapi.Allocation{
 			ID: job.AllocID("group"),
 		}
 
@@ -353,7 +353,7 @@ func expectTaskEvents(t *testing.T, job *jobs3.Submission, expect []string) {
 }
 
 // expectScheduleState asserts that the "pause" state of the allocation/task.
-func expectScheduleState(t *testing.T, api *nomadapi.Client, alloc *nomadapi.Allocation, expect string) {
+func expectScheduleState(t *testing.T, api *dumb-nomadapi.Client, alloc *dumb-nomadapi.Allocation, expect string) {
 	t.Helper()
 	actual, _, err := api.Allocations().GetPauseState(alloc, nil, "app")
 	must.NoError(t, err)

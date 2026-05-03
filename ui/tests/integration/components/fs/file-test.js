@@ -9,7 +9,7 @@ import { find, click, render, settled } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import Pretender from 'pretender';
 import { logEncode } from '../../../../mirage/data/logs';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 
 const { assign } = Object;
 const HOST = '1.1.1.1:1111';
@@ -182,7 +182,7 @@ module('Integration | Component | fs/file', function (hooks) {
 
   test('The view raw button respects the active region', async function (assert) {
     const region = 'region-2';
-    window.localStorage.nomadActiveRegion = region;
+    window.localStorage.dumb-nomadActiveRegion = region;
 
     const props = makeProps(fileStat('image/png', 1234));
     this.setProperties(props);

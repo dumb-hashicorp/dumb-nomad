@@ -7,7 +7,7 @@
 
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
-import notifyError from 'nomad-ui/utils/notify-error';
+import notifyError from 'dumb-nomad-ui/utils/notify-error';
 import { inject as service } from '@ember/service';
 
 export default class StorageVolumesDynamicHostVolumeRoute extends Route {

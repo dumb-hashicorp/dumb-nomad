@@ -10,7 +10,7 @@ import { inject as service } from '@ember/service';
 import { alias } from '@ember/object/computed';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import messageFromAdapterError from 'nomad-ui/utils/message-from-adapter-error';
+import messageFromAdapterError from 'dumb-nomad-ui/utils/message-from-adapter-error';
 
 export default class RoleEditorComponent extends Component {
   @service notifications;

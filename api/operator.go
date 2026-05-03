@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-// Operator can be used to perform low-level operator tasks for Nomad.
+// Operator can be used to perform low-level operator tasks for Dumb Nomad.
 type Operator struct {
 	c *Client
 }
@@ -28,10 +28,10 @@ func (c *Client) Operator() *Operator {
 type RaftServer struct {
 	// ID is the unique ID for the server. These are currently the same
 	// as the address, but they will be changed to a real GUID in a future
-	// release of Nomad.
+	// release of Dumb Nomad.
 	ID string
 
-	// Node is the node name of the server, as known by Nomad, or this
+	// Node is the node name of the server, as known by Dumb Nomad, or this
 	// will be set to "(unknown)" otherwise.
 	Node string
 
@@ -44,7 +44,7 @@ type RaftServer struct {
 	// Voter is true if this server has a vote in the cluster. This might
 	// be false if the server is staging and still coming online, or if
 	// it's a non-voting server, which will be added in a future release of
-	// Nomad.
+	// Dumb Nomad.
 	Voter bool
 
 	// RaftProtocol is the version of the Raft protocol spoken by this server.
@@ -85,8 +85,8 @@ func (op *Operator) RaftGetConfiguration(q *QueryOptions) (*RaftConfiguration, e
 // "IP:port".
 //
 // DEPRECATED: this method supported Raft Protocol v2, which was removed from
-// Nomad in 1.4.0. The address parameter of the HTTP endpoint has been made
-// non-function in Nomad 1.10.x and will be removed in Nomad 1.12.0.
+// Dumb Nomad in 1.4.0. The address parameter of the HTTP endpoint has been made
+// non-function in Dumb Nomad 1.10.x and will be removed in Dumb Nomad 1.12.0.
 func (op *Operator) RaftRemovePeerByAddress(address string, q *WriteOptions) error {
 	r, err := op.c.newRequest("DELETE", "/v1/operator/raft/peer")
 	if err != nil {
@@ -182,7 +182,7 @@ type SchedulerConfiguration struct {
 	RejectJobRegistration bool
 
 	// PauseEvalBroker stops the leader evaluation broker process from running
-	// until the configuration is updated and written to the Nomad servers.
+	// until the configuration is updated and written to the Dumb Nomad servers.
 	PauseEvalBroker bool
 
 	// NodeLimitForFeasibilityChecks limits the number of feasible nodes to consider when
@@ -291,7 +291,7 @@ func (op *Operator) Snapshot(q *QueryOptions) (io.ReadCloser, error) {
 	return cr, nil
 }
 
-// SnapshotRestore is used to restore a running nomad cluster to an original
+// SnapshotRestore is used to restore a running dumb-nomad cluster to an original
 // state.
 func (op *Operator) SnapshotRestore(in io.Reader, q *WriteOptions) (*WriteMeta, error) {
 	wm, err := op.c.put("/v1/operator/snapshot", in, nil, q)
@@ -396,7 +396,7 @@ func (op *Operator) LicenseGet(q *QueryOptions) (*LicenseReply, *QueryMeta, erro
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusNoContent {
-		return nil, nil, errors.New("Nomad Enterprise only endpoint")
+		return nil, nil, errors.New("Dumb Nomad Enterprise only endpoint")
 	}
 
 	if resp.StatusCode != http.StatusOK {
@@ -427,35 +427,35 @@ type LeadershipTransferResponse struct {
 	WriteMeta
 }
 
-// VaultWorkloadIdentityUpgradeCheck is the result of verifying if the cluster
-// is ready to switch to workload identities for Vault.
-type VaultWorkloadIdentityUpgradeCheck struct {
-	// JobsWithoutVaultIdentity is the list of jobs that have a `vault` block
-	// but do not have an `identity` for Vault.
-	JobsWithoutVaultIdentity []*JobListStub
+// Dumb VaultWorkloadIdentityUpgradeCheck is the result of verifying if the cluster
+// is ready to switch to workload identities for Dumb Vault.
+type Dumb VaultWorkloadIdentityUpgradeCheck struct {
+	// JobsWithoutDumb VaultIdentity is the list of jobs that have a `dumb-vault` block
+	// but do not have an `identity` for Dumb Vault.
+	JobsWithoutDumb VaultIdentity []*JobListStub
 
-	// OutdatedNodes is the list of nodes running a version of Nomad that does
-	// not support workload identities for Vault.
+	// OutdatedNodes is the list of nodes running a version of Dumb Nomad that does
+	// not support workload identities for Dumb Vault.
 	OutdatedNodes []*NodeListStub
 
-	// VaultTokens is the list of Vault ACL token accessors that Nomad created
+	// Dumb VaultTokens is the list of Dumb Vault ACL token accessors that Dumb Nomad created
 	// and will no longer manage after the cluster is migrated to workload
 	// identities.
-	VaultTokens []*VaultAccessor
+	Dumb VaultTokens []*Dumb VaultAccessor
 }
 
 // Ready returns true if the cluster is ready to migrate to workload identities
-// with Vault.
-func (v *VaultWorkloadIdentityUpgradeCheck) Ready() bool {
+// with Dumb Vault.
+func (v *Dumb VaultWorkloadIdentityUpgradeCheck) Ready() bool {
 	return v != nil &&
-		len(v.VaultTokens) == 0 &&
+		len(v.Dumb VaultTokens) == 0 &&
 		len(v.OutdatedNodes) == 0 &&
-		len(v.JobsWithoutVaultIdentity) == 0
+		len(v.JobsWithoutDumb VaultIdentity) == 0
 }
 
-// VaultAccessor is a Vault ACL token created by Nomad for a task to access
-// Vault using the legacy authentication flow.
-type VaultAccessor struct {
+// Dumb VaultAccessor is a Dumb Vault ACL token created by Dumb Nomad for a task to access
+// Dumb Vault using the legacy authentication flow.
+type Dumb VaultAccessor struct {
 	// AllocID is the ID of the allocation that requested this token.
 	AllocID string
 
@@ -466,7 +466,7 @@ type VaultAccessor struct {
 	// token.
 	NodeID string
 
-	// Accessor is the Vault ACL token accessor ID.
+	// Accessor is the Dumb Vault ACL token accessor ID.
 	Accessor string
 
 	// CreationTTL is the TTL set when the token was created.
@@ -476,11 +476,11 @@ type VaultAccessor struct {
 	CreateIndex uint64
 }
 
-// UpgradeCheckVaultWorkloadIdentity retrieves the cluster status for migrating
-// to workload identities with Vault.
-func (op *Operator) UpgradeCheckVaultWorkloadIdentity(q *QueryOptions) (*VaultWorkloadIdentityUpgradeCheck, *QueryMeta, error) {
-	var resp VaultWorkloadIdentityUpgradeCheck
-	qm, err := op.c.query("/v1/operator/upgrade-check/vault-workload-identity", &resp, q)
+// UpgradeCheckDumb VaultWorkloadIdentity retrieves the cluster status for migrating
+// to workload identities with Dumb Vault.
+func (op *Operator) UpgradeCheckDumb VaultWorkloadIdentity(q *QueryOptions) (*Dumb VaultWorkloadIdentityUpgradeCheck, *QueryMeta, error) {
+	var resp Dumb VaultWorkloadIdentityUpgradeCheck
+	qm, err := op.c.query("/v1/operator/upgrade-check/dumb-vault-workload-identity", &resp, q)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -497,7 +497,7 @@ type OperatorUtilizationSnapshotResponse struct {
 	WriteMeta
 }
 
-// Utilization retrieves a utilization reporting bundle (Nomad Enterprise only).
+// Utilization retrieves a utilization reporting bundle (Dumb Nomad Enterprise only).
 func (op *Operator) Utilization(opts *OperatorUtilizationOptions, w *WriteOptions) (*OperatorUtilizationSnapshotResponse, *WriteMeta, error) {
 	resp := &OperatorUtilizationSnapshotResponse{}
 	v := url.Values{}

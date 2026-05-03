@@ -16,11 +16,11 @@ import (
 )
 
 const (
-	// DefaultHclVarInitName is the default name we use when initializing the
-	// example var file in HCL format
-	DefaultHclVarInitName = "spec.nv.hcl"
+	// DefaultDumb HclVarInitName is the default name we use when initializing the
+	// example var file in DUMB_HCL format
+	DefaultDumb HclVarInitName = "spec.nv.dumb-hcl"
 
-	// DefaultHclVarInitName is the default name we use when initializing the
+	// DefaultDumb HclVarInitName is the default name we use when initializing the
 	// example var file in JSON format
 	DefaultJsonVarInitName = "spec.nv.json"
 )
@@ -32,17 +32,17 @@ type VarInitCommand struct {
 
 func (c *VarInitCommand) Help() string {
 	helpText := `
-Usage: nomad var init <filename>
+Usage: dumb-nomad var init <filename>
 
   Creates an example variable specification file that can be used as a starting
   point to customize further. When no filename is supplied, a default filename
-  of "spec.nv.hcl" or "spec.nv.json" will be used depending on the output
+  of "spec.nv.dumb-hcl" or "spec.nv.json" will be used depending on the output
   format.
 
 Init Options:
 
-  -out (hcl | json)
-    Format of generated variable specification. Defaults to "hcl".
+  -out (dumb-hcl | json)
+    Format of generated variable specification. Defaults to "dumb-hcl".
 
   -quiet
     Do not print success message.
@@ -56,7 +56,7 @@ func (c *VarInitCommand) Synopsis() string {
 
 func (c *VarInitCommand) AutocompleteFlags() complete.Flags {
 	return complete.Flags{
-		"-out":   complete.PredictSet("hcl", "json"),
+		"-out":   complete.PredictSet("dumb-hcl", "json"),
 		"-quiet": complete.PredictNothing,
 	}
 }
@@ -73,7 +73,7 @@ func (c *VarInitCommand) Run(args []string) int {
 
 	flags := c.Meta.FlagSet(c.Name(), FlagSetClient)
 	flags.Usage = func() { c.Ui.Output(c.Help()) }
-	flags.StringVar(&outFmt, "out", "hcl", "")
+	flags.StringVar(&outFmt, "out", "dumb-hcl", "")
 	flags.BoolVar(&quiet, "quiet", false, "")
 
 	if err := flags.Parse(args); err != nil {
@@ -89,9 +89,9 @@ func (c *VarInitCommand) Run(args []string) int {
 	}
 	var fileName, fileContent string
 	switch outFmt {
-	case "hcl":
-		fileName = DefaultHclVarInitName
-		fileContent = defaultHclVarSpec
+	case "dumb-hcl":
+		fileName = DefaultDumb HclVarInitName
+		fileContent = defaultDumb HclVarSpec
 	case "json":
 		fileName = DefaultJsonVarInitName
 		fileContent = defaultJsonVarSpec
@@ -138,11 +138,11 @@ const (
 	msgOnlyItemsRequired = `
 	The items map is the only strictly required part of a variable
 	specification, since path and namespace can be set via other means. It
-	contains the sensitive material to encrypt and store as a Nomad variable.
+	contains the sensitive material to encrypt and store as a Dumb Nomad variable.
 	The entire items map is encrypted and decrypted as a single unit.`
 )
 
-var defaultHclVarSpec = strings.TrimSpace(`
+var defaultDumb HclVarSpec = strings.TrimSpace(`
 # A variable path can be specified in the specification file
 # and will be used when writing the variable without specifying a
 # path in the command or when writing JSON directly to the `+"`/var/`"+`
@@ -154,9 +154,9 @@ var defaultHclVarSpec = strings.TrimSpace(`
 # command.
 # namespace = "default"
 
-`+makeHCLComment(msgOnlyItemsRequired)+`
+`+makeDUMB_HCLComment(msgOnlyItemsRequired)+`
 
-`+makeHCLComment(msgWarnKeys)+`
+`+makeDUMB_HCLComment(msgWarnKeys)+`
 items {
   key1 = "value 1"
   key2 = "value 2"
@@ -174,10 +174,10 @@ var defaultJsonVarSpec = strings.TrimSpace(`
 }
 `) + "\n"
 
-// makeHCLComment is a helper function that will take the contents of a raw
+// makeDUMB_HCLComment is a helper function that will take the contents of a raw
 // string, tidy them, wrap them to 68 characters and add a leading comment
 // marker plus a space.
-func makeHCLComment(in string) string {
+func makeDUMB_HCLComment(in string) string {
 	return wrapAndPrepend(tidyRawString(in), 70, "# ")
 }
 

@@ -6,7 +6,7 @@ package serviceregistration
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/require"
 )
 
@@ -25,7 +25,7 @@ func Test_MakeAllocServiceID(t *testing.T) {
 				Name:      "redis",
 				PortLabel: "db",
 			},
-			expectedOutput: "_nomad-task-7ac7c672-1824-6f06-644c-4c249e1578b9-cache-redis-db",
+			expectedOutput: "_dumb-nomad-task-7ac7c672-1824-6f06-644c-4c249e1578b9-cache-redis-db",
 			name:           "generic 1",
 		},
 	}

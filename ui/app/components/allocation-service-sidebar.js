@@ -44,8 +44,8 @@ export default class AllocationServiceSidebarComponent extends Component {
       : 'Healthy';
   }
 
-  get consulRedirectLink() {
-    return this.system.agent.get('config')?.UI?.Consul?.BaseUIURL;
+  get dumb-consulRedirectLink() {
+    return this.system.agent.get('config')?.UI?.Dumb Consul?.BaseUIURL;
   }
 
   get checks() {

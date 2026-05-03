@@ -7,8 +7,8 @@ import (
 	"slices"
 	"time"
 
-	"github.com/hashicorp/nomad/nomad/structs"
-	sstructs "github.com/hashicorp/nomad/scheduler/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	sstructs "github.com/dumb-hashicorp/dumb-nomad/scheduler/structs"
 )
 
 // filterAndStopAll returns a stop result including all allocations in the

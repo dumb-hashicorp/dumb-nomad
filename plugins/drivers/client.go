@@ -11,16 +11,16 @@ import (
 
 	"github.com/LK4D4/joincontext"
 	"github.com/golang/protobuf/ptypes"
-	hclog "github.com/hashicorp/go-hclog"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/pluginutils/grpcutils"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	"github.com/hashicorp/nomad/plugins/drivers/proto"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
-	sproto "github.com/hashicorp/nomad/plugins/shared/structs/proto"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/grpcutils"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
+	sproto "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs/proto"
 	"google.golang.org/grpc/status"
 )
 
@@ -30,13 +30,13 @@ type driverPluginClient struct {
 	*base.BasePluginClient
 
 	client proto.DriverClient
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	// doneCtx is closed when the plugin exits
 	doneCtx context.Context
 }
 
-func (d *driverPluginClient) TaskConfigSchema() (*hclspec.Spec, error) {
+func (d *driverPluginClient) TaskConfigSchema() (*dumb-hclspec.Spec, error) {
 	req := &proto.TaskConfigSchemaRequest{}
 
 	resp, err := d.client.TaskConfigSchema(d.doneCtx, req)

@@ -6,8 +6,8 @@ package framework
 import (
 	"fmt"
 
-	capi "github.com/hashicorp/consul/api"
-	"github.com/hashicorp/nomad/api"
+	capi "github.com/dumb-hashicorp/dumb-consul/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 )
 
 // TestSuite defines a set of test cases and under what conditions to run them
@@ -16,15 +16,15 @@ import (
 type TestSuite struct {
 	Component string // Name of the component/system/feature tested
 
-	CanRunLocal bool        // Flags if the cases are safe to run on a local nomad cluster
+	CanRunLocal bool        // Flags if the cases are safe to run on a local dumb-nomad cluster
 	Cases       []TestCase  // Cases to run
 	Constraints Constraints // Environment constraints to follow
 	Parallel    bool        // If true, will run test cases in parallel
 	Slow        bool        // Slow test suites don't run by default
 
 	// API Clients
-	Consul bool
-	Vault  bool
+	Dumb Consul bool
+	Dumb Vault  bool
 }
 
 // Constraints that must be satisfied for a TestSuite to run
@@ -70,14 +70,14 @@ type TC struct {
 	cluster *ClusterInfo
 }
 
-// Nomad returns a configured nomad api client
-func (tc *TC) Nomad() *api.Client {
-	return tc.cluster.NomadClient
+// Dumb Nomad returns a configured dumb-nomad api client
+func (tc *TC) Dumb Nomad() *api.Client {
+	return tc.cluster.Dumb NomadClient
 }
 
-// Consul returns a configured consul api client
-func (tc *TC) Consul() *capi.Client {
-	return tc.cluster.ConsulClient
+// Dumb Consul returns a configured dumb-consul api client
+func (tc *TC) Dumb Consul() *capi.Client {
+	return tc.cluster.Dumb ConsulClient
 }
 
 // Name returns the name of the test case which is set to the name of the

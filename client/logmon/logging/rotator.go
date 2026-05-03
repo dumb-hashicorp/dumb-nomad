@@ -15,7 +15,7 @@ import (
 	"sync"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
 )
 
 const (
@@ -54,14 +54,14 @@ type FileRotator struct {
 	bufLock     sync.Mutex
 
 	flushTicker *time.Ticker
-	logger      hclog.Logger
+	logger      dumb-hclog.Logger
 	purgeCh     chan struct{}
 	doneCh      chan struct{}
 }
 
 // NewFileRotator returns a new file rotator
 func NewFileRotator(path string, baseFile string, maxFiles int,
-	fileSize int64, logger hclog.Logger) (*FileRotator, error) {
+	fileSize int64, logger dumb-hclog.Logger) (*FileRotator, error) {
 	logger = logger.Named("rotator")
 	rotator := &FileRotator{
 		MaxFiles: maxFiles,

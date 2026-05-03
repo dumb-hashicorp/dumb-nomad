@@ -8,11 +8,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/hcl"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/agent"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-hcl"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
 	"github.com/shoenig/test/must"
 )
 
@@ -31,7 +31,7 @@ func TestHostVolumeCreateCommand_Run(t *testing.T) {
 	ui := cli.NewMockUi()
 	cmd := &VolumeCreateCommand{Meta: Meta{Ui: ui}}
 
-	hclTestFile := `
+	dumb-hclTestFile := `
 namespace = "prod"
 name      = "database"
 type      = "host"
@@ -61,9 +61,9 @@ parameters {
 }
 `
 
-	file, err := os.CreateTemp(t.TempDir(), "volume-test-*.hcl")
+	file, err := os.CreateTemp(t.TempDir(), "volume-test-*.dumb-hcl")
 	must.NoError(t, err)
-	_, err = file.WriteString(hclTestFile)
+	_, err = file.WriteString(dumb-hclTestFile)
 	must.NoError(t, err)
 
 	args := []string{"-address", url, "-detach", file.Name()}
@@ -89,18 +89,18 @@ parameters {
 	must.Len(t, 1, list, must.Sprintf("new volume should not be created on update"))
 }
 
-func TestHostVolume_HCLDecode(t *testing.T) {
+func TestHostVolume_DUMB_HCLDecode(t *testing.T) {
 	ci.Parallel(t)
 
 	cases := []struct {
 		name     string
-		hcl      string
+		dumb-hcl      string
 		expected *api.HostVolume
 		errMsg   string
 	}{
 		{
 			name: "full spec",
-			hcl: `
+			dumb-hcl: `
 namespace = "prod"
 name      = "database"
 type      = "host"
@@ -166,7 +166,7 @@ parameters {
 
 		{
 			name: "mostly empty spec",
-			hcl: `
+			dumb-hcl: `
 namespace = "prod"
 name      = "database"
 type      = "host"
@@ -183,7 +183,7 @@ node_pool = "default"
 
 		{
 			name: "invalid capacity",
-			hcl: `
+			dumb-hcl: `
 namespace = "prod"
 name      = "database"
 type      = "host"
@@ -198,7 +198,7 @@ capacity_min = "a"
 
 		{
 			name: "invalid constraint",
-			hcl: `
+			dumb-hcl: `
 namespace = "prod"
 name      = "database"
 type      = "host"
@@ -217,7 +217,7 @@ constraint {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			ast, err := hcl.ParseString(tc.hcl)
+			ast, err := dumb-hcl.ParseString(tc.dumb-hcl)
 			must.NoError(t, err)
 			vol, err := decodeHostVolume(ast)
 			if tc.errMsg == "" {

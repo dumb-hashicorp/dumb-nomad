@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
@@ -28,7 +28,7 @@ func TestVolumeCreateCommand_Run(t *testing.T) {
 		Meta: Meta{Ui: ui},
 	}
 
-	volumeHCL := `
+	volumeDUMB_HCL := `
 type = "csi"
 id = "test-volume"
 name = "test-volume"
@@ -43,9 +43,9 @@ capability {
 }
 `
 
-	file, err := os.CreateTemp(t.TempDir(), "csi-volume-test-*.hcl")
+	file, err := os.CreateTemp(t.TempDir(), "csi-volume-test-*.dumb-hcl")
 	must.NoError(t, err)
-	_, err = file.WriteString(volumeHCL)
+	_, err = file.WriteString(volumeDUMB_HCL)
 	must.NoError(t, err)
 
 	// Since we can't easily mock the API client to fake a CSI plugin running,

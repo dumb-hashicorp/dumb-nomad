@@ -12,10 +12,10 @@ import (
 	"strings"
 
 	"github.com/go-viper/mapstructure/v2"
-	"github.com/hashicorp/hcl"
-	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/nomad/api"
-	flaghelper "github.com/hashicorp/nomad/helper/flags"
+	"github.com/dumb-hashicorp/dumb-hcl"
+	"github.com/dumb-hashicorp/dumb-hcl/dumb-hcl/ast"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	flaghelper "github.com/dumb-hashicorp/dumb-nomad/helper/flags"
 	"github.com/posener/complete"
 )
 
@@ -25,7 +25,7 @@ type NamespaceApplyCommand struct {
 
 func (c *NamespaceApplyCommand) Help() string {
 	helpText := `
-Usage: nomad namespace apply [options] <input>
+Usage: dumb-nomad namespace apply [options] <input>
 
   Apply is used to create or update a namespace. The specification file
   will be read from stdin by specifying "-", otherwise a path to the file is
@@ -68,7 +68,7 @@ func (c *NamespaceApplyCommand) AutocompleteFlags() complete.Flags {
 func (c *NamespaceApplyCommand) AutocompleteArgs() complete.Predictor {
 	return complete.PredictOr(
 		NamespacePredictor(c.Meta.Client, nil),
-		complete.PredictFiles("*.hcl"),
+		complete.PredictFiles("*.dumb-hcl"),
 		complete.PredictFiles("*.json"),
 	)
 }
@@ -146,13 +146,13 @@ func (c *NamespaceApplyCommand) Run(args []string) int {
 			}
 			namespace = &jsonSpec
 		} else {
-			hclSpec, err := parseNamespaceSpec(rawNamespace)
+			dumb-hclSpec, err := parseNamespaceSpec(rawNamespace)
 			if err != nil {
 				c.Ui.Error(fmt.Sprintf("Error parsing quota specification: %s", err))
 				return 1
 			}
 
-			namespace = hclSpec
+			namespace = dumb-hclSpec
 		}
 	} else {
 		name := args[0]
@@ -195,9 +195,9 @@ func (c *NamespaceApplyCommand) Run(args []string) int {
 	return 0
 }
 
-// parseNamespaceSpec is used to parse the namespace specification from HCL
+// parseNamespaceSpec is used to parse the namespace specification from DUMB_HCL
 func parseNamespaceSpec(input []byte) (*api.Namespace, error) {
-	root, err := hcl.ParseBytes(input)
+	root, err := dumb-hcl.ParseBytes(input)
 	if err != nil {
 		return nil, err
 	}
@@ -220,15 +220,15 @@ func parseNamespaceSpec(input []byte) (*api.Namespace, error) {
 func parseNamespaceSpecImpl(result *api.Namespace, list *ast.ObjectList) error {
 	// Decode the full thing into a map[string]interface for ease
 	var m map[string]interface{}
-	if err := hcl.DecodeObject(&m, list); err != nil {
+	if err := dumb-hcl.DecodeObject(&m, list); err != nil {
 		return err
 	}
 
 	delete(m, "capabilities")
 	delete(m, "meta")
 	delete(m, "node_pool_config")
-	delete(m, "vault")
-	delete(m, "consul")
+	delete(m, "dumb-vault")
+	delete(m, "dumb-consul")
 
 	// Decode the rest
 	if err := mapstructure.WeakDecode(m, result); err != nil {
@@ -243,7 +243,7 @@ func parseNamespaceSpecImpl(result *api.Namespace, list *ast.ObjectList) error {
 				break
 			}
 			var opts *api.NamespaceCapabilities
-			if err := hcl.DecodeObject(&opts, ot.List); err != nil {
+			if err := dumb-hcl.DecodeObject(&opts, ot.List); err != nil {
 				return err
 			}
 			result.Capabilities = opts
@@ -259,7 +259,7 @@ func parseNamespaceSpecImpl(result *api.Namespace, list *ast.ObjectList) error {
 				break
 			}
 			var npConfig *api.NamespaceNodePoolConfiguration
-			if err := hcl.DecodeObject(&npConfig, ot.List); err != nil {
+			if err := dumb-hcl.DecodeObject(&npConfig, ot.List); err != nil {
 				return err
 			}
 			result.NodePoolConfiguration = npConfig
@@ -267,34 +267,34 @@ func parseNamespaceSpecImpl(result *api.Namespace, list *ast.ObjectList) error {
 		}
 	}
 
-	vObj := list.Filter("vault")
+	vObj := list.Filter("dumb-vault")
 	if len(vObj.Items) > 0 {
 		for _, o := range vObj.Elem().Items {
 			ot, ok := o.Val.(*ast.ObjectType)
 			if !ok {
 				break
 			}
-			var vConfig *api.NamespaceVaultConfiguration
-			if err := hcl.DecodeObject(&vConfig, ot.List); err != nil {
+			var vConfig *api.NamespaceDumb VaultConfiguration
+			if err := dumb-hcl.DecodeObject(&vConfig, ot.List); err != nil {
 				return err
 			}
-			result.VaultConfiguration = vConfig
+			result.Dumb VaultConfiguration = vConfig
 			break
 		}
 	}
 
-	conObj := list.Filter("consul")
+	conObj := list.Filter("dumb-consul")
 	if len(conObj.Items) > 0 {
 		for _, o := range conObj.Elem().Items {
 			ot, ok := o.Val.(*ast.ObjectType)
 			if !ok {
 				break
 			}
-			var cConfig *api.NamespaceConsulConfiguration
-			if err := hcl.DecodeObject(&cConfig, ot.List); err != nil {
+			var cConfig *api.NamespaceDumb ConsulConfiguration
+			if err := dumb-hcl.DecodeObject(&cConfig, ot.List); err != nil {
 				return err
 			}
-			result.ConsulConfiguration = cConfig
+			result.Dumb ConsulConfiguration = cConfig
 			break
 		}
 	}
@@ -302,7 +302,7 @@ func parseNamespaceSpecImpl(result *api.Namespace, list *ast.ObjectList) error {
 	if metaO := list.Filter("meta"); len(metaO.Items) > 0 {
 		for _, o := range metaO.Elem().Items {
 			var m map[string]interface{}
-			if err := hcl.DecodeObject(&m, o.Val); err != nil {
+			if err := dumb-hcl.DecodeObject(&m, o.Val); err != nil {
 				return err
 			}
 			if err := mapstructure.WeakDecode(m, &result.Meta); err != nil {

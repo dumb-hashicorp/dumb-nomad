@@ -7,7 +7,7 @@ package cpustats
 import (
 	"time"
 
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
 	"oss.indeed.com/go/libtime"
 )
 
@@ -70,7 +70,7 @@ func (t *Tracker) calculatePercent(t1, t2 float64, timeDelta int64) float64 {
 }
 
 // TicksConsumed calculates the total bandwidth consumed by the process across
-// all system CPU cores (not just the ones available to Nomad or this particular
+// all system CPU cores (not just the ones available to Dumb Nomad or this particular
 // process.
 func (t *Tracker) TicksConsumed(percent float64) float64 {
 	return (percent / 100) * float64(t.totalCompute) / float64(t.numCPUs)

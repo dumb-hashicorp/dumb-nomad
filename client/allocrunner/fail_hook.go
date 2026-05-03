@@ -12,16 +12,16 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/hcl/v2/hclsimple"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-hcl/v2/dumb-hclsimple"
 
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
 )
 
 var ErrFailHookError = errors.New("failed successfully")
 
-func NewFailHook(l hclog.Logger, name string) *FailHook {
+func NewFailHook(l dumb-hclog.Logger, name string) *FailHook {
 	return &FailHook{
 		name:   name,
 		logger: l.Named(name),
@@ -30,15 +30,15 @@ func NewFailHook(l hclog.Logger, name string) *FailHook {
 
 type FailHook struct {
 	name   string
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 	Fail   struct {
-		Prerun         bool `hcl:"prerun,optional"`
-		PreKill        bool `hcl:"prekill,optional"`
-		Postrun        bool `hcl:"postrun,optional"`
-		Destroy        bool `hcl:"destroy,optional"`
-		Update         bool `hcl:"update,optional"`
-		PreTaskRestart bool `hcl:"pretaskrestart,optional"`
-		Shutdown       bool `hcl:"shutdown,optional"`
+		Prerun         bool `dumb-hcl:"prerun,optional"`
+		PreKill        bool `dumb-hcl:"prekill,optional"`
+		Postrun        bool `dumb-hcl:"postrun,optional"`
+		Destroy        bool `dumb-hcl:"destroy,optional"`
+		Update         bool `dumb-hcl:"update,optional"`
+		PreTaskRestart bool `dumb-hcl:"pretaskrestart,optional"`
+		Shutdown       bool `dumb-hcl:"shutdown,optional"`
 	}
 }
 
@@ -51,7 +51,7 @@ func (h *FailHook) LoadConfig(path string) *FailHook {
 		h.logger.Error("couldn't load config", "error", err)
 		return h
 	}
-	if err := hclsimple.DecodeFile(path, nil, &h.Fail); err != nil {
+	if err := dumb-hclsimple.DecodeFile(path, nil, &h.Fail); err != nil {
 		h.logger.Error("error parsing config", "path", path, "error", err)
 	}
 	return h

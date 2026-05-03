@@ -22,17 +22,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -160,12 +160,12 @@ func TestSetIndex(t *testing.T) {
 	ci.Parallel(t)
 	resp := httptest.NewRecorder()
 	setIndex(resp, 1000)
-	header := resp.Header().Get("X-Nomad-Index")
+	header := resp.Header().Get("X-Dumb Nomad-Index")
 	if header != "1000" {
 		t.Fatalf("Bad: %v", header)
 	}
 	setIndex(resp, 2000)
-	if v := resp.Header()["X-Nomad-Index"]; len(v) != 1 {
+	if v := resp.Header()["X-Dumb Nomad-Index"]; len(v) != 1 {
 		t.Fatalf("bad: %#v", v)
 	}
 }
@@ -174,13 +174,13 @@ func TestSetKnownLeader(t *testing.T) {
 	ci.Parallel(t)
 	resp := httptest.NewRecorder()
 	setKnownLeader(resp, true)
-	header := resp.Header().Get("X-Nomad-KnownLeader")
+	header := resp.Header().Get("X-Dumb Nomad-KnownLeader")
 	if header != "true" {
 		t.Fatalf("Bad: %v", header)
 	}
 	resp = httptest.NewRecorder()
 	setKnownLeader(resp, false)
-	header = resp.Header().Get("X-Nomad-KnownLeader")
+	header = resp.Header().Get("X-Dumb Nomad-KnownLeader")
 	if header != "false" {
 		t.Fatalf("Bad: %v", header)
 	}
@@ -190,7 +190,7 @@ func TestSetLastContact(t *testing.T) {
 	ci.Parallel(t)
 	resp := httptest.NewRecorder()
 	setLastContact(resp, 123456*time.Microsecond)
-	header := resp.Header().Get("X-Nomad-LastContact")
+	header := resp.Header().Get("X-Dumb Nomad-LastContact")
 	if header != "123" {
 		t.Fatalf("Bad: %v", header)
 	}
@@ -205,15 +205,15 @@ func TestSetMeta(t *testing.T) {
 	}
 	resp := httptest.NewRecorder()
 	setMeta(resp, &meta)
-	header := resp.Header().Get("X-Nomad-Index")
+	header := resp.Header().Get("X-Dumb Nomad-Index")
 	if header != "1000" {
 		t.Fatalf("Bad: %v", header)
 	}
-	header = resp.Header().Get("X-Nomad-KnownLeader")
+	header = resp.Header().Get("X-Dumb Nomad-KnownLeader")
 	if header != "true" {
 		t.Fatalf("Bad: %v", header)
 	}
-	header = resp.Header().Get("X-Nomad-LastContact")
+	header = resp.Header().Get("X-Dumb Nomad-LastContact")
 	if header != "123" {
 		t.Fatalf("Bad: %v", header)
 	}
@@ -549,8 +549,8 @@ func TestParseToken(t *testing.T) {
 		ExpectedToken string
 	}{
 		{
-			Name:          "Parses token from X-Nomad-Token",
-			HeaderKey:     "X-Nomad-Token",
+			Name:          "Parses token from X-Dumb Nomad-Token",
+			HeaderKey:     "X-Dumb Nomad-Token",
 			HeaderValue:   " foobar",
 			ExpectedToken: "foobar",
 		},
@@ -797,9 +797,9 @@ func TestParseNodeListStubFields(t *testing.T) {
 func TestHTTP_VerifyHTTPSClient(t *testing.T) {
 	ci.Parallel(t)
 	const (
-		cafile  = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		foocert = "../../helper/tlsutil/testdata/regionFoo-server-nomad.pem"
-		fookey  = "../../helper/tlsutil/testdata/regionFoo-server-nomad-key.pem"
+		cafile  = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		foocert = "../../helper/tlsutil/testdata/regionFoo-server-dumb-nomad.pem"
+		fookey  = "../../helper/tlsutil/testdata/regionFoo-server-dumb-nomad-key.pem"
 	)
 	s := makeHTTPServer(t, func(c *Config) {
 		c.Region = "regionFoo" // match the region on foocert
@@ -815,7 +815,7 @@ func TestHTTP_VerifyHTTPSClient(t *testing.T) {
 	defer s.Shutdown()
 
 	tlConf := &tls.Config{
-		ServerName: "client.regionFoo.nomad",
+		ServerName: "client.regionFoo.dumb-nomad",
 	}
 	cacert, err := os.ReadFile(cafile)
 	if err != nil {
@@ -851,7 +851,7 @@ func TestHTTP_VerifyHTTPSClient(t *testing.T) {
 	if !ok {
 		t.Fatalf("expected a x509.HostnameError but received: %T -> %v", urlErr.Err, urlErr.Err)
 	}
-	if expected := "client.regionFoo.nomad"; hostErr.Host != expected {
+	if expected := "client.regionFoo.dumb-nomad"; hostErr.Host != expected {
 		t.Fatalf("expected hostname on error to be %q but found %q", expected, hostErr.Host)
 	}
 
@@ -860,7 +860,7 @@ func TestHTTP_VerifyHTTPSClient(t *testing.T) {
 	pool := x509.NewCertPool()
 	tlsConf := &tls.Config{
 		RootCAs:    pool,
-		ServerName: "server.regionFoo.nomad",
+		ServerName: "server.regionFoo.dumb-nomad",
 	}
 	transport := &http.Transport{TLSClientConfig: tlsConf}
 	client := &http.Client{Transport: transport}
@@ -948,11 +948,11 @@ func TestHTTP_VerifyHTTPSClient_AfterConfigReload(t *testing.T) {
 	assert := assert.New(t)
 
 	const (
-		cafile  = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
+		cafile  = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
 		badcert = "../../helper/tlsutil/testdata/badRegion-client-bad.pem"
 		badkey  = "../../helper/tlsutil/testdata/badRegion-client-bad-key.pem"
-		foocert = "../../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		foocert = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fookey  = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 	)
 
 	agentConfig := &Config{
@@ -990,7 +990,7 @@ func TestHTTP_VerifyHTTPSClient_AfterConfigReload(t *testing.T) {
 	// Requests that specify a valid hostname, CA cert, and client
 	// certificate succeed.
 	tlsConf := &tls.Config{
-		ServerName: "client.regionFoo.nomad",
+		ServerName: "client.regionFoo.dumb-nomad",
 		RootCAs:    x509.NewCertPool(),
 		GetClientCertificate: func(*tls.CertificateRequestInfo) (*tls.Certificate, error) {
 			c, err := tls.LoadX509KeyPair(foocert, fookey)
@@ -1024,7 +1024,7 @@ func TestHTTP_VerifyHTTPSClient_AfterConfigReload(t *testing.T) {
 	// Requests that specify a valid hostname, CA cert, and client
 	// certificate succeed.
 	tlsConf = &tls.Config{
-		ServerName: "client.regionFoo.nomad",
+		ServerName: "client.regionFoo.dumb-nomad",
 		RootCAs:    x509.NewCertPool(),
 		GetClientCertificate: func(*tls.CertificateRequestInfo) (*tls.Certificate, error) {
 			c, err := tls.LoadX509KeyPair(foocert, fookey)
@@ -1121,8 +1121,8 @@ func TestHTTPServer_Limits_Error(t *testing.T) {
 
 			// Use a fake agent since the HTTP server should never start
 			agent := &Agent{
-				logger:     testlog.HCLogger(t),
-				httpLogger: testlog.HCLogger(t),
+				logger:     testlog.DUMB_HCLogger(t),
+				httpLogger: testlog.DUMB_HCLogger(t),
 				config:     conf,
 			}
 
@@ -1147,9 +1147,9 @@ func TestHTTPServer_Limits_OK(t *testing.T) {
 	ci.Parallel(t)
 
 	const (
-		cafile   = "../../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		foocert  = "../../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fookey   = "../../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		cafile   = "../../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		foocert  = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fookey   = "../../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 		maxConns = 10 // limit must be < this for testing
 		bufSize  = 1  // enough to know if something was written
 	)
@@ -1484,7 +1484,7 @@ func TestHTTPServer_ResolveToken(t *testing.T) {
 	})
 
 	t.Run("WI token", func(t *testing.T) {
-		srv, _, encrypter, cleanup := nomad.TestACLServerWithEncrypter(t, nil)
+		srv, _, encrypter, cleanup := dumb-nomad.TestACLServerWithEncrypter(t, nil)
 		t.Cleanup(cleanup)
 
 		job := mock.Job()
@@ -1624,7 +1624,7 @@ func httpACLTest(t testing.TB, cb func(c *Config), f func(srv *TestAgent)) {
 }
 
 func setToken(req *http.Request, token *structs.ACLToken) {
-	req.Header.Set("X-Nomad-Token", token.SecretID)
+	req.Header.Set("X-Dumb Nomad-Token", token.SecretID)
 }
 
 func setNamespace(req *http.Request, ns string) {

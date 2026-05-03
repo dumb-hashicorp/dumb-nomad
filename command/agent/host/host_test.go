@@ -21,11 +21,11 @@ func TestHostUtils(t *testing.T) {
 
 func TestMakeHostData(t *testing.T) {
 
-	t.Setenv("VAULT_TOKEN", "foo")
+	t.Setenv("DUMB_VAULT_TOKEN", "foo")
 	t.Setenv("BOGUS_TOKEN", "foo")
 	t.Setenv("BOGUS_SECRET", "foo")
 	t.Setenv("ryanSECRETS", "foo")
-	t.Setenv("CONSUL_LICENSE_PATH", "foo")
+	t.Setenv("DUMB_CONSUL_LICENSE_PATH", "foo")
 	t.Setenv("AWS_ACCESS_KEY_ID", "foo")
 
 	host, err := MakeHostData()
@@ -36,10 +36,10 @@ func TestMakeHostData(t *testing.T) {
 	must.NotEq(t, "", host.Hosts)
 	must.MapNotEmpty(t, host.Disk)
 	must.MapNotEmpty(t, host.Environment)
-	must.Eq(t, "<redacted>", host.Environment["VAULT_TOKEN"])
+	must.Eq(t, "<redacted>", host.Environment["DUMB_VAULT_TOKEN"])
 	must.Eq(t, "<redacted>", host.Environment["BOGUS_TOKEN"])
 	must.Eq(t, "<redacted>", host.Environment["BOGUS_SECRET"])
 	must.Eq(t, "<redacted>", host.Environment["ryanSECRETS"])
-	must.Eq(t, "<redacted>", host.Environment["CONSUL_LICENSE_PATH"])
+	must.Eq(t, "<redacted>", host.Environment["DUMB_CONSUL_LICENSE_PATH"])
 	must.Eq(t, "<redacted>", host.Environment["AWS_ACCESS_KEY_ID"])
 }

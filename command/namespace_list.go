@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -18,7 +18,7 @@ type NamespaceListCommand struct {
 
 func (c *NamespaceListCommand) Help() string {
 	helpText := `
-Usage: nomad namespace list [options]
+Usage: dumb-nomad namespace list [options]
 
   List is used to list available namespaces.
 

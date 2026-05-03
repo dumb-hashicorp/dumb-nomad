@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
@@ -29,7 +29,7 @@ func TestCommand_LicenseGet_OSSErr(t *testing.T) {
 		must.Zero(t, code)
 	} else {
 		must.One(t, code)
-		must.StrContains(t, ui.ErrorWriter.String(), "Nomad Enterprise only endpoint")
+		must.StrContains(t, ui.ErrorWriter.String(), "Dumb Nomad Enterprise only endpoint")
 	}
 }
 
@@ -47,7 +47,7 @@ func TestOutputLicenseReply(t *testing.T) {
 			ExpirationTime:  now.Add(1 * time.Hour),
 			TerminationTime: now,
 			NonProduction:   true,
-			Product:         "nomad",
+			Product:         "dumb-nomad",
 			Flags: map[string]interface{}{
 				"": nil,
 			},

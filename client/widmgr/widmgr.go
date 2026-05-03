@@ -10,11 +10,11 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	cstate "github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	cstate "github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // IdentityManager defines a manager responsible for signing and renewing
@@ -51,10 +51,10 @@ type WIDMgr struct {
 	stopCtx context.Context
 	stop    context.CancelFunc
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
-func NewWIDMgr(signer IdentitySigner, a *structs.Allocation, db cstate.StateDB, logger hclog.Logger, allocEnv *taskenv.TaskEnv) *WIDMgr {
+func NewWIDMgr(signer IdentitySigner, a *structs.Allocation, db cstate.StateDB, logger dumb-hclog.Logger, allocEnv *taskenv.TaskEnv) *WIDMgr {
 	widspecs := map[structs.WIHandle]*structs.WorkloadIdentity{}
 	tg := a.Job.LookupTaskGroup(a.TaskGroup)
 

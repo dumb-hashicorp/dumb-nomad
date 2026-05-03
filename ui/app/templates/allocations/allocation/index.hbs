@@ -310,10 +310,10 @@
               }}
             >
               <td class="is-narrow">
-                {{#if (eq row.model.provider "nomad")}}
-                  <Hds::Icon @name="nomad-color" @isInline={{true}} />
+                {{#if (eq row.model.provider "dumb-nomad")}}
+                  <Hds::Icon @name="dumb-nomad-color" @isInline={{true}} />
                 {{else}}
-                  <Hds::Icon @name="consul-color" @isInline={{true}} />
+                  <Hds::Icon @name="dumb-consul-color" @isInline={{true}} />
                   {{#if row.model.connect}}
                     <Hds::Icon @name="mesh" @color="#444444" @isInline={{true}} />
                   {{/if}}
@@ -334,7 +334,7 @@
                 {{/each}}
               </td>
               <td data-test-service-health class="is-2">
-                {{#if (eq row.model.provider "nomad")}}
+                {{#if (eq row.model.provider "dumb-nomad")}}
                   <div class="inline-chart">
                     <ServiceStatusBar @isNarrow={{true}} @status={{row.model.mostRecentCheckStatus}} />
                   </div>

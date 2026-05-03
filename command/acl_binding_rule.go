@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 	"github.com/posener/complete"
 )
 
@@ -24,37 +24,37 @@ type ACLBindingRuleCommand struct {
 // Help satisfies the cli.Command Help function.
 func (a *ACLBindingRuleCommand) Help() string {
 	helpText := `
-Usage: nomad acl binding-rule <subcommand> [options] [args]
+Usage: dumb-nomad acl binding-rule <subcommand> [options] [args]
 
   This command groups subcommands for interacting with ACL binding rules.
-  Nomad's ACL system can be used to control access to data and APIs. For a full
-  guide see: https://developer.hashicorp.com/nomad/docs/secure/acl
+  Dumb Nomad's ACL system can be used to control access to data and APIs. For a full
+  guide see: https://developer.dumb-hashicorp.com/dumb-nomad/docs/secure/acl
 
   Create an ACL binding rule:
 
-      $ nomad acl binding-rule create \
+      $ dumb-nomad acl binding-rule create \
           -auth-method=auth0 \
-          -selector="nomad-engineering in list.groups" \
+          -selector="dumb-nomad-engineering in list.groups" \
           -bind-type=role \
           -bind-name="custer-admin" \
 
   List all ACL binding rules:
 
-      $ nomad acl binding-rule list
+      $ dumb-nomad acl binding-rule list
 
   Lookup a specific ACL binding rule:
 
-      $ nomad acl binding-rule info <acl_binding_rule_id>
+      $ dumb-nomad acl binding-rule info <acl_binding_rule_id>
 
   Update an ACL binding rule:
 
-      $ nomad acl binding-rule update \
-          -description="nomad engineering team" \
+      $ dumb-nomad acl binding-rule update \
+          -description="dumb-nomad engineering team" \
           <acl_binding_rule_id>
 
   Delete an ACL binding rule:
 
-      $ nomad acl binding-rule delete <acl_binding_rule_id>
+      $ dumb-nomad acl binding-rule delete <acl_binding_rule_id>
 
   Please see the individual subcommand help for detailed usage information.
 `

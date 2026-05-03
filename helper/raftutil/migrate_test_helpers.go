@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/raft"
-	raftboltdb "github.com/hashicorp/raft-boltdb/v2"
+	"github.com/dumb-hashicorp/raft"
+	raftboltdb "github.com/dumb-hashicorp/raft-boltdb/v2"
 	"github.com/shoenig/test/must"
 )
 

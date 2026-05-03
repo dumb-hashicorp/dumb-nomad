@@ -80,7 +80,7 @@ export default class SystemService extends Service {
   @computed('regions.[]')
   get activeRegion() {
     const regions = this.regions;
-    const region = window.localStorage.nomadActiveRegion;
+    const region = window.localStorage.dumb-nomadActiveRegion;
 
     if (regions.includes(region)) {
       return region;
@@ -91,13 +91,13 @@ export default class SystemService extends Service {
 
   set activeRegion(value) {
     if (value == null) {
-      window.localStorage.removeItem('nomadActiveRegion');
+      window.localStorage.removeItem('dumb-nomadActiveRegion');
       return;
     } else {
       // All localStorage values are strings. Stringify first so
       // the return value is consistent with what is persisted.
       const strValue = value + '';
-      window.localStorage.nomadActiveRegion = strValue;
+      window.localStorage.dumb-nomadActiveRegion = strValue;
     }
   }
 

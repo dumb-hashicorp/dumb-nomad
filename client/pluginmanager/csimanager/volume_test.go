@@ -12,14 +12,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/mount"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/csi"
-	csifake "github.com/hashicorp/nomad/plugins/csi/fake"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/mount"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi"
+	csifake "github.com/dumb-hashicorp/dumb-nomad/plugins/csi/fake"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -96,7 +96,7 @@ func TestVolumeManager_ensureStagingDir(t *testing.T) {
 
 			csiFake := &csifake.Client{}
 			eventer := func(e *structs.NodeEvent) {}
-			manager := newVolumeManager(testlog.HCLogger(t), eventer, csiFake,
+			manager := newVolumeManager(testlog.DUMB_HCLogger(t), eventer, csiFake,
 				tmpPath, tmpPath, true, "i-example")
 			expectedStagingPath := manager.stagingDirForVolume(tmpPath,
 				tc.Volume.Namespace, tc.Volume.ID, tc.UsageOptions)
@@ -199,7 +199,7 @@ func TestVolumeManager_stageVolume(t *testing.T) {
 			csiFake.NextNodeStageVolumeErr = tc.PluginErr
 
 			eventer := func(e *structs.NodeEvent) {}
-			manager := newVolumeManager(testlog.HCLogger(t), eventer, csiFake,
+			manager := newVolumeManager(testlog.DUMB_HCLogger(t), eventer, csiFake,
 				tmpPath, tmpPath, true, "i-example")
 			ctx := context.Background()
 
@@ -258,7 +258,7 @@ func TestVolumeManager_unstageVolume(t *testing.T) {
 			csiFake.NextNodeUnstageVolumeErr = tc.PluginErr
 
 			eventer := func(e *structs.NodeEvent) {}
-			manager := newVolumeManager(testlog.HCLogger(t), eventer, csiFake,
+			manager := newVolumeManager(testlog.DUMB_HCLogger(t), eventer, csiFake,
 				tmpPath, tmpPath, true, "i-example")
 			ctx := context.Background()
 
@@ -383,7 +383,7 @@ func TestVolumeManager_publishVolume(t *testing.T) {
 			csiFake.NextNodePublishVolumeErr = tc.PluginErr
 
 			eventer := func(e *structs.NodeEvent) {}
-			manager := newVolumeManager(testlog.HCLogger(t), eventer, csiFake,
+			manager := newVolumeManager(testlog.DUMB_HCLogger(t), eventer, csiFake,
 				tmpPath, tmpPath, true, "i-example")
 			ctx := context.Background()
 
@@ -451,7 +451,7 @@ func TestVolumeManager_unpublishVolume(t *testing.T) {
 			csiFake.NextNodeUnpublishVolumeErr = tc.PluginErr
 
 			eventer := func(e *structs.NodeEvent) {}
-			manager := newVolumeManager(testlog.HCLogger(t), eventer, csiFake,
+			manager := newVolumeManager(testlog.DUMB_HCLogger(t), eventer, csiFake,
 				tmpPath, tmpPath, true, "i-example")
 			ctx := context.Background()
 
@@ -484,7 +484,7 @@ func TestVolumeManager_MountVolumeEvents(t *testing.T) {
 		events = append(events, e)
 	}
 
-	manager := newVolumeManager(testlog.HCLogger(t), eventer, csiFake,
+	manager := newVolumeManager(testlog.DUMB_HCLogger(t), eventer, csiFake,
 		tmpPath, tmpPath, true, "i-example")
 	ctx := context.Background()
 	vol := &structs.CSIVolume{
@@ -539,8 +539,8 @@ func TestVolumeManager_InterleavedStaging(t *testing.T) {
 	tmpPath := t.TempDir()
 	csiFake := &csifake.Client{}
 
-	logger := testlog.HCLogger(t)
-	ctx := hclog.WithContext(context.Background(), logger)
+	logger := testlog.DUMB_HCLogger(t)
+	ctx := dumb-hclog.WithContext(context.Background(), logger)
 
 	manager := newVolumeManager(logger,
 		func(e *structs.NodeEvent) {}, csiFake,
@@ -605,9 +605,9 @@ func TestVolumeManager_Serialization(t *testing.T) {
 	tmpPath := t.TempDir()
 	csiFake := &csifake.Client{}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
-	ctx := hclog.WithContext(t.Context(), logger)
+	ctx := dumb-hclog.WithContext(t.Context(), logger)
 
 	manager := newVolumeManager(logger,
 		func(e *structs.NodeEvent) {}, csiFake,

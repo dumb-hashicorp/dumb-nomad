@@ -6,7 +6,7 @@
 import { getOwner } from '@ember/application';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import notifyForbidden from 'nomad-ui/utils/notify-forbidden';
+import notifyForbidden from 'dumb-nomad-ui/utils/notify-forbidden';
 
 export default class JobsRunTemplatesNewRoute extends Route {
   @service can;
@@ -30,7 +30,7 @@ export default class JobsRunTemplatesNewRoute extends Route {
       // available namespaces to prevent redirecting to a non-existent namespace.
       await Promise.all([
         this.store.query('variable', {
-          prefix: 'nomad/job-templates',
+          prefix: 'dumb-nomad/job-templates',
           namespace: '*',
         }),
         this.store.findAll('namespace'),

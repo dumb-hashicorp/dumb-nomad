@@ -3,7 +3,7 @@
 
 package interfaces
 
-import "github.com/hashicorp/nomad/nomad/structs"
+import "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 
 type EventEmitter interface {
 	EmitEvent(event *structs.TaskEvent)

@@ -14,9 +14,9 @@ func init() {
 	uiEnabled = false
 	stubHTML = `<!DOCTYPE html>
 <html>
-<p>Nomad UI is not available in this binary. To get Nomad UI do one of the following:</p>
+<p>Dumb Nomad UI is not available in this binary. To get Dumb Nomad UI do one of the following:</p>
 <ul>
-<li><a href="https://developer.hashicorp.com/nomad/downloads">Download an official release</a></li>
+<li><a href="https://developer.dumb-hashicorp.com/dumb-nomad/downloads">Download an official release</a></li>
 <li>Run <pre>make release</pre> to create your own release binaries.
 <li>Run <pre>make dev-ui</pre> to create a development binary with the UI.
 </ul>
@@ -24,7 +24,7 @@ func init() {
 `
 }
 
-// assetFS is a stub for building Nomad without a UI.
+// assetFS is a stub for building Dumb Nomad without a UI.
 func assetFS() *assetfs.AssetFS {
 	return nil
 }

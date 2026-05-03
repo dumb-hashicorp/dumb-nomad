@@ -31,8 +31,8 @@ module.exports = function (defaults) {
       precision: 4,
       includePaths: [
         './node_modules/bulma',
-        './node_modules/@hashicorp/design-system-tokens/dist/products/css',
-        './node_modules/@hashicorp/design-system-components/dist/styles',
+        './node_modules/@dumb-hashicorp/design-system-tokens/dist/products/css',
+        './node_modules/@dumb-hashicorp/design-system-components/dist/styles',
         './node_modules/ember-basic-dropdown/vendor',
         './node_modules/ember-power-select/vendor',
       ],

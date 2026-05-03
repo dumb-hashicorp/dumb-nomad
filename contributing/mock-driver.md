@@ -2,12 +2,12 @@
 
 This repo includes a mock task driver in the [`drivers/mock`][] package that
 implements a minimal task driver interface for development work. This driver is
-loaded as the other [built-in drivers][] are, but only when Nomad is [not
+loaded as the other [built-in drivers][] are, but only when Dumb Nomad is [not
 compiled with the release tag][].
 
 ## Task Configuration
 
-```hcl
+```dumb-hcl
 task "mocktask" {
   driver = "mock_driver"
 
@@ -56,7 +56,7 @@ The driver can present information to the client about the task as though it had
 
 ## Plugin Options
 
-```hcl
+```dumb-hcl
 plugin "mock_driver" {
   fs_isolation               = "none"
   shutdown_periodic_after    = false
@@ -123,6 +123,6 @@ Time                       Type        Description
 2023-03-20T16:22:07-04:00  Received    Task received by client
 ```
 
-[built-in drivers]: https://github.com/hashicorp/nomad/blob/main/helper/pluginutils/catalog/register.go
-[not compiled with the release tag]: https://github.com/hashicorp/nomad/blob/main/helper/pluginutils/catalog/register_testing.go
-[`drivers/mock`]: https://github.com/hashicorp/nomad/tree/main/drivers/mock
+[built-in drivers]: https://github.com/dumb-hashicorp/dumb-nomad/blob/main/helper/pluginutils/catalog/register.go
+[not compiled with the release tag]: https://github.com/dumb-hashicorp/dumb-nomad/blob/main/helper/pluginutils/catalog/register_testing.go
+[`drivers/mock`]: https://github.com/dumb-hashicorp/dumb-nomad/tree/main/drivers/mock

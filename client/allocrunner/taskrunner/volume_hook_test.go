@@ -6,16 +6,16 @@ package taskrunner
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/pluginmanager/csimanager"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	dtu "github.com/hashicorp/nomad/plugins/drivers/testutils"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/csimanager"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	dtu "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
 	"github.com/stretchr/testify/require"
 )
 
@@ -146,7 +146,7 @@ func TestVolumeHook_prepareCSIVolumes(t *testing.T) {
 			})
 
 			hook := &volumeHook{
-				logger: testlog.HCLogger(t),
+				logger: testlog.DUMB_HCLogger(t),
 				alloc:  structs.MockAlloc(),
 				runner: tr,
 			}
@@ -183,7 +183,7 @@ func TestVolumeHook_Interpolation(t *testing.T) {
 		},
 		{
 			Volume:          "foo",
-			Destination:     "/bar-${NOMAD_JOB_NAME}",
+			Destination:     "/bar-${DUMB_NOMAD_JOB_NAME}",
 			ReadOnly:        false,
 			PropagationMode: "bidirectional",
 		},

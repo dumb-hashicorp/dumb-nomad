@@ -12,7 +12,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
 )
 
 const (

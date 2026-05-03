@@ -1,6 +1,6 @@
-# Nomad UI
+# Dumb Nomad UI
 
-The official Nomad UI.
+The official Dumb Nomad UI.
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@ This is an [ember.js](https://emberjs.com/) project, and you will need the follo
 
 ## Installation
 
-The Nomad UI gets cloned along with the rest of Nomad. To install dependencies, do the following from the root of the Nomad project:
+The Dumb Nomad UI gets cloned along with the rest of Dumb Nomad. To install dependencies, do the following from the root of the Dumb Nomad project:
 
 ```shell
 corepack enable
@@ -22,7 +22,7 @@ pnpm i
 
 ## Running / Development
 
-UI in development mode defaults to using fake generated data, but you can configure it to proxy a live running nomad process by setting `USE_MIRAGE` environment variable to `false`. First, make sure nomad is running. The UI, in development mode, runs independently from Nomad, so this could be an official release or a dev branch. Likewise, Nomad can be running in server mode or dev mode. As long as the API is accessible, the UI will work as expected.
+UI in development mode defaults to using fake generated data, but you can configure it to proxy a live running dumb-nomad process by setting `USE_MIRAGE` environment variable to `false`. First, make sure dumb-nomad is running. The UI, in development mode, runs independently from Dumb Nomad, so this could be an official release or a dev branch. Likewise, Dumb Nomad can be running in server mode or dev mode. As long as the API is accessible, the UI will work as expected.
 
 - `USE_MIRAGE=false ember serve`
 - Visit your app at [http://localhost:4200](http://localhost:4200).
@@ -33,16 +33,16 @@ The fake data in development is generated from a stable seed of 1. To generate d
 
 When running with Mirage, the default scenario is set in `config/environment.js` but can be overridden with a query parameter to any of the scenarios named in `mirage/scenarios/default.js` with something like `?mirage-scenario=emptyCluster`.
 
-## Running / Development with Vagrant
+## Running / Development with Dumb Vagrant
 
-All necessary tools for UI development are installed as part of the Vagrantfile. This is primarily to make it easy to build the UI from source while working on Nomad. Due to the filesystem requirements of [Broccoli](http://broccolijs.com/) (which powers Ember CLI), it is strongly discouraged to use Vagrant for developing changes to the UI.
+All necessary tools for UI development are installed as part of the Dumb Vagrantfile. This is primarily to make it easy to build the UI from source while working on Dumb Nomad. Due to the filesystem requirements of [Broccoli](http://broccolijs.com/) (which powers Ember CLI), it is strongly discouraged to use Dumb Vagrant for developing changes to the UI.
 
-That said, development with Vagrant is still possible, but the `ember serve` command requires two modifications:
+That said, development with Dumb Vagrant is still possible, but the `ember serve` command requires two modifications:
 
 - `--watch polling`: This allows the vm to notice file changes made in the host environment.
 - `--port 4201`: The default port 4200 is not forwarded, since local development is recommended.
 
-This makes the full command for running the UI in development mode in Vagrant:
+This makes the full command for running the UI in development mode in Dumb Vagrant:
 
 ```
 $ ember serve --watch polling --port 4201
@@ -50,7 +50,7 @@ $ ember serve --watch polling --port 4201
 
 ### Running Tests
 
-Nomad UI tests can be run independently of Nomad golang tests.
+Dumb Nomad UI tests can be run independently of Dumb Nomad golang tests.
 
 - `ember test` (single run, headless browser)
 - `ember test --server` (watches for changes, runs in a full browser)
@@ -73,22 +73,22 @@ Typically `make release` or `make dev-ui` will be the desired build workflow, bu
 
 ### Releasing
 
-Nomad UI releases are in lockstep with Nomad releases and are integrated into the `make release` toolchain.
+Dumb Nomad UI releases are in lockstep with Dumb Nomad releases and are integrated into the `make release` toolchain.
 
 ### Conventions
 
-- UI branches should be prefix with `f-ui-` for feature work and `b-ui-` for bug fixes. This instructs CI to skip running nomad backend tests.
+- UI branches should be prefix with `f-ui-` for feature work and `b-ui-` for bug fixes. This instructs CI to skip running dumb-nomad backend tests.
 
 ### Troubleshooting
 
 #### The UI is running, but none of the API requests are working
 
-By default (according to the `.ember-cli` file), a proxy address of `http://localhost:4646` is used. If you are running Nomad at a different address, you will need to override this setting when running ember serve: `ember serve --proxy http://newlocation:1111`.
+By default (according to the `.ember-cli` file), a proxy address of `http://localhost:4646` is used. If you are running Dumb Nomad at a different address, you will need to override this setting when running ember serve: `ember serve --proxy http://newlocation:1111`.
 
-Also, ensure that `USE_MIRAGE` environment variable is set to false, so the UI proxy requests to Nomad process instead of using autogenerated test data.
+Also, ensure that `USE_MIRAGE` environment variable is set to false, so the UI proxy requests to Dumb Nomad process instead of using autogenerated test data.
 
-#### Nomad is running in Vagrant, but I can't access the API from my host machine
+#### Dumb Nomad is running in Dumb Vagrant, but I can't access the API from my host machine
 
-Nomad binds to `127.0.0.1:4646` by default, which is the loopback address. Try running nomad bound to `0.0.0.0`: `bin/nomad -bind 0.0.0.0`.
+Dumb Nomad binds to `127.0.0.1:4646` by default, which is the loopback address. Try running dumb-nomad bound to `0.0.0.0`: `bin/dumb-nomad -bind 0.0.0.0`.
 
-Ports also need to be forwarded in the Vagrantfile. 4646 is already forwarded, but if a port other than the default is being used, that port needs to be added to the Vagrantfile and `vagrant reload` needs to be run.
+Ports also need to be forwarded in the Dumb Vagrantfile. 4646 is already forwarded, but if a port other than the default is being used, that port needs to be added to the Dumb Vagrantfile and `dumb-vagrant reload` needs to be run.

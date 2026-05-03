@@ -3,15 +3,15 @@
 
 package structs
 
-//go:generate codecgen -c github.com/hashicorp/go-msgpack/v2/codec -st codec -d 102 -t codegen_generated -o structs.generated.go structs.go
+//go:generate codecgen -c github.com/dumb-hashicorp/go-msgpack/v2/codec -st codec -d 102 -t codegen_generated -o structs.generated.go structs.go
 
 import (
 	"errors"
 	"time"
 
-	"github.com/hashicorp/nomad/client/hoststats"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/device"
+	"github.com/dumb-hashicorp/dumb-nomad/client/hoststats"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
 )
 
 // RpcError is used for serializing errors with a potential error code
@@ -46,7 +46,7 @@ type MonitorRequest struct {
 	LogJSON bool
 
 	// LogIncludeLocation dictates whether the logger includes file and line
-	// information on each log line. This is useful for Nomad development and
+	// information on each log line. This is useful for Dumb Nomad development and
 	// debugging.
 	LogIncludeLocation bool
 
@@ -80,12 +80,12 @@ type MonitorExportRequest struct {
 	// LogsSince sets the lookback time for monitorExport logs in hours
 	LogsSince string
 
-	// OnDisk indicates that nomad should export logs written to the configured nomad log path
+	// OnDisk indicates that dumb-nomad should export logs written to the configured dumb-nomad log path
 	OnDisk bool
 
-	// NomadLogPath is set to the nomad log path by the HTTP agent if OnDisk
+	// Dumb NomadLogPath is set to the dumb-nomad log path by the HTTP agent if OnDisk
 	// is true
-	NomadLogPath string
+	Dumb NomadLogPath string
 
 	// PlainText disables base64 encoding.
 	PlainText bool
@@ -227,14 +227,14 @@ type AllocExecRequest struct {
 	structs.QueryOptions
 }
 
-// AllocChecksRequest is used to request the latest nomad service discovery
+// AllocChecksRequest is used to request the latest dumb-nomad service discovery
 // check status information of a given allocation.
 type AllocChecksRequest struct {
 	structs.QueryOptions
 	AllocID string
 }
 
-// AllocChecksResponse is used to return the latest nomad service discovery
+// AllocChecksResponse is used to return the latest dumb-nomad service discovery
 // check status information of a given allocation.
 type AllocChecksResponse struct {
 	structs.QueryMeta
@@ -410,7 +410,7 @@ type NodeRegistration struct {
 	HasRegistered bool
 }
 
-type ConsulACLToken struct {
+type Dumb ConsulACLToken struct {
 	Cluster  string
 	TokenID  string
 	ACLToken string

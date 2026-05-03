@@ -8,14 +8,14 @@ import (
 	"testing"
 
 	"github.com/go-jose/go-jose/v3"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
 	"github.com/shoenig/test/must"
 )
 
 func TestKeyringRotation(t *testing.T) {
 
-	nc := e2eutil.NomadClient(t)
+	nc := e2eutil.Dumb NomadClient(t)
 
 	currentKeys, activeKeyID := getKeyMeta(t, nc)
 	must.NotEq(t, "", activeKeyID, must.Sprint("expected an active key"))
@@ -27,7 +27,7 @@ func TestKeyringRotation(t *testing.T) {
 		must.MapContainsKey(t, currentKeys, key.KeyID)
 	}
 
-	out, err := e2eutil.Commandf("nomad operator root keyring rotate -verbose -prepublish 1h")
+	out, err := e2eutil.Commandf("dumb-nomad operator root keyring rotate -verbose -prepublish 1h")
 	must.NoError(t, err)
 	cols, err := e2eutil.ParseColumns(out)
 	must.NoError(t, err)
@@ -69,7 +69,7 @@ func getKeyMeta(t *testing.T, nc *api.Client) (map[string]*api.RootKeyMeta, stri
 
 func getJWKS(t *testing.T) *jose.JSONWebKeySet {
 	t.Helper()
-	out, err := e2eutil.Commandf("nomad operator api /.well-known/jwks.json")
+	out, err := e2eutil.Commandf("dumb-nomad operator api /.well-known/jwks.json")
 	must.NoError(t, err)
 
 	keyset := &jose.JSONWebKeySet{}

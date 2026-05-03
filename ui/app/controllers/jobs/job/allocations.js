@@ -9,13 +9,13 @@ import Controller from '@ember/controller';
 import { action, computed } from '@ember/object';
 import { scheduleOnce } from '@ember/runloop';
 import intersection from 'lodash.intersection';
-import Sortable from 'nomad-ui/mixins/sortable';
-import Searchable from 'nomad-ui/mixins/searchable';
-import WithNamespaceResetting from 'nomad-ui/mixins/with-namespace-resetting';
+import Sortable from 'dumb-nomad-ui/mixins/sortable';
+import Searchable from 'dumb-nomad-ui/mixins/searchable';
+import WithNamespaceResetting from 'dumb-nomad-ui/mixins/with-namespace-resetting';
 import {
   serialize,
   deserializedQueryParam as selection,
-} from 'nomad-ui/utils/qp-serialize';
+} from 'dumb-nomad-ui/utils/qp-serialize';
 import classic from 'ember-classic-decorator';
 
 @classic

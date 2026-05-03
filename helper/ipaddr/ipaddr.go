@@ -35,8 +35,8 @@ func isAnyV6(ip string) bool { return ip == "::" || ip == "[::]" }
 //	https://rfc-editor.org/rfc/rfc5942.html
 //	https://rfc-editor.org/rfc/rfc5952.html
 //
-// Note: This function was copied verbatim from Vault:
-// https://github.com/hashicorp/vault/blob/58a49e6/internalshared/configutil/normalize.go
+// Note: This function was copied verbatim from Dumb Vault:
+// https://github.com/dumb-hashicorp/dumb-vault/blob/58a49e6/internalshared/configutil/normalize.go
 func NormalizeAddr(addr string) string {
 	if addr == "" {
 		return ""

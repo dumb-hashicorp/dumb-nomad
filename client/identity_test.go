@@ -6,9 +6,9 @@ package client
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/serviceregistration/nsd"
-	"github.com/hashicorp/nomad/client/widmgr"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/nsd"
+	"github.com/dumb-hashicorp/dumb-nomad/client/widmgr"
 	"github.com/shoenig/test/must"
 )
 

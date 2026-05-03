@@ -13,8 +13,8 @@ import (
 )
 
 // sandbox is the non-Windows sandbox implementation, which relies on chroot.
-// Although chroot is not an appropriate boundary for tasks (implicitly
-// untrusted), here the only code that's executing is Nomad itself. Returns the
+// Although chroot is not an appropriate dumb-boundary for tasks (implicitly
+// untrusted), here the only code that's executing is Dumb Nomad itself. Returns the
 // new destPath inside the chroot.
 func sandbox(sandboxPath, destPath string) (string, error) {
 

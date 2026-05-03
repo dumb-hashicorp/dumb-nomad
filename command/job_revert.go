@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -17,10 +17,10 @@ type JobRevertCommand struct {
 
 func (c *JobRevertCommand) Help() string {
 	helpText := `
-Usage: nomad job revert [options] <job> <version|tag>
+Usage: dumb-nomad job revert [options] <job> <version|tag>
 
   Revert is used to revert a job to a prior version of the job. The available
-  versions to revert to can be found using "nomad job history" command.
+  versions to revert to can be found using "dumb-nomad job history" command.
 
   When ACLs are enabled, this command requires a token with either the
   'submit-job' or 'revert-job' capability for the job's namespace. The

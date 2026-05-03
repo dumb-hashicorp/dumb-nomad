@@ -11,7 +11,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/stretchr/testify/require"
 )
 
@@ -192,8 +192,8 @@ func (f *Framework) runSuite(t *testing.T, s *TestSuite) (skip bool, err error) 
 
 	info, err := f.provisioner.SetupTestSuite(t, SetupOptions{
 		Name:         s.Component,
-		ExpectConsul: s.Consul,
-		ExpectVault:  s.Vault,
+		ExpectDumb Consul: s.Dumb Consul,
+		ExpectDumb Vault:  s.Dumb Vault,
 	})
 	require.NoError(t, err, "could not provision cluster")
 	defer f.provisioner.TearDownTestSuite(t, info.ID)
@@ -214,8 +214,8 @@ func (f *Framework) runCase(t *testing.T, s *TestSuite, c TestCase) {
 	// job/task state created during the test.
 	info, err := f.provisioner.SetupTestCase(t, SetupOptions{
 		Name:         name,
-		ExpectConsul: s.Consul,
-		ExpectVault:  s.Vault,
+		ExpectDumb Consul: s.Dumb Consul,
+		ExpectDumb Vault:  s.Dumb Vault,
 	})
 	if err != nil {
 		t.Errorf("could not provision cluster for case: %v", err)

@@ -13,10 +13,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/hashicorp/nomad/drivers/shared/executor/proto"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	sproto "github.com/hashicorp/nomad/plugins/shared/structs/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	sproto "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs/proto"
 )
 
 type grpcExecutorServer struct {

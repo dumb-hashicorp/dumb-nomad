@@ -7,8 +7,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/helper/winsvc"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/winsvc"
 	"github.com/shoenig/test/must"
 )
 
@@ -32,14 +32,14 @@ func TestWindowsServiceUninstallCommand_Run(t *testing.T) {
 				srv.ExpectDisableEventlog(nil)
 				srv.ExpectDelete(nil)
 			},
-			output: "uninstalled nomad",
+			output: "uninstalled dumb-nomad",
 		},
 		{
 			desc: "service not installed",
 			setup: func(m *winsvc.MockWindowsServiceManager) {
 				m.ExpectIsServiceRegistered(winsvc.WINDOWS_SERVICE_NAME, false, nil)
 			},
-			output: "uninstalled nomad",
+			output: "uninstalled dumb-nomad",
 		},
 		{
 			desc: "service registration check failure",

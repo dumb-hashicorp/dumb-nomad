@@ -6,15 +6,15 @@
 package executor
 
 import (
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/drivers/shared/executor/procstats"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor/procstats"
 )
 
 // NewExecutorWithIsolation returns universal executor if CGO is disabled. This
 // is only to prevent compilation issues, if CGO is disabled, task drivers that
 // depend on resource isolation (exec/java) are disabled anyway.
-func NewExecutorWithIsolation(logger hclog.Logger, compute cpustats.Compute) Executor {
+func NewExecutorWithIsolation(logger dumb-hclog.Logger, compute cpustats.Compute) Executor {
 	ue := &UniversalExecutor{
 		logger:         logger.Named("executor"),
 		processExited:  make(chan interface{}),

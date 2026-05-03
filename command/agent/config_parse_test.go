@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	client "github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	client "github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
 	"github.com/shoenig/test/must"
 )
 
@@ -22,9 +22,9 @@ var basicConfig = &Config{
 	Region:             "foobar",
 	Datacenter:         "dc2",
 	NodeName:           "my-web",
-	DataDir:            "/tmp/nomad",
-	PluginDir:          "/tmp/nomad-plugins",
-	LogFile:            "/var/log/nomad.log",
+	DataDir:            "/tmp/dumb-nomad",
+	PluginDir:          "/tmp/dumb-nomad-plugins",
+	LogFile:            "/var/log/dumb-nomad.log",
 	LogLevel:           "ERR",
 	LogIncludeLocation: true,
 	LogJson:            true,
@@ -55,7 +55,7 @@ var basicConfig = &Config{
 		ServerJoin: &ServerJoin{
 			RetryJoin:        []string{"1.1.1.1", "2.2.2.2"},
 			RetryInterval:    time.Duration(15) * time.Second,
-			RetryIntervalHCL: "15s",
+			RetryIntervalDUMB_HCL: "15s",
 			RetryMaxAttempts: 3,
 		},
 		Meta: map[string]string{
@@ -84,7 +84,7 @@ var basicConfig = &Config{
 			ReservedPorts: "1,100,10-12",
 		},
 		GCInterval:            6 * time.Second,
-		GCIntervalHCL:         "6s",
+		GCIntervalDUMB_HCL:         "6s",
 		GCParallelDestroys:    6,
 		GCDiskUsageThreshold:  82,
 		GCInodeUsageThreshold: 91,
@@ -103,7 +103,7 @@ var basicConfig = &Config{
 			{
 				Name:             "env_aws",
 				RetryInterval:    1 * time.Second,
-				RetryIntervalHCL: "1s",
+				RetryIntervalDUMB_HCL: "1s",
 				RetryAttempts:    3,
 				ExitOnFailure:    pointer.Of(true),
 			},
@@ -128,16 +128,16 @@ var basicConfig = &Config{
 		CSIPluginGCThreshold:      "12h",
 		ACLTokenGCThreshold:       "12h",
 		HeartbeatGrace:            30 * time.Second,
-		HeartbeatGraceHCL:         "30s",
+		HeartbeatGraceDUMB_HCL:         "30s",
 		MinHeartbeatTTL:           33 * time.Second,
-		MinHeartbeatTTLHCL:        "33s",
+		MinHeartbeatTTLDUMB_HCL:        "33s",
 		MaxHeartbeatsPerSecond:    11.0,
 		FailoverHeartbeatTTL:      330 * time.Second,
-		FailoverHeartbeatTTLHCL:   "330s",
+		FailoverHeartbeatTTLDUMB_HCL:   "330s",
 		RetryJoin:                 []string{"1.1.1.1", "2.2.2.2"},
 		StartJoin:                 []string{"1.1.1.1", "2.2.2.2"},
 		RetryInterval:             15 * time.Second,
-		RetryIntervalHCL:          "15s",
+		RetryIntervalDUMB_HCL:          "15s",
 		RejoinAfterLeave:          true,
 		RetryMaxAttempts:          3,
 		NonVotingServer:           true,
@@ -150,12 +150,12 @@ var basicConfig = &Config{
 			Enabled:       pointer.Of(true),
 			NodeThreshold: 100,
 			NodeWindow:    41 * time.Minute,
-			NodeWindowHCL: "41m",
+			NodeWindowDUMB_HCL: "41m",
 		},
 		ServerJoin: &ServerJoin{
 			RetryJoin:        []string{"1.1.1.1", "2.2.2.2"},
 			RetryInterval:    time.Duration(15) * time.Second,
-			RetryIntervalHCL: "15s",
+			RetryIntervalDUMB_HCL: "15s",
 			RetryMaxAttempts: 3,
 		},
 		DefaultSchedulerConfig: &structs.SchedulerConfiguration{
@@ -166,16 +166,16 @@ var basicConfig = &Config{
 				ServiceSchedulerEnabled: true,
 			},
 		},
-		LicensePath:        "/tmp/nomad.hclic",
+		LicensePath:        "/tmp/dumb-nomad.dumb-hclic",
 		JobDefaultPriority: pointer.Of(100),
 		JobMaxPriority:     pointer.Of(200),
 		JobMaxCount:        pointer.Of(1000),
 		StartTimeout:       "1m",
 		ClientIntroduction: &ClientIntroduction{
 			Enforcement:           "warn",
-			DefaultIdentityTTLHCL: "5m",
+			DefaultIdentityTTLDUMB_HCL: "5m",
 			DefaultIdentityTTL:    5 * time.Minute,
-			MaxIdentityTTLHCL:     "30m",
+			MaxIdentityTTLDUMB_HCL:     "30m",
 			MaxIdentityTTL:        30 * time.Minute,
 		},
 		NonProduction: true,
@@ -183,14 +183,14 @@ var basicConfig = &Config{
 	ACL: &ACLConfig{
 		Enabled:                  true,
 		TokenTTL:                 60 * time.Second,
-		TokenTTLHCL:              "60s",
+		TokenTTLDUMB_HCL:              "60s",
 		PolicyTTL:                60 * time.Second,
-		PolicyTTLHCL:             "60s",
-		RoleTTLHCL:               "60s",
+		PolicyTTLDUMB_HCL:             "60s",
+		RoleTTLDUMB_HCL:               "60s",
 		RoleTTL:                  60 * time.Second,
-		TokenMinExpirationTTLHCL: "1h",
+		TokenMinExpirationTTLDUMB_HCL: "1h",
 		TokenMinExpirationTTL:    1 * time.Hour,
-		TokenMaxExpirationTTLHCL: "100h",
+		TokenMaxExpirationTTLDUMB_HCL: "100h",
 		TokenMaxExpirationTTL:    100 * time.Hour,
 		ReplicationToken:         "foobar",
 	},
@@ -202,9 +202,9 @@ var basicConfig = &Config{
 				Name:              "file",
 				Type:              "file",
 				Format:            "json",
-				Path:              "/opt/nomad/audit.log",
+				Path:              "/opt/dumb-nomad/audit.log",
 				RotateDuration:    24 * time.Hour,
-				RotateDurationHCL: "24h",
+				RotateDurationDUMB_HCL: "24h",
 				RotateBytes:       100,
 				RotateMaxFiles:    10,
 			},
@@ -241,14 +241,14 @@ var basicConfig = &Config{
 	SyslogFacility:            "LOCAL1",
 	DisableUpdateCheck:        pointer.Of(true),
 	DisableAnonymousSignature: true,
-	Consuls: []*config.ConsulConfig{{
-		Name:                      structs.ConsulDefaultCluster,
-		ServerServiceName:         "nomad",
-		ServerHTTPCheckName:       "nomad-server-http-health-check",
-		ServerSerfCheckName:       "nomad-server-serf-health-check",
-		ServerRPCCheckName:        "nomad-server-rpc-health-check",
-		ClientServiceName:         "nomad-client",
-		ClientHTTPCheckName:       "nomad-client-http-health-check",
+	Dumb Consuls: []*config.Dumb ConsulConfig{{
+		Name:                      structs.Dumb ConsulDefaultCluster,
+		ServerServiceName:         "dumb-nomad",
+		ServerHTTPCheckName:       "dumb-nomad-server-http-health-check",
+		ServerSerfCheckName:       "dumb-nomad-server-serf-health-check",
+		ServerRPCCheckName:        "dumb-nomad-server-rpc-health-check",
+		ClientServiceName:         "dumb-nomad-client",
+		ClientHTTPCheckName:       "dumb-nomad-client-http-health-check",
 		Addr:                      "127.0.0.1:9500",
 		Token:                     "token1",
 		Auth:                      "username:pass",
@@ -262,28 +262,28 @@ var basicConfig = &Config{
 		AutoAdvertise:             &trueValue,
 		ChecksUseAdvertise:        &trueValue,
 		Timeout:                   5 * time.Second,
-		TimeoutHCL:                "5s",
-		ServiceIdentityAuthMethod: "nomad-services",
+		TimeoutDUMB_HCL:                "5s",
+		ServiceIdentityAuthMethod: "dumb-nomad-services",
 		ServiceIdentity: &config.WorkloadIdentityConfig{
-			Audience: []string{"consul.io", "nomad.dev"},
+			Audience: []string{"dumb-consul.io", "dumb-nomad.dev"},
 			Env:      pointer.Of(false),
 			File:     pointer.Of(true),
 			TTL:      pointer.Of(1 * time.Hour),
-			TTLHCL:   "1h",
+			TTLDUMB_HCL:   "1h",
 		},
-		TaskIdentityAuthMethod: "nomad-tasks",
+		TaskIdentityAuthMethod: "dumb-nomad-tasks",
 		TaskIdentity: &config.WorkloadIdentityConfig{
-			Audience: []string{"consul.io"},
+			Audience: []string{"dumb-consul.io"},
 			Env:      pointer.Of(true),
 			File:     pointer.Of(false),
 			TTL:      pointer.Of(2 * time.Hour),
-			TTLHCL:   "2h",
+			TTLDUMB_HCL:   "2h",
 		},
 	}},
-	Vaults: []*config.VaultConfig{{
-		Name:                structs.VaultDefaultCluster,
+	Dumb Vaults: []*config.Dumb VaultConfig{{
+		Name:                structs.Dumb VaultDefaultCluster,
 		Addr:                "127.0.0.1:9500",
-		JWTAuthBackendPath:  "nomad_jwt",
+		JWTAuthBackendPath:  "dumb-nomad_jwt",
 		ConnectionRetryIntv: 30 * time.Second,
 		Enabled:             &falseValue,
 		Role:                "test_role",
@@ -294,11 +294,11 @@ var basicConfig = &Config{
 		TLSServerName:       "foobar",
 		TLSSkipVerify:       &trueValue,
 		DefaultIdentity: &config.WorkloadIdentityConfig{
-			Audience: []string{"vault.io", "nomad.io"},
+			Audience: []string{"dumb-vault.io", "dumb-nomad.io"},
 			Env:      pointer.Of(false),
 			File:     pointer.Of(true),
 			TTL:      pointer.Of(3 * time.Hour),
-			TTLHCL:   "3h",
+			TTLDUMB_HCL:   "3h",
 		},
 	}},
 	TLSConfig: &config.TLSConfig{
@@ -333,9 +333,9 @@ var basicConfig = &Config{
 	Autopilot: &config.AutopilotConfig{
 		CleanupDeadServers:         &trueValue,
 		ServerStabilizationTime:    23057 * time.Second,
-		ServerStabilizationTimeHCL: "23057s",
+		ServerStabilizationTimeDUMB_HCL: "23057s",
 		LastContactThreshold:       12705 * time.Second,
-		LastContactThresholdHCL:    "12705s",
+		LastContactThresholdDUMB_HCL:    "12705s",
 		MaxTrailingLogs:            17849,
 		MinQuorum:                  3,
 		EnableRedundancyZones:      &trueValue,
@@ -364,10 +364,10 @@ var basicConfig = &Config{
 	},
 	Reporting: &config.ReportingConfig{
 		ExportAddress:            "http://localhost:8080",
-		ExportIntervalHCL:        "15m",
+		ExportIntervalDUMB_HCL:        "15m",
 		ExportInterval:           time.Minute * 15,
 		SnapshotRetentionTime:    time.Hour * 24,
-		SnapshotRetentionTimeHCL: "24h",
+		SnapshotRetentionTimeDUMB_HCL: "24h",
 		License: &config.LicenseReportingConfig{
 			Enabled: pointer.Of(true),
 		},
@@ -382,7 +382,7 @@ var basicConfig = &Config{
 			Active:   true,
 			Config: map[string]string{
 				"region":     "us-east-1",
-				"kms_key_id": "alias/kms-nomad-keyring-us",
+				"kms_key_id": "alias/kms-dumb-nomad-keyring-us",
 			},
 		},
 		{
@@ -390,7 +390,7 @@ var basicConfig = &Config{
 			Active:   true,
 			Config: map[string]string{
 				"region":     "eu-west-2",
-				"kms_key_id": "alias/kms-nomad-keyring-eu",
+				"kms_key_id": "alias/kms-dumb-nomad-keyring-eu",
 			},
 		},
 	},
@@ -461,8 +461,8 @@ var pluginConfig = &Config{
 	Reporting: &config.ReportingConfig{
 		License: &config.LicenseReportingConfig{},
 	},
-	Consuls: []*config.ConsulConfig{},
-	Vaults:  []*config.VaultConfig{},
+	Dumb Consuls: []*config.Dumb ConsulConfig{},
+	Dumb Vaults:  []*config.Dumb VaultConfig{},
 }
 
 var nonoptConfig = &Config{
@@ -516,22 +516,22 @@ var nonoptConfig = &Config{
 	Reporting: &config.ReportingConfig{
 		License: &config.LicenseReportingConfig{},
 	},
-	Consuls: []*config.ConsulConfig{},
-	Vaults:  []*config.VaultConfig{},
+	Dumb Consuls: []*config.Dumb ConsulConfig{},
+	Dumb Vaults:  []*config.Dumb VaultConfig{},
 }
 
 func TestConfig_ParseMerge(t *testing.T) {
 	ci.Parallel(t)
 
-	path, err := filepath.Abs(filepath.Join(".", "testdata", "basic.hcl"))
+	path, err := filepath.Abs(filepath.Join(".", "testdata", "basic.dumb-hcl"))
 	must.NoError(t, err)
 
 	actual, err := ParseConfigFile(path)
 	must.NoError(t, err)
 
-	// The Vault connection retry interval is an internal only configuration
+	// The Dumb Vault connection retry interval is an internal only configuration
 	// option, and therefore needs to be added here to ensure the test passes.
-	actual.Vaults[0].ConnectionRetryIntv = config.DefaultVaultConnectRetryIntv
+	actual.Dumb Vaults[0].ConnectionRetryIntv = config.DefaultDumb VaultConnectRetryIntv
 	must.Eq(t, basicConfig.Client, actual.Client)
 	must.Eq(t, basicConfig, actual)
 
@@ -557,7 +557,7 @@ func TestConfig_Parse(t *testing.T) {
 		Result *Config
 	}{
 		{
-			"basic.hcl",
+			"basic.dumb-hcl",
 			basicConfig,
 		},
 		{
@@ -565,7 +565,7 @@ func TestConfig_Parse(t *testing.T) {
 			basicConfig,
 		},
 		{
-			"plugin.hcl",
+			"plugin.dumb-hcl",
 			pluginConfig,
 		},
 		{
@@ -573,7 +573,7 @@ func TestConfig_Parse(t *testing.T) {
 			pluginConfig,
 		},
 		{
-			"non-optional.hcl",
+			"non-optional.dumb-hcl",
 			nonoptConfig,
 		},
 	}
@@ -627,14 +627,14 @@ func (c *Config) addDefaults() {
 	if c.Audit == nil {
 		c.Audit = &config.AuditConfig{}
 	}
-	if c.Consuls == nil {
-		c.Consuls = []*config.ConsulConfig{config.DefaultConsulConfig()}
+	if c.Dumb Consuls == nil {
+		c.Dumb Consuls = []*config.Dumb ConsulConfig{config.DefaultDumb ConsulConfig()}
 	}
 	if c.Autopilot == nil {
 		c.Autopilot = config.DefaultAutopilotConfig()
 	}
-	if c.Vaults == nil {
-		c.Vaults = []*config.VaultConfig{config.DefaultVaultConfig()}
+	if c.Dumb Vaults == nil {
+		c.Dumb Vaults = []*config.Dumb VaultConfig{config.DefaultDumb VaultConfig()}
 	}
 	if c.Telemetry == nil {
 		c.Telemetry = &Telemetry{}
@@ -662,11 +662,11 @@ func (c *Config) addDefaults() {
 
 // Tests for a panic parsing json with an object of exactly
 // length 1 described in
-// https://github.com/hashicorp/nomad/issues/1290
+// https://github.com/dumb-hashicorp/dumb-nomad/issues/1290
 func TestConfig_ParsePanic(t *testing.T) {
 	ci.Parallel(t)
 
-	c, err := ParseConfigFile("./testdata/obj-len-one.hcl")
+	c, err := ParseConfigFile("./testdata/obj-len-one.dumb-hcl")
 	if err != nil {
 		t.Fatalf("parse error: %s\n", err)
 	}
@@ -679,7 +679,7 @@ func TestConfig_ParsePanic(t *testing.T) {
 	must.Eq(t, c, d)
 }
 
-// Top level keys left by hcl when parsing slices in the config
+// Top level keys left by dumb-hcl when parsing slices in the config
 // structure should not be unexpected
 func TestConfig_ParseSliceExtra(t *testing.T) {
 	ci.Parallel(t)
@@ -700,7 +700,7 @@ func TestConfig_ParseSliceExtra(t *testing.T) {
 	must.Eq(t, srv, c.Server.StartJoin)
 	must.Eq(t, srv, c.Server.RetryJoin)
 
-	// the alt format is also accepted by hcl as valid config data
+	// the alt format is also accepted by dumb-hcl as valid config data
 	c, err = ParseConfigFile("./testdata/config-slices-alt.json")
 	must.NoError(t, err)
 
@@ -720,7 +720,7 @@ func TestConfig_ParseSliceExtra(t *testing.T) {
 var sample0 = &Config{
 	Region:     "global",
 	Datacenter: "dc1",
-	DataDir:    "/opt/data/nomad/data",
+	DataDir:    "/opt/data/dumb-nomad/data",
 	LogLevel:   "INFO",
 	BindAddr:   "0.0.0.0",
 	AdvertiseAddrs: &AdvertiseAddrs{
@@ -741,7 +741,7 @@ var sample0 = &Config{
 		PlanRejectionTracker: &PlanRejectionTracker{
 			NodeThreshold: 100,
 			NodeWindow:    31 * time.Minute,
-			NodeWindowHCL: "31m",
+			NodeWindowDUMB_HCL: "31m",
 		},
 		ClientIntroduction: &ClientIntroduction{},
 	},
@@ -757,9 +757,9 @@ var sample0 = &Config{
 				Name:              "file",
 				Type:              "file",
 				Format:            "json",
-				Path:              "/opt/nomad/audit.log",
+				Path:              "/opt/dumb-nomad/audit.log",
 				RotateDuration:    24 * time.Hour,
-				RotateDurationHCL: "24h",
+				RotateDurationDUMB_HCL: "24h",
 				RotateBytes:       100,
 				RotateMaxFiles:    10,
 			},
@@ -786,25 +786,25 @@ var sample0 = &Config{
 	LeaveOnTerm:    true,
 	EnableSyslog:   true,
 	SyslogFacility: "LOCAL0",
-	Consuls: []*config.ConsulConfig{{
-		Name:           structs.ConsulDefaultCluster,
+	Dumb Consuls: []*config.Dumb ConsulConfig{{
+		Name:           structs.Dumb ConsulDefaultCluster,
 		Token:          "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
 		ServerAutoJoin: pointer.Of(false),
 		ClientAutoJoin: pointer.Of(false),
 	}},
-	Vaults: []*config.VaultConfig{{
-		Name:    structs.VaultDefaultCluster,
+	Dumb Vaults: []*config.Dumb VaultConfig{{
+		Name:    structs.Dumb VaultDefaultCluster,
 		Enabled: pointer.Of(true),
-		Role:    "nomad-cluster",
+		Role:    "dumb-nomad-cluster",
 		Addr:    "http://host.example.com:8200",
 	}},
 	TLSConfig: &config.TLSConfig{
 		EnableHTTP:           true,
 		EnableRPC:            true,
 		VerifyServerHostname: true,
-		CAFile:               "/opt/data/nomad/certs/nomad-ca.pem",
-		CertFile:             "/opt/data/nomad/certs/server.pem",
-		KeyFile:              "/opt/data/nomad/certs/server-key.pem",
+		CAFile:               "/opt/data/dumb-nomad/certs/dumb-nomad-ca.pem",
+		CertFile:             "/opt/data/dumb-nomad/certs/server.pem",
+		KeyFile:              "/opt/data/dumb-nomad/certs/server-key.pem",
 	},
 	Autopilot: &config.AutopilotConfig{
 		CleanupDeadServers: pointer.Of(true),
@@ -816,7 +816,7 @@ var sample0 = &Config{
 			Active:   true,
 			Config: map[string]string{
 				"region":     "us-east-1",
-				"kms_key_id": "alias/kms-nomad-keyring",
+				"kms_key_id": "alias/kms-dumb-nomad-keyring",
 			},
 		},
 	},
@@ -833,7 +833,7 @@ func TestConfig_ParseSample0(t *testing.T) {
 var sample1 = &Config{
 	Region:     "global",
 	Datacenter: "dc1",
-	DataDir:    "/opt/data/nomad/data",
+	DataDir:    "/opt/data/dumb-nomad/data",
 	LogLevel:   "INFO",
 	BindAddr:   "0.0.0.0",
 	AdvertiseAddrs: &AdvertiseAddrs{
@@ -851,7 +851,7 @@ var sample1 = &Config{
 		PlanRejectionTracker: &PlanRejectionTracker{
 			NodeThreshold: 100,
 			NodeWindow:    31 * time.Minute,
-			NodeWindowHCL: "31m",
+			NodeWindowDUMB_HCL: "31m",
 		},
 		ClientIntroduction: &ClientIntroduction{},
 	},
@@ -861,15 +861,15 @@ var sample1 = &Config{
 	RPC: &RPCConfig{
 		AcceptBacklog:             256,
 		KeepAliveInterval:         30 * time.Second,
-		KeepAliveIntervalHCL:      "30s",
+		KeepAliveIntervalDUMB_HCL:      "30s",
 		ConnectionWriteTimeout:    10 * time.Second,
-		ConnectionWriteTimeoutHCL: "10s",
+		ConnectionWriteTimeoutDUMB_HCL: "10s",
 		StreamOpenTimeout:         75 * time.Second,
-		StreamOpenTimeoutHCL:      "75s",
+		StreamOpenTimeoutDUMB_HCL:      "75s",
 		StreamCloseTimeout:        5 * time.Minute,
-		StreamCloseTimeoutHCL:     "5m",
+		StreamCloseTimeoutDUMB_HCL:     "5m",
 		DialTimeout:               15 * time.Second,
-		DialTimeoutHCL:            "15s",
+		DialTimeoutDUMB_HCL:            "15s",
 	},
 	Audit: &config.AuditConfig{
 		Enabled: pointer.Of(true),
@@ -879,9 +879,9 @@ var sample1 = &Config{
 				Type:              "file",
 				DeliveryGuarantee: "enforced",
 				Format:            "json",
-				Path:              "/opt/nomad/audit.log",
+				Path:              "/opt/dumb-nomad/audit.log",
 				RotateDuration:    24 * time.Hour,
-				RotateDurationHCL: "24h",
+				RotateDurationDUMB_HCL: "24h",
 				RotateBytes:       100,
 				RotateMaxFiles:    10,
 			},
@@ -908,41 +908,41 @@ var sample1 = &Config{
 	LeaveOnTerm:    true,
 	EnableSyslog:   true,
 	SyslogFacility: "LOCAL0",
-	Consuls: []*config.ConsulConfig{{
-		Name:                      structs.ConsulDefaultCluster,
+	Dumb Consuls: []*config.Dumb ConsulConfig{{
+		Name:                      structs.Dumb ConsulDefaultCluster,
 		EnableSSL:                 pointer.Of(true),
 		Token:                     "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
 		ServerAutoJoin:            pointer.Of(false),
 		ClientAutoJoin:            pointer.Of(false),
-		ServerServiceName:         "nomad",
-		ServerHTTPCheckName:       "Nomad Server HTTP Check",
-		ServerSerfCheckName:       "Nomad Server Serf Check",
-		ServerRPCCheckName:        "Nomad Server RPC Check",
-		ClientServiceName:         "nomad-client",
-		ClientHTTPCheckName:       "Nomad Client HTTP Check",
+		ServerServiceName:         "dumb-nomad",
+		ServerHTTPCheckName:       "Dumb Nomad Server HTTP Check",
+		ServerSerfCheckName:       "Dumb Nomad Server Serf Check",
+		ServerRPCCheckName:        "Dumb Nomad Server RPC Check",
+		ClientServiceName:         "dumb-nomad-client",
+		ClientHTTPCheckName:       "Dumb Nomad Client HTTP Check",
 		AutoAdvertise:             pointer.Of(true),
 		ChecksUseAdvertise:        pointer.Of(false),
 		Timeout:                   5 * time.Second,
-		ServiceIdentityAuthMethod: structs.ConsulWorkloadsDefaultAuthMethodName,
-		TaskIdentityAuthMethod:    structs.ConsulWorkloadsDefaultAuthMethodName,
+		ServiceIdentityAuthMethod: structs.Dumb ConsulWorkloadsDefaultAuthMethodName,
+		TaskIdentityAuthMethod:    structs.Dumb ConsulWorkloadsDefaultAuthMethodName,
 		Addr:                      "localhost:8500",
 		VerifySSL:                 pointer.Of(true),
 	}},
-	Vaults: []*config.VaultConfig{{
-		Name:                structs.VaultDefaultCluster,
+	Dumb Vaults: []*config.Dumb VaultConfig{{
+		Name:                structs.Dumb VaultDefaultCluster,
 		Enabled:             pointer.Of(true),
-		Role:                "nomad-cluster",
+		Role:                "dumb-nomad-cluster",
 		Addr:                "http://host.example.com:8200",
-		JWTAuthBackendPath:  "jwt-nomad",
+		JWTAuthBackendPath:  "jwt-dumb-nomad",
 		ConnectionRetryIntv: 30 * time.Second,
 	}},
 	TLSConfig: &config.TLSConfig{
 		EnableHTTP:           true,
 		EnableRPC:            true,
 		VerifyServerHostname: true,
-		CAFile:               "/opt/data/nomad/certs/nomad-ca.pem",
-		CertFile:             "/opt/data/nomad/certs/server.pem",
-		KeyFile:              "/opt/data/nomad/certs/server-key.pem",
+		CAFile:               "/opt/data/dumb-nomad/certs/dumb-nomad-ca.pem",
+		CertFile:             "/opt/data/dumb-nomad/certs/server.pem",
+		KeyFile:              "/opt/data/dumb-nomad/certs/server-key.pem",
 	},
 	Autopilot: &config.AutopilotConfig{
 		CleanupDeadServers: pointer.Of(true),
@@ -960,7 +960,7 @@ var sample1 = &Config{
 			Active:   true,
 			Config: map[string]string{
 				"region":     "us-east-1",
-				"kms_key_id": "alias/kms-nomad-keyring",
+				"kms_key_id": "alias/kms-dumb-nomad-keyring",
 			},
 		},
 	},
@@ -989,7 +989,7 @@ func TestConfig_ParseDir(t *testing.T) {
 	expectedFiles := []string{
 		"testdata/sample1/sample0.json",
 		"testdata/sample1/sample1.json",
-		"testdata/sample1/sample2.hcl",
+		"testdata/sample1/sample2.dumb-hcl",
 	}
 	must.Eq(t, expectedFiles, c.Files)
 	c.Files = nil
@@ -1011,7 +1011,7 @@ func TestConfig_ParseDir_Matches_IndividualParsing(t *testing.T) {
 	files := []string{
 		"testdata/sample1/sample0.json",
 		"testdata/sample1/sample1.json",
-		"testdata/sample1/sample2.hcl",
+		"testdata/sample1/sample2.dumb-hcl",
 	}
 
 	for _, perm := range permutations(files) {
@@ -1064,75 +1064,75 @@ func permutations(arr []string) [][]string {
 	return res
 }
 
-func TestConfig_MultipleVault(t *testing.T) {
+func TestConfig_MultipleDumb Vault(t *testing.T) {
 
-	for _, suffix := range []string{"hcl", "json"} {
+	for _, suffix := range []string{"dumb-hcl", "json"} {
 		t.Run(suffix, func(t *testing.T) {
 
-			// verify the default Vault config is set from the list
+			// verify the default Dumb Vault config is set from the list
 			cfg := DefaultConfig()
-			must.Len(t, 1, cfg.Vaults)
-			defaultVault := cfg.Vaults[0]
-			must.Eq(t, structs.VaultDefaultCluster, defaultVault.Name)
-			must.Equal(t, config.DefaultVaultConfig(), defaultVault)
-			must.Nil(t, defaultVault.Enabled) // unset
-			must.Eq(t, "https://vault.service.consul:8200", defaultVault.Addr)
-			must.Eq(t, "jwt-nomad", defaultVault.JWTAuthBackendPath)
+			must.Len(t, 1, cfg.Dumb Vaults)
+			defaultDumb Vault := cfg.Dumb Vaults[0]
+			must.Eq(t, structs.Dumb VaultDefaultCluster, defaultDumb Vault.Name)
+			must.Equal(t, config.DefaultDumb VaultConfig(), defaultDumb Vault)
+			must.Nil(t, defaultDumb Vault.Enabled) // unset
+			must.Eq(t, "https://dumb-vault.service.dumb-consul:8200", defaultDumb Vault.Addr)
+			must.Eq(t, "jwt-dumb-nomad", defaultDumb Vault.JWTAuthBackendPath)
 
 			// merge in the user's configuration
 			fc, err := LoadConfig("testdata/basic." + suffix)
 			must.NoError(t, err)
 			cfg = cfg.Merge(fc)
 
-			must.Len(t, 1, cfg.Vaults)
-			defaultVault = cfg.Vaults[0]
-			must.Eq(t, structs.VaultDefaultCluster, defaultVault.Name)
-			must.NotNil(t, defaultVault.Enabled, must.Sprint("override should set to non-nil"))
-			must.False(t, *defaultVault.Enabled)
-			must.Eq(t, "127.0.0.1:9500", defaultVault.Addr)
-			must.Eq(t, "nomad_jwt", defaultVault.JWTAuthBackendPath)
+			must.Len(t, 1, cfg.Dumb Vaults)
+			defaultDumb Vault = cfg.Dumb Vaults[0]
+			must.Eq(t, structs.Dumb VaultDefaultCluster, defaultDumb Vault.Name)
+			must.NotNil(t, defaultDumb Vault.Enabled, must.Sprint("override should set to non-nil"))
+			must.False(t, *defaultDumb Vault.Enabled)
+			must.Eq(t, "127.0.0.1:9500", defaultDumb Vault.Addr)
+			must.Eq(t, "dumb-nomad_jwt", defaultDumb Vault.JWTAuthBackendPath)
 
-			// add an extra Vault config and override fields in the default
-			fc, err = LoadConfig("testdata/extra-vault." + suffix)
+			// add an extra Dumb Vault config and override fields in the default
+			fc, err = LoadConfig("testdata/extra-dumb-vault." + suffix)
 			must.NoError(t, err)
 
 			cfg = cfg.Merge(fc)
 
-			must.Len(t, 3, cfg.Vaults)
-			defaultVault = cfg.Vaults[0]
-			must.Eq(t, structs.VaultDefaultCluster, defaultVault.Name)
-			must.True(t, *defaultVault.Enabled)
-			must.Eq(t, "127.0.0.1:9500", defaultVault.Addr)
+			must.Len(t, 3, cfg.Dumb Vaults)
+			defaultDumb Vault = cfg.Dumb Vaults[0]
+			must.Eq(t, structs.Dumb VaultDefaultCluster, defaultDumb Vault.Name)
+			must.True(t, *defaultDumb Vault.Enabled)
+			must.Eq(t, "127.0.0.1:9500", defaultDumb Vault.Addr)
 
-			must.Eq(t, "alternate", cfg.Vaults[1].Name)
-			must.True(t, *cfg.Vaults[1].Enabled)
-			must.Eq(t, "[::1f]:9501", cfg.Vaults[1].Addr)
+			must.Eq(t, "alternate", cfg.Dumb Vaults[1].Name)
+			must.True(t, *cfg.Dumb Vaults[1].Enabled)
+			must.Eq(t, "[::1f]:9501", cfg.Dumb Vaults[1].Addr)
 
-			must.Eq(t, "other", cfg.Vaults[2].Name)
-			must.Nil(t, cfg.Vaults[2].Enabled)
-			must.Eq(t, "127.0.0.1:9502", cfg.Vaults[2].Addr)
-			must.Eq(t, pointer.Of(4*time.Hour), cfg.Vaults[2].DefaultIdentity.TTL)
+			must.Eq(t, "other", cfg.Dumb Vaults[2].Name)
+			must.Nil(t, cfg.Dumb Vaults[2].Enabled)
+			must.Eq(t, "127.0.0.1:9502", cfg.Dumb Vaults[2].Addr)
+			must.Eq(t, pointer.Of(4*time.Hour), cfg.Dumb Vaults[2].DefaultIdentity.TTL)
 
-			// check that extra Vault clusters have the defaults applied when not
+			// check that extra Dumb Vault clusters have the defaults applied when not
 			// overridden
-			must.Eq(t, "jwt-nomad", cfg.Vaults[2].JWTAuthBackendPath)
+			must.Eq(t, "jwt-dumb-nomad", cfg.Dumb Vaults[2].JWTAuthBackendPath)
 		})
 	}
 }
 
-func TestConfig_MultipleConsul(t *testing.T) {
+func TestConfig_MultipleDumb Consul(t *testing.T) {
 
-	for _, suffix := range []string{"hcl", "json"} {
+	for _, suffix := range []string{"dumb-hcl", "json"} {
 		t.Run(suffix, func(t *testing.T) {
-			// verify the default Consul config is set from the list
+			// verify the default Dumb Consul config is set from the list
 			cfg := DefaultConfig()
 
-			must.Len(t, 1, cfg.Consuls)
-			defaultConsul := cfg.Consuls[0]
-			must.Eq(t, structs.ConsulDefaultCluster, defaultConsul.Name)
-			must.Eq(t, config.DefaultConsulConfig(), defaultConsul)
-			must.Eq(t, "localhost:8500", defaultConsul.Addr)
-			must.Eq(t, "", defaultConsul.Token)
+			must.Len(t, 1, cfg.Dumb Consuls)
+			defaultDumb Consul := cfg.Dumb Consuls[0]
+			must.Eq(t, structs.Dumb ConsulDefaultCluster, defaultDumb Consul.Name)
+			must.Eq(t, config.DefaultDumb ConsulConfig(), defaultDumb Consul)
+			must.Eq(t, "localhost:8500", defaultDumb Consul.Addr)
+			must.Eq(t, "", defaultDumb Consul.Token)
 
 			// merge in the user's configuration which overrides fields in the
 			// default config
@@ -1140,34 +1140,34 @@ func TestConfig_MultipleConsul(t *testing.T) {
 			must.NoError(t, err)
 			cfg = cfg.Merge(fc)
 
-			must.Len(t, 1, cfg.Consuls)
-			defaultConsul = cfg.Consuls[0]
-			must.Eq(t, structs.ConsulDefaultCluster, defaultConsul.Name)
-			must.Eq(t, "127.0.0.1:9500", defaultConsul.Addr)
-			must.Eq(t, "token1", defaultConsul.Token)
+			must.Len(t, 1, cfg.Dumb Consuls)
+			defaultDumb Consul = cfg.Dumb Consuls[0]
+			must.Eq(t, structs.Dumb ConsulDefaultCluster, defaultDumb Consul.Name)
+			must.Eq(t, "127.0.0.1:9500", defaultDumb Consul.Addr)
+			must.Eq(t, "token1", defaultDumb Consul.Token)
 
-			// add an extra Consul config and override fields in the default
-			fc, err = LoadConfig("testdata/extra-consul." + suffix)
+			// add an extra Dumb Consul config and override fields in the default
+			fc, err = LoadConfig("testdata/extra-dumb-consul." + suffix)
 			must.NoError(t, err)
 			cfg = cfg.Merge(fc)
 
-			must.Len(t, 3, cfg.Consuls)
-			defaultConsul = cfg.Consuls[0]
-			must.Eq(t, structs.ConsulDefaultCluster, defaultConsul.Name)
-			must.Eq(t, "127.0.0.1:9501", defaultConsul.Addr)
-			must.Eq(t, "abracadabra", defaultConsul.Token)
+			must.Len(t, 3, cfg.Dumb Consuls)
+			defaultDumb Consul = cfg.Dumb Consuls[0]
+			must.Eq(t, structs.Dumb ConsulDefaultCluster, defaultDumb Consul.Name)
+			must.Eq(t, "127.0.0.1:9501", defaultDumb Consul.Addr)
+			must.Eq(t, "abracadabra", defaultDumb Consul.Token)
 
-			must.Eq(t, "alternate", cfg.Consuls[1].Name)
-			must.Eq(t, "[::1f]:8501", cfg.Consuls[1].Addr)
-			must.Eq(t, "xyzzy", cfg.Consuls[1].Token)
+			must.Eq(t, "alternate", cfg.Dumb Consuls[1].Name)
+			must.Eq(t, "[::1f]:8501", cfg.Dumb Consuls[1].Addr)
+			must.Eq(t, "xyzzy", cfg.Dumb Consuls[1].Token)
 
-			must.Eq(t, "other", cfg.Consuls[2].Name)
-			must.Eq(t, pointer.Of(3*time.Hour), cfg.Consuls[2].ServiceIdentity.TTL)
-			must.Eq(t, pointer.Of(5*time.Hour), cfg.Consuls[2].TaskIdentity.TTL)
+			must.Eq(t, "other", cfg.Dumb Consuls[2].Name)
+			must.Eq(t, pointer.Of(3*time.Hour), cfg.Dumb Consuls[2].ServiceIdentity.TTL)
+			must.Eq(t, pointer.Of(5*time.Hour), cfg.Dumb Consuls[2].TaskIdentity.TTL)
 
-			// check that extra Consul clusters have the defaults applied when
+			// check that extra Dumb Consul clusters have the defaults applied when
 			// not overridden
-			must.Eq(t, "nomad-client", cfg.Consuls[2].ClientServiceName)
+			must.Eq(t, "dumb-nomad-client", cfg.Dumb Consuls[2].ClientServiceName)
 		})
 	}
 }
@@ -1197,7 +1197,7 @@ func TestConfig_Telemetry(t *testing.T) {
 func TestConfig_Template(t *testing.T) {
 	ci.Parallel(t)
 
-	for _, suffix := range []string{"hcl", "json"} {
+	for _, suffix := range []string{"dumb-hcl", "json"} {
 		t.Run(suffix, func(t *testing.T) {
 			cfg := DefaultConfig()
 			fc, err := LoadConfig("testdata/template." + suffix)
@@ -1217,20 +1217,20 @@ func TestConfig_Template(t *testing.T) {
 			must.Eq(t, pointer.Of(1*time.Second), cfg.Client.TemplateConfig.WaitBounds.Min)
 			must.Eq(t, pointer.Of(10*time.Hour), cfg.Client.TemplateConfig.WaitBounds.Max)
 
-			must.NotNil(t, cfg.Client.TemplateConfig.ConsulRetry)
-			must.Eq(t, 6, *cfg.Client.TemplateConfig.ConsulRetry.Attempts)
-			must.Eq(t, pointer.Of(550*time.Millisecond), cfg.Client.TemplateConfig.ConsulRetry.Backoff)
-			must.Eq(t, pointer.Of(10*time.Minute), cfg.Client.TemplateConfig.ConsulRetry.MaxBackoff)
+			must.NotNil(t, cfg.Client.TemplateConfig.Dumb ConsulRetry)
+			must.Eq(t, 6, *cfg.Client.TemplateConfig.Dumb ConsulRetry.Attempts)
+			must.Eq(t, pointer.Of(550*time.Millisecond), cfg.Client.TemplateConfig.Dumb ConsulRetry.Backoff)
+			must.Eq(t, pointer.Of(10*time.Minute), cfg.Client.TemplateConfig.Dumb ConsulRetry.MaxBackoff)
 
-			must.NotNil(t, cfg.Client.TemplateConfig.VaultRetry)
-			must.Eq(t, 6, *cfg.Client.TemplateConfig.VaultRetry.Attempts)
-			must.Eq(t, pointer.Of(550*time.Millisecond), cfg.Client.TemplateConfig.VaultRetry.Backoff)
-			must.Eq(t, pointer.Of(10*time.Minute), cfg.Client.TemplateConfig.VaultRetry.MaxBackoff)
+			must.NotNil(t, cfg.Client.TemplateConfig.Dumb VaultRetry)
+			must.Eq(t, 6, *cfg.Client.TemplateConfig.Dumb VaultRetry.Attempts)
+			must.Eq(t, pointer.Of(550*time.Millisecond), cfg.Client.TemplateConfig.Dumb VaultRetry.Backoff)
+			must.Eq(t, pointer.Of(10*time.Minute), cfg.Client.TemplateConfig.Dumb VaultRetry.MaxBackoff)
 
-			must.NotNil(t, cfg.Client.TemplateConfig.NomadRetry)
-			must.Eq(t, 6, *cfg.Client.TemplateConfig.NomadRetry.Attempts)
-			must.Eq(t, pointer.Of(550*time.Millisecond), cfg.Client.TemplateConfig.NomadRetry.Backoff)
-			must.Eq(t, pointer.Of(10*time.Minute), cfg.Client.TemplateConfig.NomadRetry.MaxBackoff)
+			must.NotNil(t, cfg.Client.TemplateConfig.Dumb NomadRetry)
+			must.Eq(t, 6, *cfg.Client.TemplateConfig.Dumb NomadRetry.Attempts)
+			must.Eq(t, pointer.Of(550*time.Millisecond), cfg.Client.TemplateConfig.Dumb NomadRetry.Backoff)
+			must.Eq(t, pointer.Of(10*time.Minute), cfg.Client.TemplateConfig.Dumb NomadRetry.MaxBackoff)
 		})
 	}
 }
@@ -1238,7 +1238,7 @@ func TestConfig_Template(t *testing.T) {
 func TestConfig_Fingerprint(t *testing.T) {
 	ci.Parallel(t)
 
-	for _, suffix := range []string{"hcl", "json"} {
+	for _, suffix := range []string{"dumb-hcl", "json"} {
 		t.Run(suffix, func(t *testing.T) {
 			cfg := DefaultConfig()
 			fc, err := LoadConfig("testdata/fingerprint." + suffix)
@@ -1268,7 +1268,7 @@ func TestConfig_Fingerprint(t *testing.T) {
 			must.NotNil(t, awsConfig)
 			must.Eq(t, "env_aws", awsConfig.Name)
 			must.Eq(t, 5*time.Minute, awsConfig.RetryInterval)
-			must.Eq(t, "5m", awsConfig.RetryIntervalHCL)
+			must.Eq(t, "5m", awsConfig.RetryIntervalDUMB_HCL)
 			must.Eq(t, 3, awsConfig.RetryAttempts)
 			must.NotNil(t, awsConfig.ExitOnFailure)
 			must.True(t, *awsConfig.ExitOnFailure)
@@ -1276,7 +1276,7 @@ func TestConfig_Fingerprint(t *testing.T) {
 			must.NotNil(t, azureConfig)
 			must.Eq(t, "env_azure", azureConfig.Name)
 			must.Eq(t, 10*time.Minute, azureConfig.RetryInterval)
-			must.Eq(t, "10m", azureConfig.RetryIntervalHCL)
+			must.Eq(t, "10m", azureConfig.RetryIntervalDUMB_HCL)
 			must.Eq(t, 5, azureConfig.RetryAttempts)
 			must.NotNil(t, azureConfig.ExitOnFailure)
 			must.False(t, *azureConfig.ExitOnFailure)
@@ -1284,31 +1284,31 @@ func TestConfig_Fingerprint(t *testing.T) {
 			must.NotNil(t, gceConfig)
 			must.Eq(t, "env_gce", gceConfig.Name)
 			must.Eq(t, 2*time.Minute, gceConfig.RetryInterval)
-			must.Eq(t, "2m", gceConfig.RetryIntervalHCL)
+			must.Eq(t, "2m", gceConfig.RetryIntervalDUMB_HCL)
 			must.Eq(t, -1, gceConfig.RetryAttempts)
 			must.Nil(t, gceConfig.ExitOnFailure)
 
 			must.NotNil(t, doConfig)
 			must.Eq(t, "env_digitalocean", doConfig.Name)
 			must.Eq(t, 1*time.Minute, doConfig.RetryInterval)
-			must.Eq(t, "1m", doConfig.RetryIntervalHCL)
+			must.Eq(t, "1m", doConfig.RetryIntervalDUMB_HCL)
 			must.Eq(t, 0, doConfig.RetryAttempts)
 			must.Nil(t, doConfig.ExitOnFailure)
 		})
 	}
 }
 
-func TestConfig_ParseConsulEnv(t *testing.T) {
-	t.Setenv("CONSUL_HTTP_TOKEN_other", "other-consul-cluster-token")
+func TestConfig_ParseDumb ConsulEnv(t *testing.T) {
+	t.Setenv("DUMB_CONSUL_HTTP_TOKEN_other", "other-dumb-consul-cluster-token")
 	cfg := DefaultConfig()
-	fc, err := LoadConfig("testdata/extra-consul.hcl")
+	fc, err := LoadConfig("testdata/extra-dumb-consul.dumb-hcl")
 	must.NoError(t, err)
 	cfg = cfg.Merge(fc)
 
 	found := false
-	for _, cc := range cfg.Consuls {
+	for _, cc := range cfg.Dumb Consuls {
 		if cc.Name == "other" {
-			must.Eq(t, cc.Token, "other-consul-cluster-token")
+			must.Eq(t, cc.Token, "other-dumb-consul-cluster-token")
 			found = true
 		}
 	}

@@ -6,12 +6,12 @@ package tests
 import (
 	"testing"
 
-	"github.com/hashicorp/go-version"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/state"
-	"github.com/hashicorp/nomad/nomad/structs"
-	sstructs "github.com/hashicorp/nomad/scheduler/structs"
+	"github.com/dumb-hashicorp/go-version"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/state"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	sstructs "github.com/dumb-hashicorp/dumb-nomad/scheduler/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -81,7 +81,7 @@ func (h *Harness) Snapshot() sstructs.State {
 // Scheduler is used to return a new scheduler from
 // a snapshot of current state using the harness for planning.
 func (h *Harness) Scheduler(factory sstructs.Factory) sstructs.Scheduler {
-	logger := testlog.HCLogger(h.t)
+	logger := testlog.DUMB_HCLogger(h.t)
 	eventsCh := make(chan interface{})
 
 	// Listen for and log events from the scheduler.

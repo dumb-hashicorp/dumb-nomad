@@ -10,14 +10,14 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/testutils"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
@@ -67,7 +67,7 @@ func TestNetworkHook_Prerun_Postrun_ExistingNetNS(t *testing.T) {
 			"plugins.cni.version.bridge": "1.6.1",
 		},
 		nodeMeta: map[string]string{},
-		logger:   testlog.HCLogger(t),
+		logger:   testlog.DUMB_HCLogger(t),
 		cni:      fakePlugin,
 		nsOpts:   &nsOpts{},
 	}
@@ -148,7 +148,7 @@ func TestNetworkHook_Prerun_Postrun_ExistingNetNS(t *testing.T) {
 			statusSetter.getCalls = 0
 			statusSetter.setCalls = 0
 			configurator.nodeAttrs["plugins.cni.version.bridge"] = tc.cniVersion
-			hook := newNetworkHook(testlog.HCLogger(t), isolationSetter,
+			hook := newNetworkHook(testlog.DUMB_HCLogger(t), isolationSetter,
 				alloc, nm, configurator, statusSetter)
 
 			err := hook.Prerun(env)

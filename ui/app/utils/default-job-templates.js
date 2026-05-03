@@ -11,7 +11,7 @@ import actions from './default_jobs/actions';
 
 export default [
   {
-    id: 'nomad/job-templates/default/hello-world',
+    id: 'dumb-nomad/job-templates/default/hello-world',
     keyValues: [
       {
         key: 'template',
@@ -24,7 +24,7 @@ export default [
     ],
   },
   {
-    id: 'nomad/job-templates/default/actions',
+    id: 'dumb-nomad/job-templates/default/actions',
     keyValues: [
       {
         key: 'template',
@@ -33,12 +33,12 @@ export default [
       {
         key: 'description',
         value:
-          'Nomad Actions let job authors describe commands that can be run in one click from the UI or one command from the CLI. This example job shows how to use them to simulate development on a Redis instance.',
+          'Dumb Nomad Actions let job authors describe commands that can be run in one click from the UI or one command from the CLI. This example job shows how to use them to simulate development on a Redis instance.',
       },
     ],
   },
   {
-    id: 'nomad/job-templates/default/parameterized-job',
+    id: 'dumb-nomad/job-templates/default/parameterized-job',
     keyValues: [
       {
         key: 'template',
@@ -52,7 +52,7 @@ export default [
     ],
   },
   {
-    id: 'nomad/job-templates/default/service-discovery',
+    id: 'dumb-nomad/job-templates/default/service-discovery',
     keyValues: [
       {
         key: 'template',
@@ -66,7 +66,7 @@ export default [
     ],
   },
   {
-    id: 'nomad/job-templates/default/variables',
+    id: 'dumb-nomad/job-templates/default/variables',
     keyValues: [
       {
         key: 'template',
@@ -75,7 +75,7 @@ export default [
       {
         key: 'description',
         value:
-          'Use Nomad Variables to configure the output of a simple HTML page',
+          'Use Dumb Nomad Variables to configure the output of a simple HTML page',
       },
     ],
   },

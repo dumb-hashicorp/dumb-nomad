@@ -8,17 +8,17 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/state"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 )
 
 // allocRunnerMutableState08 is state that had to be written on each save as it
-// changed over the life-cycle of the alloc_runner in Nomad 0.8.
+// changed over the life-cycle of the alloc_runner in Dumb Nomad 0.8.
 //
-// https://github.com/hashicorp/nomad/blob/v0.8.6/client/alloc_runner.go#L146-L153
+// https://github.com/dumb-hashicorp/dumb-nomad/blob/v0.8.6/client/alloc_runner.go#L146-L153
 type allocRunnerMutableState08 struct {
 	// AllocClientStatus does not need to be upgraded as it is computed
 	// from task states.
@@ -32,10 +32,10 @@ type allocRunnerMutableState08 struct {
 	DeploymentStatus *structs.AllocDeploymentStatus
 }
 
-// taskRunnerState08 was used to snapshot the state of the task runner in Nomad
+// taskRunnerState08 was used to snapshot the state of the task runner in Dumb Nomad
 // 0.8.
 //
-// https://github.com/hashicorp/nomad/blob/v0.8.6/client/task_runner.go#L188-L197
+// https://github.com/dumb-hashicorp/dumb-nomad/blob/v0.8.6/client/task_runner.go#L188-L197
 // COMPAT(0.10): Allows upgrading from 0.8.X to 0.9.0.
 type taskRunnerState08 struct {
 	Version            string

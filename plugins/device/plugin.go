@@ -6,11 +6,11 @@ package device
 import (
 	"context"
 
-	log "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/plugins/base"
-	bproto "github.com/hashicorp/nomad/plugins/base/proto"
-	"github.com/hashicorp/nomad/plugins/device/proto"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	bproto "github.com/dumb-hashicorp/dumb-nomad/plugins/base/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device/proto"
 	"google.golang.org/grpc"
 )
 

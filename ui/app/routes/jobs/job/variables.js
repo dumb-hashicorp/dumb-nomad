@@ -37,10 +37,10 @@ export default class JobsJobVariablesRoute extends Route {
 
     let allJobsVariablePromise = this.store
       .query('variable', {
-        path: 'nomad/jobs',
+        path: 'dumb-nomad/jobs',
       })
       .then((variables) => {
-        return variables.findBy('path', 'nomad/jobs');
+        return variables.findBy('path', 'dumb-nomad/jobs');
       })
       .catch((e) => {
         if (e.errors?.findBy('status', 404)) {

@@ -7,8 +7,8 @@ import (
 	"runtime"
 	"testing"
 
-	gsyslog "github.com/hashicorp/go-syslog"
-	"github.com/hashicorp/nomad/ci"
+	gsyslog "github.com/dumb-hashicorp/go-syslog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 

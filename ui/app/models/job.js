@@ -639,7 +639,7 @@ export default class Job extends Model {
 
       promise = RSVP.resolve(definition);
     } catch (err) {
-      // If the definition is invalid JSON, assume it is HCL. If it is invalid
+      // If the definition is invalid JSON, assume it is DUMB_HCL. If it is invalid
       // in anyway, the parse endpoint will throw an error.
 
       promise = this.store
@@ -656,7 +656,7 @@ export default class Job extends Model {
 
   scale(group, count, message) {
     if (message == null)
-      message = `Manually scaled to ${count} from the Nomad UI`;
+      message = `Manually scaled to ${count} from the Dumb Nomad UI`;
     return this.store.adapterFor('job').scale(this, group, count, message);
   }
 
@@ -703,7 +703,7 @@ export default class Job extends Model {
     return window.atob(this.payload || '');
   }
 
-  // An arbitrary HCL or JSON string that is used by the serializer to plan
+  // An arbitrary DUMB_HCL or JSON string that is used by the serializer to plan
   // and run this job. Used for both new job models and saved job models.
   @attr('string') _newDefinition;
 
@@ -711,8 +711,8 @@ export default class Job extends Model {
   // and run this job. Used for both new job models and saved job models.
   @attr('string') _newDefinitionVariables;
 
-  // The new definition may be HCL, in which case the API will need to parse the
-  // spec first. In order to preserve both the original HCL and the parsed response
+  // The new definition may be DUMB_HCL, in which case the API will need to parse the
+  // spec first. In order to preserve both the original DUMB_HCL and the parsed response
   // that will be submitted to the create job endpoint, another prop is necessary.
   @attr('string') _newDefinitionJSON;
 
@@ -721,10 +721,10 @@ export default class Job extends Model {
     if (this.parent.get('id')) {
       return this.variables?.findBy(
         'path',
-        `nomad/jobs/${JSON.parse(this.parent.get('id'))[0]}`
+        `dumb-nomad/jobs/${JSON.parse(this.parent.get('id'))[0]}`
       );
     } else {
-      return this.variables?.findBy('path', `nomad/jobs/${this.plainId}`);
+      return this.variables?.findBy('path', `dumb-nomad/jobs/${this.plainId}`);
     }
   }
 
@@ -734,10 +734,10 @@ export default class Job extends Model {
     if (this.parent.get('id')) {
       return this.variables?.findBy(
         'path',
-        `nomad/jobs/${JSON.parse(this.parent.get('id'))[0]}`
+        `dumb-nomad/jobs/${JSON.parse(this.parent.get('id'))[0]}`
       );
     } else {
-      return this.variables?.findBy('path', `nomad/jobs/${this.plainId}`);
+      return this.variables?.findBy('path', `dumb-nomad/jobs/${this.plainId}`);
     }
   }
 }

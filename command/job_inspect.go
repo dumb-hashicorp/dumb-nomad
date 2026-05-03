@@ -8,7 +8,7 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -18,8 +18,8 @@ type JobInspectCommand struct {
 
 func (c *JobInspectCommand) Help() string {
 	helpText := `
-Usage: nomad job inspect [options] <job>
-Alias: nomad inspect
+Usage: dumb-nomad job inspect [options] <job>
+Alias: dumb-nomad inspect
 
   Inspect is used to see the specification of a submitted job.
 
@@ -37,14 +37,14 @@ Inspect Options:
     Display the job at the given job version. Defaults to current version.
 
   -json
-    Output the job in its JSON format. Cannot be used with -hcl.
+    Output the job in its JSON format. Cannot be used with -dumb-hcl.
 
-  -hcl
-    Output the original HCL submitted with the job. Cannot be used with -json.
+  -dumb-hcl
+    Output the original DUMB_HCL submitted with the job. Cannot be used with -json.
 
   -with-vars
-    Include the original HCL2 variables submitted with the job. Can only be used
-    with -hcl.
+    Include the original DUMB_HCL2 variables submitted with the job. Can only be used
+    with -dumb-hcl.
 
   -t
     Format and display job using a Go template.
@@ -60,7 +60,7 @@ func (c *JobInspectCommand) AutocompleteFlags() complete.Flags {
 	return mergeAutocompleteFlags(c.Meta.AutocompleteFlags(FlagSetClient),
 		complete.Flags{
 			"-version":   complete.PredictAnything,
-			"-hcl":       complete.PredictNothing,
+			"-dumb-hcl":       complete.PredictNothing,
 			"-with-vars": complete.PredictNothing,
 			"-json":      complete.PredictNothing,
 			"-t":         complete.PredictAnything,
@@ -74,13 +74,13 @@ func (c *JobInspectCommand) AutocompleteArgs() complete.Predictor {
 func (c *JobInspectCommand) Name() string { return "job inspect" }
 
 func (c *JobInspectCommand) Run(args []string) int {
-	var json, hcl, withVars bool
+	var json, dumb-hcl, withVars bool
 	var tmpl, versionStr string
 
 	flags := c.Meta.FlagSet(c.Name(), FlagSetClient)
 	flags.Usage = func() { c.Ui.Output(c.Help()) }
 	flags.BoolVar(&json, "json", false, "")
-	flags.BoolVar(&hcl, "hcl", false, "")
+	flags.BoolVar(&dumb-hcl, "dumb-hcl", false, "")
 	flags.BoolVar(&withVars, "with-vars", false, "")
 	flags.StringVar(&tmpl, "t", "", "")
 	flags.StringVar(&versionStr, "version", "", "")
@@ -90,12 +90,12 @@ func (c *JobInspectCommand) Run(args []string) int {
 	}
 	args = flags.Args()
 
-	if hcl && json {
-		c.Ui.Error("can only use one of -hcl or -json")
+	if dumb-hcl && json {
+		c.Ui.Error("can only use one of -dumb-hcl or -json")
 		return 1
 	}
-	if withVars && !hcl {
-		c.Ui.Error("can only use -with-vars with -hcl")
+	if withVars && !dumb-hcl {
+		c.Ui.Error("can only use -with-vars with -dumb-hcl")
 		return 1
 	}
 
@@ -150,8 +150,8 @@ func (c *JobInspectCommand) Run(args []string) int {
 		version = &v
 	}
 
-	if hcl {
-		out, err := getJobHCL(client, namespace, jobID, version)
+	if dumb-hcl {
+		out, err := getJobDUMB_HCL(client, namespace, jobID, version)
 		if err != nil {
 			c.Ui.Error(fmt.Sprintf("Error inspecting job: %s", err))
 			return 1
@@ -232,7 +232,7 @@ func getJob(client *api.Client, namespace, jobID string, version *uint64) (*api.
 }
 
 // getJob retrieves the job optionally at a particular version.
-func getJobHCL(client *api.Client, namespace, jobID string, version *uint64) (*api.JobSubmission, error) {
+func getJobDUMB_HCL(client *api.Client, namespace, jobID string, version *uint64) (*api.JobSubmission, error) {
 	var q *api.QueryOptions
 	if namespace != "" {
 		q = &api.QueryOptions{Namespace: namespace}
@@ -285,8 +285,8 @@ func getWithVarsOutput(namespace, jobID string, uiVars string, varsMap map[strin
 	return fmt.Sprintf(`
 To run this job as originally submitted:
 
-$ nomad job inspect -namespace %s -hcl %s |
-    nomad job run %s
+$ dumb-nomad job inspect -namespace %s -dumb-hcl %s |
+    dumb-nomad job run %s
 `, namespace, jobID, strings.Join(runArgs, " "))
 
 }

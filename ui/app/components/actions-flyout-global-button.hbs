@@ -3,16 +3,16 @@
   SPDX-License-Identifier: BUSL-1.1
 ~}}
 
-{{#if this.nomadActions.actionsQueue.length}}
-  {{#unless this.nomadActions.flyoutActive}}
+{{#if this.dumb-nomadActions.actionsQueue.length}}
+  {{#unless this.dumb-nomadActions.flyoutActive}}
     <div class="actions-flyout-button"
-      {{keyboard-shortcut menuLevel=true pattern=(array "a" "c") action=(action this.nomadActions.openFlyout) }}
+      {{keyboard-shortcut menuLevel=true pattern=(array "a" "c") action=(action this.dumb-nomadActions.openFlyout) }}
     >
       <Hds::Button
-        {{on "click" this.nomadActions.openFlyout}}
-        disabled={{this.nomadActions.flyoutActive}}
-        @text={{if this.nomadActions.runningActions.length (concat this.nomadActions.runningActions.length " " (pluralize 'Action' this.nomadActions.runningActions.length) " Running") "Actions"}}
-        @icon={{if this.nomadActions.runningActions.length "loading" "chevron-right"}}
+        {{on "click" this.dumb-nomadActions.openFlyout}}
+        disabled={{this.dumb-nomadActions.flyoutActive}}
+        @text={{if this.dumb-nomadActions.runningActions.length (concat this.dumb-nomadActions.runningActions.length " " (pluralize 'Action' this.dumb-nomadActions.runningActions.length) " Running") "Actions"}}
+        @icon={{if this.dumb-nomadActions.runningActions.length "loading" "chevron-right"}}
         @iconPosition="trailing"
         @color="secondary"
       />

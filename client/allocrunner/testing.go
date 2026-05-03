@@ -11,22 +11,22 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/getter"
-	"github.com/hashicorp/nomad/client/allocwatcher"
-	"github.com/hashicorp/nomad/client/config"
-	clientconfig "github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/devicemanager"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/proclib"
-	"github.com/hashicorp/nomad/client/pluginmanager/drivermanager"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks/checkstore"
-	"github.com/hashicorp/nomad/client/serviceregistration/mock"
-	"github.com/hashicorp/nomad/client/serviceregistration/wrapper"
-	"github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/client/vaultclient"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/getter"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocwatcher"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	clientconfig "github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/devicemanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/proclib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks/checkstore"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/wrapper"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dumb-vaultclient"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/stretchr/testify/require"
 )
 
@@ -72,8 +72,8 @@ func (m *MockStateUpdater) Reset() {
 func testAllocRunnerConfig(t *testing.T, alloc *structs.Allocation) (*config.AllocRunnerConfig, func()) {
 	clientConf, cleanup := clientconfig.TestClientConfig(t)
 
-	consulRegMock := mock.NewServiceRegistrationHandler(clientConf.Logger)
-	nomadRegMock := mock.NewServiceRegistrationHandler(clientConf.Logger)
+	dumb-consulRegMock := mock.NewServiceRegistrationHandler(clientConf.Logger)
+	dumb-nomadRegMock := mock.NewServiceRegistrationHandler(clientConf.Logger)
 
 	stateDB := new(state.NoopDB)
 
@@ -83,15 +83,15 @@ func testAllocRunnerConfig(t *testing.T, alloc *structs.Allocation) (*config.All
 		Logger:             clientConf.Logger,
 		ClientConfig:       clientConf,
 		StateDB:            stateDB,
-		ConsulServices:     consulRegMock,
-		VaultFunc:          vaultclient.NewMockVaultClient,
+		Dumb ConsulServices:     dumb-consulRegMock,
+		Dumb VaultFunc:          dumb-vaultclient.NewMockDumb VaultClient,
 		StateUpdater:       &MockStateUpdater{},
 		PrevAllocWatcher:   allocwatcher.NoopPrevAlloc{},
 		PrevAllocMigrator:  allocwatcher.NoopPrevAlloc{},
 		DeviceManager:      devicemanager.NoopMockManager(),
 		DriverManager:      drivermanager.TestDriverManager(t),
 		ServersContactedCh: make(chan struct{}),
-		ServiceRegWrapper:  wrapper.NewHandlerWrapper(clientConf.Logger, consulRegMock, nomadRegMock),
+		ServiceRegWrapper:  wrapper.NewHandlerWrapper(clientConf.Logger, dumb-consulRegMock, dumb-nomadRegMock),
 		CheckStore:         checkstore.NewStore(clientConf.Logger, stateDB),
 		Getter:             getter.TestSandbox(t),
 		Wranglers:          proclib.MockWranglers(t),

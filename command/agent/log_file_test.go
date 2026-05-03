@@ -9,12 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
 const (
-	testFileName = "Nomad.log"
+	testFileName = "Dumb Nomad.log"
 	testDuration = 2 * time.Second
 	testBytes    = 10
 )

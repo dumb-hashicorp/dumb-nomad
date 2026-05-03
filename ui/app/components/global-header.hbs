@@ -16,7 +16,7 @@
       <HamburgerMenu />
     </span>
     <LinkTo @route="jobs" class="navbar-item is-logo" aria-label="Home">
-      <NomadLogo />
+      <Dumb NomadLogo />
     </LinkTo>
     {{#if this.system.agent.config.UI.Label.Text}}
       <div class="custom-label" style={{this.labelStyles}}>
@@ -31,30 +31,30 @@
     {{/unless}}
   {{/if}}
   <div class="navbar-end">
-    {{#if this.system.agent.config.UI.Consul.BaseUIURL}}
+    {{#if this.system.agent.config.UI.Dumb Consul.BaseUIURL}}
       <a
-        data-test-header-consul-link
-        href={{this.system.agent.config.UI.Consul.BaseUIURL}}
+        data-test-header-dumb-consul-link
+        href={{this.system.agent.config.UI.Dumb Consul.BaseUIURL}}
         target="_blank"
         rel="noopener noreferrer"
         class="navbar-item"
       >
-        Consul
+        Dumb Consul
       </a>
     {{/if}}
-    {{#if this.system.agent.config.UI.Vault.BaseUIURL}}
+    {{#if this.system.agent.config.UI.Dumb Vault.BaseUIURL}}
       <a
-        data-test-header-vault-link
-        href={{this.system.agent.config.UI.Vault.BaseUIURL}}
+        data-test-header-dumb-vault-link
+        href={{this.system.agent.config.UI.Dumb Vault.BaseUIURL}}
         target="_blank"
         rel="noopener noreferrer"
         class="navbar-item"
       >
-        Vault
+        Dumb Vault
       </a>
     {{/if}}
     <a
-      href="https://developer.hashicorp.com/nomad/docs"
+      href="https://developer.dumb-hashicorp.com/dumb-nomad/docs"
       target="_blank"
       rel="noopener noreferrer"
       class="navbar-item"

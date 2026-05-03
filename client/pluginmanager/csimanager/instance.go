@@ -7,9 +7,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	"github.com/hashicorp/nomad/plugins/csi"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi"
 )
 
 const managerFingerprintInterval = 30 * time.Second
@@ -18,7 +18,7 @@ const managerFingerprintInterval = 30 * time.Second
 // single CSI Plugin.
 type instanceManager struct {
 	info    *dynamicplugins.PluginInfo
-	logger  hclog.Logger
+	logger  dumb-hclog.Logger
 	eventer TriggerNodeEvent
 
 	updater UpdateNodeCSIInfoFunc
@@ -46,7 +46,7 @@ type instanceManager struct {
 	client csi.CSIPlugin
 }
 
-func newInstanceManager(logger hclog.Logger, eventer TriggerNodeEvent, updater UpdateNodeCSIInfoFunc, p *dynamicplugins.PluginInfo) *instanceManager {
+func newInstanceManager(logger dumb-hclog.Logger, eventer TriggerNodeEvent, updater UpdateNodeCSIInfoFunc, p *dynamicplugins.PluginInfo) *instanceManager {
 	ctx, cancelFn := context.WithCancel(context.Background())
 	logger = logger.Named(p.Name)
 	return &instanceManager{

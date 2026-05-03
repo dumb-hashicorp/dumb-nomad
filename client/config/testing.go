@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
 )
 
 // TestClientConfig returns a default client configuration for test clients and
@@ -22,7 +22,7 @@ import (
 func TestClientConfig(t testing.TB) (*Config, func()) {
 	conf := DefaultConfig()
 	conf.Node = mock.Node()
-	conf.Logger = testlog.HCLogger(t)
+	conf.Logger = testlog.DUMB_HCLogger(t)
 
 	// On macOS, os.TempDir returns a symlinked path under /var which
 	// is outside of the directories shared into the VM used for Docker.
@@ -35,7 +35,7 @@ func TestClientConfig(t testing.TB) (*Config, func()) {
 	tmpDir = filepath.Clean(tmpDir)
 
 	// Create a tempdir to hold state and alloc subdirs
-	parent, err := os.MkdirTemp(tmpDir, "nomadtest")
+	parent, err := os.MkdirTemp(tmpDir, "dumb-nomadtest")
 	if err != nil {
 		t.Fatalf("error creating client dir: %v", err)
 	}
@@ -43,9 +43,9 @@ func TestClientConfig(t testing.TB) (*Config, func()) {
 		os.RemoveAll(parent)
 	}
 
-	// Fixup nomadtest dir permissions
+	// Fixup dumb-nomadtest dir permissions
 	if err = os.Chmod(parent, 0777); err != nil {
-		t.Fatalf("error updating permissions on nomadtest dir")
+		t.Fatalf("error updating permissions on dumb-nomadtest dir")
 	}
 
 	allocDir := filepath.Join(parent, "allocs")
@@ -68,7 +68,7 @@ func TestClientConfig(t testing.TB) (*Config, func()) {
 	// Helps make sure we are respecting configured parent
 	conf.CgroupParent = "testing.slice"
 
-	conf.GetDefaultVault().Enabled = pointer.Of(false)
+	conf.GetDefaultDumb Vault().Enabled = pointer.Of(false)
 	conf.DevMode = true
 
 	// Loosen GC threshold

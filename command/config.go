@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type ConfigCommand struct {
@@ -15,14 +15,14 @@ type ConfigCommand struct {
 
 func (f *ConfigCommand) Help() string {
 	helpText := `
-Usage: nomad config <subcommand> [options] [args]
+Usage: dumb-nomad config <subcommand> [options] [args]
 
   This command groups subcommands for interacting with configurations.
-  Users can validate configurations for the Nomad agent.
+  Users can validate configurations for the Dumb Nomad agent.
 
   Validate configuration:
 
-      $ nomad config validate <config_path> [<config_path>...]
+      $ dumb-nomad config validate <config_path> [<config_path>...]
 
   Please see the individual subcommand help for detailed usage information.
 `

@@ -4,10 +4,10 @@
 package agent
 
 import (
-	"github.com/hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/go-set/v3"
 )
 
-// validLogLevels is the set of log level values that are valid for a Nomad
+// validLogLevels is the set of log level values that are valid for a Dumb Nomad
 // agent.
 var validLogLevels = set.From([]string{"TRACE", "DEBUG", "INFO", "WARN", "ERROR", "OFF"})
 

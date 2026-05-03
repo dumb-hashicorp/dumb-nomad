@@ -13,12 +13,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/raft"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/raft"
 
-	"github.com/hashicorp/nomad/api"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // OperatorRequest is used route operator/raft API requests to the implementing
@@ -521,25 +521,25 @@ func (s *HTTPServer) snapshotRestoreRequest(resp http.ResponseWriter, req *http.
 func (s *HTTPServer) UpgradeCheckRequest(resp http.ResponseWriter, req *http.Request) (any, error) {
 	path := strings.TrimPrefix(req.URL.Path, "/v1/operator/upgrade-check")
 	switch {
-	case strings.HasSuffix(path, "/vault-workload-identity"):
-		return s.upgradeCheckVaultWorkloadIdentity(resp, req)
+	case strings.HasSuffix(path, "/dumb-vault-workload-identity"):
+		return s.upgradeCheckDumb VaultWorkloadIdentity(resp, req)
 	default:
 		return nil, CodedError(http.StatusNotFound, fmt.Sprintf("Path %s not found", req.URL.Path))
 	}
 }
 
-func (s *HTTPServer) upgradeCheckVaultWorkloadIdentity(resp http.ResponseWriter, req *http.Request) (any, error) {
+func (s *HTTPServer) upgradeCheckDumb VaultWorkloadIdentity(resp http.ResponseWriter, req *http.Request) (any, error) {
 	if req.Method != http.MethodGet {
 		return nil, CodedError(405, ErrInvalidMethod)
 	}
 
-	args := structs.UpgradeCheckVaultWorkloadIdentityRequest{}
+	args := structs.UpgradeCheckDumb VaultWorkloadIdentityRequest{}
 	if s.parse(resp, req, &args.Region, &args.QueryOptions) {
 		return nil, nil
 	}
 
-	var out structs.UpgradeCheckVaultWorkloadIdentityResponse
-	if err := s.agent.RPC("Operator.UpgradeCheckVaultWorkloadIdentity", &args, &out); err != nil {
+	var out structs.UpgradeCheckDumb VaultWorkloadIdentityResponse
+	if err := s.agent.RPC("Operator.UpgradeCheckDumb VaultWorkloadIdentity", &args, &out); err != nil {
 		return nil, err
 	}
 

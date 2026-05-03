@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api/internal/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api/internal/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -39,7 +39,7 @@ func TestService_Canonicalize(t *testing.T) {
 	must.Eq(t, fmt.Sprintf("%s-%s-%s", *j.Name, *tg.Name, task.Name), s.Name)
 	must.Eq(t, "auto", s.AddressMode)
 	must.Eq(t, OnUpdateRequireHealthy, s.OnUpdate)
-	must.Eq(t, ServiceProviderConsul, s.Provider)
+	must.Eq(t, ServiceProviderDumb Consul, s.Provider)
 	must.Nil(t, s.Meta)
 	must.Nil(t, s.CanaryMeta)
 	must.Nil(t, s.TaggedAddresses)
@@ -158,10 +158,10 @@ func TestService_Connect_proxy_settings(t *testing.T) {
 	tg := &TaskGroup{Name: pointerOf("group")}
 	task := &Task{Name: "task"}
 	service := &Service{
-		Connect: &ConsulConnect{
-			SidecarService: &ConsulSidecarService{
-				Proxy: &ConsulProxy{
-					Upstreams: []*ConsulUpstream{
+		Connect: &Dumb ConsulConnect{
+			SidecarService: &Dumb ConsulSidecarService{
+				Proxy: &Dumb ConsulProxy{
+					Upstreams: []*Dumb ConsulUpstream{
 						{
 							DestinationName:  "upstream",
 							LocalBindPort:    80,

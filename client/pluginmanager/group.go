@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"sync"
 
-	log "github.com/hashicorp/go-hclog"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
 )
 
 // PluginGroup is a utility struct to manage a collectively orchestrate a

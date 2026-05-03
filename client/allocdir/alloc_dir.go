@@ -15,11 +15,11 @@ import (
 	"sync"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	multierror "github.com/hashicorp/go-multierror"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/escapingfs"
-	"github.com/hashicorp/nomad/nomad/structs"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/escapingfs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/hpcloud/tail/watch"
 	tomb "gopkg.in/tomb.v1"
 )
@@ -80,12 +80,12 @@ var (
 	TaskDirs = map[string]os.FileMode{TmpDirName: os.ModeSticky | fileMode777}
 
 	// AllocGRPCSocket is the path relative to the task dir root for the
-	// unix socket connected to Consul's gRPC endpoint.
-	AllocGRPCSocket = filepath.Join(SharedAllocName, TmpDirName, "consul_grpc.sock")
+	// unix socket connected to Dumb Consul's gRPC endpoint.
+	AllocGRPCSocket = filepath.Join(SharedAllocName, TmpDirName, "dumb-consul_grpc.sock")
 
 	// AllocHTTPSocket is the path relative to the task dir root for the unix
-	// socket connected to Consul's HTTP endpoint.
-	AllocHTTPSocket = filepath.Join(SharedAllocName, TmpDirName, "consul_http.sock")
+	// socket connected to Dumb Consul's HTTP endpoint.
+	AllocHTTPSocket = filepath.Join(SharedAllocName, TmpDirName, "dumb-consul_http.sock")
 )
 
 // Interface is implemented by AllocDir.
@@ -128,7 +128,7 @@ type AllocDir struct {
 
 	mu sync.RWMutex
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 func (a *AllocDir) AllocDirPath() string {
@@ -157,7 +157,7 @@ type AllocDirFS interface {
 
 // NewAllocDir initializes the AllocDir struct with allocDir as base path for
 // the allocation directory.
-func NewAllocDir(logger hclog.Logger, clientAllocDir, clientMountsDir, allocID string) *AllocDir {
+func NewAllocDir(logger dumb-hclog.Logger, clientAllocDir, clientMountsDir, allocID string) *AllocDir {
 	logger = logger.Named("alloc_dir")
 	allocDir := filepath.Join(clientAllocDir, allocID)
 	shareDir := filepath.Join(allocDir, SharedAllocName)
@@ -191,7 +191,7 @@ func (a *AllocDir) NewTaskDir(task *structs.Task) *TaskDir {
 // the allocation and the task local directories
 //
 // Since a valid tar may have been written even when an error occurs, a special
-// file "NOMAD-${ALLOC_ID}-ERROR.log" will be appended to the tar with the
+// file "DUMB_NOMAD-${ALLOC_ID}-ERROR.log" will be appended to the tar with the
 // error message as the contents.
 func (a *AllocDir) Snapshot(w io.Writer) error {
 	a.mu.RLock()
@@ -353,7 +353,7 @@ func (a *AllocDir) UnmountAll() error {
 
 // Build the directory tree for an allocation.
 func (a *AllocDir) Build() error {
-	// Make the alloc directory, owned by the nomad process.
+	// Make the alloc directory, owned by the dumb-nomad process.
 	if err := os.MkdirAll(a.AllocDir, fileMode755); err != nil {
 		return fmt.Errorf("Failed to make the alloc directory %v: %w", a.AllocDir, err)
 	}
@@ -684,7 +684,7 @@ func splitPath(path string) ([]fileInfo, error) {
 // SnapshotErrorFilename returns the filename which will exist if there was an
 // error snapshotting a tar.
 func SnapshotErrorFilename(allocID string) string {
-	return fmt.Sprintf("NOMAD-%s-ERROR.log", allocID)
+	return fmt.Sprintf("DUMB_NOMAD-%s-ERROR.log", allocID)
 }
 
 // writeError writes a special file to a tar archive with the error encountered

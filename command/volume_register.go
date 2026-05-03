@@ -9,8 +9,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/hcl"
-	"github.com/hashicorp/hcl/hcl/ast"
+	"github.com/dumb-hashicorp/dumb-hcl"
+	"github.com/dumb-hashicorp/dumb-hcl/dumb-hcl/ast"
 	"github.com/posener/complete"
 )
 
@@ -20,9 +20,9 @@ type VolumeRegisterCommand struct {
 
 func (c *VolumeRegisterCommand) Help() string {
 	helpText := `
-Usage: nomad volume register [options] <input>
+Usage: dumb-nomad volume register [options] <input>
 
-  Creates or updates a volume in Nomad. The volume must exist on the remote
+  Creates or updates a volume in Dumb Nomad. The volume must exist on the remote
   storage provider before it can be used by a task.
 
   If the supplied path is "-" the volume file is read from stdin. Otherwise, it
@@ -131,19 +131,19 @@ func (c *VolumeRegisterCommand) Run(args []string) int {
 	}
 }
 
-// parseVolume is used to parse the quota specification from HCL
+// parseVolume is used to parse the quota specification from DUMB_HCL
 func parseVolumeType(input string) (*ast.File, string, error) {
 	// Parse the AST first
-	ast, err := hcl.Parse(input)
+	ast, err := dumb-hcl.Parse(input)
 	if err != nil {
 		return nil, "", fmt.Errorf("parse error: %v", err)
 	}
 
 	// Decode the type, so we can dispatch on it
 	dispatch := &struct {
-		T string `hcl:"type"`
+		T string `dumb-hcl:"type"`
 	}{}
-	err = hcl.DecodeObject(dispatch, ast)
+	err = dumb-hcl.DecodeObject(dispatch, ast)
 	if err != nil {
 		return nil, "", fmt.Errorf("dispatch error: %v", err)
 	}

@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -120,7 +120,7 @@ func TestChecks_Stub(t *testing.T) {
 		ID:        "abc123",
 		Mode:      structs.Healthiness,
 		Status:    structs.CheckPending,
-		Output:    "nomad: waiting to run",
+		Output:    "dumb-nomad: waiting to run",
 		Timestamp: now,
 		Group:     "group",
 		Task:      "task",

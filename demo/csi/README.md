@@ -3,7 +3,7 @@
 This directory contains examples of registering CSI plugin jobs and volumes
 for those plugins.
 
-Contributions are welcome but demos are *not supported* by the core Nomad
+Contributions are welcome but demos are *not supported* by the core Dumb Nomad
 development team. Please tag demo authors when filing issues about CSI demos.
 
 ### Contributing
@@ -15,5 +15,5 @@ in this directory. This folder should include:
   plugin. Please include a link to the CSI plugin's source repository.
   * Add an `Author: @<Github Username>` field at the top so you can be tagged
     on issues.
-* A Nomad job file for the plugin.
-* A [volume specification](https://developer.hashicorp.com/nomad/commands/volume/register#volume-specification) file.
+* A Dumb Nomad job file for the plugin.
+* A [volume specification](https://developer.dumb-hashicorp.com/dumb-nomad/commands/volume/register#volume-specification) file.

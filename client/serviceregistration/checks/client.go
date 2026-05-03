@@ -16,16 +16,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	"github.com/hashicorp/nomad/helper/useragent"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-cleanhttp"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/useragent"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"oss.indeed.com/go/libtime"
 )
 
 const (
-	// maxTimeoutHTTP is a fail-safe value for the HTTP client, ensuring a Nomad
+	// maxTimeoutHTTP is a fail-safe value for the HTTP client, ensuring a Dumb Nomad
 	// Client does not leak goroutines hanging on to unresponsive endpoints.
 	maxTimeoutHTTP = 10 * time.Minute
 )
@@ -37,7 +37,7 @@ type Checker interface {
 }
 
 // New creates a new Checker capable of executing HTTP and TCP checks.
-func New(log hclog.Logger) Checker {
+func New(log dumb-hclog.Logger) Checker {
 	httpClient := cleanhttp.DefaultPooledClient()
 	httpClient.Timeout = maxTimeoutHTTP
 	return &checker{
@@ -48,7 +48,7 @@ func New(log hclog.Logger) Checker {
 }
 
 type checker struct {
-	log        hclog.Logger
+	log        dumb-hclog.Logger
 	clock      libtime.Clock
 	httpClient *http.Client
 }
@@ -137,7 +137,7 @@ func (c *checker) checkTCP(ctx context.Context, qc *QueryContext, q *Query) *str
 		return qr
 	}
 
-	qr.Output = "nomad: tcp ok"
+	qr.Output = "dumb-nomad: tcp ok"
 	qr.Status = structs.CheckSuccess
 	return qr
 }
@@ -171,7 +171,7 @@ func (c *checker) checkHTTP(ctx context.Context, qc *QueryContext, q *Query) *st
 
 	request, err := http.NewRequest(q.Method, u, nil)
 	if err != nil {
-		qr.Output = fmt.Sprintf("nomad: %s", err.Error())
+		qr.Output = fmt.Sprintf("dumb-nomad: %s", err.Error())
 		qr.Status = structs.CheckFailure
 		return qr
 	}
@@ -202,7 +202,7 @@ func (c *checker) checkHTTP(ctx context.Context, qc *QueryContext, q *Query) *st
 
 	result, err := c.httpClient.Do(request)
 	if err != nil {
-		qr.Output = fmt.Sprintf("nomad: %s", err.Error())
+		qr.Output = fmt.Sprintf("dumb-nomad: %s", err.Error())
 		qr.Status = structs.CheckFailure
 		return qr
 	}
@@ -219,7 +219,7 @@ func (c *checker) checkHTTP(ctx context.Context, qc *QueryContext, q *Query) *st
 		// The check output is ignored on success to prevent users from relying
 		// on their content since querying service check results is an
 		// expensive operation.
-		qr.Output = "nomad: http ok"
+		qr.Output = "dumb-nomad: http ok"
 		return qr
 	case result.StatusCode < http.StatusBadRequest:
 		qr.Status = structs.CheckSuccess
@@ -245,7 +245,7 @@ func limitRead(r io.Reader) string {
 	output := bytes.NewBuffer(b)
 	limited := io.LimitReader(r, outputSizeLimit)
 	if _, err := io.Copy(output, limited); err != nil {
-		return fmt.Sprintf("nomad: %s", err.Error())
+		return fmt.Sprintf("dumb-nomad: %s", err.Error())
 	}
 	return output.String()
 }

@@ -9,7 +9,7 @@ import { computed } from '@ember/object';
 // and will attempt to get its initial value from localStorage before
 // falling back to a default.
 //
-// ex. showTutorial: localStorageProperty('nomadTutorial', true),
+// ex. showTutorial: localStorageProperty('dumb-nomadTutorial', true),
 export default function localStorageProperty(localStorageKey, defaultValue) {
   return computed({
     get() {

@@ -4,7 +4,7 @@
 package drivers
 
 import (
-	cstructs "github.com/hashicorp/nomad/client/structs"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
 )
 
 // This files present an indirection layer to client structs used by drivers,

@@ -16,12 +16,12 @@ import (
 
 	"github.com/containerd/go-cni"
 	"github.com/containernetworking/cni/pkg/types"
-	"github.com/hashicorp/consul/sdk/iptables"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-consul/sdk/iptables"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
@@ -138,11 +138,11 @@ func TestSetup(t *testing.T) {
 			},
 			expectArgs: map[string]string{
 				"IgnoreUnknown":    "true",
-				"NOMAD_ALLOC_ID":   "7cd08c6c-86c8-0bfa-f7ca-338466447711",
-				"NOMAD_GROUP_NAME": "web",
-				"NOMAD_JOB_ID":     "mock-service",
-				"NOMAD_NAMESPACE":  "default",
-				"NOMAD_REGION":     "global",
+				"DUMB_NOMAD_ALLOC_ID":   "7cd08c6c-86c8-0bfa-f7ca-338466447711",
+				"DUMB_NOMAD_GROUP_NAME": "web",
+				"DUMB_NOMAD_JOB_ID":     "mock-service",
+				"DUMB_NOMAD_NAMESPACE":  "default",
+				"DUMB_NOMAD_REGION":     "global",
 			},
 		},
 		{
@@ -154,11 +154,11 @@ func TestSetup(t *testing.T) {
 			},
 			expectArgs: map[string]string{
 				"IgnoreUnknown":    "true",
-				"NOMAD_ALLOC_ID":   "7cd08c6c-86c8-0bfa-f7ca-338466447711",
-				"NOMAD_GROUP_NAME": "web",
-				"NOMAD_JOB_ID":     "mock-service",
-				"NOMAD_NAMESPACE":  "default",
-				"NOMAD_REGION":     "global",
+				"DUMB_NOMAD_ALLOC_ID":   "7cd08c6c-86c8-0bfa-f7ca-338466447711",
+				"DUMB_NOMAD_GROUP_NAME": "web",
+				"DUMB_NOMAD_JOB_ID":     "mock-service",
+				"DUMB_NOMAD_NAMESPACE":  "default",
+				"DUMB_NOMAD_REGION":     "global",
 			},
 		},
 		{
@@ -187,11 +187,11 @@ func TestSetup(t *testing.T) {
 				"IgnoreUnknown":    "true",
 				"first_arg":        "example",
 				"new_arg":          "example_2",
-				"NOMAD_ALLOC_ID":   "7cd08c6c-86c8-0bfa-f7ca-338466447711",
-				"NOMAD_GROUP_NAME": "web",
-				"NOMAD_JOB_ID":     "mock-service",
-				"NOMAD_NAMESPACE":  "default",
-				"NOMAD_REGION":     "global",
+				"DUMB_NOMAD_ALLOC_ID":   "7cd08c6c-86c8-0bfa-f7ca-338466447711",
+				"DUMB_NOMAD_GROUP_NAME": "web",
+				"DUMB_NOMAD_JOB_ID":     "mock-service",
+				"DUMB_NOMAD_NAMESPACE":  "default",
+				"DUMB_NOMAD_REGION":     "global",
 			},
 		},
 		{
@@ -206,9 +206,9 @@ func TestSetup(t *testing.T) {
 			},
 			expectArgs: map[string]string{
 				"IgnoreUnknown":    "true",
-				"NOMAD_ALLOC_ID":   "7cd08c6c-86c8-0bfa-f7ca-338466447711",
-				"NOMAD_GROUP_NAME": "web",
-				"NOMAD_REGION":     "global",
+				"DUMB_NOMAD_ALLOC_ID":   "7cd08c6c-86c8-0bfa-f7ca-338466447711",
+				"DUMB_NOMAD_GROUP_NAME": "web",
+				"DUMB_NOMAD_REGION":     "global",
 			},
 		},
 		{
@@ -232,8 +232,8 @@ func TestSetup(t *testing.T) {
 					},
 				}}
 				tg.Services[0].PortLabel = "http"
-				tg.Services[0].Connect.SidecarService.Proxy = &structs.ConsulProxy{
-					TransparentProxy: &structs.ConsulTransparentProxy{},
+				tg.Services[0].Connect.SidecarService.Proxy = &structs.Dumb ConsulProxy{
+					TransparentProxy: &structs.Dumb ConsulTransparentProxy{},
 				}
 			},
 			expectResult: &structs.AllocNetworkStatus{
@@ -246,19 +246,19 @@ func TestSetup(t *testing.T) {
 			expectArgs: map[string]string{
 				"IgnoreUnknown":          "true",
 				"extra_arg":              "example",
-				"CONSUL_IPTABLES_CONFIG": `{"ConsulDNSIP":"192.168.1.117","ConsulDNSPort":8600,"ProxyUserID":"101","ProxyInboundPort":9999,"ProxyOutboundPort":15001,"ExcludeInboundPorts":["9002"],"ExcludeOutboundPorts":null,"ExcludeOutboundCIDRs":null,"ExcludeUIDs":null,"NetNS":"/var/run/docker/netns/nonsense-ns","IptablesProvider":null}`,
-				"NOMAD_ALLOC_ID":         "7cd08c6c-86c8-0bfa-f7ca-338466447711",
-				"NOMAD_GROUP_NAME":       "web",
-				"NOMAD_JOB_ID":           "mock-service",
-				"NOMAD_NAMESPACE":        "default",
-				"NOMAD_REGION":           "global",
+				"DUMB_CONSUL_IPTABLES_CONFIG": `{"Dumb ConsulDNSIP":"192.168.1.117","Dumb ConsulDNSPort":8600,"ProxyUserID":"101","ProxyInboundPort":9999,"ProxyOutboundPort":15001,"ExcludeInboundPorts":["9002"],"ExcludeOutboundPorts":null,"ExcludeOutboundCIDRs":null,"ExcludeUIDs":null,"NetNS":"/var/run/docker/netns/nonsense-ns","IptablesProvider":null}`,
+				"DUMB_NOMAD_ALLOC_ID":         "7cd08c6c-86c8-0bfa-f7ca-338466447711",
+				"DUMB_NOMAD_GROUP_NAME":       "web",
+				"DUMB_NOMAD_JOB_ID":           "mock-service",
+				"DUMB_NOMAD_NAMESPACE":        "default",
+				"DUMB_NOMAD_REGION":           "global",
 			},
 		},
 	}
 
 	nodeAddrs := map[string]string{
-		"unique.consul.dns.addr": "192.168.1.117",
-		"consul.dns.port":        "8600",
+		"unique.dumb-consul.dns.addr": "192.168.1.117",
+		"dumb-consul.dns.port":        "8600",
 	}
 	nodeMeta := map[string]string{
 		"connect.transparent_proxy.default_outbound_port": "15001",
@@ -276,7 +276,7 @@ func TestSetup(t *testing.T) {
 			c := &cniNetworkConfigurator{
 				nodeAttrs: nodeAddrs,
 				nodeMeta:  nodeMeta,
-				logger:    testlog.HCLogger(t),
+				logger:    testlog.DUMB_HCLogger(t),
 				cni:       fakePlugin,
 				rand:      r,
 				nsOpts:    &nsOpts{},
@@ -314,14 +314,14 @@ func TestSetup(t *testing.T) {
 
 func TestCNI_forceCleanup(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
-		c := cniNetworkConfigurator{logger: testlog.HCLogger(t)}
+		c := cniNetworkConfigurator{logger: testlog.DUMB_HCLogger(t)}
 		ipt := &mockIPTablesCleanup{
 			listRules: []string{
 				`-A POSTROUTING -m comment --comment "CNI portfwd requiring masquerade" -j CNI-HOSTPORT-MASQ`,
 				`-A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE`,
-				`-A POSTROUTING -s 172.26.64.216/32 -m comment --comment "name: \"nomad\" id: \"79e8bf2e-a9c8-70ac-8d4e-fa5c4da99fbf\"" -j CNI-f2338c31d4de44472fe99c43`,
-				`-A POSTROUTING -s 172.26.64.217/32 -m comment --comment "name: \"nomad\" id: \"2dd71cac-2b1e-ff08-167c-735f7f9f4964\"" -j CNI-5d36f286cfbb35c5776509ec`,
-				`-A POSTROUTING -s 172.26.64.218/32 -m comment --comment "name: \"nomad\" id: \"5ff6deb7-9bc1-1491-f20c-e87b15de501d\"" -j CNI-2fe7686eac2fe43714a7b850`,
+				`-A POSTROUTING -s 172.26.64.216/32 -m comment --comment "name: \"dumb-nomad\" id: \"79e8bf2e-a9c8-70ac-8d4e-fa5c4da99fbf\"" -j CNI-f2338c31d4de44472fe99c43`,
+				`-A POSTROUTING -s 172.26.64.217/32 -m comment --comment "name: \"dumb-nomad\" id: \"2dd71cac-2b1e-ff08-167c-735f7f9f4964\"" -j CNI-5d36f286cfbb35c5776509ec`,
+				`-A POSTROUTING -s 172.26.64.218/32 -m comment --comment "name: \"dumb-nomad\" id: \"5ff6deb7-9bc1-1491-f20c-e87b15de501d\"" -j CNI-2fe7686eac2fe43714a7b850`,
 				`-A POSTROUTING -m mark --mark 0x2000/0x2000 -j MASQUERADE`,
 				`-A POSTROUTING -m comment --comment "CNI portfwd masquerade mark" -j MARK --set-xmark 0x2000/0x2000`,
 			},
@@ -344,14 +344,14 @@ func TestCNI_forceCleanup(t *testing.T) {
 	})
 
 	t.Run("missing allocation", func(t *testing.T) {
-		c := cniNetworkConfigurator{logger: testlog.HCLogger(t)}
+		c := cniNetworkConfigurator{logger: testlog.DUMB_HCLogger(t)}
 		ipt := &mockIPTablesCleanup{
 			listRules: []string{
 				`-A POSTROUTING -m comment --comment "CNI portfwd requiring masquerade" -j CNI-HOSTPORT-MASQ`,
 				`-A POSTROUTING -s 172.17.0.0/16 ! -o docker0 -j MASQUERADE`,
-				`-A POSTROUTING -s 172.26.64.216/32 -m comment --comment "name: \"nomad\" id: \"79e8bf2e-a9c8-70ac-8d4e-fa5c4da99fbf\"" -j CNI-f2338c31d4de44472fe99c43`,
-				`-A POSTROUTING -s 172.26.64.217/32 -m comment --comment "name: \"nomad\" id: \"262d57a7-8f85-f3a4-9c3b-120c00ccbff1\"" -j CNI-5d36f286cfbb35c5776509ec`,
-				`-A POSTROUTING -s 172.26.64.218/32 -m comment --comment "name: \"nomad\" id: \"5ff6deb7-9bc1-1491-f20c-e87b15de501d\"" -j CNI-2fe7686eac2fe43714a7b850`,
+				`-A POSTROUTING -s 172.26.64.216/32 -m comment --comment "name: \"dumb-nomad\" id: \"79e8bf2e-a9c8-70ac-8d4e-fa5c4da99fbf\"" -j CNI-f2338c31d4de44472fe99c43`,
+				`-A POSTROUTING -s 172.26.64.217/32 -m comment --comment "name: \"dumb-nomad\" id: \"262d57a7-8f85-f3a4-9c3b-120c00ccbff1\"" -j CNI-5d36f286cfbb35c5776509ec`,
+				`-A POSTROUTING -s 172.26.64.218/32 -m comment --comment "name: \"dumb-nomad\" id: \"5ff6deb7-9bc1-1491-f20c-e87b15de501d\"" -j CNI-2fe7686eac2fe43714a7b850`,
 				`-A POSTROUTING -m mark --mark 0x2000/0x2000 -j MASQUERADE`,
 				`-A POSTROUTING -m comment --comment "CNI portfwd masquerade mark" -j MARK --set-xmark 0x2000/0x2000`,
 			},
@@ -361,18 +361,18 @@ func TestCNI_forceCleanup(t *testing.T) {
 	})
 
 	t.Run("list error", func(t *testing.T) {
-		c := cniNetworkConfigurator{logger: testlog.HCLogger(t)}
+		c := cniNetworkConfigurator{logger: testlog.DUMB_HCLogger(t)}
 		ipt := &mockIPTablesCleanup{listErr: errors.New("list error")}
 		err := c.forceCleanup(ipt, "2dd71cac-2b1e-ff08-167c-735f7f9f4964")
 		must.EqError(t, err, "failed to list iptables rules: list error")
 	})
 
 	t.Run("delete error", func(t *testing.T) {
-		c := cniNetworkConfigurator{logger: testlog.HCLogger(t)}
+		c := cniNetworkConfigurator{logger: testlog.DUMB_HCLogger(t)}
 		ipt := &mockIPTablesCleanup{
 			deleteErr: errors.New("delete error"),
 			listRules: []string{
-				`-A POSTROUTING -s 172.26.64.217/32 -m comment --comment "name: \"nomad\" id: \"2dd71cac-2b1e-ff08-167c-735f7f9f4964\"" -j CNI-5d36f286cfbb35c5776509ec`,
+				`-A POSTROUTING -s 172.26.64.217/32 -m comment --comment "name: \"dumb-nomad\" id: \"2dd71cac-2b1e-ff08-167c-735f7f9f4964\"" -j CNI-5d36f286cfbb35c5776509ec`,
 			},
 		}
 		err := c.forceCleanup(ipt, "2dd71cac-2b1e-ff08-167c-735f7f9f4964")
@@ -380,11 +380,11 @@ func TestCNI_forceCleanup(t *testing.T) {
 	})
 
 	t.Run("clear error", func(t *testing.T) {
-		c := cniNetworkConfigurator{logger: testlog.HCLogger(t)}
+		c := cniNetworkConfigurator{logger: testlog.DUMB_HCLogger(t)}
 		ipt := &mockIPTablesCleanup{
 			clearErr: errors.New("clear error"),
 			listRules: []string{
-				`-A POSTROUTING -s 172.26.64.217/32 -m comment --comment "name: \"nomad\" id: \"2dd71cac-2b1e-ff08-167c-735f7f9f4964\"" -j CNI-5d36f286cfbb35c5776509ec`,
+				`-A POSTROUTING -s 172.26.64.217/32 -m comment --comment "name: \"dumb-nomad\" id: \"2dd71cac-2b1e-ff08-167c-735f7f9f4964\"" -j CNI-5d36f286cfbb35c5776509ec`,
 			},
 		}
 		err := c.forceCleanup(ipt, "2dd71cac-2b1e-ff08-167c-735f7f9f4964")
@@ -401,7 +401,7 @@ func TestCNI_cniToAllocNet_NoInterfaces(t *testing.T) {
 
 	// Only need a logger
 	c := &cniNetworkConfigurator{
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 	allocNet, err := c.cniToAllocNet(cniResult)
 	require.Error(t, err)
@@ -431,7 +431,7 @@ func TestCNI_cniToAllocNet_Fallback(t *testing.T) {
 
 	// Only need a logger
 	c := &cniNetworkConfigurator{
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 	allocNet, err := c.cniToAllocNet(cniResult)
 	must.NoError(t, err)
@@ -442,7 +442,7 @@ func TestCNI_cniToAllocNet_Fallback(t *testing.T) {
 }
 
 // TestCNI_cniToAllocNet_Invalid asserts an error is returned if a CNI plugin
-// result lacks any IP addresses. This has not been observed, but Nomad still
+// result lacks any IP addresses. This has not been observed, but Dumb Nomad still
 // must guard against invalid results from external plugins.
 func TestCNI_cniToAllocNet_Invalid(t *testing.T) {
 	ci.Parallel(t)
@@ -458,7 +458,7 @@ func TestCNI_cniToAllocNet_Invalid(t *testing.T) {
 
 	// Only need a logger
 	c := &cniNetworkConfigurator{
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 	allocNet, err := c.cniToAllocNet(cniResult)
 	require.Error(t, err)
@@ -488,7 +488,7 @@ func TestCNI_cniToAllocNet_Dualstack(t *testing.T) {
 	}
 
 	c := &cniNetworkConfigurator{
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 	allocNet, err := c.cniToAllocNet(cniResult)
 	must.NoError(t, err)
@@ -507,7 +507,7 @@ func TestCNI_cniToAllocNet_IPv6Only(t *testing.T) {
 	cniResult := &cni.Result{
 		Interfaces: map[string]*cni.Config{
 			"eth0": {
-				Sandbox: "nomad-sandbox",
+				Sandbox: "dumb-nomad-sandbox",
 				IPConfigs: []*cni.IPConfig{
 					{IP: net.ParseIP("fd00:a110:c8::b")}, // only IPv6
 				},
@@ -516,7 +516,7 @@ func TestCNI_cniToAllocNet_IPv6Only(t *testing.T) {
 	}
 
 	c := &cniNetworkConfigurator{
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 	allocNet, err := c.cniToAllocNet(cniResult)
 	must.NoError(t, err)
@@ -535,7 +535,7 @@ func TestCNI_cniToAllocNet_IPv6Only_MultipleAddresses(t *testing.T) {
 	cniResult := &cni.Result{
 		Interfaces: map[string]*cni.Config{
 			"eth0": {
-				Sandbox: "nomad-sandbox",
+				Sandbox: "dumb-nomad-sandbox",
 				IPConfigs: []*cni.IPConfig{
 					{IP: net.ParseIP("fd00:a110:c8::1")}, // first IPv6 - should be selected
 					{IP: net.ParseIP("fd00:a110:c8::2")}, // second IPv6
@@ -546,7 +546,7 @@ func TestCNI_cniToAllocNet_IPv6Only_MultipleAddresses(t *testing.T) {
 	}
 
 	c := &cniNetworkConfigurator{
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 	allocNet, err := c.cniToAllocNet(cniResult)
 	must.NoError(t, err)
@@ -564,7 +564,7 @@ func TestCNI_cniToAllocNet_Dualstack_MultipleAddresses(t *testing.T) {
 	cniResult := &cni.Result{
 		Interfaces: map[string]*cni.Config{
 			"eth0": {
-				Sandbox: "nomad-sandbox",
+				Sandbox: "dumb-nomad-sandbox",
 				IPConfigs: []*cni.IPConfig{
 					{IP: net.IPv4(192, 168, 1, 10)},      // first IPv4 - should be selected
 					{IP: net.ParseIP("fd00:a110:c8::1")}, // first IPv6 - should be selected
@@ -576,7 +576,7 @@ func TestCNI_cniToAllocNet_Dualstack_MultipleAddresses(t *testing.T) {
 	}
 
 	c := &cniNetworkConfigurator{
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 	allocNet, err := c.cniToAllocNet(cniResult)
 	must.NoError(t, err)
@@ -595,13 +595,13 @@ func TestCNI_cniToAllocNet_MultipleInterfaces_IPv6First(t *testing.T) {
 	cniResult := &cni.Result{
 		Interfaces: map[string]*cni.Config{
 			"eth0": {
-				Sandbox: "nomad-sandbox",
+				Sandbox: "dumb-nomad-sandbox",
 				IPConfigs: []*cni.IPConfig{
 					{IP: net.ParseIP("fd00:a110:c8::1")}, // IPv6 only on first interface
 				},
 			},
 			"eth1": {
-				Sandbox: "nomad-sandbox",
+				Sandbox: "dumb-nomad-sandbox",
 				IPConfigs: []*cni.IPConfig{
 					{IP: net.IPv4(192, 168, 1, 10)}, // IPv4 on second interface
 				},
@@ -610,7 +610,7 @@ func TestCNI_cniToAllocNet_MultipleInterfaces_IPv6First(t *testing.T) {
 	}
 
 	c := &cniNetworkConfigurator{
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 	allocNet, err := c.cniToAllocNet(cniResult)
 	must.NoError(t, err)
@@ -628,14 +628,14 @@ func TestCNI_cniToAllocNet_MultipleInterfaces_IPv6OnMultiple(t *testing.T) {
 	cniResult := &cni.Result{
 		Interfaces: map[string]*cni.Config{
 			"eth0": {
-				Sandbox: "nomad-sandbox",
+				Sandbox: "dumb-nomad-sandbox",
 				IPConfigs: []*cni.IPConfig{
 					{IP: net.ParseIP("fd00:a110:c8::1")},
 					{IP: net.ParseIP("fd00:a110:c8::2")}, // multiple on first interface
 				},
 			},
 			"eth1": {
-				Sandbox: "nomad-sandbox",
+				Sandbox: "dumb-nomad-sandbox",
 				IPConfigs: []*cni.IPConfig{
 					{IP: net.ParseIP("fd00:b220:c8::1")}, // different IPv6 on second interface
 				},
@@ -644,7 +644,7 @@ func TestCNI_cniToAllocNet_MultipleInterfaces_IPv6OnMultiple(t *testing.T) {
 	}
 
 	c := &cniNetworkConfigurator{
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 	allocNet, err := c.cniToAllocNet(cniResult)
 	must.NoError(t, err)
@@ -710,8 +710,8 @@ func TestCNI_setupTproxyArgs(t *testing.T) {
 	}
 
 	nodeAttrs := map[string]string{
-		"unique.consul.dns.addr": "192.168.1.117",
-		"consul.dns.port":        "8600",
+		"unique.dumb-consul.dns.addr": "192.168.1.117",
+		"dumb-consul.dns.port":        "8600",
 	}
 
 	alloc := mock.ConnectAlloc()
@@ -772,11 +772,11 @@ func TestCNI_setupTproxyArgs(t *testing.T) {
 		},
 	}}
 	tg.Services[0].PortLabel = "9002"
-	tg.Services[0].Connect.SidecarService.Proxy = &structs.ConsulProxy{
+	tg.Services[0].Connect.SidecarService.Proxy = &structs.Dumb ConsulProxy{
 		LocalServiceAddress: "",
 		LocalServicePort:    0,
-		Upstreams:           []structs.ConsulUpstream{},
-		Expose:              &structs.ConsulExposeConfig{},
+		Upstreams:           []structs.Dumb ConsulUpstream{},
+		Expose:              &structs.Dumb ConsulExposeConfig{},
 		Config:              map[string]interface{}{},
 	}
 
@@ -792,8 +792,8 @@ func TestCNI_setupTproxyArgs(t *testing.T) {
 	testCases := []struct {
 		name           string
 		cluster        string
-		tproxySpec     *structs.ConsulTransparentProxy
-		exposeSpec     *structs.ConsulExposeConfig
+		tproxySpec     *structs.Dumb ConsulTransparentProxy
+		exposeSpec     *structs.Dumb ConsulExposeConfig
 		nodeAttrs      map[string]string
 		expectIPConfig *iptables.Config
 		expectErr      string
@@ -803,10 +803,10 @@ func TestCNI_setupTproxyArgs(t *testing.T) {
 		},
 		{
 			name:       "minimal empty tproxy spec returns defaults",
-			tproxySpec: &structs.ConsulTransparentProxy{},
+			tproxySpec: &structs.Dumb ConsulTransparentProxy{},
 			expectIPConfig: &iptables.Config{
-				ConsulDNSIP:         "192.168.1.117",
-				ConsulDNSPort:       8600,
+				Dumb ConsulDNSIP:         "192.168.1.117",
+				Dumb ConsulDNSPort:       8600,
 				ProxyUserID:         "101",
 				ProxyInboundPort:    25018,
 				ProxyOutboundPort:   15001,
@@ -816,7 +816,7 @@ func TestCNI_setupTproxyArgs(t *testing.T) {
 		},
 		{
 			name: "tproxy spec with overrides",
-			tproxySpec: &structs.ConsulTransparentProxy{
+			tproxySpec: &structs.Dumb ConsulTransparentProxy{
 				UID:                  "1001",
 				OutboundPort:         16001,
 				ExcludeInboundPorts:  []string{"http", "9000"},
@@ -838,9 +838,9 @@ func TestCNI_setupTproxyArgs(t *testing.T) {
 		},
 		{
 			name:       "tproxy with exposed checks",
-			tproxySpec: &structs.ConsulTransparentProxy{},
-			exposeSpec: &structs.ConsulExposeConfig{
-				Paths: []structs.ConsulExposePath{{
+			tproxySpec: &structs.Dumb ConsulTransparentProxy{},
+			exposeSpec: &structs.Dumb ConsulExposeConfig{
+				Paths: []structs.Dumb ConsulExposePath{{
 					Path:          "/v1/example",
 					Protocol:      "http",
 					LocalPathPort: 9000,
@@ -848,8 +848,8 @@ func TestCNI_setupTproxyArgs(t *testing.T) {
 				}},
 			},
 			expectIPConfig: &iptables.Config{
-				ConsulDNSIP:         "192.168.1.117",
-				ConsulDNSPort:       8600,
+				Dumb ConsulDNSIP:         "192.168.1.117",
+				Dumb ConsulDNSPort:       8600,
 				ProxyUserID:         "101",
 				ProxyInboundPort:    25018,
 				ProxyOutboundPort:   15001,
@@ -858,9 +858,9 @@ func TestCNI_setupTproxyArgs(t *testing.T) {
 			},
 		},
 		{
-			name:       "tproxy with no consul dns fingerprint",
+			name:       "tproxy with no dumb-consul dns fingerprint",
 			nodeAttrs:  map[string]string{},
-			tproxySpec: &structs.ConsulTransparentProxy{},
+			tproxySpec: &structs.Dumb ConsulTransparentProxy{},
 			expectIPConfig: &iptables.Config{
 				ProxyUserID:         "101",
 				ProxyInboundPort:    25018,
@@ -870,12 +870,12 @@ func TestCNI_setupTproxyArgs(t *testing.T) {
 			},
 		},
 		{
-			name: "tproxy with consul dns disabled",
+			name: "tproxy with dumb-consul dns disabled",
 			nodeAttrs: map[string]string{
-				"consul.dns.port":        "-1",
-				"unique.consul.dns.addr": "192.168.1.117",
+				"dumb-consul.dns.port":        "-1",
+				"unique.dumb-consul.dns.addr": "192.168.1.117",
 			},
-			tproxySpec: &structs.ConsulTransparentProxy{},
+			tproxySpec: &structs.Dumb ConsulTransparentProxy{},
 			expectIPConfig: &iptables.Config{
 				ProxyUserID:         "101",
 				ProxyInboundPort:    25018,
@@ -885,18 +885,18 @@ func TestCNI_setupTproxyArgs(t *testing.T) {
 			},
 		},
 		{
-			name:    "tproxy for other cluster with default consul dns disabled",
+			name:    "tproxy for other cluster with default dumb-consul dns disabled",
 			cluster: "infra",
 			nodeAttrs: map[string]string{
-				"consul.dns.port":              "-1",
-				"unique.consul.dns.addr":       "192.168.1.110",
-				"consul.infra.dns.port":        "8600",
-				"unique.consul.infra.dns.addr": "192.168.1.117",
+				"dumb-consul.dns.port":              "-1",
+				"unique.dumb-consul.dns.addr":       "192.168.1.110",
+				"dumb-consul.infra.dns.port":        "8600",
+				"unique.dumb-consul.infra.dns.addr": "192.168.1.117",
 			},
-			tproxySpec: &structs.ConsulTransparentProxy{},
+			tproxySpec: &structs.Dumb ConsulTransparentProxy{},
 			expectIPConfig: &iptables.Config{
-				ConsulDNSIP:         "192.168.1.117",
-				ConsulDNSPort:       8600,
+				Dumb ConsulDNSIP:         "192.168.1.117",
+				Dumb ConsulDNSPort:       8600,
 				ProxyUserID:         "101",
 				ProxyInboundPort:    25018,
 				ProxyOutboundPort:   15001,
@@ -915,7 +915,7 @@ func TestCNI_setupTproxyArgs(t *testing.T) {
 			c := &cniNetworkConfigurator{
 				nodeAttrs: nodeAttrs,
 				nodeMeta:  nodeMeta,
-				logger:    testlog.HCLogger(t),
+				logger:    testlog.DUMB_HCLogger(t),
 			}
 			if tc.nodeAttrs != nil {
 				c.nodeAttrs = tc.nodeAttrs

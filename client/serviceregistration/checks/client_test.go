@@ -15,11 +15,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/useragent"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/useragent"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"oss.indeed.com/go/libtime/libtimetest"
 )
@@ -143,7 +143,7 @@ func TestChecker_Do_HTTP(t *testing.T) {
 			structs.Healthiness,
 			structs.CheckSuccess,
 			http.StatusOK,
-			"nomad: http ok",
+			"dumb-nomad: http ok",
 		),
 	}, {
 		name: "200 readiness",
@@ -153,7 +153,7 @@ func TestChecker_Do_HTTP(t *testing.T) {
 			structs.Readiness,
 			structs.CheckSuccess,
 			http.StatusOK,
-			"nomad: http ok",
+			"dumb-nomad: http ok",
 		),
 	}, {
 		name: "500 healthiness",
@@ -173,7 +173,7 @@ func TestChecker_Do_HTTP(t *testing.T) {
 			structs.Healthiness,
 			structs.CheckFailure,
 			0,
-			fmt.Sprintf(`nomad: Get "%s/hang": context deadline exceeded`, ts.URL),
+			fmt.Sprintf(`dumb-nomad: Get "%s/hang": context deadline exceeded`, ts.URL),
 		),
 	}, {
 		name: "500 truncate",
@@ -203,13 +203,13 @@ func TestChecker_Do_HTTP(t *testing.T) {
 			structs.Healthiness,
 			structs.CheckSuccess,
 			http.StatusOK,
-			"nomad: http ok",
+			"dumb-nomad: http ok",
 		),
 	}}
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			logger := testlog.HCLogger(t)
+			logger := testlog.DUMB_HCLogger(t)
 
 			c := New(logger)
 			c.(*checker).clock = clock
@@ -359,7 +359,7 @@ func TestChecker_Do_HTTP_extras(t *testing.T) {
 		}
 
 		t.Run(tc.name, func(t *testing.T) {
-			logger := testlog.HCLogger(t)
+			logger := testlog.DUMB_HCLogger(t)
 			c := New(logger)
 			ctx := context.Background()
 			result := c.Do(ctx, qc, q)
@@ -419,7 +419,7 @@ func TestChecker_Do_HTTPS_TLS(t *testing.T) {
 			name:                 "tls skip verify true",
 			inputTLSSkipVerify:   true,
 			expectedStatusCode:   http.StatusOK,
-			expectedResultOutput: "nomad: http ok",
+			expectedResultOutput: "dumb-nomad: http ok",
 		},
 		{
 			name:                 "tls skip verify false",
@@ -458,7 +458,7 @@ func TestChecker_Do_HTTPS_TLS(t *testing.T) {
 
 		t.Run(tc.name, func(t *testing.T) {
 
-			c := New(testlog.HCLogger(t))
+			c := New(testlog.DUMB_HCLogger(t))
 			c.(*checker).clock = clock
 
 			result := c.Do(context.Background(), queryContext, queryImpl)
@@ -540,7 +540,7 @@ func TestChecker_Do_TCP(t *testing.T) {
 		expResult: makeExpResult(
 			structs.Healthiness,
 			structs.CheckSuccess,
-			"nomad: tcp ok",
+			"dumb-nomad: tcp ok",
 		),
 	}, {
 		name:    "tcp not listening",
@@ -568,7 +568,7 @@ func TestChecker_Do_TCP(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			logger := testlog.HCLogger(t)
+			logger := testlog.DUMB_HCLogger(t)
 
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()

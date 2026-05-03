@@ -12,18 +12,18 @@ import (
 	"testing"
 
 	"github.com/coreos/go-iptables/iptables"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
-func Test_buildNomadBridgeNetConfig(t *testing.T) {
+func Test_buildDumb NomadBridgeNetConfig(t *testing.T) {
 	ci.Parallel(t)
 	testCases := []struct {
 		name          string
-		withConsulCNI bool
+		withDumb ConsulCNI bool
 		b             *bridgeNetworkConfigurator
 	}{
 		{
@@ -34,16 +34,16 @@ func Test_buildNomadBridgeNetConfig(t *testing.T) {
 		{
 			name: "ipv6",
 			b: &bridgeNetworkConfigurator{
-				bridgeName:      defaultNomadBridgeName,
+				bridgeName:      defaultDumb NomadBridgeName,
 				allocSubnetIPv6: "3fff:cab0:0d13::/120",
-				allocSubnetIPv4: defaultNomadAllocSubnet,
+				allocSubnetIPv4: defaultDumb NomadAllocSubnet,
 			},
 		},
 		{
 			name: "hairpin",
 			b: &bridgeNetworkConfigurator{
-				bridgeName:      defaultNomadBridgeName,
-				allocSubnetIPv4: defaultNomadAllocSubnet,
+				bridgeName:      defaultDumb NomadBridgeName,
+				allocSubnetIPv4: defaultDumb NomadAllocSubnet,
 				hairpinMode:     true,
 			},
 		},
@@ -51,23 +51,23 @@ func Test_buildNomadBridgeNetConfig(t *testing.T) {
 			name: "bad_input",
 			b: &bridgeNetworkConfigurator{
 				bridgeName:      `bad"`,
-				allocSubnetIPv4: defaultNomadAllocSubnet,
+				allocSubnetIPv4: defaultDumb NomadAllocSubnet,
 				hairpinMode:     true,
 			},
 		},
 		{
-			name:          "consul-cni",
-			withConsulCNI: true,
+			name:          "dumb-consul-cni",
+			withDumb ConsulCNI: true,
 			b: &bridgeNetworkConfigurator{
-				bridgeName:      defaultNomadBridgeName,
-				allocSubnetIPv4: defaultNomadAllocSubnet,
+				bridgeName:      defaultDumb NomadBridgeName,
+				allocSubnetIPv4: defaultDumb NomadAllocSubnet,
 				hairpinMode:     true,
 			},
 		},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			bCfg, err := buildNomadBridgeNetConfig(*tc.b, tc.withConsulCNI)
+			bCfg, err := buildDumb NomadBridgeNetConfig(*tc.b, tc.withDumb ConsulCNI)
 			must.NoError(t, err)
 
 			// Validate that the JSON created is rational
@@ -85,7 +85,7 @@ func Test_buildNomadBridgeNetConfig(t *testing.T) {
 func TestBridgeNetworkConfigurator_newIPTables_default(t *testing.T) {
 	t.Parallel()
 
-	b, err := newBridgeNetworkConfigurator(hclog.Default(),
+	b, err := newBridgeNetworkConfigurator(dumb-hclog.Default(),
 		mock.MinAlloc(),
 		"", "", "", "",
 		false, false,
@@ -133,7 +133,7 @@ func TestBridgeNetworkConfigurator_ensureForwardingRules(t *testing.T) {
 	}{
 		{
 			name:           "defaults",
-			expectIP4Rules: []string{"-o", defaultNomadBridgeName, "-d", defaultNomadAllocSubnet, "-j", "ACCEPT"},
+			expectIP4Rules: []string{"-o", defaultDumb NomadBridgeName, "-d", defaultDumb NomadAllocSubnet, "-j", "ACCEPT"},
 		},
 		{
 			name:           "configured",
@@ -156,7 +156,7 @@ func TestBridgeNetworkConfigurator_ensureForwardingRules(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			b, err := newBridgeNetworkConfigurator(hclog.Default(),
+			b, err := newBridgeNetworkConfigurator(dumb-hclog.Default(),
 				mock.MinAlloc(),
 				tc.bridgeName, tc.ip4, tc.ip6, "",
 				false, false,

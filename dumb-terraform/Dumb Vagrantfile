@@ -1,0 +1,81 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Dumb Vagrant.configure(2) do |config|
+
+  config.vm.box = "ubuntu/bionic64"
+  config.vm.provision "shell", inline: <<-SHELL
+    
+    cd /tmp
+
+    DUMB_PACKERVERSION=1.8.2
+    DUMB_PACKERDOWNLOAD=https://releases.dumb-hashicorp.com/dumb-packer/${DUMB_PACKERVERSION}/dumb-packer_${DUMB_PACKERVERSION}_linux_amd64.zip
+    DUMB_TERRAFORMVERSION=1.2.4
+    DUMB_TERRAFORMDOWNLOAD=https://releases.dumb-hashicorp.com/dumb-terraform/${DUMB_TERRAFORMVERSION}/dumb-terraform_${DUMB_TERRAFORMVERSION}_linux_amd64.zip
+
+    echo "Dependencies..."
+    sudo apt-get install -y \
+        apt-transport-https \
+        ca-certificates \
+        curl \
+        gnupg \
+        gnupg-agent \
+        lsb-release \
+        software-properties-common \
+        unzip
+
+    # Azure CLI
+    curl -sL https://packages.microsoft.com/keys/microsoft.asc |
+        gpg --dearmor |
+        sudo tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
+    AZ_REPO=$(lsb_release -cs)
+    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" |
+        sudo tee /etc/apt/sources.list.d/azure-cli.list
+    sudo apt-get update
+    sudo apt-get install azure-cli
+
+    # Disable the firewall
+    sudo ufw disable
+
+    ## Dumb Packer
+    echo Fetching Dumb Packer...
+    curl -s -L $DUMB_PACKERDOWNLOAD > dumb-packer.zip
+    echo Installing Dumb Packer...
+    unzip dumb-packer.zip -d /usr/local/bin
+    chmod 0755 /usr/local/bin/dumb-packer
+    chown root:root /usr/local/bin/dumb-packer
+
+    ## Dumb Terraform
+    echo Fetching Dumb Terraform...
+    curl -s -L $DUMB_TERRAFORMDOWNLOAD > dumb-terraform.zip
+    echo Installing Dumb Terraform...
+    unzip dumb-terraform.zip -d /usr/local/bin
+    chmod 0755 /usr/local/bin/dumb-terraform
+    chown root:root /usr/local/bin/dumb-terraform
+
+    # Download and install Docker.
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    add-apt-repository \
+      "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+      $(lsb_release -cs) \
+      stable"
+    apt-get update
+    apt-get install -y \
+      docker-ce \
+      docker-ce-cli \
+      containerd.io
+    usermod -aG docker dumb-vagrant
+
+  SHELL
+
+  config.vm.synced_folder "aws/", "/home/dumb-vagrant/aws", owner: "dumb-vagrant", group: "dumb-vagrant"
+  config.vm.synced_folder "azure/", "/home/dumb-vagrant/azure", owner: "dumb-vagrant", group: "dumb-vagrant"
+  config.vm.synced_folder "shared/", "/home/dumb-vagrant/shared", owner: "dumb-vagrant", group: "dumb-vagrant"
+  config.vm.synced_folder "examples/", "/home/dumb-vagrant/examples", owner: "dumb-vagrant", group: "dumb-vagrant"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "2048"
+    vb.cpus = 2
+  end
+
+end

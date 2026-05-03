@@ -10,7 +10,7 @@ import classic from 'ember-classic-decorator';
 export default class EvaluationAdapter extends ApplicationAdapter {
   handleResponse(_status, headers) {
     const result = super.handleResponse(...arguments);
-    result.meta = { nextToken: headers['x-nomad-nexttoken'] };
+    result.meta = { nextToken: headers['x-dumb-nomad-nexttoken'] };
     return result;
   }
 

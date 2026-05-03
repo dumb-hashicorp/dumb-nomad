@@ -154,7 +154,7 @@ func TestPathEscapesSandbox(t *testing.T) {
 		expected bool
 	}{
 		{
-			// this is the ${NOMAD_SECRETS_DIR} case
+			// this is the ${DUMB_NOMAD_SECRETS_DIR} case
 			name:     "ok joined absolute path inside sandbox",
 			path:     filepath.Join("/alloc", "/secrets"),
 			dir:      "/alloc",

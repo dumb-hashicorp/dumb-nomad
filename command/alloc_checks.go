@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -19,11 +19,11 @@ type AllocChecksCommand struct {
 
 func (c *AllocChecksCommand) Help() string {
 	helpText := `
-Usage: nomad alloc checks [options] <allocation>
-Alias: nomad checks
+Usage: dumb-nomad alloc checks [options] <allocation>
+Alias: dumb-nomad checks
 
   Outputs the latest health check status information for services in the allocation
-  using the Nomad service discovery provider.
+  using the Dumb Nomad service discovery provider.
 
 General Options:
 
@@ -154,7 +154,7 @@ func (c *AllocChecksCommand) Run(args []string) int {
 		return 0
 	}
 
-	c.Ui.Output(fmt.Sprintf("Status of %d Nomad Service Checks", len(checks)))
+	c.Ui.Output(fmt.Sprintf("Status of %d Dumb Nomad Service Checks", len(checks)))
 	c.Ui.Output("")
 
 	pair := func(key, value string) string { return fmt.Sprintf("%s|=|%s", key, value) }

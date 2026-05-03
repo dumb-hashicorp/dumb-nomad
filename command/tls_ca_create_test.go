@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -32,8 +32,8 @@ func TestCACreateCommand(t *testing.T) {
 	cases := []testcase{
 		{"ca defaults",
 			nil,
-			"nomad-agent-ca.pem",
-			"nomad-agent-ca-key.pem",
+			"dumb-nomad-agent-ca.pem",
+			"dumb-nomad-agent-ca-key.pem",
 			func(t *testing.T, cert *x509.Certificate) {
 				must.Eq(t, 1825*24*time.Hour, time.Until(cert.NotAfter).Round(24*time.Hour))
 				must.False(t, cert.PermittedDNSDomainsCritical)
@@ -48,7 +48,7 @@ func TestCACreateCommand(t *testing.T) {
 			"foo.com-agent-ca.pem",
 			"foo.com-agent-ca-key.pem",
 			func(t *testing.T, cert *x509.Certificate) {
-				must.SliceContainsAll(t, cert.PermittedDNSDomains, []string{"nomad", "foo.com", "localhost"})
+				must.SliceContainsAll(t, cert.PermittedDNSDomains, []string{"dumb-nomad", "foo.com", "localhost"})
 			},
 		},
 		{"ca options",
@@ -68,7 +68,7 @@ func TestCACreateCommand(t *testing.T) {
 				must.Eq(t, 365*24*time.Hour, time.Until(cert.NotAfter).Round(24*time.Hour))
 				must.True(t, cert.PermittedDNSDomainsCritical)
 				must.Len(t, 4, cert.PermittedDNSDomains)
-				must.SliceContainsAll(t, cert.PermittedDNSDomains, []string{"nomad", "foo", "localhost", "bar"})
+				must.SliceContainsAll(t, cert.PermittedDNSDomains, []string{"dumb-nomad", "foo", "localhost", "bar"})
 				must.Eq(t, cert.Issuer.Organization, []string{"CustOrg"})
 				must.Eq(t, cert.Issuer.OrganizationalUnit, []string{"CustOrgUnit"})
 				must.Eq(t, cert.Issuer.Country, []string{"ZZ"})
@@ -79,8 +79,8 @@ func TestCACreateCommand(t *testing.T) {
 			[]string{
 				"-days=365",
 			},
-			"nomad-agent-ca.pem",
-			"nomad-agent-ca-key.pem",
+			"dumb-nomad-agent-ca.pem",
+			"dumb-nomad-agent-ca-key.pem",
 			func(t *testing.T, cert *x509.Certificate) {
 				must.Eq(t, 365*24*time.Hour, time.Until(cert.NotAfter).Round(24*time.Hour))
 			},

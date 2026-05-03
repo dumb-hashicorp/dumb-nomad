@@ -15,10 +15,10 @@ import {
   findAll,
 } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import Layout from 'nomad-ui/tests/pages/layout';
+import Layout from 'dumb-nomad-ui/tests/pages/layout';
 import percySnapshot from '@percy/ember';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import faker from 'nomad-ui/mirage/faker';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 module('Acceptance | keyboard', function (hooks) {
   setupApplicationTest(hooks);
@@ -346,7 +346,7 @@ module('Acceptance | keyboard', function (hooks) {
     test('Dynamic nav arrows and looping', async function (assert) {
       // Make sure user is a management token so Variables appears, etc.
       let token = server.create('token', { type: 'management' });
-      window.localStorage.nomadTokenSecret = token.secretId;
+      window.localStorage.dumb-nomadTokenSecret = token.secretId;
       server.createList('job', 3, { createAllocations: true, type: 'system' });
       const jobID = server.db.jobs[0].id;
       await visit(`/jobs/${jobID}@default`);
@@ -430,7 +430,7 @@ module('Acceptance | keyboard', function (hooks) {
         `/jobs/${jobID}@default`,
         'Shift+ArrowRight takes you to the first tab in the loop'
       );
-      window.localStorage.nomadTokenSecret = null; // Reset Token
+      window.localStorage.dumb-nomadTokenSecret = null; // Reset Token
     });
 
     test('Region switching', async function (assert) {

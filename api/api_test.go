@@ -21,7 +21,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api/internal/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api/internal/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -118,16 +118,16 @@ func TestRequestTime(t *testing.T) {
 func TestDefaultConfig_env(t *testing.T) {
 
 	testURL := "http://1.2.3.4:5678"
-	auth := []string{"nomaduser", "12345"}
+	auth := []string{"dumb-nomaduser", "12345"}
 	region := "test"
 	namespace := "dev"
 	token := "foobar"
 
-	t.Setenv("NOMAD_ADDR", testURL)
-	t.Setenv("NOMAD_REGION", region)
-	t.Setenv("NOMAD_NAMESPACE", namespace)
-	t.Setenv("NOMAD_HTTP_AUTH", strings.Join(auth, ":"))
-	t.Setenv("NOMAD_TOKEN", token)
+	t.Setenv("DUMB_NOMAD_ADDR", testURL)
+	t.Setenv("DUMB_NOMAD_REGION", region)
+	t.Setenv("DUMB_NOMAD_NAMESPACE", namespace)
+	t.Setenv("DUMB_NOMAD_HTTP_AUTH", strings.Join(auth, ":"))
+	t.Setenv("DUMB_NOMAD_TOKEN", token)
 
 	config := DefaultConfig()
 
@@ -289,7 +289,7 @@ func TestRequestToHTTP(t *testing.T) {
 	if req.URL.RequestURI() != "/v1/jobs/foo?namespace=bar&region=foo" {
 		t.Fatalf("bad: %v", req)
 	}
-	if req.Header.Get("X-Nomad-Token") != "foobar" {
+	if req.Header.Get("X-Dumb Nomad-Token") != "foobar" {
 		t.Fatalf("bad: %v", req)
 	}
 }
@@ -299,9 +299,9 @@ func TestParseQueryMeta(t *testing.T) {
 	resp := &http.Response{
 		Header: make(map[string][]string),
 	}
-	resp.Header.Set("X-Nomad-Index", "12345")
-	resp.Header.Set("X-Nomad-LastContact", "80")
-	resp.Header.Set("X-Nomad-KnownLeader", "true")
+	resp.Header.Set("X-Dumb Nomad-Index", "12345")
+	resp.Header.Set("X-Dumb Nomad-LastContact", "80")
+	resp.Header.Set("X-Dumb Nomad-KnownLeader", "true")
 
 	qm := &QueryMeta{}
 	if err := parseQueryMeta(resp, qm); err != nil {
@@ -324,7 +324,7 @@ func TestParseWriteMeta(t *testing.T) {
 	resp := &http.Response{
 		Header: make(map[string][]string),
 	}
-	resp.Header.Set("X-Nomad-Index", "12345")
+	resp.Header.Set("X-Dumb Nomad-Index", "12345")
 
 	wm := &WriteMeta{}
 	if err := parseWriteMeta(resp, wm); err != nil {
@@ -423,7 +423,7 @@ func TestClient_NodeClient(t *testing.T) {
 			Client:                clientNoRegion,
 			ExpectedAddr:          expectedTLSAddr,
 			ExpectedRegion:        "global",
-			ExpectedTLSServerName: "client.global.nomad",
+			ExpectedTLSServerName: "client.global.dumb-nomad",
 		},
 		{
 			Node:                  tlsNode,
@@ -431,7 +431,7 @@ func TestClient_NodeClient(t *testing.T) {
 			Client:                clientNoRegion,
 			ExpectedAddr:          expectedTLSAddr,
 			ExpectedRegion:        "foo",
-			ExpectedTLSServerName: "client.foo.nomad",
+			ExpectedTLSServerName: "client.foo.dumb-nomad",
 		},
 		{
 			Node:                  tlsNode,
@@ -439,7 +439,7 @@ func TestClient_NodeClient(t *testing.T) {
 			Client:                clientRegion,
 			ExpectedAddr:          expectedTLSAddr,
 			ExpectedRegion:        "foo",
-			ExpectedTLSServerName: "client.foo.nomad",
+			ExpectedTLSServerName: "client.foo.dumb-nomad",
 		},
 		{
 			Node:                  tlsNode,
@@ -447,7 +447,7 @@ func TestClient_NodeClient(t *testing.T) {
 			Client:                clientRegion,
 			ExpectedAddr:          expectedTLSAddr,
 			ExpectedRegion:        "bar",
-			ExpectedTLSServerName: "client.bar.nomad",
+			ExpectedTLSServerName: "client.bar.dumb-nomad",
 		},
 		{
 			Node:                  noTlsNode,

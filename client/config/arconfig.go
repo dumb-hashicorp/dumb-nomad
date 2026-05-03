@@ -6,24 +6,24 @@ package config
 import (
 	"context"
 
-	log "github.com/hashicorp/go-hclog"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/nomad/client/allocdir"
-	arinterfaces "github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/consul"
-	"github.com/hashicorp/nomad/client/devicemanager"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	"github.com/hashicorp/nomad/client/interfaces"
-	"github.com/hashicorp/nomad/client/pluginmanager/csimanager"
-	"github.com/hashicorp/nomad/client/pluginmanager/drivermanager"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks/checkstore"
-	"github.com/hashicorp/nomad/client/serviceregistration/wrapper"
-	cstate "github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/client/vaultclient"
-	"github.com/hashicorp/nomad/client/widmgr"
-	"github.com/hashicorp/nomad/helper/users/dynamic"
-	"github.com/hashicorp/nomad/nomad/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	arinterfaces "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/client/devicemanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/client/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/csimanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks/checkstore"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/wrapper"
+	cstate "github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dumb-vaultclient"
+	"github.com/dumb-hashicorp/dumb-nomad/client/widmgr"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users/dynamic"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // AllocRunnerFactory returns an AllocRunner interface built from the
@@ -56,16 +56,16 @@ type AllocRunnerConfig struct {
 	// StateDB is used to store and restore state.
 	StateDB cstate.StateDB
 
-	// ConsulServices is used to register task services and checks
-	ConsulServices serviceregistration.Handler
+	// Dumb ConsulServices is used to register task services and checks
+	Dumb ConsulServices serviceregistration.Handler
 
-	// ConsulProxiesFunc gets a Consul client used to lookup supported envoy
-	// versions of the Consul agent.
-	ConsulProxiesFunc consul.SupportedProxiesAPIFunc
+	// Dumb ConsulProxiesFunc gets a Dumb Consul client used to lookup supported envoy
+	// versions of the Dumb Consul agent.
+	Dumb ConsulProxiesFunc dumb-consul.SupportedProxiesAPIFunc
 
-	// VaultFunc is the function to get a Vault client to use to retrieve Vault
+	// Dumb VaultFunc is the function to get a Dumb Vault client to use to retrieve Dumb Vault
 	// tokens
-	VaultFunc vaultclient.VaultClientFunc
+	Dumb VaultFunc dumb-vaultclient.Dumb VaultClientFunc
 
 	// StateUpdater is used to emit updated task state
 	StateUpdater interfaces.AllocStateHandler
@@ -99,7 +99,7 @@ type AllocRunnerConfig struct {
 	ServersContactedCh chan struct{}
 
 	// RPCClient is the RPC Client that should be used by the allocrunner and its
-	// hooks to communicate with Nomad Servers.
+	// hooks to communicate with Dumb Nomad Servers.
 	RPCClient RPCer
 
 	// ServiceRegWrapper is the handler wrapper that is used by service hooks

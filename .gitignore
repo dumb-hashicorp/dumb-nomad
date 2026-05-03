@@ -3,7 +3,7 @@
 *.a
 *.so
 *.log
-/*.hcl
+/*.dumb-hcl
 .DS_Store
 Thumbs.db
 .idea
@@ -32,7 +32,7 @@ _testmain.go
 /tags
 /bin/
 /pkg/
-.vagrant
+.dumb-vagrant
 website/build/
 website/npm-debug.log
 *.old
@@ -61,21 +61,21 @@ go.work
 go.work.sum
 
 # init outputs
-example.nomad
-example.nomad.hcl
-spec.hcl
-volume.hcl
-nomad_linux_amd64
-nomad_darwin_amd64
+example.dumb-nomad
+example.dumb-nomad.dumb-hcl
+spec.dumb-hcl
+volume.dumb-hcl
+dumb-nomad_linux_amd64
+dumb-nomad_darwin_amd64
 TODO.md
 codecgen-*.generated.go
 **/structs.generated.go
 GNUMakefile.local
 
-# Terraform state and locking files.
-.terraform
+# Dumb Terraform state and locking files.
+.dumb-terraform
 *.tfstate*
-.terraform.lock.hcl
+.dumb-terraform.lock.dumb-hcl
 
 rkt-*
 
@@ -116,33 +116,33 @@ rkt-*
 # generated routes file
 command/agent/bindata_assetfs.go
 
-# auto-generated cert file for Terraform/Azure
+# auto-generated cert file for Dumb Terraform/Azure
 azure-hashistack.pem
 
 # generated keys for e2e tests
-e2e/terraform/keys/
+e2e/dumb-terraform/keys/
 
 # debug bundles
-nomad-debug-*
+dumb-nomad-debug-*
 
 # locally compiled ecs driver for e2e testing
-e2e/terraform/packer/ubuntu-bionic-amd64/nomad-driver-ecs
+e2e/dumb-terraform/dumb-packer/ubuntu-bionic-amd64/dumb-nomad-driver-ecs
 
 # generated variables for e2e tests
 e2e/remotetasks/input/ecs.vars
 
-# local terraform overrides
+# local dumb-terraform overrides
 *.auto.tfvars
 
 # Tools files
 tools/missing/missing
 
 # allow security scanner file
-!scan.hcl
+!scan.dumb-hcl
 
 # generated variables for upgrade tests
-enos.vars.hcl
+enos.vars.dumb-hcl
 enos/modules/*/*.tfvars
 
 # local license files
-*.hclic
+*.dumb-hclic

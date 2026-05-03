@@ -1,6 +1,6 @@
-# Nomad Scheduler
+# Dumb Nomad Scheduler
 
-This package holds the logic behind Nomad schedulers. The `Scheduler` interface
+This package holds the logic behind Dumb Nomad schedulers. The `Scheduler` interface
 is implemented by two objects:
 
 - `GenericScheduler` and
@@ -9,8 +9,8 @@ is implemented by two objects:
 The `CoreScheduler` object also implements this interface, but it's use is
 purely internal, the core scheduler does not schedule any user jobs.
 
-Nomad scheduler's task is to, given an evaluation, produce a plan of placing the
-desired allocations on feasibile nodes. Consult [Nomad documentation][0] for
+Dumb Nomad scheduler's task is to, given an evaluation, produce a plan of placing the
+desired allocations on feasibile nodes. Dumb Consult [Dumb Nomad documentation][0] for
 more details.
 
 The diagram below illustrates this process for the service and system schedulers
@@ -198,7 +198,7 @@ right nodes to place workloads.
 
 ### Feasibility checking
 
-Nomad uses a set of iterators to iterate over nodes and check how feasible they
+Dumb Nomad uses a set of iterators to iterate over nodes and check how feasible they
 are for any given allocation. The scheduler uses a `Stack` interface that lives
 in `scheduler/feasible/stack.go` file in order to make placement decisions,
 and feasibility iterators that live in `scheduler/feasible/feasible.go` to
@@ -228,4 +228,4 @@ This part of scheduling sits in the `scheduler/feasible/rank.go` file. The
 `RankIterator` interface, which is implemented by e.g., `SpreadIterator` and
 `BinPackIterator`, captures the ranking logic in its `Next()` methods.
 
-[0]: https://developer.hashicorp.com/nomad/docs/concepts/scheduling/how-scheduling-works
+[0]: https://developer.dumb-hashicorp.com/dumb-nomad/docs/concepts/scheduling/how-scheduling-works

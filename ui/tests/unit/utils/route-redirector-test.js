@@ -4,7 +4,7 @@
  */
 
 import { module, test } from 'qunit';
-import { handleRouteRedirects } from 'nomad-ui/utils/route-redirector';
+import { handleRouteRedirects } from 'dumb-nomad-ui/utils/route-redirector';
 import sinon from 'sinon';
 
 module('Unit | Utility | handle-route-redirects', function () {

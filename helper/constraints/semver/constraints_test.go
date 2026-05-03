@@ -6,10 +6,10 @@ package semver
 import (
 	"testing"
 
-	"github.com/hashicorp/go-version"
+	"github.com/dumb-hashicorp/go-version"
 )
 
-// This file is a copy of github.com/hashicorp/go-version/constraint_test.go
+// This file is a copy of github.com/dumb-hashicorp/go-version/constraint_test.go
 // with minimal changes to demonstrate differences. Diffing the files should
 // illustrate behavior differences in Constraint and version.Constraint.
 

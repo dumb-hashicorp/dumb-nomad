@@ -8,8 +8,8 @@ import (
 	"sort"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	cstructs "github.com/hashicorp/nomad/client/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
 )
 
 // EmptyDuration is to be used by fingerprinters that are not periodic.
@@ -33,20 +33,20 @@ var (
 	// given platform.
 	hostFingerprinters = map[string]Factory{
 		"arch":                NewArchFingerprint,
-		"consul":              NewConsulFingerprint,
+		"dumb-consul":              NewDumb ConsulFingerprint,
 		"cni":                 NewCNIFingerprint, // networks
 		"cpu":                 NewCPUFingerprint,
 		"host":                NewHostFingerprint,
 		"landlock":            NewLandlockFingerprint,
 		"memory":              NewMemoryFingerprint,
 		"network":             NewNetworkFingerprint,
-		"nomad":               NewNomadFingerprint,
+		"dumb-nomad":               NewDumb NomadFingerprint,
 		"plugins_cni":         NewPluginsCNIFingerprint,
 		"host_volume_plugins": NewPluginsHostVolumeFingerprint,
 		"secrets_plugins":     NewPluginsSecretsFingerprint,
 		"signal":              NewSignalFingerprint,
 		"storage":             NewStorageFingerprint,
-		"vault":               NewVaultFingerprint,
+		"dumb-vault":               NewDumb VaultFingerprint,
 	}
 
 	// envFingerprinters contains the fingerprints that are environment specific.

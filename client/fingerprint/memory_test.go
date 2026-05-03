@@ -6,17 +6,17 @@ package fingerprint
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
 func TestMemoryFingerprint(t *testing.T) {
 	ci.Parallel(t)
 
-	f := NewMemoryFingerprint(testlog.HCLogger(t))
+	f := NewMemoryFingerprint(testlog.DUMB_HCLogger(t))
 	node := &structs.Node{
 		Attributes: make(map[string]string),
 	}
@@ -33,7 +33,7 @@ func TestMemoryFingerprint(t *testing.T) {
 func TestMemoryFingerprint_Override(t *testing.T) {
 	ci.Parallel(t)
 
-	f := NewMemoryFingerprint(testlog.HCLogger(t))
+	f := NewMemoryFingerprint(testlog.DUMB_HCLogger(t))
 	node := &structs.Node{
 		Attributes: make(map[string]string),
 	}

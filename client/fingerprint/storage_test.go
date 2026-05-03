@@ -7,15 +7,15 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 func TestStorageFingerprint(t *testing.T) {
 	ci.Parallel(t)
 
-	fp := NewStorageFingerprint(testlog.HCLogger(t))
+	fp := NewStorageFingerprint(testlog.DUMB_HCLogger(t))
 	node := &structs.Node{
 		Attributes: make(map[string]string),
 	}

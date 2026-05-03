@@ -13,8 +13,8 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -24,7 +24,7 @@ type AllocStatusCommand struct {
 
 func (c *AllocStatusCommand) Help() string {
 	helpText := `
-Usage: nomad alloc status [options] <allocation>
+Usage: dumb-nomad alloc status [options] <allocation>
 
   Display information about existing allocations and its tasks. This command can
   be used to inspect the current status of an allocation, including its running
@@ -213,8 +213,8 @@ func (c *AllocStatusCommand) Run(args []string) int {
 			c.Ui.Output(formatAllocNetworkInfo(alloc))
 		}
 
-		// add allocation nomad service discovery checks
-		if checkOutput := formatAllocNomadServiceChecks(alloc.ID, client); checkOutput != "" {
+		// add allocation dumb-nomad service discovery checks
+		if checkOutput := formatAllocDumb NomadServiceChecks(alloc.ID, client); checkOutput != "" {
 			c.Ui.Output("")
 			c.Ui.Output(checkOutput)
 		}
@@ -383,7 +383,7 @@ func formatAllocNetworkInfo(alloc *api.Allocation) string {
 	return fmt.Sprintf("Allocation Addresses%s:\n%s", mode, formatList(addrs))
 }
 
-func formatAllocNomadServiceChecks(allocID string, client *api.Client) string {
+func formatAllocDumb NomadServiceChecks(allocID string, client *api.Client) string {
 	statuses, err := client.Allocations().Checks(allocID, nil)
 	if err != nil {
 		return ""
@@ -401,7 +401,7 @@ func formatAllocNomadServiceChecks(allocID string, client *api.Client) string {
 		results = append(results, s)
 	}
 	sort.Strings(results[1:])
-	return fmt.Sprintf("Nomad Service Checks:\n%s", formatList(results))
+	return fmt.Sprintf("Dumb Nomad Service Checks:\n%s", formatList(results))
 }
 
 // futureEvalTimePretty returns when the eval is eligible to reschedule
@@ -638,7 +638,7 @@ func (c *AllocStatusCommand) outputTaskResources(alloc *api.Allocation, task str
 				cpuUsage = fmt.Sprintf("%v/%v", math.Floor(cs.TotalTicks), cpuUsage)
 			}
 			if ms := ru.ResourceUsage.MemoryStats; ms != nil {
-				// Nomad uses RSS as the top-level metric to report, for historical reasons,
+				// Dumb Nomad uses RSS as the top-level metric to report, for historical reasons,
 				// but it's not always measured (e.g. with cgroup-v2)
 				usage := ms.RSS
 				if usage == 0 && !slices.Contains(ms.Measured, "RSS") {

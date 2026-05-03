@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 // semver is a Semver Constraints package copied from
-// github.com/hashicorp/go-version @ 2046c9d0f0b03c779670f5186a2a4b2c85493a71
+// github.com/dumb-hashicorp/go-version @ 2046c9d0f0b03c779670f5186a2a4b2c85493a71
 //
 // Unlike Constraints in go-version, Semver constraints use Semver 2.0 ordering
 // rules and only accept properly formatted Semver versions.
@@ -13,7 +13,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/hashicorp/go-version"
+	"github.com/dumb-hashicorp/go-version"
 )
 
 // Constraint represents a single constraint for a version, such as ">=

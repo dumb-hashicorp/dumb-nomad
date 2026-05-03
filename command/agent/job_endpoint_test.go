@@ -14,12 +14,12 @@ import (
 	"time"
 
 	"github.com/golang/snappy"
-	"github.com/hashicorp/nomad/acl"
-	api "github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	api "github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -58,13 +58,13 @@ func TestHTTP_JobsList(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -117,13 +117,13 @@ func TestHTTP_PrefixJobsList(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -163,9 +163,9 @@ func TestHTTP_JobsList_AllNamespaces_OSS(t *testing.T) {
 		require.NoError(t, err)
 
 		// Check for the index
-		require.NotEmpty(t, respW.Result().Header.Get("X-Nomad-Index"), "missing index")
-		require.Equal(t, "true", respW.Result().Header.Get("X-Nomad-KnownLeader"), "missing known leader")
-		require.NotEmpty(t, respW.Result().Header.Get("X-Nomad-LastContact"), "missing last contact")
+		require.NotEmpty(t, respW.Result().Header.Get("X-Dumb Nomad-Index"), "missing index")
+		require.Equal(t, "true", respW.Result().Header.Get("X-Dumb Nomad-KnownLeader"), "missing known leader")
+		require.NotEmpty(t, respW.Result().Header.Get("X-Dumb Nomad-LastContact"), "missing last contact")
 
 		// Check the job
 		j := obj.([]*structs.JobListStub)
@@ -206,7 +206,7 @@ func TestHTTP_JobsRegister(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -256,7 +256,7 @@ func TestHTTP_JobsRegister_IgnoresParentID(t *testing.T) {
 		require.NotEmpty(t, reg.EvalID)
 
 		// Check for the index
-		require.NotEmpty(t, respW.Result().Header.Get("X-Nomad-Index"))
+		require.NotEmpty(t, respW.Result().Header.Get("X-Dumb Nomad-Index"))
 
 		// Check the job is registered
 		getReq := structs.JobSpecificRequest{
@@ -357,7 +357,7 @@ func TestHTTP_JobsRegister_Defaulting(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -386,7 +386,7 @@ func TestHTTP_JobsRegister_Defaulting(t *testing.T) {
 func TestHTTP_JobsParse(t *testing.T) {
 	ci.Parallel(t)
 	httpTest(t, nil, func(s *TestAgent) {
-		buf := encodeReq(api.JobsParseRequest{JobHCL: mock.HCL()})
+		buf := encodeReq(api.JobsParseRequest{JobDUMB_HCL: mock.DUMB_HCL()})
 		req, err := http.NewRequest(http.MethodPost, "/v1/jobs/parse", buf)
 		must.NoError(t, err)
 
@@ -403,13 +403,13 @@ func TestHTTP_JobsParse(t *testing.T) {
 	})
 }
 
-func TestHTTP_JobsParse_HCLVar(t *testing.T) {
+func TestHTTP_JobsParse_DUMB_HCLVar(t *testing.T) {
 	ci.Parallel(t)
 	httpTest(t, nil, func(s *TestAgent) {
-		hclJob, hclVar := mock.HCLVar()
+		dumb-hclJob, dumb-hclVar := mock.DUMB_HCLVar()
 		buf := encodeReq(api.JobsParseRequest{
-			JobHCL:    hclJob,
-			Variables: hclVar,
+			JobDUMB_HCL:    dumb-hclJob,
+			Variables: dumb-hclVar,
 		})
 		req, err := http.NewRequest(http.MethodPost, "/v1/jobs/parse", buf)
 		must.NoError(t, err)
@@ -519,7 +519,7 @@ func TestHTTP_JobsParse_ACL(t *testing.T) {
 
 		for _, tc := range testCases {
 			t.Run(tc.name, func(t *testing.T) {
-				buf := encodeReq(api.JobsParseRequest{JobHCL: mock.HCL()})
+				buf := encodeReq(api.JobsParseRequest{JobDUMB_HCL: mock.DUMB_HCL()})
 				req, err := http.NewRequest(http.MethodPost, "/v1/jobs/parse", buf)
 				require.NoError(t, err)
 
@@ -582,13 +582,13 @@ func TestHTTP_JobQuery(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -631,13 +631,13 @@ func TestHTTP_JobQuery_Payload(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -718,7 +718,7 @@ func TestHTTP_JobUpdate(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -803,7 +803,7 @@ func TestHTTP_JobUpdate_EvalPriority(t *testing.T) {
 				// Check the response
 				regResp := obj.(structs.JobRegisterResponse)
 				assert.NotEmpty(t, regResp.EvalID)
-				assert.NotEmpty(t, respW.Result().Header.Get("X-Nomad-Index"))
+				assert.NotEmpty(t, respW.Result().Header.Get("X-Dumb Nomad-Index"))
 
 				// Check the job is registered
 				getReq := structs.JobSpecificRequest{
@@ -915,7 +915,7 @@ func TestHTTP_JobUpdateRegion(t *testing.T) {
 				require.NotEmpty(t, dereg.EvalID)
 
 				// Check for the index
-				require.NotEmpty(t, respW.Result().Header.Get("X-Nomad-Index"), "missing index")
+				require.NotEmpty(t, respW.Result().Header.Get("X-Dumb Nomad-Index"), "missing index")
 
 				// Check the job is registered
 				getReq := structs.JobSpecificRequest{
@@ -972,7 +972,7 @@ func TestHTTP_JobDelete(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -1015,7 +1015,7 @@ func TestHTTP_JobDelete(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -1089,7 +1089,7 @@ func TestHTTP_JobDelete_EvalPriority(t *testing.T) {
 				// Check the response
 				regResp := obj.(structs.JobRegisterResponse)
 				assert.NotEmpty(t, regResp.EvalID)
-				assert.NotEmpty(t, respW.Result().Header.Get("X-Nomad-Index"))
+				assert.NotEmpty(t, respW.Result().Header.Get("X-Dumb Nomad-Index"))
 
 				// Check the job is registered
 				getReq := structs.JobSpecificRequest{
@@ -1127,7 +1127,7 @@ func TestHTTP_JobDelete_EvalPriority(t *testing.T) {
 				// Check the response
 				dereg := obj.(structs.JobDeregisterResponse)
 				assert.NotEmpty(t, dereg.EvalID)
-				assert.NotEmpty(t, respW.Result().Header.Get("X-Nomad-Index"))
+				assert.NotEmpty(t, respW.Result().Header.Get("X-Dumb Nomad-Index"))
 
 				// Check the evaluation that resulted from the job register.
 				evalInfoReq, err := http.NewRequest(http.MethodGet, "/v1/evaluation/"+dereg.EvalID, nil)
@@ -1191,7 +1191,7 @@ func TestHTTP_Job_ScaleTaskGroup(t *testing.T) {
 		require.NotEmpty(resp.EvalID)
 
 		// Check for the index
-		require.NotEmpty(respW.Header().Get("X-Nomad-Index"))
+		require.NotEmpty(respW.Header().Get("X-Dumb Nomad-Index"))
 
 		// Check that the group count was changed
 		getReq := structs.JobSpecificRequest{
@@ -1244,7 +1244,7 @@ func TestHTTP_Job_ScaleStatus(t *testing.T) {
 		require.Equal(job.TaskGroups[0].Count, status.TaskGroups[job.TaskGroups[0].Name].Desired)
 
 		// Check for the index
-		require.NotEmpty(respW.Header().Get("X-Nomad-Index"))
+		require.NotEmpty(respW.Header().Get("X-Dumb Nomad-Index"))
 	})
 }
 
@@ -1410,7 +1410,7 @@ func TestHTTP_JobForceEvaluate(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 	})
@@ -1461,7 +1461,7 @@ func TestHTTP_JobEvaluate_ForceReschedule(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 	})
@@ -1506,13 +1506,13 @@ func TestHTTP_JobEvaluations(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 	})
@@ -1571,13 +1571,13 @@ func TestHTTP_JobAllocations(t *testing.T) {
 		assert.Equal(t, expectedDisplayMsg, displayMsg)
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 	})
@@ -1621,9 +1621,9 @@ func TestHTTP_JobDeployments(t *testing.T) {
 		assert.Len(deploys, 1, "deployments")
 		assert.Equal(d.ID, deploys[0].ID, "deployment id")
 
-		assert.NotZero(respW.Result().Header.Get("X-Nomad-Index"), "missing index")
-		assert.Equal("true", respW.Result().Header.Get("X-Nomad-KnownLeader"), "missing known leader")
-		assert.NotZero(respW.Result().Header.Get("X-Nomad-LastContact"), "missing last contact")
+		assert.NotZero(respW.Result().Header.Get("X-Dumb Nomad-Index"), "missing index")
+		assert.Equal("true", respW.Result().Header.Get("X-Dumb Nomad-KnownLeader"), "missing known leader")
+		assert.NotZero(respW.Result().Header.Get("X-Dumb Nomad-LastContact"), "missing last contact")
 	})
 }
 
@@ -1664,9 +1664,9 @@ func TestHTTP_JobDeployment(t *testing.T) {
 		assert.NotNil(out, "deployment")
 		assert.Equal(d.ID, out.ID, "deployment id")
 
-		assert.NotZero(respW.Result().Header.Get("X-Nomad-Index"), "missing index")
-		assert.Equal("true", respW.Result().Header.Get("X-Nomad-KnownLeader"), "missing known leader")
-		assert.NotZero(respW.Result().Header.Get("X-Nomad-LastContact"), "missing last contact")
+		assert.NotZero(respW.Result().Header.Get("X-Dumb Nomad-Index"), "missing index")
+		assert.Equal("true", respW.Result().Header.Get("X-Dumb Nomad-KnownLeader"), "missing known leader")
+		assert.NotZero(respW.Result().Header.Get("X-Dumb Nomad-LastContact"), "missing last contact")
 	})
 }
 
@@ -1736,13 +1736,13 @@ func TestHTTP_JobVersions(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 	})
@@ -1760,8 +1760,8 @@ func TestHTTP_JobSubmission(t *testing.T) {
 				Namespace: structs.DefaultNamespace,
 			},
 			Submission: &structs.JobSubmission{
-				Source: mock.HCL(),
-				Format: "hcl2",
+				Source: mock.DUMB_HCL(),
+				Format: "dumb-hcl2",
 			},
 		}
 		var resp structs.JobRegisterResponse
@@ -1774,7 +1774,7 @@ func TestHTTP_JobSubmission(t *testing.T) {
 		must.NoError(t, err)
 		submission, err := s.Server.jobSubmissionCRUD(respW, req, job.ID)
 		must.NoError(t, err)
-		must.Eq(t, "hcl2", submission.Format)
+		must.Eq(t, "dumb-hcl2", submission.Format)
 		must.StrContains(t, submission.Source, `job "my-job" {`)
 
 		// make request for job submission @v1 (does not exist)
@@ -1822,7 +1822,7 @@ func TestHTTP_PeriodicForce(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -2202,7 +2202,7 @@ func TestHTTP_JobRevert(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 	})
@@ -2260,7 +2260,7 @@ func TestHTTP_JobStable(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 	})
@@ -2380,7 +2380,7 @@ func TestJobs_ParsingWriteRequest(t *testing.T) {
 
 			req, _ := http.NewRequest(http.MethodPost, "/", nil)
 			if tc.queryToken != "" {
-				req.Header.Set("X-Nomad-Token", tc.queryToken)
+				req.Header.Set("X-Dumb Nomad-Token", tc.queryToken)
 			}
 			q := req.URL.Query()
 			if tc.queryNamespace != "" {
@@ -2615,7 +2615,7 @@ func TestHTTPServer_jobServiceRegistrations(t *testing.T) {
 				require.NoError(t, err)
 
 				// Check the response.
-				require.Equal(t, "20", respW.Header().Get("X-Nomad-Index"))
+				require.Equal(t, "20", respW.Header().Get("X-Dumb Nomad-Index"))
 				require.ElementsMatch(t, []*structs.ServiceRegistration{serviceReg},
 					obj.([]*structs.ServiceRegistration))
 			},
@@ -2642,7 +2642,7 @@ func TestHTTPServer_jobServiceRegistrations(t *testing.T) {
 				require.NoError(t, err)
 
 				// Check the response.
-				require.Equal(t, "1", respW.Header().Get("X-Nomad-Index"))
+				require.Equal(t, "1", respW.Header().Get("X-Dumb Nomad-Index"))
 				require.ElementsMatch(t, []*structs.ServiceRegistration{}, obj.([]*structs.ServiceRegistration))
 			},
 			name: "job without registrations",
@@ -2837,7 +2837,7 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 				Meta: map[string]string{
 					"key": "value",
 				},
-				Consul: &api.Consul{
+				Dumb Consul: &api.Dumb Consul{
 					Namespace: "team-foo",
 				},
 				Services: []*api.Service{
@@ -2891,9 +2891,9 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 							},
 						},
 						Kind: "api-gateway",
-						Connect: &api.ConsulConnect{
+						Connect: &api.Dumb ConsulConnect{
 							Native: false,
-							SidecarService: &api.ConsulSidecarService{
+							SidecarService: &api.Dumb ConsulSidecarService{
 								Tags:                   []string{"f", "g"},
 								Port:                   "9000",
 								DisableDefaultTCPCheck: true,
@@ -3081,8 +3081,8 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 								Chown:        true,
 							},
 						},
-						Vault: &api.Vault{
-							Role:         "nomad-task",
+						Dumb Vault: &api.Dumb Vault{
+							Role:         "dumb-nomad-task",
 							Namespace:    pointer.Of("ns1"),
 							Policies:     []string{"a", "b", "c"},
 							Env:          pointer.Of(true),
@@ -3124,7 +3124,7 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 				},
 			},
 		},
-		VaultNamespace:    pointer.Of("ghi789"),
+		Dumb VaultNamespace:    pointer.Of("ghi789"),
 		Status:            pointer.Of("status"),
 		StatusDescription: pointer.Of("status_desc"),
 		Version:           pointer.Of(uint64(10)),
@@ -3137,7 +3137,7 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 		Stop:           true,
 		Region:         "global",
 		Namespace:      "foo",
-		VaultNamespace: "ghi789",
+		Dumb VaultNamespace: "ghi789",
 		ID:             "foo",
 		Name:           "name",
 		Type:           "service",
@@ -3278,15 +3278,15 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 				Meta: map[string]string{
 					"key": "value",
 				},
-				Consul: &structs.Consul{
+				Dumb Consul: &structs.Dumb Consul{
 					Namespace: "team-foo",
-					Cluster:   structs.ConsulDefaultCluster,
+					Cluster:   structs.Dumb ConsulDefaultCluster,
 				},
 				Services: []*structs.Service{
 					{
 						Name:              "groupserviceA",
-						Provider:          "consul",
-						Cluster:           structs.ConsulDefaultCluster,
+						Provider:          "dumb-consul",
+						Cluster:           structs.Dumb ConsulDefaultCluster,
 						Tags:              []string{"a", "b"},
 						CanaryTags:        []string{"d", "e"},
 						EnableTagOverride: true,
@@ -3335,9 +3335,9 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 								FailuresBeforeWarning:  2,
 							},
 						},
-						Connect: &structs.ConsulConnect{
+						Connect: &structs.Dumb ConsulConnect{
 							Native: false,
-							SidecarService: &structs.ConsulSidecarService{
+							SidecarService: &structs.Dumb ConsulSidecarService{
 								Tags:                   []string{"f", "g"},
 								Port:                   "9000",
 								DisableDefaultTCPCheck: true,
@@ -3408,8 +3408,8 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 						Services: []*structs.Service{
 							{
 								Name:              "serviceA",
-								Provider:          "consul",
-								Cluster:           structs.ConsulDefaultCluster,
+								Provider:          "dumb-consul",
+								Cluster:           structs.Dumb ConsulDefaultCluster,
 								Tags:              []string{"1", "2"},
 								CanaryTags:        []string{"3", "4"},
 								EnableTagOverride: true,
@@ -3534,10 +3534,10 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 								Chown:        true,
 							},
 						},
-						Vault: &structs.Vault{
-							Role:                 "nomad-task",
+						Dumb Vault: &structs.Dumb Vault{
+							Role:                 "dumb-nomad-task",
 							Namespace:            "ns1",
-							Cluster:              structs.VaultDefaultCluster,
+							Cluster:              structs.Dumb VaultDefaultCluster,
 							Env:                  true,
 							DisableFile:          false,
 							ChangeMode:           "c",
@@ -3630,7 +3630,7 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 				Meta: map[string]string{
 					"key": "value",
 				},
-				Consul: &api.Consul{
+				Dumb Consul: &api.Dumb Consul{
 					Namespace: "foo",
 				},
 				Tasks: []*api.Task{
@@ -3688,7 +3688,7 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 							{
 								GetterSource:  pointer.Of("source"),
 								GetterOptions: map[string]string{"a": "b"},
-								GetterHeaders: map[string]string{"User-Agent": "nomad"},
+								GetterHeaders: map[string]string{"User-Agent": "dumb-nomad"},
 								GetterMode:    pointer.Of("dir"),
 								RelativeDest:  pointer.Of("dest"),
 							},
@@ -3767,9 +3767,9 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 				Meta: map[string]string{
 					"key": "value",
 				},
-				Consul: &structs.Consul{
+				Dumb Consul: &structs.Dumb Consul{
 					Namespace: "foo",
-					Cluster:   structs.ConsulDefaultCluster,
+					Cluster:   structs.Dumb ConsulDefaultCluster,
 				},
 				Tasks: []*structs.Task{
 					{
@@ -3833,7 +3833,7 @@ func TestJobs_ApiJobToStructsJob(t *testing.T) {
 							{
 								GetterSource:  "source",
 								GetterOptions: map[string]string{"a": "b"},
-								GetterHeaders: map[string]string{"User-Agent": "nomad"},
+								GetterHeaders: map[string]string{"User-Agent": "dumb-nomad"},
 								GetterMode:    "dir",
 								RelativeDest:  "dest",
 							},
@@ -4107,13 +4107,13 @@ func TestConversion_apiJobSubmissionToStructs(t *testing.T) {
 	t.Run("not nil", func(t *testing.T) {
 		result := apiJobSubmissionToStructs(&api.JobSubmission{
 			Source:        "source",
-			Format:        "hcl2",
+			Format:        "dumb-hcl2",
 			VariableFlags: map[string]string{"foo": "bar"},
 			Variables:     "variable",
 		})
 		must.Eq(t, &structs.JobSubmission{
 			Source:        "source",
-			Format:        "hcl2",
+			Format:        "dumb-hcl2",
 			VariableFlags: map[string]string{"foo": "bar"},
 			Variables:     "variable",
 		}, result)
@@ -4231,16 +4231,16 @@ func TestConversion_apiVolumeMountsToStructs(t *testing.T) {
 	}))
 }
 
-func TestConversion_apiConsulExposePathsToStructs(t *testing.T) {
+func TestConversion_apiDumb ConsulExposePathsToStructs(t *testing.T) {
 	ci.Parallel(t)
-	require.Nil(t, apiConsulExposePathsToStructs(nil))
-	require.Nil(t, apiConsulExposePathsToStructs(make([]*api.ConsulExposePath, 0)))
-	require.Equal(t, []structs.ConsulExposePath{{
+	require.Nil(t, apiDumb ConsulExposePathsToStructs(nil))
+	require.Nil(t, apiDumb ConsulExposePathsToStructs(make([]*api.Dumb ConsulExposePath, 0)))
+	require.Equal(t, []structs.Dumb ConsulExposePath{{
 		Path:          "/health",
 		Protocol:      "http",
 		LocalPathPort: 8080,
 		ListenerPort:  "hcPort",
-	}}, apiConsulExposePathsToStructs([]*api.ConsulExposePath{{
+	}}, apiDumb ConsulExposePathsToStructs([]*api.Dumb ConsulExposePath{{
 		Path:          "/health",
 		Protocol:      "http",
 		LocalPathPort: 8080,
@@ -4248,21 +4248,21 @@ func TestConversion_apiConsulExposePathsToStructs(t *testing.T) {
 	}}))
 }
 
-func TestConversion_apiConsulExposeConfigToStructs(t *testing.T) {
+func TestConversion_apiDumb ConsulExposeConfigToStructs(t *testing.T) {
 	ci.Parallel(t)
-	require.Nil(t, apiConsulExposeConfigToStructs(nil))
-	require.Equal(t, &structs.ConsulExposeConfig{
-		Paths: []structs.ConsulExposePath{{Path: "/health"}},
-	}, apiConsulExposeConfigToStructs(&api.ConsulExposeConfig{
-		Paths: []*api.ConsulExposePath{{Path: "/health"}},
+	require.Nil(t, apiDumb ConsulExposeConfigToStructs(nil))
+	require.Equal(t, &structs.Dumb ConsulExposeConfig{
+		Paths: []structs.Dumb ConsulExposePath{{Path: "/health"}},
+	}, apiDumb ConsulExposeConfigToStructs(&api.Dumb ConsulExposeConfig{
+		Paths: []*api.Dumb ConsulExposePath{{Path: "/health"}},
 	}))
 }
 
 func TestConversion_apiUpstreamsToStructs(t *testing.T) {
 	ci.Parallel(t)
 	require.Nil(t, apiUpstreamsToStructs(nil))
-	require.Nil(t, apiUpstreamsToStructs(make([]*api.ConsulUpstream, 0)))
-	require.Equal(t, []structs.ConsulUpstream{{
+	require.Nil(t, apiUpstreamsToStructs(make([]*api.Dumb ConsulUpstream, 0)))
+	require.Equal(t, []structs.Dumb ConsulUpstream{{
 		DestinationName:      "upstream",
 		DestinationNamespace: "ns2",
 		DestinationPeer:      "10.0.0.1:6379",
@@ -4273,8 +4273,8 @@ func TestConversion_apiUpstreamsToStructs(t *testing.T) {
 		LocalBindSocketMode:  "0666",
 		Datacenter:           "dc2",
 		LocalBindAddress:     "127.0.0.2",
-		MeshGateway:          structs.ConsulMeshGateway{Mode: "local"},
-	}}, apiUpstreamsToStructs([]*api.ConsulUpstream{{
+		MeshGateway:          structs.Dumb ConsulMeshGateway{Mode: "local"},
+	}}, apiUpstreamsToStructs([]*api.Dumb ConsulUpstream{{
 		DestinationName:      "upstream",
 		DestinationNamespace: "ns2",
 		DestinationPeer:      "10.0.0.1:6379",
@@ -4285,40 +4285,40 @@ func TestConversion_apiUpstreamsToStructs(t *testing.T) {
 		LocalBindSocketMode:  "0666",
 		Datacenter:           "dc2",
 		LocalBindAddress:     "127.0.0.2",
-		MeshGateway:          &api.ConsulMeshGateway{Mode: "local"},
+		MeshGateway:          &api.Dumb ConsulMeshGateway{Mode: "local"},
 	}}))
 }
 
-func TestConversion_apiConsulMeshGatewayToStructs(t *testing.T) {
+func TestConversion_apiDumb ConsulMeshGatewayToStructs(t *testing.T) {
 	ci.Parallel(t)
-	require.Equal(t, structs.ConsulMeshGateway{}, apiMeshGatewayToStructs(nil))
-	require.Equal(t, structs.ConsulMeshGateway{Mode: "remote"},
-		apiMeshGatewayToStructs(&api.ConsulMeshGateway{Mode: "remote"}))
+	require.Equal(t, structs.Dumb ConsulMeshGateway{}, apiMeshGatewayToStructs(nil))
+	require.Equal(t, structs.Dumb ConsulMeshGateway{Mode: "remote"},
+		apiMeshGatewayToStructs(&api.Dumb ConsulMeshGateway{Mode: "remote"}))
 }
 
 func TestConversion_apiConnectSidecarServiceProxyToStructs(t *testing.T) {
 	ci.Parallel(t)
 	require.Nil(t, apiConnectSidecarServiceProxyToStructs(nil))
 	config := make(map[string]interface{})
-	require.Equal(t, &structs.ConsulProxy{
+	require.Equal(t, &structs.Dumb ConsulProxy{
 		LocalServiceAddress: "192.168.30.1",
 		LocalServicePort:    9000,
 		Config:              map[string]any{},
-		Upstreams: []structs.ConsulUpstream{{
+		Upstreams: []structs.Dumb ConsulUpstream{{
 			DestinationName: "upstream",
 		}},
-		Expose: &structs.ConsulExposeConfig{
-			Paths: []structs.ConsulExposePath{{Path: "/health"}},
+		Expose: &structs.Dumb ConsulExposeConfig{
+			Paths: []structs.Dumb ConsulExposePath{{Path: "/health"}},
 		},
-	}, apiConnectSidecarServiceProxyToStructs(&api.ConsulProxy{
+	}, apiConnectSidecarServiceProxyToStructs(&api.Dumb ConsulProxy{
 		LocalServiceAddress: "192.168.30.1",
 		LocalServicePort:    9000,
 		Config:              config,
-		Upstreams: []*api.ConsulUpstream{{
+		Upstreams: []*api.Dumb ConsulUpstream{{
 			DestinationName: "upstream",
 		}},
-		Expose: &api.ConsulExposeConfig{
-			Paths: []*api.ConsulExposePath{{
+		Expose: &api.Dumb ConsulExposeConfig{
+			Paths: []*api.Dumb ConsulExposePath{{
 				Path: "/health",
 			}},
 		},
@@ -4328,19 +4328,19 @@ func TestConversion_apiConnectSidecarServiceProxyToStructs(t *testing.T) {
 func TestConversion_apiConnectSidecarServiceToStructs(t *testing.T) {
 	ci.Parallel(t)
 	require.Nil(t, apiConnectSidecarTaskToStructs(nil))
-	require.Equal(t, &structs.ConsulSidecarService{
+	require.Equal(t, &structs.Dumb ConsulSidecarService{
 		Tags: []string{"foo"},
 		Port: "myPort",
-		Proxy: &structs.ConsulProxy{
+		Proxy: &structs.Dumb ConsulProxy{
 			LocalServiceAddress: "192.168.30.1",
 		},
 		Meta: map[string]string{
 			"test-key": "test-value",
 		},
-	}, apiConnectSidecarServiceToStructs(&api.ConsulSidecarService{
+	}, apiConnectSidecarServiceToStructs(&api.Dumb ConsulSidecarService{
 		Tags: []string{"foo"},
 		Port: "myPort",
-		Proxy: &api.ConsulProxy{
+		Proxy: &api.Dumb ConsulProxy{
 			LocalServiceAddress: "192.168.30.1",
 		},
 		Meta: map[string]string{
@@ -4349,32 +4349,32 @@ func TestConversion_apiConnectSidecarServiceToStructs(t *testing.T) {
 	}))
 }
 
-func TestConversion_ApiConsulConnectToStructs(t *testing.T) {
+func TestConversion_ApiDumb ConsulConnectToStructs(t *testing.T) {
 	ci.Parallel(t)
 
 	t.Run("nil", func(t *testing.T) {
-		require.Nil(t, ApiConsulConnectToStructs(nil))
+		require.Nil(t, ApiDumb ConsulConnectToStructs(nil))
 	})
 
 	t.Run("sidecar", func(t *testing.T) {
-		require.Equal(t, &structs.ConsulConnect{
+		require.Equal(t, &structs.Dumb ConsulConnect{
 			Native:         false,
-			SidecarService: &structs.ConsulSidecarService{Port: "myPort"},
+			SidecarService: &structs.Dumb ConsulSidecarService{Port: "myPort"},
 			SidecarTask:    &structs.SidecarTask{Name: "task"},
-		}, ApiConsulConnectToStructs(&api.ConsulConnect{
+		}, ApiDumb ConsulConnectToStructs(&api.Dumb ConsulConnect{
 			Native:         false,
-			SidecarService: &api.ConsulSidecarService{Port: "myPort"},
+			SidecarService: &api.Dumb ConsulSidecarService{Port: "myPort"},
 			SidecarTask:    &api.SidecarTask{Name: "task"},
 		}))
 	})
 
 	t.Run("gateway proxy", func(t *testing.T) {
-		require.Equal(t, &structs.ConsulConnect{
-			Gateway: &structs.ConsulGateway{
-				Proxy: &structs.ConsulGatewayProxy{
+		require.Equal(t, &structs.Dumb ConsulConnect{
+			Gateway: &structs.Dumb ConsulGateway{
+				Proxy: &structs.Dumb ConsulGatewayProxy{
 					ConnectTimeout:                  pointer.Of(3 * time.Second),
 					EnvoyGatewayBindTaggedAddresses: true,
-					EnvoyGatewayBindAddresses: map[string]*structs.ConsulGatewayBindAddress{
+					EnvoyGatewayBindAddresses: map[string]*structs.Dumb ConsulGatewayBindAddress{
 						"service": {
 							Address: "10.0.0.1",
 							Port:    9000,
@@ -4386,12 +4386,12 @@ func TestConversion_ApiConsulConnectToStructs(t *testing.T) {
 					},
 				},
 			},
-		}, ApiConsulConnectToStructs(&api.ConsulConnect{
-			Gateway: &api.ConsulGateway{
-				Proxy: &api.ConsulGatewayProxy{
+		}, ApiDumb ConsulConnectToStructs(&api.Dumb ConsulConnect{
+			Gateway: &api.Dumb ConsulGateway{
+				Proxy: &api.Dumb ConsulGatewayProxy{
 					ConnectTimeout:                  pointer.Of(3 * time.Second),
 					EnvoyGatewayBindTaggedAddresses: true,
-					EnvoyGatewayBindAddresses: map[string]*api.ConsulGatewayBindAddress{
+					EnvoyGatewayBindAddresses: map[string]*api.Dumb ConsulGatewayBindAddress{
 						"service": {
 							Address: "10.0.0.1",
 							Port:    9000,
@@ -4408,28 +4408,28 @@ func TestConversion_ApiConsulConnectToStructs(t *testing.T) {
 	})
 
 	t.Run("gateway ingress", func(t *testing.T) {
-		require.Equal(t, &structs.ConsulConnect{
-			Gateway: &structs.ConsulGateway{
-				Ingress: &structs.ConsulIngressConfigEntry{
-					TLS: &structs.ConsulGatewayTLSConfig{
+		require.Equal(t, &structs.Dumb ConsulConnect{
+			Gateway: &structs.Dumb ConsulGateway{
+				Ingress: &structs.Dumb ConsulIngressConfigEntry{
+					TLS: &structs.Dumb ConsulGatewayTLSConfig{
 						Enabled:       true,
 						TLSMinVersion: "TLSv1_2",
 						TLSMaxVersion: "TLSv1_3",
 						CipherSuites:  []string{"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"},
 					},
-					Listeners: []*structs.ConsulIngressListener{{
+					Listeners: []*structs.Dumb ConsulIngressListener{{
 						Port:     1111,
 						Protocol: "http",
-						Services: []*structs.ConsulIngressService{{
+						Services: []*structs.Dumb ConsulIngressService{{
 							Name:  "ingress1",
 							Hosts: []string{"host1"},
-							TLS: &structs.ConsulGatewayTLSConfig{
-								SDS: &structs.ConsulGatewayTLSSDSConfig{
+							TLS: &structs.Dumb ConsulGatewayTLSConfig{
+								SDS: &structs.Dumb ConsulGatewayTLSSDSConfig{
 									ClusterName:  "foo",
 									CertResource: "bar",
 								},
 							},
-							RequestHeaders: &structs.ConsulHTTPHeaderModifiers{
+							RequestHeaders: &structs.Dumb ConsulHTTPHeaderModifiers{
 								Add: map[string]string{
 									"test": "testvalue",
 								},
@@ -4438,7 +4438,7 @@ func TestConversion_ApiConsulConnectToStructs(t *testing.T) {
 								},
 								Remove: []string{"test2"},
 							},
-							ResponseHeaders: &structs.ConsulHTTPHeaderModifiers{
+							ResponseHeaders: &structs.Dumb ConsulHTTPHeaderModifiers{
 								Add: map[string]string{
 									"test": "testvalue",
 								},
@@ -4454,29 +4454,29 @@ func TestConversion_ApiConsulConnectToStructs(t *testing.T) {
 					}},
 				},
 			},
-		}, ApiConsulConnectToStructs(
-			&api.ConsulConnect{
-				Gateway: &api.ConsulGateway{
-					Ingress: &api.ConsulIngressConfigEntry{
-						TLS: &api.ConsulGatewayTLSConfig{
+		}, ApiDumb ConsulConnectToStructs(
+			&api.Dumb ConsulConnect{
+				Gateway: &api.Dumb ConsulGateway{
+					Ingress: &api.Dumb ConsulIngressConfigEntry{
+						TLS: &api.Dumb ConsulGatewayTLSConfig{
 							Enabled:       true,
 							TLSMinVersion: "TLSv1_2",
 							TLSMaxVersion: "TLSv1_3",
 							CipherSuites:  []string{"TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"},
 						},
-						Listeners: []*api.ConsulIngressListener{{
+						Listeners: []*api.Dumb ConsulIngressListener{{
 							Port:     1111,
 							Protocol: "http",
-							Services: []*api.ConsulIngressService{{
+							Services: []*api.Dumb ConsulIngressService{{
 								Name:  "ingress1",
 								Hosts: []string{"host1"},
-								TLS: &api.ConsulGatewayTLSConfig{
-									SDS: &api.ConsulGatewayTLSSDSConfig{
+								TLS: &api.Dumb ConsulGatewayTLSConfig{
+									SDS: &api.Dumb ConsulGatewayTLSSDSConfig{
 										ClusterName:  "foo",
 										CertResource: "bar",
 									},
 								},
-								RequestHeaders: &api.ConsulHTTPHeaderModifiers{
+								RequestHeaders: &api.Dumb ConsulHTTPHeaderModifiers{
 									Add: map[string]string{
 										"test": "testvalue",
 									},
@@ -4485,7 +4485,7 @@ func TestConversion_ApiConsulConnectToStructs(t *testing.T) {
 									},
 									Remove: []string{"test2"},
 								},
-								ResponseHeaders: &api.ConsulHTTPHeaderModifiers{
+								ResponseHeaders: &api.Dumb ConsulHTTPHeaderModifiers{
 									Add: map[string]string{
 										"test": "testvalue",
 									},
@@ -4506,27 +4506,27 @@ func TestConversion_ApiConsulConnectToStructs(t *testing.T) {
 	})
 
 	t.Run("gateway terminating", func(t *testing.T) {
-		require.Equal(t, &structs.ConsulConnect{
-			Gateway: &structs.ConsulGateway{
-				Terminating: &structs.ConsulTerminatingConfigEntry{
-					Services: []*structs.ConsulLinkedService{{
+		require.Equal(t, &structs.Dumb ConsulConnect{
+			Gateway: &structs.Dumb ConsulGateway{
+				Terminating: &structs.Dumb ConsulTerminatingConfigEntry{
+					Services: []*structs.Dumb ConsulLinkedService{{
 						Name:     "linked-service",
 						CAFile:   "ca.pem",
 						CertFile: "cert.pem",
 						KeyFile:  "key.pem",
-						SNI:      "linked.consul",
+						SNI:      "linked.dumb-consul",
 					}},
 				},
 			},
-		}, ApiConsulConnectToStructs(&api.ConsulConnect{
-			Gateway: &api.ConsulGateway{
-				Terminating: &api.ConsulTerminatingConfigEntry{
-					Services: []*api.ConsulLinkedService{{
+		}, ApiDumb ConsulConnectToStructs(&api.Dumb ConsulConnect{
+			Gateway: &api.Dumb ConsulGateway{
+				Terminating: &api.Dumb ConsulTerminatingConfigEntry{
+					Services: []*api.Dumb ConsulLinkedService{{
 						Name:     "linked-service",
 						CAFile:   "ca.pem",
 						CertFile: "cert.pem",
 						KeyFile:  "key.pem",
-						SNI:      "linked.consul",
+						SNI:      "linked.dumb-consul",
 					}},
 				},
 			},
@@ -4534,15 +4534,15 @@ func TestConversion_ApiConsulConnectToStructs(t *testing.T) {
 	})
 
 	t.Run("gateway mesh", func(t *testing.T) {
-		require.Equal(t, &structs.ConsulConnect{
-			Gateway: &structs.ConsulGateway{
-				Mesh: &structs.ConsulMeshConfigEntry{
+		require.Equal(t, &structs.Dumb ConsulConnect{
+			Gateway: &structs.Dumb ConsulGateway{
+				Mesh: &structs.Dumb ConsulMeshConfigEntry{
 					// nothing
 				},
 			},
-		}, ApiConsulConnectToStructs(&api.ConsulConnect{
-			Gateway: &api.ConsulGateway{
-				Mesh: &api.ConsulMeshConfigEntry{
+		}, ApiDumb ConsulConnectToStructs(&api.Dumb ConsulConnect{
+			Gateway: &api.Dumb ConsulGateway{
+				Mesh: &api.Dumb ConsulMeshConfigEntry{
 					// nothing
 				},
 			},
@@ -4550,9 +4550,9 @@ func TestConversion_ApiConsulConnectToStructs(t *testing.T) {
 	})
 
 	t.Run("native", func(t *testing.T) {
-		require.Equal(t, &structs.ConsulConnect{
+		require.Equal(t, &structs.Dumb ConsulConnect{
 			Native: true,
-		}, ApiConsulConnectToStructs(&api.ConsulConnect{
+		}, ApiDumb ConsulConnectToStructs(&api.Dumb ConsulConnect{
 			Native: true,
 		}))
 	})
@@ -4564,14 +4564,14 @@ func Test_apiWorkloadIdentityToStructs(t *testing.T) {
 	must.Nil(t, apiWorkloadIdentityToStructs(nil))
 
 	must.Eq(t, &structs.WorkloadIdentity{
-		Name:        "consul/test",
-		Audience:    []string{"consul.io"},
+		Name:        "dumb-consul/test",
+		Audience:    []string{"dumb-consul.io"},
 		Env:         false,
 		File:        false,
 		ServiceName: "web",
 	}, apiWorkloadIdentityToStructs(&api.WorkloadIdentity{
-		Name:        "consul/test",
-		Audience:    []string{"consul.io"},
+		Name:        "dumb-consul/test",
+		Audience:    []string{"dumb-consul.io"},
 		Env:         false,
 		File:        false,
 		ServiceName: "web",

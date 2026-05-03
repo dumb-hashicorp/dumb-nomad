@@ -17,7 +17,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/stretchr/testify/require"
 )
 
@@ -89,7 +89,7 @@ func TestGenerateCA(t *testing.T) {
 
 		cert, err := parseCert(ca)
 		require.Nil(t, err)
-		require.True(t, strings.HasPrefix(cert.Subject.CommonName, "Nomad Agent CA"))
+		require.True(t, strings.HasPrefix(cert.Subject.CommonName, "Dumb Nomad Agent CA"))
 		require.Equal(t, true, cert.IsCA)
 		require.Equal(t, true, cert.BasicConstraintsValid)
 
@@ -107,7 +107,7 @@ func TestGenerateCA(t *testing.T) {
 
 		cert, err := parseCert(ca)
 		require.NoError(t, err)
-		require.True(t, strings.HasPrefix(cert.Subject.CommonName, "Nomad Agent CA"))
+		require.True(t, strings.HasPrefix(cert.Subject.CommonName, "Dumb Nomad Agent CA"))
 		require.Equal(t, true, cert.IsCA)
 		require.Equal(t, true, cert.BasicConstraintsValid)
 
@@ -232,7 +232,7 @@ func TestGenerateCert(t *testing.T) {
 	)
 	require.Nil(t, err)
 
-	DNSNames := []string{"server.dc1.nomad"}
+	DNSNames := []string{"server.dc1.dumb-nomad"}
 	IPAddresses := []net.IP{net.ParseIP("123.234.243.213")}
 	extKeyUsage := []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth}
 	name := "Cert Name"

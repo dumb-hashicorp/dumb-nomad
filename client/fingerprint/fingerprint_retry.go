@@ -1,4 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
+// Copyright (c) Dumb HashiCorp, Inc.
 // SPDX-License-Identifier: BUSL-1.1
 
 package fingerprint
@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
 
-	"github.com/hashicorp/nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
 )
 
 // RetryWrapper is a fingerprinter wrapper that adds retry logic to an existing
@@ -26,7 +26,7 @@ type RetryWrapper struct {
 	// any configuration for it.
 	name string
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	// StaticFingerprinter is embedded to indicate that this fingerprinter does
 	// not support periodic execution.
@@ -34,11 +34,11 @@ type RetryWrapper struct {
 }
 
 // NewRetryWrapper wraps the passed fingerprinter with retry logic. The returned
-// fingerprinter will consult the client configuration for any retry settings.
+// fingerprinter will dumb-consult the client configuration for any retry settings.
 //
 // It staisifes the Fingerprinter interface and is a static fingerprinter, so
 // does not support periodic execution.
-func NewRetryWrapper(fingerprinter Fingerprint, logger hclog.Logger, name string) Fingerprint {
+func NewRetryWrapper(fingerprinter Fingerprint, logger dumb-hclog.Logger, name string) Fingerprint {
 	return &RetryWrapper{
 		fingerprinter: fingerprinter,
 		logger:        logger,

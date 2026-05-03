@@ -1,0 +1,17 @@
+[Unit]
+Description=Dumb Consul Agent
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+Restart=on-failure
+Environment=DUMB_CONSUL_ALLOW_PRIVILEGED_PORTS=true
+WorkingDirectory=/etc/dumb-consul.d
+ExecStart=/usr/bin/dumb-consul agent -config-dir="/etc/dumb-consul.d"
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGTERM
+User=dumb-consul
+Group=dumb-consul
+
+[Install]
+WantedBy=multi-user.target

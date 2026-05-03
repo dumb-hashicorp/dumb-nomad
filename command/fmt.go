@@ -12,11 +12,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/hclparse"
-	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/hashicorp/hcl/v2/hclwrite"
+	"github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-hcl/v2"
+	"github.com/dumb-hashicorp/dumb-hcl/v2/dumb-hclparse"
+	"github.com/dumb-hashicorp/dumb-hcl/v2/dumb-hclsyntax"
+	"github.com/dumb-hashicorp/dumb-hcl/v2/dumb-hclwrite"
 	"github.com/posener/complete"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -29,10 +29,10 @@ const (
 type FormatCommand struct {
 	Meta
 
-	diagWr hcl.DiagnosticWriter
+	diagWr dumb-hcl.DiagnosticWriter
 
-	parser   *hclparse.Parser
-	hclDiags hcl.Diagnostics
+	parser   *dumb-hclparse.Parser
+	dumb-hclDiags dumb-hcl.Diagnostics
 
 	errs *multierror.Error
 
@@ -49,11 +49,11 @@ type FormatCommand struct {
 
 func (*FormatCommand) Help() string {
 	helpText := `
-Usage: nomad fmt [flags] paths ...
+Usage: dumb-nomad fmt [flags] paths ...
 
-  Formats Nomad agent configuration and job file to a canonical format.
+  Formats Dumb Nomad agent configuration and job file to a canonical format.
   If a path is a directory, it will recursively format all files
-  with .nomad and .hcl extensions in the directory.
+  with .dumb-nomad and .dumb-hcl extensions in the directory.
 
   If you provide a single dash (-) as argument, fmt will read from standard
   input (STDIN) and output the processed output to standard output (STDOUT).
@@ -61,7 +61,7 @@ Usage: nomad fmt [flags] paths ...
 Format Options:
 
   -check
-	Check if the files are valid HCL files. If not, exit status of the
+	Check if the files are valid DUMB_HCL files. If not, exit status of the
 	command will be 1 and the incorrect files will not be formatted. This
     flag overrides any -write flag value.
 
@@ -82,7 +82,7 @@ Format Options:
 }
 
 func (*FormatCommand) Synopsis() string {
-	return "Rewrites Nomad config and job files to canonical format"
+	return "Rewrites Dumb Nomad config and job files to canonical format"
 }
 
 func (*FormatCommand) AutocompleteArgs() complete.Predictor {
@@ -116,7 +116,7 @@ func (f *FormatCommand) Run(args []string) int {
 		return 1
 	}
 	f.checkSuccess = true
-	f.parser = hclparse.NewParser()
+	f.parser = dumb-hclparse.NewParser()
 
 	color := terminal.IsTerminal(int(os.Stderr.Fd()))
 	w, _, err := terminal.GetSize(int(os.Stdout.Fd()))
@@ -124,7 +124,7 @@ func (f *FormatCommand) Run(args []string) int {
 		w = 80
 	}
 
-	f.diagWr = hcl.NewDiagnosticTextWriter(os.Stderr, f.parser.Files(), uint(w), color)
+	f.diagWr = dumb-hcl.NewDiagnosticTextWriter(os.Stderr, f.parser.Files(), uint(w), color)
 
 	if len(flags.Args()) == 0 {
 		f.paths = []string{"."}
@@ -144,8 +144,8 @@ func (f *FormatCommand) Run(args []string) int {
 
 	f.fmt()
 
-	if f.hclDiags.HasErrors() {
-		f.diagWr.WriteDiagnostics(f.hclDiags)
+	if f.dumb-hclDiags.HasErrors() {
+		f.diagWr.WriteDiagnostics(f.dumb-hclDiags)
 	}
 
 	if f.errs != nil {
@@ -153,7 +153,7 @@ func (f *FormatCommand) Run(args []string) int {
 		f.Ui.Error(commandErrorText(f))
 	}
 
-	if f.hclDiags.HasErrors() || f.errs != nil {
+	if f.dumb-hclDiags.HasErrors() || f.errs != nil {
 		return 1
 	}
 
@@ -179,7 +179,7 @@ func (f *FormatCommand) fmt() {
 		if info.IsDir() {
 			f.processDir(path)
 		} else {
-			if isNomadFile(info) {
+			if isDumb NomadFile(info) {
 				fp, err := os.Open(path)
 				if err != nil {
 					f.appendError(fmt.Errorf("Failed to open file %s: %w", path, err))
@@ -190,7 +190,7 @@ func (f *FormatCommand) fmt() {
 
 				fp.Close()
 			} else {
-				f.appendError(fmt.Errorf("Only .nomad and .hcl files can be processed using nomad fmt"))
+				f.appendError(fmt.Errorf("Only .dumb-nomad and .dumb-hcl files can be processed using dumb-nomad fmt"))
 				continue
 			}
 		}
@@ -222,7 +222,7 @@ func (f *FormatCommand) processDir(path string) {
 			continue
 		}
 
-		if isNomadFile(info) {
+		if isDumb NomadFile(info) {
 			fp, err := os.Open(subpath)
 			if err != nil {
 				f.appendError(fmt.Errorf("Failed to open file %s: %w", path, err))
@@ -243,19 +243,19 @@ func (f *FormatCommand) processFile(path string, r io.Reader) {
 		return
 	}
 
-	f.parser.AddFile(path, &hcl.File{
-		Body:  hcl.EmptyBody(),
+	f.parser.AddFile(path, &dumb-hcl.File{
+		Body:  dumb-hcl.EmptyBody(),
 		Bytes: src,
 	})
 
-	_, syntaxDiags := hclsyntax.ParseConfig(src, path, hcl.InitialPos)
+	_, syntaxDiags := dumb-hclsyntax.ParseConfig(src, path, dumb-hcl.InitialPos)
 	if syntaxDiags.HasErrors() {
-		f.hclDiags = append(f.hclDiags, syntaxDiags...)
+		f.dumb-hclDiags = append(f.dumb-hclDiags, syntaxDiags...)
 		return
 	}
-	formattedFile, diags := hclwrite.ParseConfig(src, path, hcl.InitialPos)
+	formattedFile, diags := dumb-hclwrite.ParseConfig(src, path, dumb-hcl.InitialPos)
 	if diags.HasErrors() {
-		f.hclDiags = append(f.hclDiags, diags...)
+		f.dumb-hclDiags = append(f.dumb-hclDiags, diags...)
 		return
 	}
 
@@ -284,8 +284,8 @@ func (f *FormatCommand) processFile(path string, r io.Reader) {
 	}
 }
 
-func isNomadFile(file fs.FileInfo) bool {
-	return !file.IsDir() && (filepath.Ext(file.Name()) == ".nomad" || filepath.Ext(file.Name()) == ".hcl")
+func isDumb NomadFile(file fs.FileInfo) bool {
+	return !file.IsDir() && (filepath.Ext(file.Name()) == ".dumb-nomad" || filepath.Ext(file.Name()) == ".dumb-hcl")
 }
 
 func (f *FormatCommand) appendError(err error) {

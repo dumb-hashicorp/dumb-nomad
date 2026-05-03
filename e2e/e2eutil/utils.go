@@ -11,11 +11,11 @@ import (
 	"text/template"
 	"time"
 
-	api "github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/jobspec2"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	api "github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/jobspec2"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/kr/pretty"
 	"github.com/stretchr/testify/require"
 )
@@ -23,8 +23,8 @@ import (
 // retries is used to control how many times to retry checking if the cluster has a leader yet
 const retries = 500
 
-func WaitForLeader(t *testing.T, nomadClient *api.Client) {
-	statusAPI := nomadClient.Status()
+func WaitForLeader(t *testing.T, dumb-nomadClient *api.Client) {
+	statusAPI := dumb-nomadClient.Status()
 
 	testutil.WaitForResultRetries(retries, func() (bool, error) {
 		leader, err := statusAPI.Leader()
@@ -36,8 +36,8 @@ func WaitForLeader(t *testing.T, nomadClient *api.Client) {
 
 // WaitForNodesReady waits until at least `nodes` number of nodes are ready or
 // fails the test.
-func WaitForNodesReady(t *testing.T, nomadClient *api.Client, nodes int) {
-	nodesAPI := nomadClient.Nodes()
+func WaitForNodesReady(t *testing.T, dumb-nomadClient *api.Client, nodes int) {
+	nodesAPI := dumb-nomadClient.Nodes()
 
 	testutil.WaitForResultRetries(retries, func() (bool, error) {
 		defer time.Sleep(time.Millisecond * 100)
@@ -72,7 +72,7 @@ func Parse2(t *testing.T, jobFile string) (*api.Job, error) {
 	return jobspec2.Parse(jobFile, f)
 }
 
-func RegisterAllocs(t *testing.T, nomadClient *api.Client, jobFile, jobID, cToken string) []*api.AllocationListStub {
+func RegisterAllocs(t *testing.T, dumb-nomadClient *api.Client, jobFile, jobID, cToken string) []*api.AllocationListStub {
 
 	// Parse job
 	job, err := Parse2(t, jobFile)
@@ -83,7 +83,7 @@ func RegisterAllocs(t *testing.T, nomadClient *api.Client, jobFile, jobID, cToke
 
 	// Register job
 	var idx uint64
-	jobs := nomadClient.Jobs()
+	jobs := dumb-nomadClient.Jobs()
 	testutil.WaitForResult(func() (bool, error) {
 		resp, meta, err := jobs.Register(job, nil)
 		if err != nil {
@@ -102,11 +102,11 @@ func RegisterAllocs(t *testing.T, nomadClient *api.Client, jobFile, jobID, cToke
 
 // RegisterAndWaitForAllocs wraps RegisterAllocs but blocks until Evals
 // successfully create Allocs.
-func RegisterAndWaitForAllocs(t *testing.T, nomadClient *api.Client, jobFile, jobID, cToken string) []*api.AllocationListStub {
-	jobs := nomadClient.Jobs()
+func RegisterAndWaitForAllocs(t *testing.T, dumb-nomadClient *api.Client, jobFile, jobID, cToken string) []*api.AllocationListStub {
+	jobs := dumb-nomadClient.Jobs()
 
 	// Start allocations
-	RegisterAllocs(t, nomadClient, jobFile, jobID, cToken)
+	RegisterAllocs(t, dumb-nomadClient, jobFile, jobID, cToken)
 
 	var err error
 	allocs := []*api.AllocationListStub{}
@@ -118,7 +118,7 @@ func RegisterAndWaitForAllocs(t *testing.T, nomadClient *api.Client, jobFile, jo
 
 		allocs, _, err = jobs.Allocations(jobID, false, nil)
 		if len(allocs) == 0 {
-			evals, _, err = nomadClient.Jobs().Evaluations(jobID, nil)
+			evals, _, err = dumb-nomadClient.Jobs().Evaluations(jobID, nil)
 			return false, fmt.Errorf("no allocations for job %v", jobID)
 		}
 
@@ -137,12 +137,12 @@ func RegisterAndWaitForAllocs(t *testing.T, nomadClient *api.Client, jobFile, jo
 	return allocs
 }
 
-func WaitForAllocRunning(t *testing.T, nomadClient *api.Client, allocID string) {
+func WaitForAllocRunning(t *testing.T, dumb-nomadClient *api.Client, allocID string) {
 	t.Helper()
 
 	testutil.WaitForResultRetries(retries, func() (bool, error) {
 		time.Sleep(time.Millisecond * 100)
-		alloc, _, err := nomadClient.Allocations().Info(allocID, nil)
+		alloc, _, err := dumb-nomadClient.Allocations().Info(allocID, nil)
 		if err != nil {
 			return false, err
 		}
@@ -153,18 +153,18 @@ func WaitForAllocRunning(t *testing.T, nomadClient *api.Client, allocID string) 
 	})
 }
 
-func WaitForAllocTaskRunning(t *testing.T, nomadClient *api.Client, allocID, task string) {
-	WaitForAllocTaskState(t, nomadClient, allocID, task, structs.TaskStateRunning)
+func WaitForAllocTaskRunning(t *testing.T, dumb-nomadClient *api.Client, allocID, task string) {
+	WaitForAllocTaskState(t, dumb-nomadClient, allocID, task, structs.TaskStateRunning)
 }
 
-func WaitForAllocTaskComplete(t *testing.T, nomadClient *api.Client, allocID, task string) {
-	WaitForAllocTaskState(t, nomadClient, allocID, task, structs.TaskStateDead)
+func WaitForAllocTaskComplete(t *testing.T, dumb-nomadClient *api.Client, allocID, task string) {
+	WaitForAllocTaskState(t, dumb-nomadClient, allocID, task, structs.TaskStateDead)
 }
 
-func WaitForAllocTaskState(t *testing.T, nomadClient *api.Client, allocID, task, state string) {
+func WaitForAllocTaskState(t *testing.T, dumb-nomadClient *api.Client, allocID, task, state string) {
 	testutil.WaitForResultRetries(retries, func() (bool, error) {
 		time.Sleep(time.Millisecond * 500)
-		alloc, _, err := nomadClient.Allocations().Info(allocID, nil)
+		alloc, _, err := dumb-nomadClient.Allocations().Info(allocID, nil)
 		if err != nil {
 			return false, err
 		}
@@ -178,22 +178,22 @@ func WaitForAllocTaskState(t *testing.T, nomadClient *api.Client, allocID, task,
 	})
 }
 
-func WaitForAllocsRunning(t *testing.T, nomadClient *api.Client, allocIDs []string) {
+func WaitForAllocsRunning(t *testing.T, dumb-nomadClient *api.Client, allocIDs []string) {
 	for _, allocID := range allocIDs {
-		WaitForAllocRunning(t, nomadClient, allocID)
+		WaitForAllocRunning(t, dumb-nomadClient, allocID)
 	}
 }
 
-func WaitForAllocsNotPending(t *testing.T, nomadClient *api.Client, allocIDs []string) {
+func WaitForAllocsNotPending(t *testing.T, dumb-nomadClient *api.Client, allocIDs []string) {
 	for _, allocID := range allocIDs {
-		WaitForAllocNotPending(t, nomadClient, allocID)
+		WaitForAllocNotPending(t, dumb-nomadClient, allocID)
 	}
 }
 
-func WaitForAllocNotPending(t *testing.T, nomadClient *api.Client, allocID string) {
+func WaitForAllocNotPending(t *testing.T, dumb-nomadClient *api.Client, allocID string) {
 	testutil.WaitForResultRetries(retries, func() (bool, error) {
 		time.Sleep(time.Millisecond * 100)
-		alloc, _, err := nomadClient.Allocations().Info(allocID, nil)
+		alloc, _, err := dumb-nomadClient.Allocations().Info(allocID, nil)
 		if err != nil {
 			return false, err
 		}
@@ -205,23 +205,23 @@ func WaitForAllocNotPending(t *testing.T, nomadClient *api.Client, allocID strin
 }
 
 // WaitForJobStopped stops a job and waits for all of its allocs to terminate.
-func WaitForJobStopped(t *testing.T, nomadClient *api.Client, job string) {
-	_, _, err := nomadClient.Jobs().Deregister(job, true, nil)
+func WaitForJobStopped(t *testing.T, dumb-nomadClient *api.Client, job string) {
+	_, _, err := dumb-nomadClient.Jobs().Deregister(job, true, nil)
 	require.NoError(t, err, "error deregistering job %q", job)
 }
 
-func WaitForAllocsStopped(t *testing.T, nomadClient *api.Client, allocIDs []string) {
+func WaitForAllocsStopped(t *testing.T, dumb-nomadClient *api.Client, allocIDs []string) {
 	for _, allocID := range allocIDs {
-		WaitForAllocStopped(t, nomadClient, allocID)
+		WaitForAllocStopped(t, dumb-nomadClient, allocID)
 	}
 }
 
-func WaitForAllocStopped(t *testing.T, nomadClient *api.Client, allocID string) *api.Allocation {
+func WaitForAllocStopped(t *testing.T, dumb-nomadClient *api.Client, allocID string) *api.Allocation {
 	var alloc *api.Allocation
 	var err error
 	testutil.WaitForResultRetries(retries, func() (bool, error) {
 		time.Sleep(time.Millisecond * 100)
-		alloc, _, err = nomadClient.Allocations().Info(allocID, nil)
+		alloc, _, err = dumb-nomadClient.Allocations().Info(allocID, nil)
 		if err != nil {
 			return false, err
 		}
@@ -242,10 +242,10 @@ func WaitForAllocStopped(t *testing.T, nomadClient *api.Client, allocID string) 
 	return alloc
 }
 
-func WaitForAllocStatus(t *testing.T, nomadClient *api.Client, allocID string, status string) {
+func WaitForAllocStatus(t *testing.T, dumb-nomadClient *api.Client, allocID string, status string) {
 	testutil.WaitForResultRetries(retries, func() (bool, error) {
 		time.Sleep(time.Millisecond * 100)
-		alloc, _, err := nomadClient.Allocations().Info(allocID, nil)
+		alloc, _, err := dumb-nomadClient.Allocations().Info(allocID, nil)
 		if err != nil {
 			return false, err
 		}
@@ -260,9 +260,9 @@ func WaitForAllocStatus(t *testing.T, nomadClient *api.Client, allocID string, s
 	})
 }
 
-func WaitForAllocsStatus(t *testing.T, nomadClient *api.Client, allocIDs []string, status string) {
+func WaitForAllocsStatus(t *testing.T, dumb-nomadClient *api.Client, allocIDs []string, status string) {
 	for _, allocID := range allocIDs {
-		WaitForAllocStatus(t, nomadClient, allocID, status)
+		WaitForAllocStatus(t, dumb-nomadClient, allocID, status)
 	}
 }
 
@@ -274,8 +274,8 @@ func AllocIDsFromAllocationListStubs(allocs []*api.AllocationListStub) []string 
 	return allocIDs
 }
 
-func DeploymentsForJob(t *testing.T, nomadClient *api.Client, jobID string) []*api.Deployment {
-	ds, _, err := nomadClient.Deployments().List(nil)
+func DeploymentsForJob(t *testing.T, dumb-nomadClient *api.Client, jobID string) []*api.Deployment {
+	ds, _, err := dumb-nomadClient.Deployments().List(nil)
 	require.NoError(t, err)
 
 	out := []*api.Deployment{}
@@ -288,10 +288,10 @@ func DeploymentsForJob(t *testing.T, nomadClient *api.Client, jobID string) []*a
 	return out
 }
 
-func WaitForDeployment(t *testing.T, nomadClient *api.Client, deployID string, status string, statusDesc string) {
+func WaitForDeployment(t *testing.T, dumb-nomadClient *api.Client, deployID string, status string, statusDesc string) {
 	testutil.WaitForResultRetries(retries, func() (bool, error) {
 		time.Sleep(time.Millisecond * 100)
-		deploy, _, err := nomadClient.Deployments().Info(deployID, nil)
+		deploy, _, err := dumb-nomadClient.Deployments().Info(deployID, nil)
 		if err != nil {
 			return false, err
 		}

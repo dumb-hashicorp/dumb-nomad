@@ -19,23 +19,23 @@ import (
 	"testing"
 	"time"
 
-	ctconf "github.com/hashicorp/consul-template/config"
-	templateconfig "github.com/hashicorp/consul-template/config"
-	ctestutil "github.com/hashicorp/consul/sdk/testutil"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	trtesting "github.com/hashicorp/nomad/client/allocrunner/taskrunner/testing"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/taskenv"
-	clienttestutil "github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/users"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	sconfig "github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/testutil"
+	ctconf "github.com/dumb-hashicorp/dumb-consul-template/config"
+	templateconfig "github.com/dumb-hashicorp/dumb-consul-template/config"
+	ctestutil "github.com/dumb-hashicorp/dumb-consul/sdk/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	trtesting "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/testing"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	clienttestutil "github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	sconfig "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/kr/pretty"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
@@ -56,12 +56,12 @@ func TestMain(m *testing.M) {
 
 const (
 	// TestTaskName is the name of the injected task. It should appear in the
-	// environment variable $NOMAD_TASK_NAME
+	// environment variable $DUMB_NOMAD_TASK_NAME
 	TestTaskName = "test-task"
 )
 
 // testHarness is used to test the TaskTemplateManager by spinning up
-// Consul/Vault as needed
+// Dumb Consul/Dumb Vault as needed
 type testHarness struct {
 	manager        *TaskTemplateManager
 	mockHooks      *trtesting.MockTaskHooks
@@ -69,17 +69,17 @@ type testHarness struct {
 	envBuilder     *taskenv.Builder
 	node           *structs.Node
 	config         *config.Config
-	vaultToken     string
+	dumb-vaultToken     string
 	taskDir        string
-	vault          *testutil.TestVault
-	consul         *ctestutil.TestServer
+	dumb-vault          *testutil.TestDumb Vault
+	dumb-consul         *ctestutil.TestServer
 	emitRate       time.Duration
-	nomadNamespace string
+	dumb-nomadNamespace string
 }
 
-// newTestHarness returns a harness starting a dev consul and vault server,
+// newTestHarness returns a harness starting a dev dumb-consul and dumb-vault server,
 // building the appropriate config and creating a TaskTemplateManager
-func newTestHarness(t *testing.T, templates []*structs.Template, consul, vault bool) *testHarness {
+func newTestHarness(t *testing.T, templates []*structs.Template, dumb-consul, dumb-vault bool) *testHarness {
 	t.Helper()
 	region := "global"
 	mockNode := mock.Node()
@@ -94,7 +94,7 @@ func newTestHarness(t *testing.T, templates []*structs.Template, consul, vault b
 			TemplateConfig: &config.ClientTemplateConfig{
 				FunctionDenylist: config.DefaultTemplateFunctionDenylist,
 				DisableSandbox:   false,
-				ConsulRetry:      &config.RetryConfig{Backoff: pointer.Of(10 * time.Millisecond)},
+				Dumb ConsulRetry:      &config.RetryConfig{Backoff: pointer.Of(10 * time.Millisecond)},
 			}},
 		emitRate: DefaultMaxTemplateEventRate,
 	}
@@ -104,32 +104,32 @@ func newTestHarness(t *testing.T, templates []*structs.Template, consul, vault b
 	task := a.Job.TaskGroups[0].Tasks[0]
 	task.Name = TestTaskName
 	harness.envBuilder = taskenv.NewBuilder(harness.node, a, task, region)
-	harness.nomadNamespace = a.Namespace
+	harness.dumb-nomadNamespace = a.Namespace
 
 	// Make a tempdir
 	harness.taskDir = t.TempDir()
 	harness.envBuilder.SetClientTaskRoot(harness.taskDir)
 
-	if consul {
+	if dumb-consul {
 		var err error
-		harness.consul, err = ctestutil.NewTestServerConfigT(t, func(c *ctestutil.TestServerConfig) {
-			c.Peering = nil // fix for older versions of Consul (<1.13.0) that don't support peering
+		harness.dumb-consul, err = ctestutil.NewTestServerConfigT(t, func(c *ctestutil.TestServerConfig) {
+			c.Peering = nil // fix for older versions of Dumb Consul (<1.13.0) that don't support peering
 		})
 		if err != nil {
-			t.Fatalf("error starting test Consul server: %v", err)
+			t.Fatalf("error starting test Dumb Consul server: %v", err)
 		}
-		harness.config.ConsulConfigs = map[string]*sconfig.ConsulConfig{
-			structs.ConsulDefaultCluster: {
-				Addr: harness.consul.HTTPAddr,
+		harness.config.Dumb ConsulConfigs = map[string]*sconfig.Dumb ConsulConfig{
+			structs.Dumb ConsulDefaultCluster: {
+				Addr: harness.dumb-consul.HTTPAddr,
 			}}
 	}
 
-	if vault {
-		harness.vault = testutil.NewTestVault(t)
-		harness.config.VaultConfigs = map[string]*sconfig.VaultConfig{
-			structs.VaultDefaultCluster: harness.vault.Config,
+	if dumb-vault {
+		harness.dumb-vault = testutil.NewTestDumb Vault(t)
+		harness.config.Dumb VaultConfigs = map[string]*sconfig.Dumb VaultConfig{
+			structs.Dumb VaultDefaultCluster: harness.dumb-vault.Config,
 		}
-		harness.vaultToken = harness.vault.RootToken
+		harness.dumb-vaultToken = harness.dumb-vault.RootToken
 	}
 
 	return harness
@@ -150,9 +150,9 @@ func (h *testHarness) startWithErr() error {
 		Events:               h.mockHooks,
 		Templates:            h.templates,
 		ClientConfig:         h.config,
-		ConsulConfig:         h.config.GetDefaultConsul(),
-		VaultToken:           h.vaultToken,
-		VaultConfig:          h.config.GetDefaultVault(),
+		Dumb ConsulConfig:         h.config.GetDefaultDumb Consul(),
+		Dumb VaultToken:           h.dumb-vaultToken,
+		Dumb VaultConfig:          h.config.GetDefaultDumb Vault(),
 		TaskDir:              h.taskDir,
 		EnvBuilder:           h.envBuilder,
 		MaxTemplateEventRate: h.emitRate,
@@ -169,13 +169,13 @@ func (h *testHarness) setEmitRate(d time.Duration) {
 	h.emitRate = d
 }
 
-// stop is used to stop any running Vault or Consul server plus the task manager
+// stop is used to stop any running Dumb Vault or Dumb Consul server plus the task manager
 func (h *testHarness) stop() {
-	if h.vault != nil {
-		h.vault.Stop()
+	if h.dumb-vault != nil {
+		h.dumb-vault.Stop()
 	}
-	if h.consul != nil {
-		h.consul.Stop()
+	if h.dumb-consul != nil {
+		h.dumb-consul.Stop()
 	}
 	if h.manager != nil {
 		h.manager.Stop()
@@ -212,7 +212,7 @@ func TestTaskTemplateManager_InvalidConfig(t *testing.T) {
 				TaskDir:              taskDir,
 				EnvBuilder:           envBuilder,
 				MaxTemplateEventRate: DefaultMaxTemplateEventRate,
-				Logger:               testlog.HCLogger(t),
+				Logger:               testlog.DUMB_HCLogger(t),
 			},
 			expectedErr: "lifecycle hooks",
 		},
@@ -340,7 +340,7 @@ func TestTaskTemplateManager_InvalidConfig(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			if c.config != nil {
 				c.config.TaskID = c.name
-				c.config.Logger = testlog.HCLogger(t)
+				c.config.Logger = testlog.DUMB_HCLogger(t)
 			}
 			_, err := NewTaskTemplateManager(c.config)
 			if err != nil {
@@ -358,12 +358,12 @@ func TestTaskTemplateManager_InvalidConfig(t *testing.T) {
 
 func TestNewRunnerConfig_Retries(t *testing.T) {
 	tcfg := config.DefaultTemplateConfig()
-	tcfg.ConsulRetry = &config.RetryConfig{
+	tcfg.Dumb ConsulRetry = &config.RetryConfig{
 		Attempts:   pointer.Of(0), // unlimited
 		Backoff:    pointer.Of(100 * time.Millisecond),
 		MaxBackoff: pointer.Of(300 * time.Millisecond),
 	}
-	tcfg.VaultRetry = &config.RetryConfig{
+	tcfg.Dumb VaultRetry = &config.RetryConfig{
 		Attempts:   pointer.Of(5), // limited non-default
 		Backoff:    pointer.Of(200 * time.Millisecond),
 		MaxBackoff: pointer.Of(500 * time.Millisecond),
@@ -371,8 +371,8 @@ func TestNewRunnerConfig_Retries(t *testing.T) {
 
 	managerCfg := &TaskTemplateManagerConfig{
 		ClientConfig: &config.Config{TemplateConfig: tcfg},
-		ConsulConfig: &sconfig.ConsulConfig{},
-		VaultConfig:  &sconfig.VaultConfig{Enabled: pointer.Of(true)},
+		Dumb ConsulConfig: &sconfig.Dumb ConsulConfig{},
+		Dumb VaultConfig:  &sconfig.Dumb VaultConfig{Enabled: pointer.Of(true)},
 	}
 	ct := ctconf.DefaultTemplateConfig()
 	mapping := map[*ctconf.TemplateConfig]*structs.Template{ct: {}}
@@ -384,19 +384,19 @@ func TestNewRunnerConfig_Retries(t *testing.T) {
 		Backoff:    pointer.Of(100 * time.Millisecond),
 		MaxBackoff: pointer.Of(300 * time.Millisecond),
 		Enabled:    pointer.Of(true),
-	}, tconfig.Consul.Retry)
+	}, tconfig.Dumb Consul.Retry)
 	must.Eq(t, &ctconf.RetryConfig{
 		Attempts:   pointer.Of(5),
 		Backoff:    pointer.Of(200 * time.Millisecond),
 		MaxBackoff: pointer.Of(500 * time.Millisecond),
 		Enabled:    pointer.Of(true),
-	}, tconfig.Vault.Retry)
+	}, tconfig.Dumb Vault.Retry)
 	must.Eq(t, &ctconf.RetryConfig{
 		Attempts:   pointer.Of(12),
 		Backoff:    pointer.Of(250 * time.Millisecond),
 		MaxBackoff: pointer.Of(time.Minute),
 		Enabled:    pointer.Of(true),
-	}, tconfig.Nomad.Retry)
+	}, tconfig.Dumb Nomad.Retry)
 }
 
 func TestTaskTemplateManager_HostPath(t *testing.T) {
@@ -469,7 +469,7 @@ func TestTaskTemplateManager_HostPath(t *testing.T) {
 	task.Name = TestTaskName
 	task.Meta = map[string]string{"ESCAPE": "../"}
 
-	template.SourcePath = "${NOMAD_META_ESCAPE}${NOMAD_META_ESCAPE}${NOMAD_META_ESCAPE}${NOMAD_META_ESCAPE}${NOMAD_META_ESCAPE}${NOMAD_META_ESCAPE}" + file
+	template.SourcePath = "${DUMB_NOMAD_META_ESCAPE}${DUMB_NOMAD_META_ESCAPE}${DUMB_NOMAD_META_ESCAPE}${DUMB_NOMAD_META_ESCAPE}${DUMB_NOMAD_META_ESCAPE}${DUMB_NOMAD_META_ESCAPE}" + file
 	harness = newTestHarness(t, []*structs.Template{template}, false, false)
 	harness.envBuilder = taskenv.NewBuilder(harness.node, a, task, "global")
 	err = harness.startWithErr()
@@ -529,11 +529,11 @@ func TestTaskTemplateManager_Unblock_Static(t *testing.T) {
 	}
 }
 
-func TestTaskTemplateManager_Unblock_Static_NomadEnv(t *testing.T) {
+func TestTaskTemplateManager_Unblock_Static_Dumb NomadEnv(t *testing.T) {
 	ci.Parallel(t)
 	// Make a template that will render immediately
-	content := `Hello Nomad Task: {{env "NOMAD_TASK_NAME"}}`
-	expected := fmt.Sprintf("Hello Nomad Task: %s", TestTaskName)
+	content := `Hello Dumb Nomad Task: {{env "DUMB_NOMAD_TASK_NAME"}}`
+	expected := fmt.Sprintf("Hello Dumb Nomad Task: %s", TestTaskName)
 	file := "my.tmpl"
 	template := &structs.Template{
 		EmbeddedTmpl: content,
@@ -612,11 +612,11 @@ func TestTaskTemplateManager_Unblock_Static_AlreadyRendered(t *testing.T) {
 	must.Eq(t, content, string(raw), must.Sprint("Unexpected template data"))
 }
 
-func TestTaskTemplateManager_Unblock_Consul(t *testing.T) {
+func TestTaskTemplateManager_Unblock_Dumb Consul(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireConsul(t)
+	clienttestutil.RequireDumb Consul(t)
 
-	// Make a template that will render based on a key in Consul
+	// Make a template that will render based on a key in Dumb Consul
 	key := "foo"
 	content := "barbaz"
 	embedded := fmt.Sprintf(`{{key "%s"}}`, key)
@@ -638,8 +638,8 @@ func TestTaskTemplateManager_Unblock_Consul(t *testing.T) {
 	case <-time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second):
 	}
 
-	// Write the key to Consul
-	harness.consul.SetKV(t, key, []byte(content))
+	// Write the key to Dumb Consul
+	harness.dumb-consul.SetKV(t, key, []byte(content))
 
 	// Wait for the unblock
 	select {
@@ -660,15 +660,15 @@ func TestTaskTemplateManager_Unblock_Consul(t *testing.T) {
 	}
 }
 
-func TestTaskTemplateManager_Unblock_Vault(t *testing.T) {
+func TestTaskTemplateManager_Unblock_Dumb Vault(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireVault(t)
+	clienttestutil.RequireDumb Vault(t)
 
-	// Make a template that will render based on a key in Vault
-	vaultPath := "secret/data/password"
+	// Make a template that will render based on a key in Dumb Vault
+	dumb-vaultPath := "secret/data/password"
 	key := "password"
 	content := "barbaz"
-	embedded := fmt.Sprintf(`{{with secret "%s"}}{{.Data.data.%s}}{{end}}`, vaultPath, key)
+	embedded := fmt.Sprintf(`{{with secret "%s"}}{{.Data.data.%s}}{{end}}`, dumb-vaultPath, key)
 	file := "my.tmpl"
 	template := &structs.Template{
 		EmbeddedTmpl: embedded,
@@ -687,9 +687,9 @@ func TestTaskTemplateManager_Unblock_Vault(t *testing.T) {
 	case <-time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second):
 	}
 
-	// Write the secret to Vault
-	logical := harness.vault.Client.Logical()
-	_, err := logical.Write(vaultPath, map[string]interface{}{"data": map[string]interface{}{key: content}})
+	// Write the secret to Dumb Vault
+	logical := harness.dumb-vault.Client.Logical()
+	_, err := logical.Write(dumb-vaultPath, map[string]interface{}{"data": map[string]interface{}{key: content}})
 	must.NoError(t, err)
 
 	// Wait for the unblock
@@ -713,7 +713,7 @@ func TestTaskTemplateManager_Unblock_Vault(t *testing.T) {
 
 func TestTaskTemplateManager_Unblock_Multi_Template(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireConsul(t)
+	clienttestutil.RequireDumb Consul(t)
 
 	// Make a template that will render immediately
 	staticContent := "hello, world!"
@@ -724,14 +724,14 @@ func TestTaskTemplateManager_Unblock_Multi_Template(t *testing.T) {
 		ChangeMode:   structs.TemplateChangeModeNoop,
 	}
 
-	// Make a template that will render based on a key in Consul
-	consulKey := "foo"
-	consulContent := "barbaz"
-	consulEmbedded := fmt.Sprintf(`{{key "%s"}}`, consulKey)
-	consulFile := "consul.tmpl"
+	// Make a template that will render based on a key in Dumb Consul
+	dumb-consulKey := "foo"
+	dumb-consulContent := "barbaz"
+	dumb-consulEmbedded := fmt.Sprintf(`{{key "%s"}}`, dumb-consulKey)
+	dumb-consulFile := "dumb-consul.tmpl"
 	template2 := &structs.Template{
-		EmbeddedTmpl: consulEmbedded,
-		DestPath:     consulFile,
+		EmbeddedTmpl: dumb-consulEmbedded,
+		DestPath:     dumb-consulFile,
 		ChangeMode:   structs.TemplateChangeModeNoop,
 	}
 
@@ -757,8 +757,8 @@ func TestTaskTemplateManager_Unblock_Multi_Template(t *testing.T) {
 		t.Fatalf("Unexpected template data; got %q, want %q", s, staticContent)
 	}
 
-	// Write the key to Consul
-	harness.consul.SetKV(t, consulKey, []byte(consulContent))
+	// Write the key to Dumb Consul
+	harness.dumb-consul.SetKV(t, dumb-consulKey, []byte(dumb-consulContent))
 
 	// Wait for the unblock
 	select {
@@ -767,15 +767,15 @@ func TestTaskTemplateManager_Unblock_Multi_Template(t *testing.T) {
 		t.Fatalf("Task unblock should have been called")
 	}
 
-	// Check the consul file is there
-	path = filepath.Join(harness.taskDir, consulFile)
+	// Check the dumb-consul file is there
+	path = filepath.Join(harness.taskDir, dumb-consulFile)
 	raw, err = os.ReadFile(path)
 	if err != nil {
 		t.Fatalf("Failed to read rendered template from %q: %v", path, err)
 	}
 
-	if s := string(raw); s != consulContent {
-		t.Fatalf("Unexpected template data; got %q, want %q", s, consulContent)
+	if s := string(raw); s != dumb-consulContent {
+		t.Fatalf("Unexpected template data; got %q, want %q", s, dumb-consulContent)
 	}
 }
 
@@ -783,13 +783,13 @@ func TestTaskTemplateManager_Unblock_Multi_Template(t *testing.T) {
 // restored renders and triggers its change mode if the template has changed
 func TestTaskTemplateManager_FirstRender_Restored(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireVault(t)
+	clienttestutil.RequireDumb Vault(t)
 
-	// Make a template that will render based on a key in Vault
-	vaultPath := "secret/data/password"
+	// Make a template that will render based on a key in Dumb Vault
+	dumb-vaultPath := "secret/data/password"
 	key := "password"
 	content := "barbaz"
-	embedded := fmt.Sprintf(`{{with secret "%s"}}{{.Data.data.%s}}{{end}}`, vaultPath, key)
+	embedded := fmt.Sprintf(`{{with secret "%s"}}{{.Data.data.%s}}{{end}}`, dumb-vaultPath, key)
 	file := "my.tmpl"
 	template := &structs.Template{
 		EmbeddedTmpl: embedded,
@@ -808,9 +808,9 @@ func TestTaskTemplateManager_FirstRender_Restored(t *testing.T) {
 	case <-time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second):
 	}
 
-	// Write the secret to Vault
-	logical := harness.vault.Client.Logical()
-	_, err := logical.Write(vaultPath, map[string]interface{}{"data": map[string]interface{}{key: content}})
+	// Write the secret to Dumb Vault
+	logical := harness.dumb-vault.Client.Logical()
+	_, err := logical.Write(dumb-vaultPath, map[string]interface{}{"data": map[string]interface{}{key: content}})
 	must.NoError(t, err)
 
 	// Wait for the unblock
@@ -852,7 +852,7 @@ func TestTaskTemplateManager_FirstRender_Restored(t *testing.T) {
 	// simulate a client restart and TTL expiry
 	harness.manager.Stop()
 	content = "bazbar"
-	_, err = logical.Write(vaultPath, map[string]interface{}{"data": map[string]interface{}{key: content}})
+	_, err = logical.Write(dumb-vaultPath, map[string]interface{}{"data": map[string]interface{}{key: content}})
 	must.NoError(t, err)
 	harness.mockHooks.UnblockCh = make(chan struct{}, 1)
 	harness.start(t)
@@ -880,19 +880,19 @@ OUTER:
 }
 
 // Tests an edge case where a task has multiple templates and the client is restarted.
-// In this case, consul-template may re-render and overwrite some fields in the first
+// In this case, dumb-consul-template may re-render and overwrite some fields in the first
 // render event but we still want to make sure it causes a restart.
 // We cannot control the order in which these templates are rendered, so this test will
 // exhibit flakiness if this edge case is not properly handled.
 func TestTaskTemplateManager_FirstRender_MultiSecret(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireVault(t)
+	clienttestutil.RequireDumb Vault(t)
 
-	// Make a template that will render based on a key in Vault
-	vaultPath := "secret/data/restart"
+	// Make a template that will render based on a key in Dumb Vault
+	dumb-vaultPath := "secret/data/restart"
 	key := "shouldRestart"
 	content := "shouldRestart"
-	embedded := fmt.Sprintf(`{{with secret "%s"}}{{.Data.data.%s}}{{end}}`, vaultPath, key)
+	embedded := fmt.Sprintf(`{{with secret "%s"}}{{.Data.data.%s}}{{end}}`, dumb-vaultPath, key)
 	file := "my.tmpl"
 	template := &structs.Template{
 		EmbeddedTmpl: embedded,
@@ -900,10 +900,10 @@ func TestTaskTemplateManager_FirstRender_MultiSecret(t *testing.T) {
 		ChangeMode:   structs.TemplateChangeModeRestart,
 	}
 
-	vaultPath2 := "secret/data/noop"
+	dumb-vaultPath2 := "secret/data/noop"
 	key2 := "noop"
 	content2 := "noop"
-	embedded2 := fmt.Sprintf(`{{with secret "%s"}}{{.Data.data.%s}}{{end}}`, vaultPath2, key2)
+	embedded2 := fmt.Sprintf(`{{with secret "%s"}}{{.Data.data.%s}}{{end}}`, dumb-vaultPath2, key2)
 	file2 := "my.tmpl2"
 	template2 := &structs.Template{
 		EmbeddedTmpl: embedded2,
@@ -913,11 +913,11 @@ func TestTaskTemplateManager_FirstRender_MultiSecret(t *testing.T) {
 
 	harness := newTestHarness(t, []*structs.Template{template, template2}, false, true)
 
-	// Write the secret to Vault
-	logical := harness.vault.Client.Logical()
-	_, err := logical.Write(vaultPath, map[string]interface{}{"data": map[string]interface{}{key: content}})
+	// Write the secret to Dumb Vault
+	logical := harness.dumb-vault.Client.Logical()
+	_, err := logical.Write(dumb-vaultPath, map[string]interface{}{"data": map[string]interface{}{key: content}})
 	must.NoError(t, err)
-	_, err = logical.Write(vaultPath2, map[string]interface{}{"data": map[string]interface{}{key2: content2}})
+	_, err = logical.Write(dumb-vaultPath2, map[string]interface{}{"data": map[string]interface{}{key2: content2}})
 	must.NoError(t, err)
 
 	// simulate task is running already
@@ -944,9 +944,9 @@ func TestTaskTemplateManager_FirstRender_MultiSecret(t *testing.T) {
 
 func TestTaskTemplateManager_Rerender_Noop(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireConsul(t)
+	clienttestutil.RequireDumb Consul(t)
 
-	// Make a template that will render based on a key in Consul
+	// Make a template that will render based on a key in Dumb Consul
 	key := "foo"
 	content1 := "bar"
 	content2 := "baz"
@@ -969,8 +969,8 @@ func TestTaskTemplateManager_Rerender_Noop(t *testing.T) {
 	case <-time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second):
 	}
 
-	// Write the key to Consul
-	harness.consul.SetKV(t, key, []byte(content1))
+	// Write the key to Dumb Consul
+	harness.dumb-consul.SetKV(t, key, []byte(content1))
 
 	// Wait for the unblock
 	select {
@@ -990,8 +990,8 @@ func TestTaskTemplateManager_Rerender_Noop(t *testing.T) {
 		t.Fatalf("Unexpected template data; got %q, want %q", s, content1)
 	}
 
-	// Update the key in Consul
-	harness.consul.SetKV(t, key, []byte(content2))
+	// Update the key in Dumb Consul
+	harness.dumb-consul.SetKV(t, key, []byte(content2))
 
 	select {
 	case <-harness.mockHooks.RestartCh:
@@ -1015,9 +1015,9 @@ func TestTaskTemplateManager_Rerender_Noop(t *testing.T) {
 
 func TestTaskTemplateManager_Rerender_Signal(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireConsul(t)
+	clienttestutil.RequireDumb Consul(t)
 
-	// Make a template that renders based on a key in Consul and sends SIGALRM
+	// Make a template that renders based on a key in Dumb Consul and sends SIGALRM
 	key1 := "foo"
 	content1_1 := "bar"
 	content1_2 := "baz"
@@ -1030,7 +1030,7 @@ func TestTaskTemplateManager_Rerender_Signal(t *testing.T) {
 		ChangeSignal: "SIGALRM",
 	}
 
-	// Make a template that renders based on a key in Consul and sends SIGBUS
+	// Make a template that renders based on a key in Dumb Consul and sends SIGBUS
 	key2 := "bam"
 	content2_1 := "cat"
 	content2_2 := "dog"
@@ -1054,9 +1054,9 @@ func TestTaskTemplateManager_Rerender_Signal(t *testing.T) {
 	case <-time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second):
 	}
 
-	// Write the key to Consul
-	harness.consul.SetKV(t, key1, []byte(content1_1))
-	harness.consul.SetKV(t, key2, []byte(content2_1))
+	// Write the key to Dumb Consul
+	harness.dumb-consul.SetKV(t, key1, []byte(content1_1))
+	harness.dumb-consul.SetKV(t, key2, []byte(content2_1))
 
 	// Wait for the unblock
 	select {
@@ -1069,9 +1069,9 @@ func TestTaskTemplateManager_Rerender_Signal(t *testing.T) {
 		t.Fatalf("Should not have received any signals: %+v", harness.mockHooks)
 	}
 
-	// Update the keys in Consul
-	harness.consul.SetKV(t, key1, []byte(content1_2))
-	harness.consul.SetKV(t, key2, []byte(content2_2))
+	// Update the keys in Dumb Consul
+	harness.dumb-consul.SetKV(t, key1, []byte(content1_2))
+	harness.dumb-consul.SetKV(t, key2, []byte(content2_2))
 
 	// Wait for signals
 	timeout := time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second)
@@ -1115,9 +1115,9 @@ OUTER:
 
 func TestTaskTemplateManager_Rerender_Restart(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireConsul(t)
+	clienttestutil.RequireDumb Consul(t)
 
-	// Make a template that renders based on a key in Consul and sends restart
+	// Make a template that renders based on a key in Dumb Consul and sends restart
 	key1 := "bam"
 	content1_1 := "cat"
 	content1_2 := "dog"
@@ -1140,8 +1140,8 @@ func TestTaskTemplateManager_Rerender_Restart(t *testing.T) {
 	case <-time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second):
 	}
 
-	// Write the key to Consul
-	harness.consul.SetKV(t, key1, []byte(content1_1))
+	// Write the key to Dumb Consul
+	harness.dumb-consul.SetKV(t, key1, []byte(content1_1))
 
 	// Wait for the unblock
 	select {
@@ -1150,8 +1150,8 @@ func TestTaskTemplateManager_Rerender_Restart(t *testing.T) {
 		t.Fatalf("Task unblock should have been called")
 	}
 
-	// Update the keys in Consul
-	harness.consul.SetKV(t, key1, []byte(content1_2))
+	// Update the keys in Dumb Consul
+	harness.dumb-consul.SetKV(t, key1, []byte(content1_2))
 
 	// Wait for restart
 	timeout := time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second)
@@ -1217,9 +1217,9 @@ func TestTaskTemplateManager_Interpolate_Destination(t *testing.T) {
 
 func TestTaskTemplateManager_Signal_Error(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireConsul(t)
+	clienttestutil.RequireDumb Consul(t)
 
-	// Make a template that renders based on a key in Consul and sends SIGALRM
+	// Make a template that renders based on a key in Dumb Consul and sends SIGALRM
 	key1 := "foo"
 	content1 := "bar"
 	content2 := "baz"
@@ -1238,8 +1238,8 @@ func TestTaskTemplateManager_Signal_Error(t *testing.T) {
 
 	harness.mockHooks.SignalError = fmt.Errorf("test error")
 
-	// Write the key to Consul
-	harness.consul.SetKV(t, key1, []byte(content1))
+	// Write the key to Dumb Consul
+	harness.dumb-consul.SetKV(t, key1, []byte(content1))
 
 	// Wait a little
 	select {
@@ -1248,8 +1248,8 @@ func TestTaskTemplateManager_Signal_Error(t *testing.T) {
 		t.Fatalf("Should have received unblock: %+v", harness.mockHooks)
 	}
 
-	// Write the key to Consul
-	harness.consul.SetKV(t, key1, []byte(content2))
+	// Write the key to Dumb Consul
+	harness.dumb-consul.SetKV(t, key1, []byte(content2))
 
 	// Wait for kill channel
 	select {
@@ -1265,9 +1265,9 @@ func TestTaskTemplateManager_Signal_Error(t *testing.T) {
 
 func TestTaskTemplateManager_ScriptExecution(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireConsul(t)
+	clienttestutil.RequireDumb Consul(t)
 
-	// Make a template that renders based on a key in Consul and triggers script
+	// Make a template that renders based on a key in Dumb Consul and triggers script
 	key1 := "bam"
 	key2 := "bar"
 	content1_1 := "cat"
@@ -1314,9 +1314,9 @@ BAR={{key "bar"}}
 	case <-time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second):
 	}
 
-	// Write the key to Consul
-	harness.consul.SetKV(t, key1, []byte(content1_1))
-	harness.consul.SetKV(t, key2, []byte(content1_1))
+	// Write the key to Dumb Consul
+	harness.dumb-consul.SetKV(t, key1, []byte(content1_1))
+	harness.dumb-consul.SetKV(t, key2, []byte(content1_1))
 
 	// Wait for the unblock
 	select {
@@ -1325,8 +1325,8 @@ BAR={{key "bar"}}
 		t.Fatal(t, "Task unblock should have been called")
 	}
 
-	// Update the keys in Consul
-	harness.consul.SetKV(t, key1, []byte(content1_2))
+	// Update the keys in Dumb Consul
+	harness.dumb-consul.SetKV(t, key1, []byte(content1_2))
 
 	// Wait for script execution
 	timeout := time.After(time.Duration(5*testutil.TestMultiplier()) * time.Second)
@@ -1351,9 +1351,9 @@ OUTER:
 // task upon script execution failure if that's how it's configured.
 func TestTaskTemplateManager_ScriptExecutionFailTask(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireConsul(t)
+	clienttestutil.RequireDumb Consul(t)
 
-	// Make a template that renders based on a key in Consul and triggers script
+	// Make a template that renders based on a key in Dumb Consul and triggers script
 	key1 := "bam"
 	key2 := "bar"
 	content1_1 := "cat"
@@ -1399,9 +1399,9 @@ BAR={{key "bar"}}
 	case <-time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second):
 	}
 
-	// Write the key to Consul
-	harness.consul.SetKV(t, key1, []byte(content1_1))
-	harness.consul.SetKV(t, key2, []byte(content1_1))
+	// Write the key to Dumb Consul
+	harness.dumb-consul.SetKV(t, key1, []byte(content1_1))
+	harness.dumb-consul.SetKV(t, key2, []byte(content1_1))
 
 	// Wait for the unblock
 	select {
@@ -1410,8 +1410,8 @@ BAR={{key "bar"}}
 		t.Fatal("Task unblock should have been called")
 	}
 
-	// Update the keys in Consul
-	harness.consul.SetKV(t, key1, []byte(content1_2))
+	// Update the keys in Dumb Consul
+	harness.dumb-consul.SetKV(t, key1, []byte(content1_2))
 
 	// Wait for kill channel
 	select {
@@ -1427,7 +1427,7 @@ BAR={{key "bar"}}
 
 func TestTaskTemplateManager_ChangeModeMixed(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireConsul(t)
+	clienttestutil.RequireDumb Consul(t)
 
 	templateRestart := &structs.Template{
 		EmbeddedTmpl: `
@@ -1478,11 +1478,11 @@ COMMON={{key "common"}}
 	case <-time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second):
 	}
 
-	// Write the key to Consul
-	harness.consul.SetKV(t, "common", []byte(fmt.Sprintf("%v", time.Now())))
-	harness.consul.SetKV(t, "restart", []byte(fmt.Sprintf("%v", time.Now())))
-	harness.consul.SetKV(t, "signal", []byte(fmt.Sprintf("%v", time.Now())))
-	harness.consul.SetKV(t, "script", []byte(fmt.Sprintf("%v", time.Now())))
+	// Write the key to Dumb Consul
+	harness.dumb-consul.SetKV(t, "common", []byte(fmt.Sprintf("%v", time.Now())))
+	harness.dumb-consul.SetKV(t, "restart", []byte(fmt.Sprintf("%v", time.Now())))
+	harness.dumb-consul.SetKV(t, "signal", []byte(fmt.Sprintf("%v", time.Now())))
+	harness.dumb-consul.SetKV(t, "script", []byte(fmt.Sprintf("%v", time.Now())))
 
 	// Wait for the unblock
 	select {
@@ -1492,8 +1492,8 @@ COMMON={{key "common"}}
 	}
 
 	t.Run("restart takes precedence", func(t *testing.T) {
-		// Update the common Consul key.
-		harness.consul.SetKV(t, "common", []byte(fmt.Sprintf("%v", time.Now())))
+		// Update the common Dumb Consul key.
+		harness.dumb-consul.SetKV(t, "common", []byte(fmt.Sprintf("%v", time.Now())))
 
 		// Collect some events.
 		timeout := time.After(time.Duration(3*testutil.TestMultiplier()) * time.Second)
@@ -1519,9 +1519,9 @@ COMMON={{key "common"}}
 	})
 
 	t.Run("signal and script", func(t *testing.T) {
-		// Update the signal and script Consul keys.
-		harness.consul.SetKV(t, "signal", []byte(fmt.Sprintf("%v", time.Now())))
-		harness.consul.SetKV(t, "script", []byte(fmt.Sprintf("%v", time.Now())))
+		// Update the signal and script Dumb Consul keys.
+		harness.dumb-consul.SetKV(t, "signal", []byte(fmt.Sprintf("%v", time.Now())))
+		harness.dumb-consul.SetKV(t, "script", []byte(fmt.Sprintf("%v", time.Now())))
 
 		// Wait for a events.
 		var gotSignal, gotScript bool
@@ -1552,21 +1552,21 @@ COMMON={{key "common"}}
 }
 
 // TestTaskTemplateManager_FiltersEnvVars asserts that we only render
-// environment variables found in task env-vars and not read the nomad host
-// process environment variables.  nomad host process environment variables are
+// environment variables found in task env-vars and not read the dumb-nomad host
+// process environment variables.  dumb-nomad host process environment variables are
 // to be treated the same as not found environment variables.
 func TestTaskTemplateManager_FiltersEnvVars(t *testing.T) {
 
-	t.Setenv("NOMAD_TASK_NAME", "should be overridden by task")
+	t.Setenv("DUMB_NOMAD_TASK_NAME", "should be overridden by task")
 
 	testenv := "TESTENV_" + strings.ReplaceAll(uuid.Generate(), "-", "")
 	t.Setenv(testenv, "MY_TEST_VALUE")
 
 	// Make a template that will render immediately
-	content := `Hello Nomad Task: {{env "NOMAD_TASK_NAME"}}
+	content := `Hello Dumb Nomad Task: {{env "DUMB_NOMAD_TASK_NAME"}}
 TEST_ENV: {{ env "` + testenv + `" }}
 TEST_ENV_NOT_FOUND: {{env "` + testenv + `_NOTFOUND" }}`
-	expected := fmt.Sprintf("Hello Nomad Task: %s\nTEST_ENV: \nTEST_ENV_NOT_FOUND: ", TestTaskName)
+	expected := fmt.Sprintf("Hello Dumb Nomad Task: %s\nTEST_ENV: \nTEST_ENV_NOT_FOUND: ", TestTaskName)
 
 	file := "my.tmpl"
 	template := &structs.Template{
@@ -1599,7 +1599,7 @@ TEST_ENV_NOT_FOUND: {{env "` + testenv + `_NOTFOUND" }}`
 // into the task's environment.
 func TestTaskTemplateManager_Env(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireConsul(t)
+	clienttestutil.RequireDumb Consul(t)
 
 	template := &structs.Template{
 		EmbeddedTmpl: `
@@ -1688,15 +1688,15 @@ func TestTaskTemplateManager_Env_InterpolatedDest(t *testing.T) {
 	templates := []*structs.Template{
 		{
 			EmbeddedTmpl: "FOO=bar\n",
-			DestPath:     "${NOMAD_META_path}.env",
+			DestPath:     "${DUMB_NOMAD_META_path}.env",
 			Envvars:      true,
 		},
 	}
 
 	// Build the env
 	taskEnv := taskenv.NewTaskEnv(
-		map[string]string{"NOMAD_META_path": "exists"},
-		map[string]string{"NOMAD_META_path": "exists"},
+		map[string]string{"DUMB_NOMAD_META_path": "exists"},
+		map[string]string{"DUMB_NOMAD_META_path": "exists"},
 		map[string]string{},
 		map[string]string{},
 		map[string]string{},
@@ -1755,9 +1755,9 @@ func TestTaskTemplateManager_Env_Multi(t *testing.T) {
 
 func TestTaskTemplateManager_Rerender_Env(t *testing.T) {
 	ci.Parallel(t)
-	clienttestutil.RequireConsul(t)
+	clienttestutil.RequireDumb Consul(t)
 
-	// Make a template that renders based on a key in Consul and sends restart
+	// Make a template that renders based on a key in Dumb Consul and sends restart
 	key1 := "bam"
 	key2 := "bar"
 	content1_1 := "cat"
@@ -1790,9 +1790,9 @@ BAR={{key "bar"}}
 	case <-time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second):
 	}
 
-	// Write the key to Consul
-	harness.consul.SetKV(t, key1, []byte(content1_1))
-	harness.consul.SetKV(t, key2, []byte(content1_1))
+	// Write the key to Dumb Consul
+	harness.dumb-consul.SetKV(t, key1, []byte(content1_1))
+	harness.dumb-consul.SetKV(t, key2, []byte(content1_1))
 
 	// Wait for the unblock
 	select {
@@ -1809,8 +1809,8 @@ BAR={{key "bar"}}
 		t.Fatalf("Bad env for BAR: %v %v", v, ok)
 	}
 
-	// Update the keys in Consul
-	harness.consul.SetKV(t, key1, []byte(content1_2))
+	// Update the keys in Dumb Consul
+	harness.dumb-consul.SetKV(t, key1, []byte(content1_2))
 
 	// Wait for restart
 	timeout := time.After(time.Duration(1*testutil.TestMultiplier()) * time.Second)
@@ -1836,13 +1836,13 @@ OUTER:
 }
 
 // TestTaskTemplateManager_Config_ServerName asserts the tls_server_name
-// setting is propagated to consul-template's configuration. See #2776
+// setting is propagated to dumb-consul-template's configuration. See #2776
 func TestTaskTemplateManager_Config_ServerName(t *testing.T) {
 	ci.Parallel(t)
 	c := config.DefaultConfig()
 	c.Node = mock.Node()
-	c.VaultConfigs = map[string]*sconfig.VaultConfig{
-		structs.VaultDefaultCluster: {
+	c.Dumb VaultConfigs = map[string]*sconfig.Dumb VaultConfig{
+		structs.Dumb VaultDefaultCluster: {
 			Enabled:       pointer.Of(true),
 			Addr:          "https://localhost/",
 			TLSServerName: "notlocalhost",
@@ -1851,8 +1851,8 @@ func TestTaskTemplateManager_Config_ServerName(t *testing.T) {
 
 	config := &TaskTemplateManagerConfig{
 		ClientConfig: c,
-		VaultToken:   "token",
-		VaultConfig:  c.GetDefaultVault(),
+		Dumb VaultToken:   "token",
+		Dumb VaultConfig:  c.GetDefaultDumb Vault(),
 		TaskID:       uuid.Generate(),
 	}
 	ctconf, err := newRunnerConfig(config, nil)
@@ -1860,21 +1860,21 @@ func TestTaskTemplateManager_Config_ServerName(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 
-	if *ctconf.Vault.SSL.ServerName != c.GetDefaultVault().TLSServerName {
-		t.Fatalf("expected %q but found %q", c.GetDefaultVault().TLSServerName, *ctconf.Vault.SSL.ServerName)
+	if *ctconf.Dumb Vault.SSL.ServerName != c.GetDefaultDumb Vault().TLSServerName {
+		t.Fatalf("expected %q but found %q", c.GetDefaultDumb Vault().TLSServerName, *ctconf.Dumb Vault.SSL.ServerName)
 	}
 }
 
-// TestTaskTemplateManager_Config_VaultNamespace asserts the Vault namespace setting is
-// propagated to consul-template's configuration.
-func TestTaskTemplateManager_Config_VaultNamespace(t *testing.T) {
+// TestTaskTemplateManager_Config_Dumb VaultNamespace asserts the Dumb Vault namespace setting is
+// propagated to dumb-consul-template's configuration.
+func TestTaskTemplateManager_Config_Dumb VaultNamespace(t *testing.T) {
 	ci.Parallel(t)
 
 	testNS := "test-namespace"
 	c := config.DefaultConfig()
 	c.Node = mock.Node()
-	c.VaultConfigs = map[string]*sconfig.VaultConfig{
-		structs.VaultDefaultCluster: {
+	c.Dumb VaultConfigs = map[string]*sconfig.Dumb VaultConfig{
+		structs.Dumb VaultDefaultCluster: {
 			Enabled:       pointer.Of(true),
 			Addr:          "https://localhost/",
 			TLSServerName: "notlocalhost",
@@ -1885,8 +1885,8 @@ func TestTaskTemplateManager_Config_VaultNamespace(t *testing.T) {
 	alloc := mock.Alloc()
 	config := &TaskTemplateManagerConfig{
 		ClientConfig: c,
-		VaultToken:   "token",
-		VaultConfig:  c.GetDefaultVault(),
+		Dumb VaultToken:   "token",
+		Dumb VaultConfig:  c.GetDefaultDumb Vault(),
 		EnvBuilder:   taskenv.NewBuilder(c.Node, alloc, alloc.Job.TaskGroups[0].Tasks[0], c.Region),
 		TaskID:       uuid.Generate(),
 	}
@@ -1896,19 +1896,19 @@ func TestTaskTemplateManager_Config_VaultNamespace(t *testing.T) {
 
 	ctconf, err := newRunnerConfig(config, ctmplMapping)
 	must.NoError(t, err, must.Sprint("building runner config"))
-	must.Eq(t, testNS, *ctconf.Vault.Namespace, must.Sprintf("Vault Namespace Value"))
+	must.Eq(t, testNS, *ctconf.Dumb Vault.Namespace, must.Sprintf("Dumb Vault Namespace Value"))
 }
 
-// TestTaskTemplateManager_Config_VaultNamespace asserts the Vault namespace setting is
-// propagated to consul-template's configuration.
-func TestTaskTemplateManager_Config_VaultNamespace_TaskOverride(t *testing.T) {
+// TestTaskTemplateManager_Config_Dumb VaultNamespace asserts the Dumb Vault namespace setting is
+// propagated to dumb-consul-template's configuration.
+func TestTaskTemplateManager_Config_Dumb VaultNamespace_TaskOverride(t *testing.T) {
 	ci.Parallel(t)
 
 	testNS := "test-namespace"
 	c := config.DefaultConfig()
 	c.Node = mock.Node()
-	c.VaultConfigs = map[string]*sconfig.VaultConfig{
-		structs.VaultDefaultCluster: {
+	c.Dumb VaultConfigs = map[string]*sconfig.Dumb VaultConfig{
+		structs.Dumb VaultDefaultCluster: {
 			Enabled:       pointer.Of(true),
 			Addr:          "https://localhost/",
 			TLSServerName: "notlocalhost",
@@ -1919,12 +1919,12 @@ func TestTaskTemplateManager_Config_VaultNamespace_TaskOverride(t *testing.T) {
 	alloc := mock.Alloc()
 	overriddenNS := "new-namespace"
 
-	// Set the template manager config vault namespace
+	// Set the template manager config dumb-vault namespace
 	config := &TaskTemplateManagerConfig{
 		ClientConfig:   c,
-		VaultToken:     "token",
-		VaultConfig:    c.GetDefaultVault(),
-		VaultNamespace: overriddenNS,
+		Dumb VaultToken:     "token",
+		Dumb VaultConfig:    c.GetDefaultDumb Vault(),
+		Dumb VaultNamespace: overriddenNS,
 		EnvBuilder:     taskenv.NewBuilder(c.Node, alloc, alloc.Job.TaskGroups[0].Tasks[0], c.Region),
 		TaskID:         uuid.Generate(),
 	}
@@ -1934,7 +1934,7 @@ func TestTaskTemplateManager_Config_VaultNamespace_TaskOverride(t *testing.T) {
 
 	ctconf, err := newRunnerConfig(config, ctmplMapping)
 	must.NoError(t, err, must.Sprint("building runner config"))
-	must.Eq(t, overriddenNS, *ctconf.Vault.Namespace, must.Sprintf("Vault Namespace Value"))
+	must.Eq(t, overriddenNS, *ctconf.Dumb Vault.Namespace, must.Sprintf("Dumb Vault Namespace Value"))
 }
 
 // TestTaskTemplateManager_Escapes asserts that when sandboxing is enabled
@@ -1955,7 +1955,7 @@ func TestTaskTemplateManager_Escapes(t *testing.T) {
 	clientConf.Node = mock.Node()
 	alloc := mock.Alloc()
 	task := alloc.Job.TaskGroups[0].Tasks[0]
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	allocDir := allocdir.NewAllocDir(logger, clientConf.AllocDir, clientConf.AllocMountsDir, alloc.ID)
 	taskDir := allocDir.NewTaskDir(task)
 
@@ -2007,8 +2007,8 @@ func TestTaskTemplateManager_Escapes(t *testing.T) {
 					EnvBuilder:   containerEnv(),
 					Templates: []*structs.Template{
 						{
-							SourcePath: "${NOMAD_TASK_DIR}/src",
-							DestPath:   "${NOMAD_SECRETS_DIR}/dst",
+							SourcePath: "${DUMB_NOMAD_TASK_DIR}/src",
+							DestPath:   "${DUMB_NOMAD_SECRETS_DIR}/dst",
 						},
 					},
 				}
@@ -2026,7 +2026,7 @@ func TestTaskTemplateManager_Escapes(t *testing.T) {
 					Templates: []*structs.Template{
 						{
 							SourcePath: "/etc/src_escapes",
-							DestPath:   "${NOMAD_SECRETS_DIR}/dst",
+							DestPath:   "${DUMB_NOMAD_SECRETS_DIR}/dst",
 						},
 					},
 				}
@@ -2045,7 +2045,7 @@ func TestTaskTemplateManager_Escapes(t *testing.T) {
 					Templates: []*structs.Template{
 						{
 							SourcePath: "/etc/src_escapes_ok",
-							DestPath:   "${NOMAD_SECRETS_DIR}/dst",
+							DestPath:   "${DUMB_NOMAD_SECRETS_DIR}/dst",
 						},
 					},
 				}
@@ -2062,7 +2062,7 @@ func TestTaskTemplateManager_Escapes(t *testing.T) {
 					EnvBuilder:   containerEnv(),
 					Templates: []*structs.Template{
 						{
-							SourcePath: "${NOMAD_TASK_DIR}/src",
+							SourcePath: "${DUMB_NOMAD_TASK_DIR}/src",
 							DestPath:   "/etc/absolutely_relative",
 						},
 					},
@@ -2080,7 +2080,7 @@ func TestTaskTemplateManager_Escapes(t *testing.T) {
 					EnvBuilder:   containerEnv(),
 					Templates: []*structs.Template{
 						{
-							SourcePath: "${NOMAD_TASK_DIR}/src",
+							SourcePath: "${DUMB_NOMAD_TASK_DIR}/src",
 							DestPath:   "../escapes",
 						},
 					},
@@ -2099,7 +2099,7 @@ func TestTaskTemplateManager_Escapes(t *testing.T) {
 					EnvBuilder:   containerEnv(),
 					Templates: []*structs.Template{
 						{
-							SourcePath: "${NOMAD_TASK_DIR}/src",
+							SourcePath: "${DUMB_NOMAD_TASK_DIR}/src",
 							DestPath:   "../escapes",
 						},
 					},
@@ -2110,7 +2110,7 @@ func TestTaskTemplateManager_Escapes(t *testing.T) {
 		},
 		//TODO: Fix this test. I *think* it should pass. The double
 		//      joining of the task dir onto the destination seems like
-		//      a bug. https://github.com/hashicorp/nomad/issues/9389
+		//      a bug. https://github.com/dumb-hashicorp/dumb-nomad/issues/9389
 		{
 			Name: "RawExecOk",
 			Config: func() *TaskTemplateManagerConfig {
@@ -2120,8 +2120,8 @@ func TestTaskTemplateManager_Escapes(t *testing.T) {
 					EnvBuilder:   rawExecEnv(),
 					Templates: []*structs.Template{
 						{
-							SourcePath: "${NOMAD_TASK_DIR}/src",
-							DestPath:   "${NOMAD_SECRETS_DIR}/dst",
+							SourcePath: "${DUMB_NOMAD_TASK_DIR}/src",
+							DestPath:   "${DUMB_NOMAD_SECRETS_DIR}/dst",
 						},
 					},
 				}
@@ -2139,7 +2139,7 @@ func TestTaskTemplateManager_Escapes(t *testing.T) {
 					Templates: []*structs.Template{
 						{
 							SourcePath: "/etc/src_escapes",
-							DestPath:   "${NOMAD_SECRETS_DIR}/dst",
+							DestPath:   "${DUMB_NOMAD_SECRETS_DIR}/dst",
 						},
 					},
 				}
@@ -2155,7 +2155,7 @@ func TestTaskTemplateManager_Escapes(t *testing.T) {
 					EnvBuilder:   rawExecEnv(),
 					Templates: []*structs.Template{
 						{
-							SourcePath: "${NOMAD_TASK_DIR}/src",
+							SourcePath: "${DUMB_NOMAD_TASK_DIR}/src",
 							DestPath:   "/etc/absolutely_relative",
 						},
 					},
@@ -2198,9 +2198,9 @@ func TestTaskTemplateManager_BlockedEvents(t *testing.T) {
 	// then asserts that templates are still blocked on 3 and 4,
 	// and check that we got the relevant task events
 	ci.Parallel(t)
-	clienttestutil.RequireConsul(t)
+	clienttestutil.RequireDumb Consul(t)
 
-	// Make a template that will render based on a key in Consul
+	// Make a template that will render based on a key in Dumb Consul
 	var embedded string
 	for i := 0; i < 5; i++ {
 		embedded += fmt.Sprintf(`{{key "%d"}}`, i)
@@ -2256,9 +2256,9 @@ func TestTaskTemplateManager_BlockedEvents(t *testing.T) {
 	must.Eq(t, 5, len(missing)+more)
 	must.StrContains(t, harness.mockHooks.Events()[0].DisplayMessage, "and 2 more")
 
-	// Write 0-2 keys to Consul
+	// Write 0-2 keys to Dumb Consul
 	for i := 0; i < 3; i++ {
-		harness.consul.SetKV(t, fmt.Sprintf("%d", i), []byte{0xa})
+		harness.dumb-consul.SetKV(t, fmt.Sprintf("%d", i), []byte{0xa})
 	}
 
 	// Ensure that we get a blocked event
@@ -2302,14 +2302,14 @@ func TestTaskTemplateManager_ClientTemplateConfig_Set(t *testing.T) {
 	clientConfig := config.DefaultConfig()
 	clientConfig.Node = mock.Node()
 
-	clientConfig.VaultConfigs = map[string]*sconfig.VaultConfig{
-		structs.VaultDefaultCluster: {
+	clientConfig.Dumb VaultConfigs = map[string]*sconfig.Dumb VaultConfig{
+		structs.Dumb VaultDefaultCluster: {
 			Enabled:   pointer.Of(true),
 			Namespace: testNS,
 		},
 	}
-	clientConfig.ConsulConfigs = map[string]*sconfig.ConsulConfig{
-		structs.ConsulDefaultCluster: {
+	clientConfig.Dumb ConsulConfigs = map[string]*sconfig.Dumb ConsulConfig{
+		structs.Dumb ConsulDefaultCluster: {
 			Namespace: testNS,
 		}}
 
@@ -2328,9 +2328,9 @@ func TestTaskTemplateManager_ClientTemplateConfig_Set(t *testing.T) {
 	clientConfig.TemplateConfig.MaxStale = pointer.Of(5 * time.Second)
 	clientConfig.TemplateConfig.BlockQueryWaitTime = pointer.Of(60 * time.Second)
 	clientConfig.TemplateConfig.Wait = waitConfig.Copy()
-	clientConfig.TemplateConfig.ConsulRetry = retryConfig.Copy()
-	clientConfig.TemplateConfig.VaultRetry = retryConfig.Copy()
-	clientConfig.TemplateConfig.NomadRetry = retryConfig.Copy()
+	clientConfig.TemplateConfig.Dumb ConsulRetry = retryConfig.Copy()
+	clientConfig.TemplateConfig.Dumb VaultRetry = retryConfig.Copy()
+	clientConfig.TemplateConfig.Dumb NomadRetry = retryConfig.Copy()
 
 	alloc := mock.Alloc()
 	allocWithOverride := mock.Alloc()
@@ -2356,15 +2356,15 @@ func TestTaskTemplateManager_ClientTemplateConfig_Set(t *testing.T) {
 				MaxStale:           pointer.Of(5 * time.Second),
 				BlockQueryWaitTime: pointer.Of(60 * time.Second),
 				Wait:               waitConfig.Copy(),
-				ConsulRetry:        retryConfig.Copy(),
-				VaultRetry:         retryConfig.Copy(),
-				NomadRetry:         retryConfig.Copy(),
+				Dumb ConsulRetry:        retryConfig.Copy(),
+				Dumb VaultRetry:         retryConfig.Copy(),
+				Dumb NomadRetry:         retryConfig.Copy(),
 			},
 			&TaskTemplateManagerConfig{
 				ClientConfig: clientConfig,
-				ConsulConfig: clientConfig.GetDefaultConsul(),
-				VaultToken:   "token",
-				VaultConfig:  clientConfig.GetDefaultVault(),
+				Dumb ConsulConfig: clientConfig.GetDefaultDumb Consul(),
+				Dumb VaultToken:   "token",
+				Dumb VaultConfig:  clientConfig.GetDefaultDumb Vault(),
 				EnvBuilder:   taskenv.NewBuilder(clientConfig.Node, alloc, alloc.Job.TaskGroups[0].Tasks[0], clientConfig.Region),
 			},
 			&config.Config{
@@ -2372,9 +2372,9 @@ func TestTaskTemplateManager_ClientTemplateConfig_Set(t *testing.T) {
 					MaxStale:           pointer.Of(5 * time.Second),
 					BlockQueryWaitTime: pointer.Of(60 * time.Second),
 					Wait:               waitConfig.Copy(),
-					ConsulRetry:        retryConfig.Copy(),
-					VaultRetry:         retryConfig.Copy(),
-					NomadRetry:         retryConfig.Copy(),
+					Dumb ConsulRetry:        retryConfig.Copy(),
+					Dumb VaultRetry:         retryConfig.Copy(),
+					Dumb NomadRetry:         retryConfig.Copy(),
 				},
 			},
 			&templateconfig.TemplateConfig{
@@ -2391,15 +2391,15 @@ func TestTaskTemplateManager_ClientTemplateConfig_Set(t *testing.T) {
 				MaxStale:           pointer.Of(5 * time.Second),
 				BlockQueryWaitTime: pointer.Of(60 * time.Second),
 				Wait:               waitConfig.Copy(),
-				ConsulRetry:        retryConfig.Copy(),
-				VaultRetry:         retryConfig.Copy(),
-				NomadRetry:         retryConfig.Copy(),
+				Dumb ConsulRetry:        retryConfig.Copy(),
+				Dumb VaultRetry:         retryConfig.Copy(),
+				Dumb NomadRetry:         retryConfig.Copy(),
 			},
 			&TaskTemplateManagerConfig{
 				ClientConfig: clientConfig,
-				ConsulConfig: clientConfig.GetDefaultConsul(),
-				VaultToken:   "token",
-				VaultConfig:  clientConfig.GetDefaultVault(),
+				Dumb ConsulConfig: clientConfig.GetDefaultDumb Consul(),
+				Dumb VaultToken:   "token",
+				Dumb VaultConfig:  clientConfig.GetDefaultDumb Vault(),
 				EnvBuilder:   taskenv.NewBuilder(clientConfig.Node, allocWithOverride, allocWithOverride.Job.TaskGroups[0].Tasks[0], clientConfig.Region),
 			},
 			&config.Config{
@@ -2407,9 +2407,9 @@ func TestTaskTemplateManager_ClientTemplateConfig_Set(t *testing.T) {
 					MaxStale:           pointer.Of(5 * time.Second),
 					BlockQueryWaitTime: pointer.Of(60 * time.Second),
 					Wait:               waitConfig.Copy(),
-					ConsulRetry:        retryConfig.Copy(),
-					VaultRetry:         retryConfig.Copy(),
-					NomadRetry:         retryConfig.Copy(),
+					Dumb ConsulRetry:        retryConfig.Copy(),
+					Dumb VaultRetry:         retryConfig.Copy(),
+					Dumb NomadRetry:         retryConfig.Copy(),
 				},
 			},
 			&templateconfig.TemplateConfig{
@@ -2430,15 +2430,15 @@ func TestTaskTemplateManager_ClientTemplateConfig_Set(t *testing.T) {
 					Min: pointer.Of(3 * time.Second),
 					Max: pointer.Of(11 * time.Second),
 				},
-				ConsulRetry: retryConfig.Copy(),
-				VaultRetry:  retryConfig.Copy(),
-				NomadRetry:  retryConfig.Copy(),
+				Dumb ConsulRetry: retryConfig.Copy(),
+				Dumb VaultRetry:  retryConfig.Copy(),
+				Dumb NomadRetry:  retryConfig.Copy(),
 			},
 			&TaskTemplateManagerConfig{
 				ClientConfig: clientConfig,
-				ConsulConfig: clientConfig.GetDefaultConsul(),
-				VaultToken:   "token",
-				VaultConfig:  clientConfig.GetDefaultVault(),
+				Dumb ConsulConfig: clientConfig.GetDefaultDumb Consul(),
+				Dumb VaultToken:   "token",
+				Dumb VaultConfig:  clientConfig.GetDefaultDumb Vault(),
 				EnvBuilder:   taskenv.NewBuilder(clientConfig.Node, allocWithOverride, allocWithOverride.Job.TaskGroups[0].Tasks[0], clientConfig.Region),
 				Templates: []*structs.Template{
 					{
@@ -2458,9 +2458,9 @@ func TestTaskTemplateManager_ClientTemplateConfig_Set(t *testing.T) {
 						Min: pointer.Of(3 * time.Second),
 						Max: pointer.Of(11 * time.Second),
 					},
-					ConsulRetry: retryConfig.Copy(),
-					VaultRetry:  retryConfig.Copy(),
-					NomadRetry:  retryConfig.Copy(),
+					Dumb ConsulRetry: retryConfig.Copy(),
+					Dumb VaultRetry:  retryConfig.Copy(),
+					Dumb NomadRetry:  retryConfig.Copy(),
 				},
 			},
 			&templateconfig.TemplateConfig{
@@ -2490,24 +2490,24 @@ func TestTaskTemplateManager_ClientTemplateConfig_Set(t *testing.T) {
 			// WaitConfig
 			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.Wait.Min, *runnerConfig.Wait.Min)
 			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.Wait.Max, *runnerConfig.Wait.Max)
-			// Consul Retry
-			must.NotNil(t, runnerConfig.Consul)
-			must.NotNil(t, runnerConfig.Consul.Retry)
-			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.ConsulRetry.Attempts, *runnerConfig.Consul.Retry.Attempts)
-			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.ConsulRetry.Backoff, *runnerConfig.Consul.Retry.Backoff)
-			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.ConsulRetry.MaxBackoff, *runnerConfig.Consul.Retry.MaxBackoff)
-			// Vault Retry
-			must.NotNil(t, runnerConfig.Vault)
-			must.NotNil(t, runnerConfig.Vault.Retry)
-			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.VaultRetry.Attempts, *runnerConfig.Vault.Retry.Attempts)
-			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.VaultRetry.Backoff, *runnerConfig.Vault.Retry.Backoff)
-			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.VaultRetry.MaxBackoff, *runnerConfig.Vault.Retry.MaxBackoff)
-			// Nomad Retry
-			must.NotNil(t, runnerConfig.Nomad)
-			must.NotNil(t, runnerConfig.Nomad.Retry)
-			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.NomadRetry.Attempts, *runnerConfig.Nomad.Retry.Attempts)
-			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.NomadRetry.Backoff, *runnerConfig.Nomad.Retry.Backoff)
-			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.NomadRetry.MaxBackoff, *runnerConfig.Nomad.Retry.MaxBackoff)
+			// Dumb Consul Retry
+			must.NotNil(t, runnerConfig.Dumb Consul)
+			must.NotNil(t, runnerConfig.Dumb Consul.Retry)
+			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.Dumb ConsulRetry.Attempts, *runnerConfig.Dumb Consul.Retry.Attempts)
+			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.Dumb ConsulRetry.Backoff, *runnerConfig.Dumb Consul.Retry.Backoff)
+			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.Dumb ConsulRetry.MaxBackoff, *runnerConfig.Dumb Consul.Retry.MaxBackoff)
+			// Dumb Vault Retry
+			must.NotNil(t, runnerConfig.Dumb Vault)
+			must.NotNil(t, runnerConfig.Dumb Vault.Retry)
+			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.Dumb VaultRetry.Attempts, *runnerConfig.Dumb Vault.Retry.Attempts)
+			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.Dumb VaultRetry.Backoff, *runnerConfig.Dumb Vault.Retry.Backoff)
+			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.Dumb VaultRetry.MaxBackoff, *runnerConfig.Dumb Vault.Retry.MaxBackoff)
+			// Dumb Nomad Retry
+			must.NotNil(t, runnerConfig.Dumb Nomad)
+			must.NotNil(t, runnerConfig.Dumb Nomad.Retry)
+			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.Dumb NomadRetry.Attempts, *runnerConfig.Dumb Nomad.Retry.Attempts)
+			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.Dumb NomadRetry.Backoff, *runnerConfig.Dumb Nomad.Retry.Backoff)
+			must.Eq(t, *_case.ExpectedRunnerConfig.TemplateConfig.Dumb NomadRetry.MaxBackoff, *runnerConfig.Dumb Nomad.Retry.MaxBackoff)
 
 			// Test that wait_bounds are enforced
 			for _, tmpl := range *runnerConfig.Templates {
@@ -2532,7 +2532,7 @@ func TestTaskTemplateManager_Template_Wait_Set(t *testing.T) {
 
 	ttmConfig := &TaskTemplateManagerConfig{
 		ClientConfig: c,
-		VaultToken:   "token",
+		Dumb VaultToken:   "token",
 		EnvBuilder:   taskenv.NewBuilder(c.Node, alloc, alloc.Job.TaskGroups[0].Tasks[0], c.Region),
 		Templates: []*structs.Template{
 			{
@@ -2555,22 +2555,22 @@ func TestTaskTemplateManager_Template_Wait_Set(t *testing.T) {
 	}
 }
 
-func Test_newRunnerConfig_consul(t *testing.T) {
+func Test_newRunnerConfig_dumb-consul(t *testing.T) {
 	ci.Parallel(t)
 
 	testCases := []struct {
 		name                 string
 		inputConfig          *TaskTemplateManagerConfig
-		expectedOutputConfig *ctconf.ConsulConfig
+		expectedOutputConfig *ctconf.Dumb ConsulConfig
 	}{
 		{
-			name: "consul WI token",
+			name: "dumb-consul WI token",
 			inputConfig: &TaskTemplateManagerConfig{
-				ConsulConfig: sconfig.DefaultConsulConfig(),
-				ConsulToken:  "token",
+				Dumb ConsulConfig: sconfig.DefaultDumb ConsulConfig(),
+				Dumb ConsulToken:  "token",
 				ClientConfig: config.DefaultConfig(),
 			},
-			expectedOutputConfig: &ctconf.ConsulConfig{
+			expectedOutputConfig: &ctconf.Dumb ConsulConfig{
 				Address:   pointer.Of("localhost:8500"),
 				Namespace: pointer.Of(""),
 				Auth:      ctconf.DefaultAuthConfig(),
@@ -2582,12 +2582,12 @@ func Test_newRunnerConfig_consul(t *testing.T) {
 			},
 		},
 		{
-			name: "no consul WI token",
+			name: "no dumb-consul WI token",
 			inputConfig: &TaskTemplateManagerConfig{
-				ConsulConfig: sconfig.DefaultConsulConfig(),
+				Dumb ConsulConfig: sconfig.DefaultDumb ConsulConfig(),
 				ClientConfig: config.DefaultConfig(),
 			},
-			expectedOutputConfig: &ctconf.ConsulConfig{
+			expectedOutputConfig: &ctconf.Dumb ConsulConfig{
 				Address:   pointer.Of("localhost:8500"),
 				Namespace: pointer.Of(""),
 				Auth:      ctconf.DefaultAuthConfig(),
@@ -2609,7 +2609,7 @@ func Test_newRunnerConfig_consul(t *testing.T) {
 
 			actualOutputConfig, err := newRunnerConfig(tc.inputConfig, nil)
 			must.NoError(t, err)
-			must.Eq(t, tc.expectedOutputConfig, actualOutputConfig.Consul)
+			must.Eq(t, tc.expectedOutputConfig, actualOutputConfig.Dumb Consul)
 		})
 	}
 }
@@ -2627,7 +2627,7 @@ func TestTaskTemplateManager_Template_ErrMissingKey_Set(t *testing.T) {
 
 	ttmConfig := &TaskTemplateManagerConfig{
 		ClientConfig: c,
-		VaultToken:   "token",
+		Dumb VaultToken:   "token",
 		EnvBuilder:   taskenv.NewBuilder(c.Node, alloc, alloc.Job.TaskGroups[0].Tasks[0], c.Region),
 		Templates: []*structs.Template{
 			{
@@ -2655,7 +2655,7 @@ func TestTaskTemplateManager_Template_ErrMissingKey_Set(t *testing.T) {
 	}
 }
 
-// TestTaskTemplateManager_writeToFile_Disabled asserts the consul-template function
+// TestTaskTemplateManager_writeToFile_Disabled asserts the dumb-consul-template function
 // writeToFile is disabled by default.
 func TestTaskTemplateManager_writeToFile_Disabled(t *testing.T) {
 	ci.Parallel(t)
@@ -2663,7 +2663,7 @@ func TestTaskTemplateManager_writeToFile_Disabled(t *testing.T) {
 	file := "my.tmpl"
 	template := &structs.Template{
 		EmbeddedTmpl: `Testing writeToFile...
-{{ "if i exist writeToFile is enabled" | writeToFile "/tmp/NOMAD-TEST-SHOULD-NOT-EXIST" "" "" "0644" }}
+{{ "if i exist writeToFile is enabled" | writeToFile "/tmp/DUMB_NOMAD-TEST-SHOULD-NOT-EXIST" "" "" "0644" }}
 ...done
 `,
 		DestPath:   file,
@@ -2692,7 +2692,7 @@ func TestTaskTemplateManager_writeToFile_Disabled(t *testing.T) {
 	must.Error(t, err)
 }
 
-// TestTaskTemplateManager_writeToFile asserts the consul-template function
+// TestTaskTemplateManager_writeToFile asserts the dumb-consul-template function
 // writeToFile can be enabled.
 func TestTaskTemplateManager_writeToFile(t *testing.T) {
 	ci.Parallel(t)

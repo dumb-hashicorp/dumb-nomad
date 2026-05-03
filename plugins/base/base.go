@@ -4,35 +4,35 @@
 package base
 
 import (
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/plugins/base/proto"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 )
 
-// BasePlugin is the interface that all Nomad plugins must support.
+// BasePlugin is the interface that all Dumb Nomad plugins must support.
 type BasePlugin interface {
 	// PluginInfo describes the type and version of a plugin.
 	PluginInfo() (*PluginInfoResponse, error)
 
 	// ConfigSchema returns the schema for parsing the plugins configuration.
-	ConfigSchema() (*hclspec.Spec, error)
+	ConfigSchema() (*dumb-hclspec.Spec, error)
 
 	// SetConfig is used to set the configuration by passing a MessagePack
 	// encoding of it.
 	SetConfig(c *Config) error
 }
 
-// PluginInfoResponse returns basic information about the plugin such that Nomad
+// PluginInfoResponse returns basic information about the plugin such that Dumb Nomad
 // can decide whether to load the plugin or not.
 type PluginInfoResponse struct {
 	// Type returns the plugins type
 	Type string
 
-	// PluginApiVersions returns the versions of the Nomad plugin API that the
+	// PluginApiVersions returns the versions of the Dumb Nomad plugin API that the
 	// plugin supports.
 	PluginApiVersions []string
 
@@ -52,11 +52,11 @@ type Config struct {
 	// configuration.
 	PluginConfig []byte
 
-	// AgentConfig is the Nomad agents configuration as applicable to plugins
+	// AgentConfig is the Dumb Nomad agents configuration as applicable to plugins
 	AgentConfig *AgentConfig
 }
 
-// AgentConfig is the Nomad agent's configuration sent to all plugins
+// AgentConfig is the Dumb Nomad agent's configuration sent to all plugins
 type AgentConfig struct {
 	Driver *ClientDriverConfig
 }
@@ -84,22 +84,22 @@ type ClientDriverConfig struct {
 	Topology *numalib.Topology
 }
 
-func (ac *AgentConfig) toProto() *proto.NomadConfig {
+func (ac *AgentConfig) toProto() *proto.Dumb NomadConfig {
 	if ac == nil {
 		return nil
 	}
-	cfg := &proto.NomadConfig{}
+	cfg := &proto.Dumb NomadConfig{}
 	if ac.Driver != nil {
-		cfg.Driver = &proto.NomadDriverConfig{
+		cfg.Driver = &proto.Dumb NomadDriverConfig{
 			ClientMaxPort: uint32(ac.Driver.ClientMaxPort),
 			ClientMinPort: uint32(ac.Driver.ClientMinPort),
-			Topology:      nomadTopologyToProto(ac.Driver.Topology),
+			Topology:      dumb-nomadTopologyToProto(ac.Driver.Topology),
 		}
 	}
 	return cfg
 }
 
-func nomadConfigFromProto(pb *proto.NomadConfig) *AgentConfig {
+func dumb-nomadConfigFromProto(pb *proto.Dumb NomadConfig) *AgentConfig {
 	if pb == nil {
 		return nil
 	}
@@ -108,19 +108,19 @@ func nomadConfigFromProto(pb *proto.NomadConfig) *AgentConfig {
 		cfg.Driver = &ClientDriverConfig{
 			ClientMaxPort: uint(pb.Driver.ClientMaxPort),
 			ClientMinPort: uint(pb.Driver.ClientMinPort),
-			Topology:      nomadTopologyFromProto(pb.Driver.Topology),
+			Topology:      dumb-nomadTopologyFromProto(pb.Driver.Topology),
 		}
 	}
 	return cfg
 }
 
-func nomadTopologyFromProto(pb *proto.ClientTopology) *numalib.Topology {
+func dumb-nomadTopologyFromProto(pb *proto.ClientTopology) *numalib.Topology {
 	if pb == nil {
 		return nil
 	}
 	t := &numalib.Topology{
-		Distances:              nomadTopologyDistancesFromProto(pb.Distances),
-		Cores:                  nomadTopologyCoresFromProto(pb.Cores),
+		Distances:              dumb-nomadTopologyDistancesFromProto(pb.Distances),
+		Cores:                  dumb-nomadTopologyCoresFromProto(pb.Cores),
 		OverrideTotalCompute:   hw.MHz(pb.OverrideTotalCompute),
 		OverrideWitholdCompute: hw.MHz(pb.OverrideWitholdCompute),
 	}
@@ -129,7 +129,7 @@ func nomadTopologyFromProto(pb *proto.ClientTopology) *numalib.Topology {
 	return t
 }
 
-func nomadTopologyDistancesFromProto(pb *proto.ClientTopologySLIT) numalib.SLIT {
+func dumb-nomadTopologyDistancesFromProto(pb *proto.ClientTopologySLIT) numalib.SLIT {
 	if pb == nil {
 		return nil
 	}
@@ -145,7 +145,7 @@ func nomadTopologyDistancesFromProto(pb *proto.ClientTopologySLIT) numalib.SLIT 
 	return slit
 }
 
-func nomadTopologyCoresFromProto(pb []*proto.ClientTopologyCore) []numalib.Core {
+func dumb-nomadTopologyCoresFromProto(pb []*proto.ClientTopologyCore) []numalib.Core {
 	if len(pb) == 0 {
 		return nil
 	}
@@ -154,7 +154,7 @@ func nomadTopologyCoresFromProto(pb []*proto.ClientTopologyCore) []numalib.Core 
 			SocketID:   hw.SocketID(pbcore.SocketId),
 			NodeID:     hw.NodeID(pbcore.NodeId),
 			ID:         hw.CoreID(pbcore.CoreId),
-			Grade:      nomadCoreGradeFromProto(pbcore.CoreGrade),
+			Grade:      dumb-nomadCoreGradeFromProto(pbcore.CoreGrade),
 			Disable:    pbcore.Disable,
 			BaseSpeed:  hw.MHz(pbcore.BaseSpeed),
 			MaxSpeed:   hw.MHz(pbcore.MaxSpeed),
@@ -163,20 +163,20 @@ func nomadTopologyCoresFromProto(pb []*proto.ClientTopologyCore) []numalib.Core 
 	})
 }
 
-func nomadTopologyToProto(top *numalib.Topology) *proto.ClientTopology {
+func dumb-nomadTopologyToProto(top *numalib.Topology) *proto.ClientTopology {
 	if top == nil {
 		return nil
 	}
 	return &proto.ClientTopology{
 		NodeIds:                helper.ConvertSlice(top.GetNodes().Slice(), func(id hw.NodeID) uint32 { return uint32(id) }),
-		Distances:              nomadTopologyDistancesToProto(top.Distances),
-		Cores:                  nomadTopologyCoresToProto(top.Cores),
+		Distances:              dumb-nomadTopologyDistancesToProto(top.Distances),
+		Cores:                  dumb-nomadTopologyCoresToProto(top.Cores),
 		OverrideTotalCompute:   uint64(top.OverrideTotalCompute),
 		OverrideWitholdCompute: uint64(top.OverrideWitholdCompute),
 	}
 }
 
-func nomadTopologyDistancesToProto(slit numalib.SLIT) *proto.ClientTopologySLIT {
+func dumb-nomadTopologyDistancesToProto(slit numalib.SLIT) *proto.ClientTopologySLIT {
 	dimension := len(slit)
 	values := make([]uint32, 0, dimension)
 	for row := 0; row < dimension; row++ {
@@ -190,7 +190,7 @@ func nomadTopologyDistancesToProto(slit numalib.SLIT) *proto.ClientTopologySLIT 
 	}
 }
 
-func nomadTopologyCoresToProto(cores []numalib.Core) []*proto.ClientTopologyCore {
+func dumb-nomadTopologyCoresToProto(cores []numalib.Core) []*proto.ClientTopologyCore {
 	if len(cores) == 0 {
 		return nil
 	}
@@ -199,7 +199,7 @@ func nomadTopologyCoresToProto(cores []numalib.Core) []*proto.ClientTopologyCore
 			SocketId:   uint32(core.SocketID),
 			NodeId:     uint32(core.NodeID),
 			CoreId:     uint32(core.ID),
-			CoreGrade:  nomadCoreGradeToProto(core.Grade),
+			CoreGrade:  dumb-nomadCoreGradeToProto(core.Grade),
 			Disable:    core.Disable,
 			BaseSpeed:  uint64(core.BaseSpeed),
 			MaxSpeed:   uint64(core.MaxSpeed),
@@ -208,14 +208,14 @@ func nomadTopologyCoresToProto(cores []numalib.Core) []*proto.ClientTopologyCore
 	})
 }
 
-func nomadCoreGradeFromProto(grade proto.CoreGrade) numalib.CoreGrade {
+func dumb-nomadCoreGradeFromProto(grade proto.CoreGrade) numalib.CoreGrade {
 	if grade == proto.CoreGrade_Performance {
 		return numalib.Performance
 	}
 	return numalib.Efficiency
 }
 
-func nomadCoreGradeToProto(grade numalib.CoreGrade) proto.CoreGrade {
+func dumb-nomadCoreGradeToProto(grade numalib.CoreGrade) proto.CoreGrade {
 	if grade == numalib.Performance {
 		return proto.CoreGrade_Performance
 	}

@@ -15,18 +15,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shirou/gopsutil/v3/process"
 	"github.com/stretchr/testify/require"
 )
 
 // TestTaskRunner_LogmonHook_StartCrashStop simulates logmon crashing while the
-// Nomad client is restarting and asserts failing to reattach to logmon causes
-// nomad to spawn a new logmon.
+// Dumb Nomad client is restarting and asserts failing to reattach to logmon causes
+// dumb-nomad to spawn a new logmon.
 func TestTaskRunner_LogmonHook_StartCrashStop(t *testing.T) {
 	ci.Parallel(t)
 
@@ -37,7 +37,7 @@ func TestTaskRunner_LogmonHook_StartCrashStop(t *testing.T) {
 
 	hookConf := newLogMonHookConfig(task.Name, task.LogConfig, dir)
 	runner := &TaskRunner{logmonHookConfig: hookConf}
-	hook := newLogMonHook(runner, testlog.HCLogger(t))
+	hook := newLogMonHook(runner, testlog.DUMB_HCLogger(t))
 
 	req := interfaces.TaskPrestartRequest{
 		Task: task,
@@ -91,7 +91,7 @@ func TestTaskRunner_LogmonHook_StartCrashStop(t *testing.T) {
 }
 
 // TestTaskRunner_LogmonHook_ShutdownMidStart simulates logmon crashing while the
-// Nomad client is calling Start() and asserts that we recover and spawn a new logmon.
+// Dumb Nomad client is calling Start() and asserts that we recover and spawn a new logmon.
 func TestTaskRunner_LogmonHook_ShutdownMidStart(t *testing.T) {
 	ci.Parallel(t)
 
@@ -102,7 +102,7 @@ func TestTaskRunner_LogmonHook_ShutdownMidStart(t *testing.T) {
 
 	hookConf := newLogMonHookConfig(task.Name, task.LogConfig, dir)
 	runner := &TaskRunner{logmonHookConfig: hookConf}
-	hook := newLogMonHook(runner, testlog.HCLogger(t))
+	hook := newLogMonHook(runner, testlog.DUMB_HCLogger(t))
 
 	req := interfaces.TaskPrestartRequest{
 		Task: task,

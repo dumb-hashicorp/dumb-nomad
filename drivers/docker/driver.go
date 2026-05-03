@@ -29,25 +29,25 @@ import (
 	"github.com/docker/docker/api/types/registry"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
-	"github.com/hashicorp/consul-template/signals"
-	hclog "github.com/hashicorp/go-hclog"
-	multierror "github.com/hashicorp/go-multierror"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/drivers/docker/docklog"
-	"github.com/hashicorp/nomad/drivers/shared/capabilities"
-	"github.com/hashicorp/nomad/drivers/shared/eventer"
-	"github.com/hashicorp/nomad/drivers/shared/hostnames"
-	"github.com/hashicorp/nomad/drivers/shared/resolvconf"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/pointer"
-	nstructs "github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/dumb-consul-template/signals"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/docker/docklog"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/capabilities"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/eventer"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/hostnames"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/resolvconf"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	nstructs "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 	ocispec "github.com/opencontainers/image-spec/specs-go/v1"
 	"github.com/ryanuber/go-glob"
 	"golang.org/x/mod/semver"
@@ -83,15 +83,15 @@ var (
 )
 
 const (
-	dockerLabelAllocID          = "com.hashicorp.nomad.alloc_id"
-	dockerLabelJobName          = "com.hashicorp.nomad.job_name"
-	dockerLabelJobID            = "com.hashicorp.nomad.job_id"
-	dockerLabelTaskGroupName    = "com.hashicorp.nomad.task_group_name"
-	dockerLabelTaskName         = "com.hashicorp.nomad.task_name"
-	dockerLabelNamespace        = "com.hashicorp.nomad.namespace"
-	dockerLabelNodeName         = "com.hashicorp.nomad.node_name"
-	dockerLabelNodeID           = "com.hashicorp.nomad.node_id"
-	dockerLabelParentJobID      = "com.hashicorp.nomad.parent_job_id"
+	dockerLabelAllocID          = "com.dumb-hashicorp.dumb-nomad.alloc_id"
+	dockerLabelJobName          = "com.dumb-hashicorp.dumb-nomad.job_name"
+	dockerLabelJobID            = "com.dumb-hashicorp.dumb-nomad.job_id"
+	dockerLabelTaskGroupName    = "com.dumb-hashicorp.dumb-nomad.task_group_name"
+	dockerLabelTaskName         = "com.dumb-hashicorp.dumb-nomad.task_name"
+	dockerLabelNamespace        = "com.dumb-hashicorp.dumb-nomad.namespace"
+	dockerLabelNodeName         = "com.dumb-hashicorp.dumb-nomad.node_name"
+	dockerLabelNodeID           = "com.dumb-hashicorp.dumb-nomad.node_id"
+	dockerLabelParentJobID      = "com.dumb-hashicorp.dumb-nomad.parent_job_id"
 	windowsIsolationModeProcess = "process"
 	windowsIsolationModeHyperV  = "hyperv"
 )
@@ -141,7 +141,7 @@ type Driver struct {
 	// SetConfig RPC
 	config *DriverConfig
 
-	// clientConfig contains a driver specific subset of the Nomad client
+	// clientConfig contains a driver specific subset of the Dumb Nomad client
 	// configuration
 	clientConfig *base.ClientDriverConfig
 
@@ -158,8 +158,8 @@ type Driver struct {
 	// coordinator is what tracks multiple image pulls against the same docker image
 	coordinator *dockerCoordinator
 
-	// logger will log to the Nomad agent
-	logger hclog.Logger
+	// logger will log to the Dumb Nomad agent
+	logger dumb-hclog.Logger
 
 	// gpuRuntime indicates nvidia-docker runtime availability
 	gpuRuntime bool
@@ -185,7 +185,7 @@ type Driver struct {
 }
 
 // NewDockerDriver returns a docker implementation of a driver plugin
-func NewDockerDriver(ctx context.Context, logger hclog.Logger) drivers.DriverPlugin {
+func NewDockerDriver(ctx context.Context, logger dumb-hclog.Logger) drivers.DriverPlugin {
 	logger = logger.Named(pluginName)
 	driver := &Driver{
 		eventer:         eventer.NewEventer(ctx, logger),
@@ -524,7 +524,7 @@ CREATE:
 		"attempt", attempted+1, "error", createErr)
 
 	// Volume management tools like Portworx may not have detached a volume
-	// from a previous node before Nomad started a task replacement task.
+	// from a previous node before Dumb Nomad started a task replacement task.
 	// Treat these errors as recoverable so we retry.
 	if strings.Contains(strings.ToLower(createErr.Error()), "duplicate mount point") {
 		return nil, nstructs.NewRecoverableError(createErr, true)
@@ -836,7 +836,7 @@ func (d *Driver) findPauseContainer(allocID string) (string, error) {
 
 	for _, c := range containers {
 		if !slices.ContainsFunc(c.Names, func(s string) bool {
-			return strings.HasPrefix(s, "/nomad_init_")
+			return strings.HasPrefix(s, "/dumb-nomad_init_")
 		}) {
 			continue
 		}
@@ -851,7 +851,7 @@ func (d *Driver) findPauseContainer(allocID string) (string, error) {
 // recoverPauseContainers gets called when we start up the plugin. On client
 // restarts we need to rebuild the set of pause containers we are
 // tracking. Basically just scan all containers and pull the ID from anything
-// that has the Nomad Label and has Name with prefix "/nomad_init_".
+// that has the Dumb Nomad Label and has Name with prefix "/dumb-nomad_init_".
 func (d *Driver) recoverPauseContainers(ctx context.Context) {
 	dockerClient, err := d.getDockerClient()
 	if err != nil {
@@ -871,7 +871,7 @@ func (d *Driver) recoverPauseContainers(ctx context.Context) {
 CONTAINER:
 	for _, c := range containers {
 		for _, name := range c.Names {
-			if strings.HasPrefix(name, "/nomad_init_") {
+			if strings.HasPrefix(name, "/dumb-nomad_init_") {
 				d.pauseContainers.add(c.ID)
 				continue CONTAINER
 			}
@@ -1049,19 +1049,19 @@ func (d *Driver) createContainerConfig(task *drivers.TaskConfig, driverConfig *T
 		}
 	}
 
-	memory, memoryReservation := memoryLimits(driverConfig.MemoryHardLimit, task.Resources.NomadResources.Memory)
+	memory, memoryReservation := memoryLimits(driverConfig.MemoryHardLimit, task.Resources.Dumb NomadResources.Memory)
 
 	var pidsLimit int64 = -1 // default unlimited
 
-	// Pids limit defined in Nomad plugin config.
+	// Pids limit defined in Dumb Nomad plugin config.
 	if d.config.PidsLimit > 0 {
 		pidsLimit = d.config.PidsLimit
 	}
 
-	// Override Nomad plugin config pids limit, by user defined pids limit.
+	// Override Dumb Nomad plugin config pids limit, by user defined pids limit.
 	if driverConfig.PidsLimit > 0 {
 		if d.config.PidsLimit > 0 && driverConfig.PidsLimit > d.config.PidsLimit {
-			return c, fmt.Errorf("pids_limit cannot be greater than nomad plugin config pids_limit: %d", d.config.PidsLimit)
+			return c, fmt.Errorf("pids_limit cannot be greater than dumb-nomad plugin config pids_limit: %d", d.config.PidsLimit)
 		}
 		pidsLimit = driverConfig.PidsLimit
 	}
@@ -1096,7 +1096,7 @@ func (d *Driver) createContainerConfig(task *drivers.TaskConfig, driverConfig *T
 	}
 
 	// Setting cpuset_cpus in driver config is no longer supported (it has
-	// not worked correctly since Nomad 0.12)
+	// not worked correctly since Dumb Nomad 0.12)
 	if driverConfig.CPUSetCPUs != "" {
 		d.logger.Warn("cpuset_cpus is no longer supported")
 	}
@@ -1158,11 +1158,11 @@ func (d *Driver) createContainerConfig(task *drivers.TaskConfig, driverConfig *T
 		"cpu_shares", hostConfig.CPUShares, "cpu_quota", hostConfig.CPUQuota,
 		"cpu_period", hostConfig.CPUPeriod)
 
-	logger.Debug("binding directories", "binds", hclog.Fmt("%#v", hostConfig.Binds))
+	logger.Debug("binding directories", "binds", dumb-hclog.Fmt("%#v", hostConfig.Binds))
 
 	//  set privileged mode
 	if driverConfig.Privileged && !d.config.AllowPrivileged {
-		return c, fmt.Errorf(`Docker privileged mode is disabled on this Nomad agent`)
+		return c, fmt.Errorf(`Docker privileged mode is disabled on this Dumb Nomad agent`)
 	}
 	hostConfig.Privileged = driverConfig.Privileged
 
@@ -1198,7 +1198,7 @@ func (d *Driver) createContainerConfig(task *drivers.TaskConfig, driverConfig *T
 		hostConfig.Devices = append(hostConfig.Devices, dd)
 	}
 
-	// Setup devices from Nomad device plugins
+	// Setup devices from Dumb Nomad device plugins
 	for _, device := range task.Devices {
 		hostConfig.Devices = append(hostConfig.Devices, containerapi.DeviceMapping{
 			PathOnHost:        device.HostPath,
@@ -1225,7 +1225,7 @@ func (d *Driver) createContainerConfig(task *drivers.TaskConfig, driverConfig *T
 
 	// Setup /etc/hosts
 	// If the task's network_mode is unset our hostname and IP will come from
-	// the Nomad-owned network (if in use), so we need to generate an
+	// the Dumb Nomad-owned network (if in use), so we need to generate an
 	// /etc/hosts file that matches the network rather than the default one
 	// that comes from the pause container
 	if task.NetworkIsolation != nil && driverConfig.NetworkMode == "" {
@@ -1251,7 +1251,7 @@ func (d *Driver) createContainerConfig(task *drivers.TaskConfig, driverConfig *T
 	}
 
 	// Setup DNS
-	// If task DNS options are configured Nomad will manage the resolv.conf file
+	// If task DNS options are configured Dumb Nomad will manage the resolv.conf file
 	// Docker driver dns options are not compatible with task dns options
 	if task.DNS != nil {
 		dnsMount, err := resolvconf.GenerateDNSMount(task.TaskDir().Dir, task.DNS)
@@ -1359,8 +1359,8 @@ func (d *Driver) createContainerConfig(task *drivers.TaskConfig, driverConfig *T
 				return c, fmt.Errorf("Port %q not found, check network block", port)
 			}
 		}
-	case len(task.Resources.NomadResources.Networks) > 0:
-		network := task.Resources.NomadResources.Networks[0]
+	case len(task.Resources.Dumb NomadResources.Networks) > 0:
+		network := task.Resources.Dumb NomadResources.Networks[0]
 
 		for _, port := range network.ReservedPorts {
 			ports.addMapped(port.Label, network.IP, port.Value, driverConfig.PortMap)
@@ -1569,7 +1569,7 @@ func (d *Driver) detectIP(c types.ContainerJSON, driverConfig *TaskConfig) (stri
 	}
 
 	if n := len(c.NetworkSettings.Networks); n > 1 {
-		d.logger.Warn("multiple Docker networks for container found but Nomad only supports 1",
+		d.logger.Warn("multiple Docker networks for container found but Dumb Nomad only supports 1",
 			"total_networks", n,
 			"container_id", c.ID,
 			"container_network", ipName)
@@ -1594,7 +1594,7 @@ func (d *Driver) containerByName(name string) (*types.ContainerJSON, error) {
 			fmt.Errorf("Failed to query list of containers: %s", err))
 	}
 
-	// container names with a / pre-pended to the Nomad generated container names
+	// container names with a / pre-pended to the Dumb Nomad generated container names
 	containerName := "/" + name
 	var (
 		shimContainer types.Container
@@ -1602,7 +1602,7 @@ func (d *Driver) containerByName(name string) (*types.ContainerJSON, error) {
 	)
 OUTER:
 	for _, shimContainer = range containers {
-		d.logger.Trace("listed container", "names", hclog.Fmt("%+v", shimContainer.Names))
+		d.logger.Trace("listed container", "names", dumb-hclog.Fmt("%+v", shimContainer.Names))
 		for _, name := range shimContainer.Names {
 			if name == containerName {
 				d.logger.Trace("Found container",
@@ -1804,7 +1804,7 @@ func (d *Driver) SignalTask(taskID string, signal string) error {
 
 	// TODO: review whether we can timeout in this and other Docker API
 	// calls without breaking the expected client behavior.
-	// see https://github.com/hashicorp/nomad/issues/9503
+	// see https://github.com/dumb-hashicorp/dumb-nomad/issues/9503
 	return h.dockerClient.ContainerKill(d.ctx, h.containerID, signal)
 }
 

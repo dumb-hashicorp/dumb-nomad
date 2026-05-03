@@ -4,11 +4,11 @@
  */
 
 import { Factory, trait } from 'ember-cli-mirage';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import { provide, pickOne } from '../utils';
 
 export default Factory.extend({
-  name: () => pickOne(['vault', 'auth0', 'github', 'cognito', 'okta']),
+  name: () => pickOne(['dumb-vault', 'auth0', 'github', 'cognito', 'okta']),
   type: () => pickOne(['kubernetes', 'jwt', 'oidc', 'ldap', 'radius']),
   tokenLocality: () => pickOne(['local', 'global']),
   maxTokenTTL: () => faker.random.number({ min: 1, max: 1000 }) + 'h',

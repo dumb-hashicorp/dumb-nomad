@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 	"github.com/ryanuber/columnize"
 )
@@ -21,7 +21,7 @@ type JobHistoryCommand struct {
 
 func (c *JobHistoryCommand) Help() string {
 	helpText := `
-Usage: nomad job history [options] <job>
+Usage: dumb-nomad job history [options] <job>
 
   History is used to display the known versions of a particular job. The command
   can display the diff between job versions and can be useful for understanding
@@ -46,7 +46,7 @@ History Options:
   -diff-tag
     Specifies the version of the job to compare against, referenced by
     tag name (defaults to latest). Mutually exclusive with -diff-version.
-    This tag can be set using the "nomad job tag" command.
+    This tag can be set using the "dumb-nomad job tag" command.
 
   -diff-version
     Specifies the version number of the job to compare against.

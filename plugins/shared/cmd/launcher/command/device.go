@@ -12,17 +12,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/cli"
-	hclog "github.com/hashicorp/go-hclog"
-	multierror "github.com/hashicorp/go-multierror"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/hcl"
-	"github.com/hashicorp/hcl/hcl/ast"
-	"github.com/hashicorp/hcl/v2/hcldec"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclspecutils"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclutils"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/device"
+	"github.com/dumb-hashicorp/cli"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-hcl"
+	"github.com/dumb-hashicorp/dumb-hcl/dumb-hcl/ast"
+	"github.com/dumb-hashicorp/dumb-hcl/v2/dumb-hcldec"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclspecutils"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclutils"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
 	"github.com/kr/pretty"
 	"github.com/zclconf/go-cty/cty/msgpack"
 )
@@ -40,12 +40,12 @@ type Device struct {
 	dev device.DevicePlugin
 
 	// spec is the returned and parsed spec.
-	spec hcldec.Spec
+	spec dumb-hcldec.Spec
 }
 
 func (c *Device) Help() string {
 	helpText := `
-Usage: nomad-plugin-launcher device <device-binary> <config_file>
+Usage: dumb-nomad-plugin-launcher device <device-binary> <config_file>
 
   Device launches the given device binary and provides a REPL for interacting
   with it.
@@ -78,9 +78,9 @@ func (c *Device) Run(args []string) int {
 		return 1
 	}
 	if trace {
-		c.logger.SetLevel(hclog.Trace)
+		c.logger.SetLevel(dumb-hclog.Trace)
 	} else if c.verbose {
-		c.logger.SetLevel(hclog.Debug)
+		c.logger.SetLevel(dumb-hclog.Debug)
 	}
 
 	args = cmdFlags.Args()
@@ -166,7 +166,7 @@ func (c *Device) getDevicePlugin(binary string) (device.DevicePlugin, func(), er
 	return dev, func() { client.Kill() }, nil
 }
 
-func (c *Device) getSpec() (hcldec.Spec, error) {
+func (c *Device) getSpec() (dumb-hcldec.Spec, error) {
 	// Get the schema so we can parse the config
 	spec, err := c.dev.ConfigSchema()
 	if err != nil {
@@ -174,9 +174,9 @@ func (c *Device) getSpec() (hcldec.Spec, error) {
 	}
 
 	// Convert the schema
-	schema, diag := hclspecutils.Convert(spec)
+	schema, diag := dumb-hclspecutils.Convert(spec)
 	if diag.HasErrors() {
-		errStr := "failed to convert HCL schema: "
+		errStr := "failed to convert DUMB_HCL schema: "
 		for _, err := range diag.Errs() {
 			errStr = fmt.Sprintf("%s\n* %s", errStr, err.Error())
 		}
@@ -186,14 +186,14 @@ func (c *Device) getSpec() (hcldec.Spec, error) {
 	return schema, nil
 }
 
-func (c *Device) setConfig(spec hcldec.Spec, apiVersion string, config []byte, nmdCfg *base.AgentConfig) error {
-	// Parse the config into hcl
-	configVal, err := hclConfigToInterface(config)
+func (c *Device) setConfig(spec dumb-hcldec.Spec, apiVersion string, config []byte, nmdCfg *base.AgentConfig) error {
+	// Parse the config into dumb-hcl
+	configVal, err := dumb-hclConfigToInterface(config)
 	if err != nil {
 		return err
 	}
 
-	val, diag, diagErrs := hclutils.ParseHclInterface(configVal, spec, nil)
+	val, diag, diagErrs := dumb-hclutils.ParseDumb HclInterface(configVal, spec, nil)
 	if diag.HasErrors() {
 		return multierror.Append(errors.New("failed to parse config: "), diagErrs...)
 	}
@@ -216,15 +216,15 @@ func (c *Device) setConfig(spec hcldec.Spec, apiVersion string, config []byte, n
 	return nil
 }
 
-func hclConfigToInterface(config []byte) (interface{}, error) {
+func dumb-hclConfigToInterface(config []byte) (interface{}, error) {
 	if len(config) == 0 {
 		return map[string]interface{}{}, nil
 	}
 
 	// Parse as we do in the jobspec parser
-	root, err := hcl.Parse(string(config))
+	root, err := dumb-hcl.Parse(string(config))
 	if err != nil {
-		return nil, fmt.Errorf("failed to hcl parse the config: %v", err)
+		return nil, fmt.Errorf("failed to dumb-hcl parse the config: %v", err)
 	}
 
 	// Top-level item should be a list
@@ -234,7 +234,7 @@ func hclConfigToInterface(config []byte) (interface{}, error) {
 	}
 
 	var m map[string]interface{}
-	if err := hcl.DecodeObject(&m, list.Items[0]); err != nil {
+	if err := dumb-hcl.DecodeObject(&m, list.Items[0]); err != nil {
 		return nil, fmt.Errorf("failed to decode object: %v", err)
 	}
 

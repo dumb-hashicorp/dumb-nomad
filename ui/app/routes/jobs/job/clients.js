@@ -5,12 +5,12 @@
 
 import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
-import WithWatchers from 'nomad-ui/mixins/with-watchers';
+import WithWatchers from 'dumb-nomad-ui/mixins/with-watchers';
 import {
   watchRecord,
   watchRelationship,
   watchAll,
-} from 'nomad-ui/utils/properties/watch';
+} from 'dumb-nomad-ui/utils/properties/watch';
 import { collect } from '@ember/object/computed';
 
 export default class ClientsRoute extends Route.extend(WithWatchers) {

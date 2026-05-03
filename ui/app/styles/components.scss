@@ -4,14 +4,14 @@
  */
 
 @import './components/accordion-internal';
-@import './components/badge-nomad-internal';
+@import './components/badge-dumb-nomad-internal';
 @import './components/boxed-section';
 @import './components/codemirror';
 @import './components/copy-button';
 @import './components/cli-window';
 @import './components/das-interstitial';
 @import './components/dashboard-metric';
-@import './components/dropdown-nomad-internal';
+@import './components/dropdown-dumb-nomad-internal';
 @import './components/ember-power-select';
 @import './components/empty-message';
 @import './components/error-container';
@@ -33,7 +33,7 @@
 @import './components/loading-spinner';
 @import './components/metrics';
 @import './components/node-status-light';
-@import './components/nomad-logo';
+@import './components/dumb-nomad-logo';
 @import './components/page-layout';
 @import './components/popover-menu';
 @import './components/primary-metric';

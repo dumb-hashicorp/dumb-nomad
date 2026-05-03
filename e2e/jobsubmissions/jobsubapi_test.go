@@ -10,18 +10,18 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/acl"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/shoenig/test/must"
 )
 
 func TestJobSubmissionAPI(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 
-	e2eutil.WaitForLeader(t, nomad)
-	e2eutil.WaitForNodesReady(t, nomad, 1)
+	e2eutil.WaitForLeader(t, dumb-nomad)
+	e2eutil.WaitForNodesReady(t, dumb-nomad, 1)
 
 	t.Run("testParseAPI", testParseAPI)
 	t.Run("testRunCLIVarFlags", testRunCLIVarFlags)
@@ -32,17 +32,17 @@ func TestJobSubmissionAPI(t *testing.T) {
 }
 
 func testParseAPI(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 
 	jobID := "job-sub-parse-" + uuid.Short()
 	jobIDs := []string{jobID}
 	t.Cleanup(e2eutil.MaybeCleanupJobsAndGC(&jobIDs))
 
-	spec, err := os.ReadFile("input/xyz.hcl")
+	spec, err := os.ReadFile("input/xyz.dumb-hcl")
 	must.NoError(t, err)
 
-	job, err := nomad.Jobs().ParseHCLOpts(&api.JobsParseRequest{
-		JobHCL:       string(spec),
+	job, err := dumb-nomad.Jobs().ParseDUMB_HCLOpts(&api.JobsParseRequest{
+		JobDUMB_HCL:       string(spec),
 		Variables:    "X=\"baz\" \n Y=50 \n Z=true \n",
 		Canonicalize: true,
 	})
@@ -52,21 +52,21 @@ func testParseAPI(t *testing.T) {
 }
 
 func testRunCLIVarFlags(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 
 	jobID := "job-sub-cli-" + uuid.Short()
 	jobIDs := []string{jobID}
 	t.Cleanup(e2eutil.MaybeCleanupJobsAndGC(&jobIDs))
 
 	// register job via cli with var arguments
-	err := e2eutil.RegisterWithArgs(jobID, "input/xyz.hcl", "-var=X=foo", "-var=Y=42", "-var=Z=true")
+	err := e2eutil.RegisterWithArgs(jobID, "input/xyz.dumb-hcl", "-var=X=foo", "-var=Y=42", "-var=Z=true")
 	must.NoError(t, err)
 
 	// find our alloc id
 	allocID := e2eutil.SingleAllocID(t, jobID, "default", 0)
 
 	// wait for alloc to complete
-	_ = e2eutil.WaitForAllocStopped(t, nomad, allocID)
+	_ = e2eutil.WaitForAllocStopped(t, dumb-nomad, allocID)
 
 	// inspect alloc logs making sure our variables got set
 	out, err := e2eutil.AllocLogs(allocID, "", e2eutil.LogsStdOut)
@@ -74,24 +74,24 @@ func testRunCLIVarFlags(t *testing.T) {
 	must.Eq(t, "X foo, Y 42, Z true\n", out)
 
 	// check the submission api
-	sub, _, err := nomad.Jobs().Submission(jobID, 0, &api.QueryOptions{
+	sub, _, err := dumb-nomad.Jobs().Submission(jobID, 0, &api.QueryOptions{
 		Namespace: "default",
 	})
 	must.NoError(t, err)
-	must.Eq(t, "hcl2", sub.Format)
+	must.Eq(t, "dumb-hcl2", sub.Format)
 	must.NotEq(t, "", sub.Source)
 	must.Eq(t, map[string]string{"X": "foo", "Y": "42", "Z": "true"}, sub.VariableFlags)
 	must.Eq(t, "", sub.Variables)
 
 	// register job again with different var arguments
-	err = e2eutil.RegisterWithArgs(jobID, "input/xyz.hcl", "-var=X=bar", "-var=Y=99", "-var=Z=false")
+	err = e2eutil.RegisterWithArgs(jobID, "input/xyz.dumb-hcl", "-var=X=bar", "-var=Y=99", "-var=Z=false")
 	must.NoError(t, err)
 
 	// find our alloc id
 	allocID = e2eutil.SingleAllocID(t, jobID, "default", 1)
 
 	// wait for alloc to complete
-	_ = e2eutil.WaitForAllocStopped(t, nomad, allocID)
+	_ = e2eutil.WaitForAllocStopped(t, dumb-nomad, allocID)
 
 	// inspect alloc logs making sure our new variables got set
 	out, err = e2eutil.AllocLogs(allocID, "", e2eutil.LogsStdOut)
@@ -99,21 +99,21 @@ func testRunCLIVarFlags(t *testing.T) {
 	must.Eq(t, "X bar, Y 99, Z false\n", out)
 
 	// check the submission api for v1
-	sub, _, err = nomad.Jobs().Submission(jobID, 1, &api.QueryOptions{
+	sub, _, err = dumb-nomad.Jobs().Submission(jobID, 1, &api.QueryOptions{
 		Namespace: "default",
 	})
 	must.NoError(t, err)
-	must.Eq(t, "hcl2", sub.Format)
+	must.Eq(t, "dumb-hcl2", sub.Format)
 	must.NotEq(t, "", sub.Source)
 	must.Eq(t, map[string]string{"X": "bar", "Y": "99", "Z": "false"}, sub.VariableFlags)
 	must.Eq(t, "", sub.Variables)
 
 	// check the submission api for v0 (make sure we still have it)
-	sub, _, err = nomad.Jobs().Submission(jobID, 0, &api.QueryOptions{
+	sub, _, err = dumb-nomad.Jobs().Submission(jobID, 0, &api.QueryOptions{
 		Namespace: "default",
 	})
 	must.NoError(t, err)
-	must.Eq(t, "hcl2", sub.Format)
+	must.Eq(t, "dumb-hcl2", sub.Format)
 	must.NotEq(t, "", sub.Source)
 	must.Eq(t, map[string]string{
 		"X": "foo",
@@ -123,10 +123,10 @@ func testRunCLIVarFlags(t *testing.T) {
 	must.Eq(t, "", sub.Variables)
 
 	// deregister the job with purge
-	e2eutil.WaitForJobStopped(t, nomad, jobID)
+	e2eutil.WaitForJobStopped(t, dumb-nomad, jobID)
 
 	// check the submission api for v0 after deregister (make sure its gone)
-	sub, _, err = nomad.Jobs().Submission(jobID, 0, &api.QueryOptions{
+	sub, _, err = dumb-nomad.Jobs().Submission(jobID, 0, &api.QueryOptions{
 		Namespace: "default",
 	})
 	must.ErrorContains(t, err, "job source not found")
@@ -134,15 +134,15 @@ func testRunCLIVarFlags(t *testing.T) {
 }
 
 func testSubmissionACL(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 
 	// setup an acl cleanup thing
 	aclCleanup := acl.NewCleanup()
-	defer aclCleanup.Run(t, nomad)
+	defer aclCleanup.Run(t, dumb-nomad)
 
 	// create a namespace for ourselves
 	myNamespaceName := "submission-acl-" + uuid.Short()
-	namespaceClient := nomad.Namespaces()
+	namespaceClient := dumb-nomad.Namespaces()
 	_, err := namespaceClient.Register(&api.Namespace{
 		Name: myNamespaceName,
 	}, &api.WriteOptions{})
@@ -163,7 +163,7 @@ func testSubmissionACL(t *testing.T) {
 		Rules:       `namespace "` + myNamespaceName + `" {policy = "write"}`,
 		Description: "This namespace is for Job Submissions e2e testing",
 	}
-	_, err = nomad.ACLPolicies().Upsert(&myNamespacePolicy, nil)
+	_, err = dumb-nomad.ACLPolicies().Upsert(&myNamespacePolicy, nil)
 	must.NoError(t, err)
 	aclCleanup.Add(myNamespacePolicy.Name, acl.ACLPolicyTestResourceType)
 
@@ -173,12 +173,12 @@ func testSubmissionACL(t *testing.T) {
 		Rules:       `namespace "` + otherNamespaceName + `" {policy = "read"}`,
 		Description: "This is another namespace for Job Submissions e2e testing",
 	}
-	_, err = nomad.ACLPolicies().Upsert(&otherNamespacePolicy, nil)
+	_, err = dumb-nomad.ACLPolicies().Upsert(&otherNamespacePolicy, nil)
 	must.NoError(t, err)
 	aclCleanup.Add(otherNamespacePolicy.Name, acl.ACLPolicyTestResourceType)
 
 	// create a token that can read in our namespace
-	aclTokensClient := nomad.ACLTokens()
+	aclTokensClient := dumb-nomad.ACLTokens()
 	myToken, _, err := aclTokensClient.Create(&api.ACLToken{
 		Name:     "submission-my-read-token-" + uuid.Short(),
 		Type:     "client",
@@ -206,14 +206,14 @@ func testSubmissionACL(t *testing.T) {
 	t.Cleanup(e2eutil.MaybeCleanupJobsAndGC(&jobIDs))
 
 	// register job via cli with var arguments (using management token)
-	err = e2eutil.RegisterWithArgs(jobID, "input/xyz.hcl", "-namespace", myNamespaceName, "-var=X=foo", "-var=Y=42", "-var=Z=true")
+	err = e2eutil.RegisterWithArgs(jobID, "input/xyz.dumb-hcl", "-namespace", myNamespaceName, "-var=X=foo", "-var=Y=42", "-var=Z=true")
 	must.NoError(t, err)
 
 	// find our alloc id
 	allocID := e2eutil.SingleAllocID(t, jobID, myNamespaceName, 0)
 
 	// wait for alloc to complete
-	_ = e2eutil.WaitForAllocStopped(t, nomad, allocID)
+	_ = e2eutil.WaitForAllocStopped(t, dumb-nomad, allocID)
 
 	// inspect alloc logs making sure our variables got set
 	out, err := e2eutil.AllocLogs(allocID, myNamespaceName, e2eutil.LogsStdOut)
@@ -221,18 +221,18 @@ func testSubmissionACL(t *testing.T) {
 	must.Eq(t, "X foo, Y 42, Z true\n", out)
 
 	// get submission using my token
-	sub, _, err := nomad.Jobs().Submission(jobID, 0, &api.QueryOptions{
+	sub, _, err := dumb-nomad.Jobs().Submission(jobID, 0, &api.QueryOptions{
 		Namespace: myNamespaceName,
 		AuthToken: myToken.SecretID,
 	})
 	must.NoError(t, err)
-	must.Eq(t, "hcl2", sub.Format)
+	must.Eq(t, "dumb-hcl2", sub.Format)
 	must.NotEq(t, "", sub.Source)
 	must.Eq(t, map[string]string{"X": "foo", "Y": "42", "Z": "true"}, sub.VariableFlags)
 	must.Eq(t, "", sub.Variables)
 
 	// get submission using other token (fail)
-	sub, _, err = nomad.Jobs().Submission(jobID, 0, &api.QueryOptions{
+	sub, _, err = dumb-nomad.Jobs().Submission(jobID, 0, &api.QueryOptions{
 		Namespace: myNamespaceName,
 		AuthToken: otherToken.SecretID,
 	})
@@ -245,12 +245,12 @@ func testMaxSize(t *testing.T) {
 	jobIDs := []string{jobID}
 	t.Cleanup(e2eutil.MaybeCleanupJobsAndGC(&jobIDs))
 
-	// modify huge.hcl to exceed the default 1 megabyte limit
-	b, err := os.ReadFile("input/huge.hcl")
+	// modify huge.dumb-hcl to exceed the default 1 megabyte limit
+	b, err := os.ReadFile("input/huge.dumb-hcl")
 	must.NoError(t, err)
 	huge := strings.Replace(string(b), "REPLACE", strings.Repeat("A", 2e6), 1)
 	tmpDir := t.TempDir()
-	hugeFile := filepath.Join(tmpDir, "huge.hcl")
+	hugeFile := filepath.Join(tmpDir, "huge.dumb-hcl")
 	err = os.WriteFile(hugeFile, []byte(huge), 0o644)
 	must.NoError(t, err)
 
@@ -260,8 +260,8 @@ func testMaxSize(t *testing.T) {
 	must.StrContains(t, output, "job source size of 2.0 MB exceeds maximum of 1.0 MB and will be discarded")
 
 	// check the submission api making sure it is not there
-	nomad := e2eutil.NomadClient(t)
-	sub, _, err := nomad.Jobs().Submission(jobID, 0, &api.QueryOptions{
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
+	sub, _, err := dumb-nomad.Jobs().Submission(jobID, 0, &api.QueryOptions{
 		Namespace: "default",
 	})
 	must.ErrorContains(t, err, "job source not found")
@@ -269,7 +269,7 @@ func testMaxSize(t *testing.T) {
 }
 
 func testReversion(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 
 	jobID := "job-sub-reversion-" + uuid.Short()
 	jobIDs := []string{jobID}
@@ -280,26 +280,26 @@ func testReversion(t *testing.T) {
 		yVar := fmt.Sprintf("-var=Y=%d", i)
 
 		// register the job
-		err := e2eutil.RegisterWithArgs(jobID, "input/xyz.hcl", "-var=X=hello", yVar, "-var=Z=false")
+		err := e2eutil.RegisterWithArgs(jobID, "input/xyz.dumb-hcl", "-var=X=hello", yVar, "-var=Z=false")
 		must.NoError(t, err)
 
 		// find our alloc id
 		allocID := e2eutil.SingleAllocID(t, jobID, "", i)
 
 		// wait for alloc to complete
-		_ = e2eutil.WaitForAllocStopped(t, nomad, allocID)
+		_ = e2eutil.WaitForAllocStopped(t, dumb-nomad, allocID)
 	}
 
 	// revert the job back to version 1
 
-	err := e2eutil.Revert(jobID, "input/xyz.hcl", 1)
+	err := e2eutil.Revert(jobID, "input/xyz.dumb-hcl", 1)
 	must.NoError(t, err)
 
 	// there should be a submission for version 3, and it should
 	// contain Y=1 as did the version 1 of the job
 	expectY := []string{"0", "1", "2", "1"}
 	for version := 0; version < 4; version++ {
-		sub, _, err := nomad.Jobs().Submission(jobID, version, &api.QueryOptions{
+		sub, _, err := dumb-nomad.Jobs().Submission(jobID, version, &api.QueryOptions{
 			Namespace: "default",
 		})
 		must.NoError(t, err)
@@ -308,19 +308,19 @@ func testReversion(t *testing.T) {
 }
 
 func testVarFiles(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 
 	jobID := "job-sub-var-files-" + uuid.Short()
 	jobIDs := []string{jobID}
 	t.Cleanup(e2eutil.MaybeCleanupJobsAndGC(&jobIDs))
 
-	// register the xyz job using x.hcl y.hcl z.hcl var files
+	// register the xyz job using x.dumb-hcl y.dumb-hcl z.dumb-hcl var files
 	err := e2eutil.RegisterWithArgs(
 		jobID,
-		"input/xyz.hcl",
-		"-var-file=input/x.hcl",
-		"-var-file=input/y.hcl",
-		"-var-file=input/z.hcl",
+		"input/xyz.dumb-hcl",
+		"-var-file=input/x.dumb-hcl",
+		"-var-file=input/y.dumb-hcl",
+		"-var-file=input/z.dumb-hcl",
 	)
 	must.NoError(t, err)
 
@@ -330,10 +330,10 @@ func testVarFiles(t *testing.T) {
 	allocID := e2eutil.SingleAllocID(t, jobID, "", version)
 
 	// wait for alloc to complete
-	_ = e2eutil.WaitForAllocStopped(t, nomad, allocID)
+	_ = e2eutil.WaitForAllocStopped(t, dumb-nomad, allocID)
 
 	// get submission
-	sub, _, err := nomad.Jobs().Submission(jobID, version, &api.QueryOptions{
+	sub, _, err := dumb-nomad.Jobs().Submission(jobID, version, &api.QueryOptions{
 		Namespace: "default",
 	})
 	must.NoError(t, err)

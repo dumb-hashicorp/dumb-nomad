@@ -7,8 +7,8 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/stretchr/testify/require"
 )
 
@@ -16,13 +16,13 @@ func TestHttpServerLoggerFilters_Level_Info(t *testing.T) {
 	ci.Parallel(t)
 
 	var buf bytes.Buffer
-	hclogger := hclog.New(&hclog.LoggerOptions{
+	dumb-hclogger := dumb-hclog.New(&dumb-hclog.LoggerOptions{
 		Name:   "testlog",
 		Output: &buf,
-		Level:  hclog.Info,
+		Level:  dumb-hclog.Info,
 	})
 
-	stdlogger := newHTTPServerLogger(hclogger)
+	stdlogger := newHTTPServerLogger(dumb-hclogger)
 
 	// spurious logging would be filtered out
 	stdlogger.Printf("spurious logging: %v", "arg")
@@ -38,13 +38,13 @@ func TestHttpServerLoggerFilters_Level_Trace(t *testing.T) {
 	ci.Parallel(t)
 
 	var buf bytes.Buffer
-	hclogger := hclog.New(&hclog.LoggerOptions{
+	dumb-hclogger := dumb-hclog.New(&dumb-hclog.LoggerOptions{
 		Name:   "testlog",
 		Output: &buf,
-		Level:  hclog.Trace,
+		Level:  dumb-hclog.Trace,
 	})
 
-	stdlogger := newHTTPServerLogger(hclogger)
+	stdlogger := newHTTPServerLogger(dumb-hclogger)
 
 	// spurious logging will be included as Trace level
 	stdlogger.Printf("spurious logging: %v", "arg")

@@ -9,7 +9,7 @@ package allocrunner
 import (
 	"fmt"
 
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 func (ar *allocRunner) SetTaskPauseState(string, structs.TaskScheduleState) error {

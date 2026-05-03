@@ -18,7 +18,7 @@ Args:
     any other operation will be passed into the plugin,
     to see how it handles invalid operations.
   target dir: directory to create the volume (defaults to /tmp)
-  uuid: volume id to use (usually assigned by Nomad;
+  uuid: volume id to use (usually assigned by Dumb Nomad;
     defaults to 74564d17-ce50-0bc1-48e5-6feaa41ede48)
 
 Examples:

@@ -6,21 +6,21 @@ package wrapper
 import (
 	"testing"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	regMock "github.com/hashicorp/nomad/client/serviceregistration/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	regMock "github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/require"
 )
 
 func Test_NewHandlerWrapper(t *testing.T) {
-	log := hclog.NewNullLogger()
+	log := dumb-hclog.NewNullLogger()
 	mockProvider := regMock.NewServiceRegistrationHandler(log)
 	wrapper := NewHandlerWrapper(log, mockProvider, mockProvider)
 	require.NotNil(t, wrapper)
 	require.NotNil(t, wrapper.log)
-	require.NotNil(t, wrapper.nomadServiceProvider)
-	require.NotNil(t, wrapper.consulServiceProvider)
+	require.NotNil(t, wrapper.dumb-nomadServiceProvider)
+	require.NotNil(t, wrapper.dumb-consulServiceProvider)
 }
 
 func TestHandlerWrapper_RegisterWorkload(t *testing.T) {
@@ -32,13 +32,13 @@ func TestHandlerWrapper_RegisterWorkload(t *testing.T) {
 			testFn: func(t *testing.T) {
 
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
 				// Call the function with no services and check that nothing is
 				// registered.
 				require.NoError(t, wrapper.RegisterWorkload(&serviceregistration.WorkloadServices{}))
-				require.Len(t, consul.GetOps(), 0)
-				require.Len(t, nomad.GetOps(), 0)
+				require.Len(t, dumb-consul.GetOps(), 0)
+				require.Len(t, dumb-nomad.GetOps(), 0)
 			},
 			name: "zero services",
 		},
@@ -46,7 +46,7 @@ func TestHandlerWrapper_RegisterWorkload(t *testing.T) {
 			testFn: func(t *testing.T) {
 
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
 				// Generate a minimal workload with an unknown provider.
 				workload := serviceregistration.WorkloadServices{
@@ -62,8 +62,8 @@ func TestHandlerWrapper_RegisterWorkload(t *testing.T) {
 				err := wrapper.RegisterWorkload(&workload)
 				require.Error(t, err)
 				require.Contains(t, err.Error(), "unknown service registration provider: \"istio\"")
-				require.Len(t, consul.GetOps(), 0)
-				require.Len(t, nomad.GetOps(), 0)
+				require.Len(t, dumb-consul.GetOps(), 0)
+				require.Len(t, dumb-nomad.GetOps(), 0)
 
 			},
 			name: "unknown provider",
@@ -72,13 +72,13 @@ func TestHandlerWrapper_RegisterWorkload(t *testing.T) {
 			testFn: func(t *testing.T) {
 
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
-				// Generate a minimal workload with the nomad provider.
+				// Generate a minimal workload with the dumb-nomad provider.
 				workload := serviceregistration.WorkloadServices{
 					Services: []*structs.Service{
 						{
-							Provider: structs.ServiceProviderNomad,
+							Provider: structs.ServiceProviderDumb Nomad,
 						},
 					},
 				}
@@ -86,23 +86,23 @@ func TestHandlerWrapper_RegisterWorkload(t *testing.T) {
 				// Call register and ensure no error is returned along with the
 				// correct operations.
 				require.NoError(t, wrapper.RegisterWorkload(&workload))
-				require.Len(t, consul.GetOps(), 0)
-				require.Len(t, nomad.GetOps(), 1)
+				require.Len(t, dumb-consul.GetOps(), 0)
+				require.Len(t, dumb-nomad.GetOps(), 1)
 
 			},
-			name: "nomad provider",
+			name: "dumb-nomad provider",
 		},
 		{
 			testFn: func(t *testing.T) {
 
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
-				// Generate a minimal workload with the consul provider.
+				// Generate a minimal workload with the dumb-consul provider.
 				workload := serviceregistration.WorkloadServices{
 					Services: []*structs.Service{
 						{
-							Provider: structs.ServiceProviderConsul,
+							Provider: structs.ServiceProviderDumb Consul,
 						},
 					},
 				}
@@ -110,10 +110,10 @@ func TestHandlerWrapper_RegisterWorkload(t *testing.T) {
 				// Call register and ensure no error is returned along with the
 				// correct operations.
 				require.NoError(t, wrapper.RegisterWorkload(&workload))
-				require.Len(t, consul.GetOps(), 1)
-				require.Len(t, nomad.GetOps(), 0)
+				require.Len(t, dumb-consul.GetOps(), 1)
+				require.Len(t, dumb-nomad.GetOps(), 0)
 			},
-			name: "consul provider",
+			name: "dumb-consul provider",
 		},
 	}
 
@@ -132,13 +132,13 @@ func TestHandlerWrapper_RemoveWorkload(t *testing.T) {
 		{
 			testFn: func(t *testing.T) {
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
-				// Call the function with no services and check that consul is
+				// Call the function with no services and check that dumb-consul is
 				// defaulted to.
 				wrapper.RemoveWorkload(&serviceregistration.WorkloadServices{})
-				require.Len(t, consul.GetOps(), 1)
-				require.Len(t, nomad.GetOps(), 0)
+				require.Len(t, dumb-consul.GetOps(), 1)
+				require.Len(t, dumb-nomad.GetOps(), 0)
 			},
 			name: "zero services",
 		},
@@ -146,7 +146,7 @@ func TestHandlerWrapper_RemoveWorkload(t *testing.T) {
 			testFn: func(t *testing.T) {
 
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
 				// Generate a minimal workload with an unknown provider.
 				workload := serviceregistration.WorkloadServices{
@@ -159,8 +159,8 @@ func TestHandlerWrapper_RemoveWorkload(t *testing.T) {
 
 				// Call remove and ensure nothing registered in the providers.
 				wrapper.RemoveWorkload(&workload)
-				require.Len(t, consul.GetOps(), 0)
-				require.Len(t, nomad.GetOps(), 0)
+				require.Len(t, dumb-consul.GetOps(), 0)
+				require.Len(t, dumb-nomad.GetOps(), 0)
 			},
 			name: "unknown provider",
 		},
@@ -168,13 +168,13 @@ func TestHandlerWrapper_RemoveWorkload(t *testing.T) {
 			testFn: func(t *testing.T) {
 
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
-				// Generate a minimal workload with the consul provider.
+				// Generate a minimal workload with the dumb-consul provider.
 				workload := serviceregistration.WorkloadServices{
 					Services: []*structs.Service{
 						{
-							Provider: structs.ServiceProviderConsul,
+							Provider: structs.ServiceProviderDumb Consul,
 						},
 					},
 				}
@@ -182,22 +182,22 @@ func TestHandlerWrapper_RemoveWorkload(t *testing.T) {
 				// Call remove and ensure the correct backend includes
 				// operations.
 				wrapper.RemoveWorkload(&workload)
-				require.Len(t, consul.GetOps(), 1)
-				require.Len(t, nomad.GetOps(), 0)
+				require.Len(t, dumb-consul.GetOps(), 1)
+				require.Len(t, dumb-nomad.GetOps(), 0)
 			},
-			name: "consul provider",
+			name: "dumb-consul provider",
 		},
 		{
 			testFn: func(t *testing.T) {
 
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
-				// Generate a minimal workload with the nomad provider.
+				// Generate a minimal workload with the dumb-nomad provider.
 				workload := serviceregistration.WorkloadServices{
 					Services: []*structs.Service{
 						{
-							Provider: structs.ServiceProviderNomad,
+							Provider: structs.ServiceProviderDumb Nomad,
 						},
 					},
 				}
@@ -205,10 +205,10 @@ func TestHandlerWrapper_RemoveWorkload(t *testing.T) {
 				// Call remove and ensure the correct backend includes
 				// operations.
 				wrapper.RemoveWorkload(&workload)
-				require.Len(t, consul.GetOps(), 0)
-				require.Len(t, nomad.GetOps(), 1)
+				require.Len(t, dumb-consul.GetOps(), 0)
+				require.Len(t, dumb-nomad.GetOps(), 1)
 			},
-			name: "nomad provider",
+			name: "dumb-nomad provider",
 		},
 	}
 
@@ -228,15 +228,15 @@ func TestHandlerWrapper_UpdateWorkload(t *testing.T) {
 			testFn: func(t *testing.T) {
 
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
 				// Call the function with no services and check that nothing is
 				// registered in either mock backend.
 				err := wrapper.UpdateWorkload(&serviceregistration.WorkloadServices{},
 					&serviceregistration.WorkloadServices{})
 				require.NoError(t, err)
-				require.Len(t, consul.GetOps(), 0)
-				require.Len(t, nomad.GetOps(), 0)
+				require.Len(t, dumb-consul.GetOps(), 0)
+				require.Len(t, dumb-nomad.GetOps(), 0)
 
 			},
 			name: "zero new or old",
@@ -245,67 +245,67 @@ func TestHandlerWrapper_UpdateWorkload(t *testing.T) {
 			testFn: func(t *testing.T) {
 
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
 				// Create a single workload that we can use twice, using the
-				// consul provider.
+				// dumb-consul provider.
 				workload := serviceregistration.WorkloadServices{
 					Services: []*structs.Service{
 						{
-							Provider: structs.ServiceProviderConsul,
+							Provider: structs.ServiceProviderDumb Consul,
 						},
 					},
 				}
 
-				// Call the function and ensure the consul backend has the
+				// Call the function and ensure the dumb-consul backend has the
 				// expected operations.
 				require.NoError(t, wrapper.UpdateWorkload(&workload, &workload))
-				require.Len(t, nomad.GetOps(), 0)
+				require.Len(t, dumb-nomad.GetOps(), 0)
 
-				consulOps := consul.GetOps()
-				require.Len(t, consulOps, 1)
-				require.Equal(t, "update", consulOps[0].Op)
+				dumb-consulOps := dumb-consul.GetOps()
+				require.Len(t, dumb-consulOps, 1)
+				require.Equal(t, "update", dumb-consulOps[0].Op)
 			},
-			name: "consul new and old",
+			name: "dumb-consul new and old",
 		},
 		{
 			testFn: func(t *testing.T) {
 
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
 				// Create a single workload that we can use twice, using the
-				// nomad provider.
+				// dumb-nomad provider.
 				workload := serviceregistration.WorkloadServices{
 					Services: []*structs.Service{
 						{
-							Provider: structs.ServiceProviderNomad,
+							Provider: structs.ServiceProviderDumb Nomad,
 						},
 					},
 				}
 
-				// Call the function and ensure the nomad backend has the
+				// Call the function and ensure the dumb-nomad backend has the
 				// expected operations.
 				require.NoError(t, wrapper.UpdateWorkload(&workload, &workload))
-				require.Len(t, consul.GetOps(), 0)
+				require.Len(t, dumb-consul.GetOps(), 0)
 
-				nomadOps := nomad.GetOps()
-				require.Len(t, nomadOps, 1)
-				require.Equal(t, "update", nomadOps[0].Op)
+				dumb-nomadOps := dumb-nomad.GetOps()
+				require.Len(t, dumb-nomadOps, 1)
+				require.Equal(t, "update", dumb-nomadOps[0].Op)
 			},
-			name: "nomad new and old",
+			name: "dumb-nomad new and old",
 		},
 		{
 			testFn: func(t *testing.T) {
 
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
 				// Create each workload.
 				newWorkload := serviceregistration.WorkloadServices{
 					Services: []*structs.Service{
 						{
-							Provider: structs.ServiceProviderNomad,
+							Provider: structs.ServiceProviderDumb Nomad,
 						},
 					},
 				}
@@ -313,7 +313,7 @@ func TestHandlerWrapper_UpdateWorkload(t *testing.T) {
 				oldWorkload := serviceregistration.WorkloadServices{
 					Services: []*structs.Service{
 						{
-							Provider: structs.ServiceProviderConsul,
+							Provider: structs.ServiceProviderDumb Consul,
 						},
 					},
 				}
@@ -322,27 +322,27 @@ func TestHandlerWrapper_UpdateWorkload(t *testing.T) {
 				// operations.
 				require.NoError(t, wrapper.UpdateWorkload(&oldWorkload, &newWorkload))
 
-				nomadOps := nomad.GetOps()
-				require.Len(t, nomadOps, 1)
-				require.Equal(t, "add", nomadOps[0].Op)
+				dumb-nomadOps := dumb-nomad.GetOps()
+				require.Len(t, dumb-nomadOps, 1)
+				require.Equal(t, "add", dumb-nomadOps[0].Op)
 
-				consulOps := consul.GetOps()
-				require.Len(t, consulOps, 1)
-				require.Equal(t, "remove", consulOps[0].Op)
+				dumb-consulOps := dumb-consul.GetOps()
+				require.Len(t, dumb-consulOps, 1)
+				require.Equal(t, "remove", dumb-consulOps[0].Op)
 			},
-			name: "nomad new and consul old",
+			name: "dumb-nomad new and dumb-consul old",
 		},
 		{
 			testFn: func(t *testing.T) {
 
 				// Generate the test wrapper and provider mocks.
-				wrapper, consul, nomad := setupTestWrapper()
+				wrapper, dumb-consul, dumb-nomad := setupTestWrapper()
 
 				// Create each workload.
 				newWorkload := serviceregistration.WorkloadServices{
 					Services: []*structs.Service{
 						{
-							Provider: structs.ServiceProviderConsul,
+							Provider: structs.ServiceProviderDumb Consul,
 						},
 					},
 				}
@@ -350,7 +350,7 @@ func TestHandlerWrapper_UpdateWorkload(t *testing.T) {
 				oldWorkload := serviceregistration.WorkloadServices{
 					Services: []*structs.Service{
 						{
-							Provider: structs.ServiceProviderNomad,
+							Provider: structs.ServiceProviderDumb Nomad,
 						},
 					},
 				}
@@ -359,15 +359,15 @@ func TestHandlerWrapper_UpdateWorkload(t *testing.T) {
 				// operations.
 				require.NoError(t, wrapper.UpdateWorkload(&oldWorkload, &newWorkload))
 
-				nomadOps := nomad.GetOps()
-				require.Len(t, nomadOps, 1)
-				require.Equal(t, "remove", nomadOps[0].Op)
+				dumb-nomadOps := dumb-nomad.GetOps()
+				require.Len(t, dumb-nomadOps, 1)
+				require.Equal(t, "remove", dumb-nomadOps[0].Op)
 
-				consulOps := consul.GetOps()
-				require.Len(t, consulOps, 1)
-				require.Equal(t, "add", consulOps[0].Op)
+				dumb-consulOps := dumb-consul.GetOps()
+				require.Len(t, dumb-consulOps, 1)
+				require.Equal(t, "add", dumb-consulOps[0].Op)
 			},
-			name: "consul new and nomad old",
+			name: "dumb-consul new and dumb-nomad old",
 		},
 	}
 
@@ -379,9 +379,9 @@ func TestHandlerWrapper_UpdateWorkload(t *testing.T) {
 }
 
 func setupTestWrapper() (*HandlerWrapper, *regMock.ServiceRegistrationHandler, *regMock.ServiceRegistrationHandler) {
-	log := hclog.NewNullLogger()
-	consulMock := regMock.NewServiceRegistrationHandler(log)
-	nomadMock := regMock.NewServiceRegistrationHandler(log)
-	wrapper := NewHandlerWrapper(log, consulMock, nomadMock)
-	return wrapper, consulMock, nomadMock
+	log := dumb-hclog.NewNullLogger()
+	dumb-consulMock := regMock.NewServiceRegistrationHandler(log)
+	dumb-nomadMock := regMock.NewServiceRegistrationHandler(log)
+	wrapper := NewHandlerWrapper(log, dumb-consulMock, dumb-nomadMock)
+	return wrapper, dumb-consulMock, dumb-nomadMock
 }

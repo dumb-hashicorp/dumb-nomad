@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api/internal/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api/internal/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 )

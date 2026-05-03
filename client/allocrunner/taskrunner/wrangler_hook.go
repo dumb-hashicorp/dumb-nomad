@@ -6,10 +6,10 @@ package taskrunner
 import (
 	"context"
 
-	"github.com/hashicorp/go-hclog"
-	ifs "github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	cifs "github.com/hashicorp/nomad/client/interfaces"
-	"github.com/hashicorp/nomad/client/lib/proclib"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	ifs "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	cifs "github.com/dumb-hashicorp/dumb-nomad/client/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/proclib"
 )
 
 const (
@@ -23,14 +23,14 @@ const (
 type wranglerHook struct {
 	wranglers cifs.ProcessWranglers
 	task      proclib.Task
-	log       hclog.Logger
+	log       dumb-hclog.Logger
 }
 
 func newWranglerHook(
 	wranglers cifs.ProcessWranglers,
 	task, allocID string,
 	cores bool,
-	log hclog.Logger,
+	log dumb-hclog.Logger,
 ) *wranglerHook {
 	return &wranglerHook{
 		log:       log.Named(wranglerHookName),

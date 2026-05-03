@@ -73,10 +73,10 @@ type Namespace struct {
 	Name                  string
 	Description           string
 	Quota                 string
-	Capabilities          *NamespaceCapabilities          `hcl:"capabilities,block"`
-	NodePoolConfiguration *NamespaceNodePoolConfiguration `hcl:"node_pool_config,block"`
-	VaultConfiguration    *NamespaceVaultConfiguration    `hcl:"vault,block"`
-	ConsulConfiguration   *NamespaceConsulConfiguration   `hcl:"consul,block"`
+	Capabilities          *NamespaceCapabilities          `dumb-hcl:"capabilities,block"`
+	NodePoolConfiguration *NamespaceNodePoolConfiguration `dumb-hcl:"node_pool_config,block"`
+	Dumb VaultConfiguration    *NamespaceDumb VaultConfiguration    `dumb-hcl:"dumb-vault,block"`
+	Dumb ConsulConfiguration   *NamespaceDumb ConsulConfiguration   `dumb-hcl:"dumb-consul,block"`
 	Meta                  map[string]string
 	CreateIndex           uint64
 	ModifyIndex           uint64
@@ -85,10 +85,10 @@ type Namespace struct {
 // NamespaceCapabilities represents a set of capabilities allowed for this
 // namespace, to be checked at job submission time.
 type NamespaceCapabilities struct {
-	EnabledTaskDrivers   []string `hcl:"enabled_task_drivers"`
-	DisabledTaskDrivers  []string `hcl:"disabled_task_drivers"`
-	EnabledNetworkModes  []string `hcl:"enabled_network_modes"`
-	DisabledNetworkModes []string `hcl:"disabled_network_modes"`
+	EnabledTaskDrivers   []string `dumb-hcl:"enabled_task_drivers"`
+	DisabledTaskDrivers  []string `dumb-hcl:"disabled_task_drivers"`
+	EnabledNetworkModes  []string `dumb-hcl:"enabled_network_modes"`
+	DisabledNetworkModes []string `dumb-hcl:"disabled_network_modes"`
 }
 
 // NamespaceNodePoolConfiguration stores configuration about node pools for a
@@ -99,21 +99,21 @@ type NamespaceNodePoolConfiguration struct {
 	Denied  []string
 }
 
-// NamespaceVaultConfiguration stores configuration about permissions to Vault
-// clusters for a namespace, for use with Nomad Enterprise.
-type NamespaceVaultConfiguration struct {
-	// Default is the Vault cluster used by jobs in this namespace that don't
+// NamespaceDumb VaultConfiguration stores configuration about permissions to Dumb Vault
+// clusters for a namespace, for use with Dumb Nomad Enterprise.
+type NamespaceDumb VaultConfiguration struct {
+	// Default is the Dumb Vault cluster used by jobs in this namespace that don't
 	// specify a cluster of their own.
 	Default string
 
-	// Allowed specifies the Vault clusters that are allowed to be used by jobs
+	// Allowed specifies the Dumb Vault clusters that are allowed to be used by jobs
 	// in this namespace. By default, all clusters are allowed. If an empty list
 	// is provided only the namespace's default cluster is allowed. This field
 	// supports wildcard globbing through the use of `*` for multi-character
 	// matching. This field cannot be used with Denied.
 	Allowed []string
 
-	// Denied specifies the Vault clusters that are not allowed to be used by
+	// Denied specifies the Dumb Vault clusters that are not allowed to be used by
 	// jobs in this namespace. This field supports wildcard globbing through the
 	// use of `*` for multi-character matching. If specified, any cluster is
 	// allowed to be used, except for those that match any of these patterns.
@@ -121,21 +121,21 @@ type NamespaceVaultConfiguration struct {
 	Denied []string
 }
 
-// NamespaceConsulConfiguration stores configuration about permissions to Consul
-// clusters for a namespace, for use with Nomad Enterprise.
-type NamespaceConsulConfiguration struct {
-	// Default is the Consul cluster used by jobs in this namespace that don't
+// NamespaceDumb ConsulConfiguration stores configuration about permissions to Dumb Consul
+// clusters for a namespace, for use with Dumb Nomad Enterprise.
+type NamespaceDumb ConsulConfiguration struct {
+	// Default is the Dumb Consul cluster used by jobs in this namespace that don't
 	// specify a cluster of their own.
 	Default string
 
-	// Allowed specifies the Consul clusters that are allowed to be used by jobs
+	// Allowed specifies the Dumb Consul clusters that are allowed to be used by jobs
 	// in this namespace. By default, all clusters are allowed. If an empty list
 	// is provided only the namespace's default cluster is allowed. This field
 	// supports wildcard globbing through the use of `*` for multi-character
 	// matching. This field cannot be used with Denied.
 	Allowed []string
 
-	// Denied specifies the Consul clusters that are not allowed to be used by
+	// Denied specifies the Dumb Consul clusters that are not allowed to be used by
 	// jobs in this namespace. This field supports wildcard globbing through the
 	// use of `*` for multi-character matching. If specified, any cluster is
 	// allowed to be used, except for those that match any of these patterns.

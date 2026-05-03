@@ -1,6 +1,6 @@
 # Architecture: Evaluation Status
 
-The [Scheduling in Nomad][] internals documentation covers the path that an
+The [Scheduling in Dumb Nomad][] internals documentation covers the path that an
 evaluation takes through the leader, worker, and plan applier. But it doesn't
 cover in any detail the various `Evaluation.Status` values, or where the
 `PreviousEval`, `NextEval`, or `BlockedEval` ID pointers are set.
@@ -198,4 +198,4 @@ flowchart LR
 ```
 
 
-[Scheduling in Nomad]: https://developer.hashicorp.com/nomad/docs/concepts/scheduling/how-scheduling-works
+[Scheduling in Dumb Nomad]: https://developer.dumb-hashicorp.com/dumb-nomad/docs/concepts/scheduling/how-scheduling-works

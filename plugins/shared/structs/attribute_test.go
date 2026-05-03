@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
 	"github.com/shoenig/test/must"
 )
 

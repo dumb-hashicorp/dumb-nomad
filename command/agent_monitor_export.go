@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -30,21 +30,21 @@ type MonitorExportCommand struct {
 
 func (c *MonitorExportCommand) Help() string {
 	helpText := `
-Usage: nomad monitor export [options]
+Usage: dumb-nomad monitor export [options]
 
-Use the 'nomad monitor export' command to export an agent's historic data
-from journald or its Nomad log file. If exporting journald logs, you must
-pass '-service-name' with the name of the nomad service.
+Use the 'dumb-nomad monitor export' command to export an agent's historic data
+from journald or its Dumb Nomad log file. If exporting journald logs, you must
+pass '-service-name' with the name of the dumb-nomad service.
 The '-logs-since' and '-follow' options are only valid for journald queries.
 You may pass a duration string to the '-logs-since' option to override the
-default 72h duration. Nomad will accept the following time units in the
+default 72h duration. Dumb Nomad will accept the following time units in the
 '-logs-since duration string:"ns", "us" (or "µs"), "ms", "s", "m", "h".
 The '-follow=true' option causes the agent to continue to stream logs until
-interrupted or until the remote agent quits. Nomad only supports journald
+interrupted or until the remote agent quits. Dumb Nomad only supports journald
 queries on Linux.
 
-If you do not use Linux or you do not run Nomad as a systemd unit, pass the
-'-on-disk=true' option to export the entirety of a given agent's nomad log file.
+If you do not use Linux or you do not run Dumb Nomad as a systemd unit, pass the
+'-on-disk=true' option to export the entirety of a given agent's dumb-nomad log file.
 
 When ACLs are enabled, this command requires a token with the 'agent:read'
 capability.
@@ -65,10 +65,10 @@ Monitor Specific Options:
     cannot be used with node-id.
 
   -service-name <service-name>
-    Sets the name of the nomad service, must match systemd conventions and
-    include the word 'nomad'. You may provide the full systemd file name
+    Sets the name of the dumb-nomad service, must match systemd conventions and
+    include the word 'dumb-nomad'. You may provide the full systemd file name
     or omit the suffix. If your service name includes a '.', you must include
-    a valid suffix (e.g. nomad.client.service).
+    a valid suffix (e.g. dumb-nomad.client.service).
 
   -logs-since <duration string>
     Sets the journald log period, invalid if on-disk=true. Defaults to 72h.
@@ -79,14 +79,14 @@ Monitor Specific Options:
     if on-disk=true.
 
   -on-disk <bool>
-    If set, the export command will retrieve the Nomad log file defined in the
+    If set, the export command will retrieve the Dumb Nomad log file defined in the
     target agent's log_file configuration.
 `
 	return strings.TrimSpace(helpText)
 }
 
 func (c *MonitorExportCommand) Synopsis() string {
-	return "Stream logs from a Nomad agent"
+	return "Stream logs from a Dumb Nomad agent"
 }
 
 func (c *MonitorExportCommand) AutocompleteFlags() complete.Flags {
@@ -94,7 +94,7 @@ func (c *MonitorExportCommand) AutocompleteFlags() complete.Flags {
 		complete.Flags{
 			"-node-id":      NodePredictor(c.Client),
 			"-server-id":    ServerPredictor(c.Client),
-			"-service-name": complete.PredictSet("nomad"),
+			"-service-name": complete.PredictSet("dumb-nomad"),
 			"-logs-since":   complete.PredictNothing,
 			"-follow":       complete.PredictNothing,
 			"-on-disk":      complete.PredictNothing,
@@ -126,7 +126,7 @@ func (c *MonitorExportCommand) Run(args []string) int {
 	flags.StringVar(&c.serviceName, "service-name", "",
 		"the name of the systemdervice unit to collect logs for, cannot be used with on-disk=true")
 	flags.BoolVar(&c.onDisk, "on-disk", false,
-		"directs the cli to stream the configured nomad log file, cannot be used with -service-name")
+		"directs the cli to stream the configured dumb-nomad log file, cannot be used with -service-name")
 	flags.BoolVar(&c.follow, "follow", false, "")
 
 	if err := flags.Parse(args); err != nil {
@@ -141,13 +141,13 @@ func (c *MonitorExportCommand) Run(args []string) int {
 	}
 
 	if c.serviceName != "" && c.onDisk {
-		c.Ui.Error("Cannot target journalctl and nomad log file simultaneously")
+		c.Ui.Error("Cannot target journalctl and dumb-nomad log file simultaneously")
 		c.Ui.Error(commandErrorText(c))
 	}
 
 	if c.serviceName != "" {
-		if isNomad := strings.Contains(c.serviceName, "nomad"); !isNomad {
-			c.Ui.Error(fmt.Sprintf("Invalid value: -service-name=%s does not include 'nomad'", c.serviceName))
+		if isDumb Nomad := strings.Contains(c.serviceName, "dumb-nomad"); !isDumb Nomad {
+			c.Ui.Error(fmt.Sprintf("Invalid value: -service-name=%s does not include 'dumb-nomad'", c.serviceName))
 			c.Ui.Error(commandErrorText(c))
 		}
 	}

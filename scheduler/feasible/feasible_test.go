@@ -8,14 +8,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/state"
-	"github.com/hashicorp/nomad/nomad/structs"
-	psstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/state"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	psstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
@@ -615,7 +615,7 @@ func TestHostVolumeChecker_Sticky(t *testing.T) {
 				NodePreemptions: make(map[string][]*structs.Allocation),
 			}
 
-			logger := testlog.HCLogger(t)
+			logger := testlog.DUMB_HCLogger(t)
 			ctx := NewEvalContext(nil, store, plan, logger)
 			checker := NewHostVolumeChecker(ctx)
 			plan.NodeAllocation[nodes[0].ID] = []*structs.Allocation{goodAlloc}
@@ -1074,7 +1074,7 @@ func TestNetworkChecker(t *testing.T) {
 				},
 			}
 		}
-		n.Attributes["nomad.version"] = "0.12.0" // mock version is 0.5.0
+		n.Attributes["dumb-nomad.version"] = "0.12.0" // mock version is 0.5.0
 		n.Meta["public_network"] = "public"
 		n.Meta["private_network"] = "private"
 		n.Meta["wrong_network"] = "empty"
@@ -1208,7 +1208,7 @@ func TestNetworkChecker_bridge_upgrade_path(t *testing.T) {
 		// Create a client that is still on v0.11, which does not have the bridge
 		// network finger-printer (and thus no bridge network resource)
 		oldClient := mock.Node()
-		oldClient.Attributes["nomad.version"] = "0.11.0"
+		oldClient.Attributes["dumb-nomad.version"] = "0.11.0"
 
 		checker := NewNetworkChecker(ctx)
 		checker.SetNetwork(&structs.NetworkResource{Mode: "bridge"})
@@ -1221,7 +1221,7 @@ func TestNetworkChecker_bridge_upgrade_path(t *testing.T) {
 		// Create a client that is updated to 0.12, but did not detect a bridge
 		// network resource.
 		oldClient := mock.Node()
-		oldClient.Attributes["nomad.version"] = "0.12.0"
+		oldClient.Attributes["dumb-nomad.version"] = "0.12.0"
 
 		checker := NewNetworkChecker(ctx)
 		checker.SetNetwork(&structs.NetworkResource{Mode: "bridge"})

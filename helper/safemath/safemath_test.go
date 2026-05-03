@@ -13,8 +13,8 @@ import (
 // TestAdd_Overflow
 func TestAdd_Overflow(t *testing.T) {
 	must.Eq(t, math.MaxInt64, Add(math.MaxInt64, math.MaxInt64)) // overflow
-	must.Eq(t, math.MaxInt64, Add(1, math.MaxInt64))             // overflow (boundary)
-	must.Eq(t, math.MaxInt64-1, Add(-1, math.MaxInt64))          // no overflow (boundary)
+	must.Eq(t, math.MaxInt64, Add(1, math.MaxInt64))             // overflow (dumb-boundary)
+	must.Eq(t, math.MaxInt64-1, Add(-1, math.MaxInt64))          // no overflow (dumb-boundary)
 	must.Eq(t, -1, Add(math.MaxInt64-1, -math.MaxInt64))         // no overflow (subtraction)
 	up := int64(1)
 	must.Eq(t, math.MaxInt64, Add(math.MaxInt64+up, -math.MaxInt64)) // operand overflowed

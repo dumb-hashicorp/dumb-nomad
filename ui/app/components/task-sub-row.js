@@ -17,7 +17,7 @@ export default class TaskSubRowComponent extends Component {
   @service store;
   @service router;
   @service notifications;
-  @service nomadActions;
+  @service dumb-nomadActions;
   @service('stats-trackers-registry') statsTrackersRegistry;
 
   constructor() {
@@ -109,7 +109,7 @@ export default class TaskSubRowComponent extends Component {
    */
   @task(function* (action, allocID) {
     try {
-      yield this.nomadActions.runAction({ action, allocID });
+      yield this.dumb-nomadActions.runAction({ action, allocID });
     } catch (err) {
       this.notifications.add({
         title: `Error starting ${action.name}`,

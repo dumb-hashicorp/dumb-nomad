@@ -25,12 +25,12 @@
         {{#if (eq this.instance.state "running")}}
           <Hds::Button @text="Stop" @color="critical" @size="medium" {{on "click" this.stop}} />
         {{/if}}
-        {{#if (get (filter-by 'state' 'running' (filter-by 'peerID' this.instance.peerID this.nomadActions.actionsQueue)) 'length')}}
+        {{#if (get (filter-by 'state' 'running' (filter-by 'peerID' this.instance.peerID this.dumb-nomadActions.actionsQueue)) 'length')}}
           <Hds::Button @text="Stop All" @color="critical" @size="medium" {{on "click" this.stopAll}} />
         {{else}}
           <Hds::Button @text="Clear"
             @color="secondary"
-            {{on "click" (action this.nomadActions.clearActionInstance this.instance)}}
+            {{on "click" (action this.dumb-nomadActions.clearActionInstance this.instance)}}
           />
         {{/if}}
       {{else}}
@@ -44,7 +44,7 @@
         {{else}}
           <Hds::Button @text="Clear"
             @color="secondary"
-            {{on "click" (action this.nomadActions.clearActionInstance this.instance)}}
+            {{on "click" (action this.dumb-nomadActions.clearActionInstance this.instance)}}
           />
         {{/if}}
       {{/if}}
@@ -53,7 +53,7 @@
 
   {{#if this.instance.peerID}}
   <Hds::ButtonSet class="peers">
-    {{#each (filter-by 'peerID' this.instance.peerID this.nomadActions.actionsQueue) as |peer|}}
+    {{#each (filter-by 'peerID' this.instance.peerID this.dumb-nomadActions.actionsQueue) as |peer|}}
     <Hds::Button
       class="peer"
       @icon={{if (eq peer.state "running") "loading" null}}

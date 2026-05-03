@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 	"github.com/ryanuber/columnize"
 )
@@ -23,7 +23,7 @@ type EvalStatusCommand struct {
 
 func (c *EvalStatusCommand) Help() string {
 	helpText := `
-Usage: nomad eval status [options] <evaluation>
+Usage: dumb-nomad eval status [options] <evaluation>
 
   Display information about evaluations. This command can be used to inspect the
   current status of an evaluation as well as determine the reason an evaluation

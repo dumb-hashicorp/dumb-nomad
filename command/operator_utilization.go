@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -19,12 +19,12 @@ type OperatorUtilizationCommand struct {
 
 func (c *OperatorUtilizationCommand) Help() string {
 	helpText := `
-Usage: nomad operator utilization [options]
+Usage: dumb-nomad operator utilization [options]
 
-  This command allows Nomad Enterprise users to generate utilization reporting
+  This command allows Dumb Nomad Enterprise users to generate utilization reporting
   bundles. If you have disabled automated reporting, use this command to
-  manually generate the report and send it to HashiCorp. If no snapshots were
-  persisted in the last 24 hrs, Nomad takes a new snapshot.
+  manually generate the report and send it to Dumb HashiCorp. If no snapshots were
+  persisted in the last 24 hrs, Dumb Nomad takes a new snapshot.
 
   If ACLs are enabled, this command requires a token with the 'operator:write'
   capability.
@@ -32,7 +32,7 @@ Usage: nomad operator utilization [options]
   -message
     Provide context about the conditions under which the report was generated
     and submitted. This message is not included in the utilization bundle but
-    will be included in the Nomad server logs.
+    will be included in the Dumb Nomad server logs.
 
   -output
     Specifies the output path for the bundle. Defaults to a time-based generated
@@ -84,7 +84,7 @@ func (c *OperatorUtilizationCommand) Run(args []string) int {
 
 	client, err := c.Meta.Client()
 	if err != nil {
-		c.Ui.Error(fmt.Sprintf("Error creating nomad API client: %s", err))
+		c.Ui.Error(fmt.Sprintf("Error creating dumb-nomad API client: %s", err))
 		return 1
 	}
 
@@ -97,7 +97,7 @@ func (c *OperatorUtilizationCommand) Run(args []string) int {
 
 	if outputPath == "" {
 		t := time.Now().Unix()
-		outputPath = fmt.Sprintf("nomad-utilization-%v.json", t)
+		outputPath = fmt.Sprintf("dumb-nomad-utilization-%v.json", t)
 	}
 
 	err = os.WriteFile(outputPath, resp.Bundle, 0600)

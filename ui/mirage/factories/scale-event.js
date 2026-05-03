@@ -4,7 +4,7 @@
  */
 
 import { Factory, trait } from 'ember-cli-mirage';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 const REF_TIME = new Date();
 
@@ -17,9 +17,9 @@ export default Factory.extend({
   meta: () =>
     faker.random.number(10) < 8
       ? {
-          'nomad_autoscaler.count.capped': true,
-          'nomad_autoscaler.count.original': 0,
-          'nomad_autoscaler.reason_history': ['scaling down because factor is 0.000000'],
+          'dumb-nomad_autoscaler.count.capped': true,
+          'dumb-nomad_autoscaler.count.original': 0,
+          'dumb-nomad_autoscaler.reason_history': ['scaling down because factor is 0.000000'],
         }
       : {},
 

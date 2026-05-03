@@ -5,8 +5,8 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "nomad-ui/*": ["app/*"],
-      "nomad-ui/tests/*": ["tests/*"]
+      "dumb-nomad-ui/*": ["app/*"],
+      "dumb-nomad-ui/tests/*": ["tests/*"]
     }
   },
   "include": [

@@ -6,12 +6,12 @@ package executor
 import (
 	"net"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
 )
 
-// ExecutorConfig is the config that Nomad passes to the executor
+// ExecutorConfig is the config that Dumb Nomad passes to the executor
 type ExecutorConfig struct {
 
 	// LogFile is the file to which Executor logs
@@ -28,7 +28,7 @@ type ExecutorConfig struct {
 	Compute cpustats.Compute
 }
 
-func GetPluginMap(logger hclog.Logger, fsIsolation bool, compute cpustats.Compute) map[string]plugin.Plugin {
+func GetPluginMap(logger dumb-hclog.Logger, fsIsolation bool, compute cpustats.Compute) map[string]plugin.Plugin {
 	return map[string]plugin.Plugin{
 		"executor": &ExecutorPlugin{
 			logger:      logger,

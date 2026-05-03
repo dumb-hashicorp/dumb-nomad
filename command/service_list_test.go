@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -54,10 +54,10 @@ func TestServiceListCommand_Run(t *testing.T) {
 	must.StrContains(t, ui.ErrorWriter.String(), uiMessageNoArguments)
 	ui.ErrorWriter.Reset()
 
-	// Create a test job with a Nomad service.
-	testJob := testJob("service-discovery-nomad-list")
+	// Create a test job with a Dumb Nomad service.
+	testJob := testJob("service-discovery-dumb-nomad-list")
 	testJob.TaskGroups[0].Tasks[0].Services = []*api.Service{
-		{Name: "service-discovery-nomad-list", Provider: "nomad", Tags: []string{"foo", "bar"}}}
+		{Name: "service-discovery-dumb-nomad-list", Provider: "dumb-nomad", Tags: []string{"foo", "bar"}}}
 
 	// Register that job.
 	regResp, _, err := client.Jobs().Register(testJob, nil)
@@ -91,7 +91,7 @@ func TestServiceListCommand_Run(t *testing.T) {
 		if !assert.Contains(t, s, "Tags") {
 			return false
 		}
-		if !assert.Contains(t, s, "service-discovery-nomad-list") {
+		if !assert.Contains(t, s, "service-discovery-dumb-nomad-list") {
 			return false
 		}
 		if !assert.Contains(t, s, "[bar,foo]") {
@@ -109,7 +109,7 @@ func TestServiceListCommand_Run(t *testing.T) {
 	must.StrContains(t, s, "Service Name")
 	must.StrContains(t, s, "Namespace")
 	must.StrContains(t, s, "Tags")
-	must.StrContains(t, s, "service-discovery-nomad-list")
+	must.StrContains(t, s, "service-discovery-dumb-nomad-list")
 	must.StrContains(t, s, "default")
 	must.StrContains(t, s, "[bar,foo]")
 

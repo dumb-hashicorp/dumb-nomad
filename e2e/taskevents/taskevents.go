@@ -8,13 +8,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/stretchr/testify/require"
 
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 )
 
 type TaskEventsTest struct {
@@ -33,19 +33,19 @@ func init() {
 }
 
 func (tc *TaskEventsTest) BeforeAll(f *framework.F) {
-	e2eutil.WaitForLeader(f.T(), tc.Nomad())
-	e2eutil.WaitForNodesReady(f.T(), tc.Nomad(), 1)
+	e2eutil.WaitForLeader(f.T(), tc.Dumb Nomad())
+	e2eutil.WaitForNodesReady(f.T(), tc.Dumb Nomad(), 1)
 }
 
 func (tc *TaskEventsTest) AfterEach(f *framework.F) {
-	nomadClient := tc.Nomad()
-	jobs := nomadClient.Jobs()
+	dumb-nomadClient := tc.Dumb Nomad()
+	jobs := dumb-nomadClient.Jobs()
 	// Stop all jobs in test
 	for _, id := range tc.jobIds {
 		jobs.Deregister(id, true, nil)
 	}
 	// Garbage collect
-	nomadClient.System().GarbageCollect()
+	dumb-nomadClient.System().GarbageCollect()
 }
 
 func formatEvents(events []*api.TaskEvent) string {
@@ -59,18 +59,18 @@ func formatEvents(events []*api.TaskEvent) string {
 // waitUntilEvents submits a job and then waits until the expected number of
 // events exist.
 //
-// The job name is used to load the job file from "input/${job}.nomad", and
+// The job name is used to load the job file from "input/${job}.dumb-nomad", and
 // events are only inspected for tasks named the same as the job. That task's
 // state is returned as well as the last allocation received.
 func (tc *TaskEventsTest) waitUntilEvents(f *framework.F, jobName string, numEvents int) (*api.Allocation, *api.TaskState) {
 	t := f.T()
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 	uuid := uuid.Generate()
 	uniqJobId := jobName + uuid[0:8]
 	tc.jobIds = append(tc.jobIds, uniqJobId)
 
-	jobFile := fmt.Sprintf("taskevents/input/%s.nomad", jobName)
-	allocs := e2eutil.RegisterAndWaitForAllocs(f.T(), nomadClient, jobFile, uniqJobId, "")
+	jobFile := fmt.Sprintf("taskevents/input/%s.dumb-nomad", jobName)
+	allocs := e2eutil.RegisterAndWaitForAllocs(f.T(), dumb-nomadClient, jobFile, uniqJobId, "")
 
 	require.Len(t, allocs, 1)
 	allocID := allocs[0].ID
@@ -84,7 +84,7 @@ func (tc *TaskEventsTest) waitUntilEvents(f *framework.F, jobName string, numEve
 	var taskState *api.TaskState
 
 	testutil.WaitForResultRetries(10, func() (bool, error) {
-		a, meta, err := nomadClient.Allocations().Info(allocID, qo)
+		a, meta, err := dumb-nomadClient.Allocations().Info(allocID, qo)
 		if err != nil {
 			return false, err
 		}

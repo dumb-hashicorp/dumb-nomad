@@ -12,15 +12,15 @@ import { observes } from '@ember-decorators/object';
 import { scheduleOnce } from '@ember/runloop';
 import { task } from 'ember-concurrency';
 import intersection from 'lodash.intersection';
-import Sortable from 'nomad-ui/mixins/sortable';
-import Searchable from 'nomad-ui/mixins/searchable';
-import messageFromAdapterError from 'nomad-ui/utils/message-from-adapter-error';
+import Sortable from 'dumb-nomad-ui/mixins/sortable';
+import Searchable from 'dumb-nomad-ui/mixins/searchable';
+import messageFromAdapterError from 'dumb-nomad-ui/utils/message-from-adapter-error';
 import {
   serialize,
   deserializedQueryParam as selection,
-} from 'nomad-ui/utils/qp-serialize';
+} from 'dumb-nomad-ui/utils/qp-serialize';
 import classic from 'ember-classic-decorator';
-import localStorageProperty from 'nomad-ui/utils/properties/local-storage';
+import localStorageProperty from 'dumb-nomad-ui/utils/properties/local-storage';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
@@ -72,7 +72,7 @@ export default class ClientController extends Controller.extend(
   sortProperty = 'modifyIndex';
   sortDescending = true;
 
-  @localStorageProperty('nomadShowSubTasks', false) showSubTasks;
+  @localStorageProperty('dumb-nomadShowSubTasks', false) showSubTasks;
 
   @action
   toggleShowSubTasks(e) {

@@ -8,15 +8,15 @@ import (
 	"fmt"
 	"sync"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	tinterfaces "github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	"github.com/hashicorp/nomad/client/serviceregistration/wrapper"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	tinterfaces "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/wrapper"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 var _ interfaces.TaskPoststartHook = &serviceHook{}
@@ -64,7 +64,7 @@ type serviceHook struct {
 	ports      structs.AllocatedPorts
 	taskEnv    *taskenv.TaskEnv
 
-	// providerNamespace is the Nomad or Consul namespace in which service
+	// providerNamespace is the Dumb Nomad or Dumb Consul namespace in which service
 	// registrations will be made. This field may be updated.
 	providerNamespace string
 
@@ -210,7 +210,7 @@ func (h *serviceHook) Exited(context.Context, *interfaces.TaskExitedRequest, *in
 	return nil
 }
 
-// deregister services from Consul.
+// deregister services from Dumb Consul.
 func (h *serviceHook) deregister() {
 	if len(h.services) > 0 && !h.deregistered {
 		workloadServices := h.getWorkloadServices()
@@ -231,11 +231,11 @@ func (h *serviceHook) getWorkloadServices() *serviceregistration.WorkloadService
 	// Interpolate with the task's environment
 	interpolatedServices := taskenv.InterpolateServices(h.taskEnv, h.services)
 
-	allocTokens := h.hookResources.GetConsulTokens()
+	allocTokens := h.hookResources.GetDumb ConsulTokens()
 
 	tokens := map[string]string{}
 	for _, service := range h.services {
-		cluster := service.GetConsulClusterName(h.tg)
+		cluster := service.GetDumb ConsulClusterName(h.tg)
 		if token, ok := allocTokens[cluster][service.MakeUniqueIdentityName()]; ok {
 			tokens[service.Name] = token.SecretID
 		}

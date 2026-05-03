@@ -206,7 +206,7 @@ export default class Watchable extends ApplicationAdapter {
   handleResponse(status, headers, payload, requestData) {
     // Some browsers lowercase all headers. Others keep them
     // case sensitive.
-    const newIndex = headers['x-nomad-index'] || headers['X-Nomad-Index'];
+    const newIndex = headers['x-dumb-nomad-index'] || headers['X-Dumb Nomad-Index'];
     if (newIndex) {
       this.watchList.setIndexFor(requestData.url, newIndex);
     }

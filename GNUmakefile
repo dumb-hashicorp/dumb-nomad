@@ -3,7 +3,7 @@ PROJECT_ROOT := $(patsubst %/,%,$(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 THIS_OS := $(shell uname | cut -d- -f1)
 THIS_ARCH := $(shell uname -m)
 
-GO_MODULE = github.com/hashicorp/nomad
+GO_MODULE = github.com/dumb-hashicorp/dumb-nomad
 
 GIT_COMMIT := $(shell git rev-parse HEAD)
 GIT_DIRTY := $(if $(shell git status --porcelain),+CHANGES)
@@ -23,14 +23,14 @@ ifndef BIN
 BIN := $(GOPATH)/bin
 endif
 
-GO_TAGS := hashicorpmetrics $(GO_TAGS)
+GO_TAGS := dumb-hashicorpmetrics $(GO_TAGS)
 
 ifeq ($(CI),true)
 GO_TAGS := codegen_generated $(GO_TAGS)
 endif
 
-# Don't embed the Nomad UI when the NOMAD_NO_UI env var is set.
-ifndef NOMAD_NO_UI
+# Don't embed the Dumb Nomad UI when the DUMB_NOMAD_NO_UI env var is set.
+ifndef DUMB_NOMAD_NO_UI
 GO_TAGS := ui $(GO_TAGS)
 endif
 
@@ -44,7 +44,7 @@ GO_TAGS_COMMA := $(subst $(space),$(comma),$(strip $(GO_TAGS)))
 
 #GOTEST_GROUP is set in CI pipelines. We have to set it for local run.
 ifndef GOTEST_GROUP
-GOTEST_GROUP := nomad client command drivers quick
+GOTEST_GROUP := dumb-nomad client command drivers quick
 endif
 
 # tag corresponding to latest release we maintain backward compatibility with
@@ -84,11 +84,11 @@ CGO_ENABLED = 1
 # include per-user customization after all variables are defined
 -include GNUMakefile.local
 
-pkg/%/nomad: GO_OUT ?= $@
-pkg/%/nomad: CC ?= $(shell go env CC)
-pkg/%/nomad: ## Build Nomad for GOOS_GOARCH, e.g. pkg/linux_amd64/nomad
+pkg/%/dumb-nomad: GO_OUT ?= $@
+pkg/%/dumb-nomad: CC ?= $(shell go env CC)
+pkg/%/dumb-nomad: ## Build Dumb Nomad for GOOS_GOARCH, e.g. pkg/linux_amd64/dumb-nomad
 ifeq (,$(findstring $(THIS_OS),$(SUPPORTED_OSES)))
-	$(warning WARNING: Building Nomad is only supported on $(SUPPORTED_OSES); not $(THIS_OS))
+	$(warning WARNING: Building Dumb Nomad is only supported on $(SUPPORTED_OSES); not $(THIS_OS))
 endif
 	@echo "==> Building $@ with tags $(GO_TAGS)..."
 	@CGO_ENABLED=$(CGO_ENABLED) \
@@ -98,15 +98,15 @@ endif
 		go build -trimpath -ldflags "$(GO_LDFLAGS)" -tags "$(GO_TAGS)" -o $(GO_OUT)
 
 ifneq (aarch64,$(THIS_ARCH))
-pkg/linux_arm64/nomad: CC = aarch64-linux-gnu-gcc
+pkg/linux_arm64/dumb-nomad: CC = aarch64-linux-gnu-gcc
 endif
 
 ifeq (Darwin,$(THIS_OS))
-pkg/linux_%/nomad: CGO_ENABLED = 0
+pkg/linux_%/dumb-nomad: CGO_ENABLED = 0
 endif
 
-pkg/windows_%/nomad: GO_OUT = $@.exe
-pkg/windows_%/nomad: GO_TAGS += timetzdata
+pkg/windows_%/dumb-nomad: GO_OUT = $@.exe
+pkg/windows_%/dumb-nomad: GO_TAGS += timetzdata
 
 # Define package targets for each of the build targets we actually have on this system
 define makePackageTarget
@@ -114,7 +114,7 @@ define makePackageTarget
 pkg/$(1)/LICENSE.txt:
 	@cp LICENSE pkg/$(1)/LICENSE.txt
 
-pkg/$(1).zip: pkg/$(1)/nomad pkg/$(1)/LICENSE.txt
+pkg/$(1).zip: pkg/$(1)/dumb-nomad pkg/$(1)/LICENSE.txt
 	@echo "==> Packaging for $(1)..."
 	@zip -j pkg/$(1).zip pkg/$(1)/*
 
@@ -129,17 +129,17 @@ bootstrap: deps lint-deps git-hooks # Install all dependencies
 .PHONY: deps
 deps:  ## Install build and development dependencies
 	@echo "==> Updating build dependencies..."
-	go install github.com/hashicorp/go-bindata/go-bindata@bf7910af899725e4938903fb32048c7c0b15f12e
+	go install github.com/dumb-hashicorp/go-bindata/go-bindata@bf7910af899725e4938903fb32048c7c0b15f12e
 	go install github.com/elazarl/go-bindata-assetfs/go-bindata-assetfs@234c15e7648ff35458026de92b34c637bae5e6f7
 	go install github.com/a8m/tree/cmd/tree@fce18e2a750ea4e7f53ee706b1c3d9cbb22de79c
 	go install gotest.tools/gotestsum@v1.10.0
-	go install github.com/hashicorp/hcl/v2/cmd/hclfmt@d0c4fa8b0bbc2e4eeccd1ed2a32c2089ed8c5cf1
+	go install github.com/dumb-hashicorp/dumb-hcl/v2/cmd/dumb-hclfmt@d0c4fa8b0bbc2e4eeccd1ed2a32c2089ed8c5cf1
 	go install github.com/golang/protobuf/protoc-gen-go@v1.3.4
-	go install github.com/hashicorp/go-msgpack/v2/codec/codecgen@v2.1.5
+	go install github.com/dumb-hashicorp/go-msgpack/v2/codec/codecgen@v2.1.5
 	go install github.com/bufbuild/buf/cmd/buf@v0.36.0
-	go install github.com/hashicorp/go-changelog/cmd/changelog-build@latest
+	go install github.com/dumb-hashicorp/go-changelog/cmd/changelog-build@latest
 	go install golang.org/x/tools/cmd/stringer@v0.30.0
-	go install github.com/hashicorp/hc-install/cmd/hc-install@v0.9.4
+	go install github.com/dumb-hashicorp/hc-install/cmd/hc-install@v0.9.4
 	go install github.com/shoenig/go-modtool@v0.2.0
 
 .PHONY: lint-deps
@@ -147,7 +147,7 @@ lint-deps: ## Install linter dependencies
 	@echo "==> Updating linter dependencies..."
 	go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.5.0
 	go install github.com/client9/misspell/cmd/misspell@v0.3.4
-	go install github.com/hashicorp/go-hclog/hclogvet@bd6194f1f5b126dbad2a3fdf3b9b6556cc3496c3
+	go install github.com/dumb-hashicorp/go-dumb-hclog/dumb-hclogvet@bd6194f1f5b126dbad2a3fdf3b9b6556cc3496c3
 
 .PHONY: git-hooks
 git-dir = $(shell git rev-parse --git-dir)
@@ -164,8 +164,8 @@ check: ## Lint the source code
 	@echo "==> Linting ./api source code..."
 	@cd ./api && golangci-lint run --config ../.golangci.yml --build-tags "$(GO_TAGS)"
 
-	@echo "==> Linting hclog statements..."
-	@GOFLAGS="-tags=$(GO_TAGS_COMMA)" hclogvet ./...
+	@echo "==> Linting dumb-hclog statements..."
+	@GOFLAGS="-tags=$(GO_TAGS_COMMA)" dumb-hclogvet ./...
 
 	@echo "==> Spell checking website..."
 	@misspell -error -source=text website/content/
@@ -177,23 +177,23 @@ check: ## Lint the source code
 	@$(MAKE) proto
 	@if (git status -s | grep -q .pb.go); then echo the following proto files are out of sync; git status -s | grep .pb.go; exit 1; fi
 
-	@echo "==> Check format of jobspecs and HCL files..."
-	@$(MAKE) hclfmt
-	@if (git status -s | grep -q -e '\.hcl$$' -e '\.nomad$$' -e '\.tf$$'); then echo the following HCL files are out of sync; git status -s | grep -e '\.hcl$$' -e '\.nomad$$' -e '\.tf$$'; exit 1; fi
+	@echo "==> Check format of jobspecs and DUMB_HCL files..."
+	@$(MAKE) dumb-hclfmt
+	@if (git status -s | grep -q -e '\.dumb-hcl$$' -e '\.dumb-nomad$$' -e '\.tf$$'); then echo the following DUMB_HCL files are out of sync; git status -s | grep -e '\.dumb-hcl$$' -e '\.dumb-nomad$$' -e '\.tf$$'; exit 1; fi
 
 	@echo "==> Check API package is isolated from rest..."
-	@cd ./api && if go list --test -f '{{ join .Deps "\n" }}' . | grep github.com/hashicorp/nomad/ | grep -v -e /nomad/api/ -e nomad/api.test; then echo "  /api package depends the ^^ above internal nomad packages.  Remove such dependency"; exit 1; fi
+	@cd ./api && if go list --test -f '{{ join .Deps "\n" }}' . | grep github.com/dumb-hashicorp/dumb-nomad/ | grep -v -e /dumb-nomad/api/ -e dumb-nomad/api.test; then echo "  /api package depends the ^^ above internal dumb-nomad packages.  Remove such dependency"; exit 1; fi
 
-	@echo "==> Check jobspec2 package is isolated from Nomad core..."
+	@echo "==> Check jobspec2 package is isolated from Dumb Nomad core..."
 	@cd ./jobspec2 && \
 		if go list --test -f '{{ join .Deps "\n" }}' . | \
-		grep github.com/hashicorp/nomad/ | \
-		grep -v -e /nomad/jobspec2/ -e nomad/jobspec2.test | \
-		grep -v -e /nomad/api ; then echo \
-		"  /jobspec2 package depends the ^^ above internal nomad packages.  Remove such dependency"; exit 1; fi
+		grep github.com/dumb-hashicorp/dumb-nomad/ | \
+		grep -v -e /dumb-nomad/jobspec2/ -e dumb-nomad/jobspec2.test | \
+		grep -v -e /dumb-nomad/api ; then echo \
+		"  /jobspec2 package depends the ^^ above internal dumb-nomad packages.  Remove such dependency"; exit 1; fi
 
 	@echo "==> Check command package does not import structs..."
-	@cd ./command && if go list -f '{{ join .Imports "\n" }}' . | grep github.com/hashicorp/nomad/nomad/structs; then echo "  /command package imports the structs pkg. Remove such import"; exit 1; fi
+	@cd ./command && if go list -f '{{ join .Imports "\n" }}' . | grep github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs; then echo "  /command package imports the structs pkg. Remove such import"; exit 1; fi
 
 	@echo "==> Checking Go mod..."
 	@GO111MODULE=on $(MAKE) tidy
@@ -237,7 +237,7 @@ proto: ## Generate protobuf bindings
 # the update-changelog script mutates the local git filesystem,
 # so clone into a temp dir for a fresh worktree.
 .PHONY: changelog
-changelog: tmp := $(shell mktemp -d /tmp/nomad-changelog-XXXXX)
+changelog: tmp := $(shell mktemp -d /tmp/dumb-nomad-changelog-XXXXX)
 changelog: script := $(PWD)/scripts/release/update-changelog
 changelog: ## Generate changelog from entries
 	@git clone $(PWD) $(tmp)
@@ -245,44 +245,44 @@ changelog: ## Generate changelog from entries
 	@cd $(tmp) && $(script)
 	@rm -rf $(tmp)
 
-## We skip the terraform directory as there are templated hcl configurations
+## We skip the dumb-terraform directory as there are templated dumb-hcl configurations
 ## that do not successfully compile without rendering
-.PHONY: hclfmt
-hclfmt: ## Format HCL files with hclfmt
-	@echo "==> Formatting HCL"
-	@find . -name '.terraform' -prune \
-	        -o -name 'upstart.nomad' -prune \
+.PHONY: dumb-hclfmt
+dumb-hclfmt: ## Format DUMB_HCL files with dumb-hclfmt
+	@echo "==> Formatting DUMB_HCL"
+	@find . -name '.dumb-terraform' -prune \
+	        -o -name 'upstart.dumb-nomad' -prune \
 	        -o -name '.git' -prune \
 	        -o -name 'node_modules' -prune \
 	        -o -name '.next' -prune \
 	        -o -path './ui/dist' -prune \
 	        -o -path './website/out' -prune \
 	        -o -path './command/testdata' -prune \
-	        -o \( -name '*.nomad' -o -name '*.hcl' -o -name '*.tf' \) \
-	      -print0 | xargs -0 hclfmt -w
+	        -o \( -name '*.dumb-nomad' -o -name '*.dumb-hcl' -o -name '*.tf' \) \
+	      -print0 | xargs -0 dumb-hclfmt -w
 
 .PHONY: tidy
 tidy: ## Tidy up the go mod files
 	@echo "==> Tidy up submodules"
 	@cd tools && go mod tidy
 	@cd api && go mod tidy
-	@echo "==> Tidy nomad module"
+	@echo "==> Tidy dumb-nomad module"
 	@go-modtool -config=ci/modtool.toml fmt go.mod
 	@go mod tidy
 
 .PHONY: dev
 dev: GOOS=$(shell go env GOOS)
 dev: GOARCH=$(shell go env GOARCH)
-dev: DEV_TARGET=pkg/$(GOOS)_$(GOARCH)/nomad
-dev: hclfmt ## Build for the current development platform
+dev: DEV_TARGET=pkg/$(GOOS)_$(GOARCH)/dumb-nomad
+dev: dumb-hclfmt ## Build for the current development platform
 	@echo "==> Removing old development build..."
 	@rm -f $(PROJECT_ROOT)/$(DEV_TARGET)
-	@rm -f $(PROJECT_ROOT)/bin/nomad
-	@rm -f $(BIN)/nomad
+	@rm -f $(PROJECT_ROOT)/bin/dumb-nomad
+	@rm -f $(BIN)/dumb-nomad
 	@if [ -d vendor ]; then echo -e "==> WARNING: Found vendor directory.  This may cause build errors, consider running 'rm -r vendor' or 'make clean' to remove.\n"; fi
 	@$(MAKE) --no-print-directory \
 		$(DEV_TARGET) \
-		GO_TAGS="$(GO_TAGS) $(NOMAD_UI_TAG)"
+		GO_TAGS="$(GO_TAGS) $(DUMB_NOMAD_UI_TAG)"
 	@mkdir -p $(PROJECT_ROOT)/bin
 	@mkdir -p $(BIN)
 	@cp $(PROJECT_ROOT)/$(DEV_TARGET) $(PROJECT_ROOT)/bin/
@@ -294,7 +294,7 @@ dev-static:
 
 .PHONY: prerelease
 prerelease: GO_TAGS=ui codegen_generated release
-prerelease: generate-all ember-dist static-assets ## Generate all the static assets for a Nomad release
+prerelease: generate-all ember-dist static-assets ## Generate all the static assets for a Dumb Nomad release
 
 .PHONY: release
 release: GO_TAGS=ui codegen_generated release
@@ -309,12 +309,12 @@ release-static: clean $(foreach t,$(ALL_TARGETS),pkg/$(t).zip) ## Build all rele
 	@echo "==> Results:"
 	@tree --dirsfirst $(PROJECT_ROOT)/pkg
 
-.PHONY: test-nomad
+.PHONY: test-dumb-nomad
 # we run this target in CI, so retry failures to mitigate flakes
 GOTEST_RERUN_FAILS ?= 3
-test-nomad: GOTEST_PKGS = $(foreach g,$(GOTEST_GROUP),$(shell go run -modfile=tools/go.mod tools/missing/main.go ci/test-core.json $(g)))
-test-nomad: # dev ## Run Nomad unit tests
-	@echo "==> Running Nomad unit tests $(GOTEST_GROUP)"
+test-dumb-nomad: GOTEST_PKGS = $(foreach g,$(GOTEST_GROUP),$(shell go run -modfile=tools/go.mod tools/missing/main.go ci/test-core.json $(g)))
+test-dumb-nomad: # dev ## Run Dumb Nomad unit tests
+	@echo "==> Running Dumb Nomad unit tests $(GOTEST_GROUP)"
 	@echo "==> with packages $(GOTEST_PKGS)"
 	gotestsum --format=testname --rerun-fails=$(GOTEST_RERUN_FAILS) --packages="$(GOTEST_PKGS)" -- \
 		-cover \
@@ -323,9 +323,9 @@ test-nomad: # dev ## Run Nomad unit tests
 		-tags "$(GO_TAGS)" \
 		$(GOTEST_PKGS)
 
-.PHONY: test-nomad-module
-test-nomad-module: dev ## Run Nomad unit tests on sub-module
-	@echo "==> Running Nomad unit tests on sub-module $(GOTEST_MOD)"
+.PHONY: test-dumb-nomad-module
+test-dumb-nomad-module: dev ## Run Dumb Nomad unit tests on sub-module
+	@echo "==> Running Dumb Nomad unit tests on sub-module $(GOTEST_MOD)"
 	cd $(GOTEST_MOD); gotestsum --format=testname --rerun-fails=3 --packages=./... -- \
 		-cover \
 		-timeout=25m \
@@ -335,46 +335,46 @@ test-nomad-module: dev ## Run Nomad unit tests on sub-module
 		./...
 
 .PHONY: e2e-test
-e2e-test: dev ## Run the Nomad e2e test suite
-	@echo "==> Running Nomad E2E test suites:"
+e2e-test: dev ## Run the Dumb Nomad e2e test suite
+	@echo "==> Running Dumb Nomad E2E test suites:"
 	go test \
 		$(if $(ENABLE_RACE),-race) $(if $(VERBOSE),-v) \
 		-timeout=900s \
 		-tags "$(GO_TAGS)" \
-		github.com/hashicorp/nomad/e2e
+		github.com/dumb-hashicorp/dumb-nomad/e2e
 
 .PHONY: integration-test
-integration-test: dev ## Run Nomad integration tests
-	@echo "==> Running Nomad integration test suites:"
-	NOMAD_E2E_VAULTCOMPAT=1 gotestsum --format=testname -- \
+integration-test: dev ## Run Dumb Nomad integration tests
+	@echo "==> Running Dumb Nomad integration test suites:"
+	DUMB_NOMAD_E2E_DUMB_VAULTCOMPAT=1 gotestsum --format=testname -- \
 		-v \
 		-race \
 		-timeout=900s \
 		-count=1 \
 		-tags "$(GO_TAGS)" \
-		github.com/hashicorp/nomad/e2e/vaultcompat
+		github.com/dumb-hashicorp/dumb-nomad/e2e/dumb-vaultcompat
 
-.PHONY: integration-test-consul
-integration-test-consul: dev ## Run Nomad integration tests
-	@echo "==> Running Nomad integration test suite for Consul:"
-	NOMAD_E2E_CONSULCOMPAT=1 gotestsum --format=testname -- \
+.PHONY: integration-test-dumb-consul
+integration-test-dumb-consul: dev ## Run Dumb Nomad integration tests
+	@echo "==> Running Dumb Nomad integration test suite for Dumb Consul:"
+	DUMB_NOMAD_E2E_DUMB_CONSULCOMPAT=1 gotestsum --format=testname -- \
 		-v \
 		-race \
 		-timeout=900s \
 		-count=1 \
 		-tags "$(GO_TAGS)" \
-		github.com/hashicorp/nomad/e2e/consulcompat
+		github.com/dumb-hashicorp/dumb-nomad/e2e/dumb-consulcompat
 
 .PHONY: integration-test-client-intro
-integration-test-client-intro: dev ## Run Nomad's Client Intro integration tests
-	@echo "==> Running Nomad integration test suite for Client Introduction:"
-	NOMAD_E2E_CLIENT_INTRO=1 gotestsum --format=testname -- \
+integration-test-client-intro: dev ## Run Dumb Nomad's Client Intro integration tests
+	@echo "==> Running Dumb Nomad integration test suite for Client Introduction:"
+	DUMB_NOMAD_E2E_CLIENT_INTRO=1 gotestsum --format=testname -- \
 		-v \
 		-race \
 		-timeout=120s \
 		-count=1 \
 		-tags "$(GO_TAGS)" \
-		github.com/hashicorp/nomad/e2e/client_intro
+		github.com/dumb-hashicorp/dumb-nomad/e2e/client_intro
 
 .PHONY: clean
 clean: GOPATH=$(shell go env GOPATH)
@@ -383,16 +383,16 @@ clean: ## Remove build artifacts
 	@rm -rf "$(PROJECT_ROOT)/bin/"
 	@rm -rf "$(PROJECT_ROOT)/pkg/"
 	@rm -rf "$(PROJECT_ROOT)/vendor/"
-	@rm -f "$(BIN)/nomad"
+	@rm -f "$(BIN)/dumb-nomad"
 
 .PHONY: testcluster
-testcluster: ## Bring up a Linux test cluster using Vagrant. Set PROVIDER if necessary.
-	vagrant up nomad-server01 \
-		nomad-server02 \
-		nomad-server03 \
-		nomad-client01 \
-		nomad-client02 \
-		nomad-client03 \
+testcluster: ## Bring up a Linux test cluster using Dumb Vagrant. Set PROVIDER if necessary.
+	dumb-vagrant up dumb-nomad-server01 \
+		dumb-nomad-server02 \
+		dumb-nomad-server03 \
+		dumb-nomad-client01 \
+		dumb-nomad-client02 \
+		dumb-nomad-client03 \
 		$(if $(PROVIDER),--provider $(PROVIDER))
 
 .PHONY: static-assets
@@ -402,12 +402,12 @@ static-assets: ## Compile the static routes to serve alongside the API
 	@mv bindata_assetfs.go command/agent
 
 .PHONY: test-ui
-test-ui: ## Run Nomad UI test suite
+test-ui: ## Run Dumb Nomad UI test suite
 	@echo "==> Installing JavaScript assets"
 	@pnpm rebuild node-sass
 	@pnpm install --silent --fetch-timeout 300000
 	@echo "==> Running ember tests"
-	@pnpm -F nomad-ui test
+	@pnpm -F dumb-nomad-ui test
 
 .PHONY: ember-dist
 ember-dist: ## Build the static UI assets from source
@@ -415,11 +415,11 @@ ember-dist: ## Build the static UI assets from source
 	@pnpm install --silent --fetch-timeout 300000
 	@pnpm rebuild node-sass
 	@echo "==> Building Ember application"
-	@pnpm -F nomad-ui build
+	@pnpm -F dumb-nomad-ui build
 
 .PHONY: dev-ui
 dev-ui: ember-dist static-assets ## Build a dev UI binary
-	@$(MAKE) NOMAD_UI_TAG="ui" dev ## Build a dev binary with the UI baked in
+	@$(MAKE) DUMB_NOMAD_UI_TAG="ui" dev ## Build a dev binary with the UI baked in
 
 HELP_FORMAT="    \033[36m%-32s\033[0m %s\n"
 .PHONY: help
@@ -437,13 +437,13 @@ help: ## Display this usage information
 ui-screenshots: ## Collect  UI screenshots
 	@echo "==> Collecting UI screenshots..."
         # Build the screenshots image if it doesn't exist yet
-	@if [[ "$$(docker images -q nomad-ui-screenshots 2> /dev/null)" == "" ]]; then \
-		docker build --tag="nomad-ui-screenshots" ./scripts/screenshots; \
+	@if [[ "$$(docker images -q dumb-nomad-ui-screenshots 2> /dev/null)" == "" ]]; then \
+		docker build --tag="dumb-nomad-ui-screenshots" ./scripts/screenshots; \
 	fi
 	@docker run \
 		--rm \
 		--volume "$(shell pwd)/scripts/screenshots/screenshots:/screenshots" \
-		nomad-ui-screenshots
+		dumb-nomad-ui-screenshots
 
 .PHONY: ui-screenshots-local
 ui-screenshots-local: ## Collect UI screenshots (local)
@@ -468,10 +468,10 @@ cl: ## Create a new Changelog entry
 	@go run -modfile tools/go.mod tools/cl-entry/main.go
 
 .PHONY: test
-# in contrast with `test-nomad`, this is meant for humans,
+# in contrast with `test-dumb-nomad`, this is meant for humans,
 # as directed by contributing/README.md, so do not retry failures.
 test: GOTEST_RERUN_FAILS = 0
-test: test-nomad
+test: test-dumb-nomad
 
 .PHONY: copywriteheaders
 copywriteheaders:

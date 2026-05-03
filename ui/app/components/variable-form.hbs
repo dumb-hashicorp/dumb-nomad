@@ -10,9 +10,9 @@
   {{#if @model.isNew}}
     {{#unless this.isJobTemplateVariable}}
       <div class="related-entities related-entities-hint">
-        <p>Prefix your path with <code>nomad/jobs</code> to automatically make your variable accessible to all jobs. <br />
+        <p>Prefix your path with <code>dumb-nomad/jobs</code> to automatically make your variable accessible to all jobs. <br />
         Adding job name, group name, or task name will make your variable available to that specific job, group, or task. <br />
-        Format: <code>nomad/jobs/&lt;jobname&gt;</code>, <code>nomad/jobs/&lt;jobname&gt;/&lt;groupname&gt;</code>, <code>nomad/jobs/&lt;jobname&gt;/&lt;groupname&gt;/&lt;taskname&gt;</code></p>
+        Format: <code>dumb-nomad/jobs/&lt;jobname&gt;</code>, <code>dumb-nomad/jobs/&lt;jobname&gt;/&lt;groupname&gt;</code>, <code>dumb-nomad/jobs/&lt;jobname&gt;/&lt;groupname&gt;/&lt;taskname&gt;</code></p>
       </div>
     {{/unless}}
 
@@ -54,7 +54,7 @@
 		<Hds::Form::TextInput::Field
 			@isRequired={{true}}
 			@value={{this.path}}
-			placeholder="nomad/jobs/my-job/my-group/my-task"
+			placeholder="dumb-nomad/jobs/my-job/my-group/my-task"
       @isInvalid={{or this.duplicatePathWarning (and @model.isNew this.hasInvalidPath)}}
       {{on "input" (action this.setModelPath)}}
       disabled={{not @model.isNew}}
@@ -88,7 +88,7 @@
       {{/if}}
       {{#if this.isJobTemplateVariable}}
         <F.HelperText data-test-job-template-hint>
-          Use this variable to generate job templates with <Hds::Copy::Snippet @textToCopy="nomad job init -template={{this.jobTemplateName}}" />
+          Use this variable to generate job templates with <Hds::Copy::Snippet @textToCopy="dumb-nomad job init -template={{this.jobTemplateName}}" />
         </F.HelperText>
       {{/if}}
 		</Hds::Form::TextInput::Field>

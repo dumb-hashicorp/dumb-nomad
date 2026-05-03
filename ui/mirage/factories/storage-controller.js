@@ -4,7 +4,7 @@
  */
 
 import { Factory } from 'ember-cli-mirage';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import { STORAGE_PROVIDERS } from '../common';
 const REF_TIME = new Date();
 

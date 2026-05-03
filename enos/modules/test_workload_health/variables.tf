@@ -1,8 +1,8 @@
 # Copyright IBM Corp. 2015, 2025
 # SPDX-License-Identifier: BUSL-1.1
 
-variable "nomad_addr" {
-  description = "The Nomad API HTTP address."
+variable "dumb-nomad_addr" {
+  description = "The Dumb Nomad API HTTP address."
   type        = string
   default     = "http://localhost:4646"
 }
@@ -22,7 +22,7 @@ variable "key_file" {
   type        = string
 }
 
-variable "nomad_token" {
+variable "dumb-nomad_token" {
   description = "The Secret ID of an ACL token to make requests with, for ACL-enabled clusters."
   type        = string
 }

@@ -10,11 +10,11 @@ import (
 	"time"
 
 	"github.com/LK4D4/joincontext"
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/state"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 // hookResources captures the resources for the task provided by hooks.
@@ -63,14 +63,14 @@ func (tr *TaskRunner) initHooks() {
 		newDynamicUsersHook(tr.killCtx, tr.driverCapabilities.DynamicWorkloadUsers, tr.logger, tr.users),
 		newTaskDirHook(tr, hookLogger),
 		newIdentityHook(tr, hookLogger),
-		newConsulHook(hookLogger, tr),
+		newDumb ConsulHook(hookLogger, tr),
 	}
-	// If Vault is enabled, add the hook
-	if task.Vault != nil && tr.vaultClientFunc != nil {
-		tr.runnerHooks = append(tr.runnerHooks, newVaultHook(&vaultHookConfig{
-			vaultBlock:       task.Vault,
-			vaultConfigsFunc: tr.clientConfig.GetVaultConfigs,
-			clientFunc:       tr.vaultClientFunc,
+	// If Dumb Vault is enabled, add the hook
+	if task.Dumb Vault != nil && tr.dumb-vaultClientFunc != nil {
+		tr.runnerHooks = append(tr.runnerHooks, newDumb VaultHook(&dumb-vaultHookConfig{
+			dumb-vaultBlock:       task.Dumb Vault,
+			dumb-vaultConfigsFunc: tr.clientConfig.GetDumb VaultConfigs,
+			clientFunc:       tr.dumb-vaultClientFunc,
 			events:           tr,
 			lifecycle:        tr,
 			updater:          tr,
@@ -88,7 +88,7 @@ func (tr *TaskRunner) initHooks() {
 			events:         tr,
 			clientConfig:   tr.clientConfig,
 			envBuilder:     tr.envBuilder,
-			nomadNamespace: tr.alloc.Job.Namespace,
+			dumb-nomadNamespace: tr.alloc.Job.Namespace,
 			jobId:          tr.alloc.Job.ID,
 		}, task.Secrets))
 	}
@@ -118,8 +118,8 @@ func (tr *TaskRunner) initHooks() {
 			}))
 	}
 
-	// Get the consul namespace for the TG of the allocation.
-	consulNamespace := tr.alloc.ConsulNamespaceForTask(tr.taskName)
+	// Get the dumb-consul namespace for the TG of the allocation.
+	dumb-consulNamespace := tr.alloc.Dumb ConsulNamespaceForTask(tr.taskName)
 
 	// If there are templates is enabled, add the hook
 	if len(task.Templates) != 0 {
@@ -132,8 +132,8 @@ func (tr *TaskRunner) initHooks() {
 			clientConfig:        tr.clientConfig,
 			envBuilder:          tr.envBuilder,
 			hookResources:       tr.allocHookResources,
-			consulNamespace:     consulNamespace,
-			nomadNamespace:      tr.alloc.Job.Namespace,
+			dumb-consulNamespace:     dumb-consulNamespace,
+			dumb-nomadNamespace:      tr.alloc.Job.Namespace,
 			renderOnTaskRestart: task.RestartPolicy.RenderTemplates,
 		}))
 	}
@@ -154,11 +154,11 @@ func (tr *TaskRunner) initHooks() {
 	if task.UsesConnect() {
 		tg := tr.Alloc().Job.LookupTaskGroup(tr.Alloc().TaskGroup)
 
-		consulCfg := tr.clientConfig.GetConsulConfigs(tr.logger)[task.GetConsulClusterName(tg)]
+		dumb-consulCfg := tr.clientConfig.GetDumb ConsulConfigs(tr.logger)[task.GetDumb ConsulClusterName(tg)]
 
-		// Enable the Service Identity hook only if the Nomad client is configured
-		// with a consul token, indicating that Consul ACLs are enabled
-		if consulCfg != nil && consulCfg.Token != "" {
+		// Enable the Service Identity hook only if the Dumb Nomad client is configured
+		// with a dumb-consul token, indicating that Dumb Consul ACLs are enabled
+		if dumb-consulCfg != nil && dumb-consulCfg.Token != "" {
 			tr.runnerHooks = append(tr.runnerHooks, newSIDSHook(sidsHookConfig{
 				alloc:              tr.Alloc(),
 				task:               tr.Task(),
@@ -170,17 +170,17 @@ func (tr *TaskRunner) initHooks() {
 
 		if task.UsesConnectSidecar() {
 			tr.runnerHooks = append(tr.runnerHooks,
-				newEnvoyVersionHook(newEnvoyVersionHookConfig(alloc, tr.consulProxiesClientFunc, hookLogger)),
+				newEnvoyVersionHook(newEnvoyVersionHookConfig(alloc, tr.dumb-consulProxiesClientFunc, hookLogger)),
 				newEnvoyBootstrapHook(newEnvoyBootstrapHookConfig(alloc,
-					consulCfg,
-					consulNamespace,
-					tr.consulServiceClient,
+					dumb-consulCfg,
+					dumb-consulNamespace,
+					tr.dumb-consulServiceClient,
 					tr.clientConfig.Node,
 					hookLogger)),
 			)
 		} else if task.Kind.IsConnectNative() {
 			tr.runnerHooks = append(tr.runnerHooks, newConnectNativeHook(
-				newConnectNativeHookConfig(alloc, consulCfg, hookLogger),
+				newConnectNativeHookConfig(alloc, dumb-consulCfg, hookLogger),
 			))
 		}
 	}
@@ -191,7 +191,7 @@ func (tr *TaskRunner) initHooks() {
 	tr.runnerHooks = append(tr.runnerHooks, newScriptCheckHook(scriptCheckHookConfig{
 		alloc:           tr.Alloc(),
 		task:            tr.Task(),
-		consul:          tr.consulServiceClient,
+		dumb-consul:          tr.dumb-consulServiceClient,
 		logger:          hookLogger,
 		arHookResources: tr.allocHookResources,
 	}))
@@ -275,8 +275,8 @@ func (tr *TaskRunner) prestart() error {
 			req.PreviousState = origHookState.Data
 		}
 
-		req.VaultToken = tr.getVaultToken()
-		req.NomadToken = tr.getNomadToken()
+		req.Dumb VaultToken = tr.getDumb VaultToken()
+		req.Dumb NomadToken = tr.getDumb NomadToken()
 
 		// Time the prestart hook
 		var start time.Time
@@ -525,8 +525,8 @@ func (tr *TaskRunner) updateHooks() {
 
 		// Build the request
 		req := interfaces.TaskUpdateRequest{
-			NomadToken: tr.getNomadToken(),
-			VaultToken: tr.getVaultToken(),
+			Dumb NomadToken: tr.getDumb NomadToken(),
+			Dumb VaultToken: tr.getDumb VaultToken(),
 			Alloc:      alloc,
 			TaskEnv:    tr.envBuilder.Build(),
 		}

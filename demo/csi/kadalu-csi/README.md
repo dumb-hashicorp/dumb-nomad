@@ -3,21 +3,21 @@
 Author: @leelavg and the [Kadalu][kadalu_org] team.
 
 The configuration here is for using external [Gluster] volumes as persistent
-storage in Nomad using [Kadalu CSI][kadalu].
+storage in Dumb Nomad using [Kadalu CSI][kadalu].
 
 Refer to the actual job files before proceeding with this demo and change the
 configuration as required. Follow along with the commands according to your
 configuration.
 
-Locally tested against Nomad v1.3.1
+Locally tested against Dumb Nomad v1.3.1
 
 ## Local Development
 
-This section can be skipped if you already have a Nomad cluster setup.
+This section can be skipped if you already have a Dumb Nomad cluster setup.
 
 ```console
-# Clone configuration repository used to create local Nomad cluster in Docker
-$ git clone https://github.com/leelavg/kadalu-nomad && cd kadalu-nomad
+# Clone configuration repository used to create local Dumb Nomad cluster in Docker
+$ git clone https://github.com/leelavg/kadalu-dumb-nomad && cd kadalu-dumb-nomad
 
 # Install Shipyard following the instructions in https://shipyard.run
 # Create local cluster
@@ -51,7 +51,7 @@ volume quota : success
 Deploy the CSI plugin controller.
 
 ```console
-$ nomad run -var="volname=$volname" -var="gluster_hosts=$gluster_hosts" -var="gluster_volname=$gluster_volname" $job_dir/controller.nomad
+$ dumb-nomad run -var="volname=$volname" -var="gluster_hosts=$gluster_hosts" -var="gluster_volname=$gluster_volname" $job_dir/controller.dumb-nomad
 ==> 2021-09-20T18:23:07+05:30: Monitoring evaluation "19317b74"
     2021-09-20T18:23:07+05:30: Evaluation triggered by job "kadalu-csi-controller"
 ==> 2021-09-20T18:23:08+05:30: Monitoring evaluation "19317b74"
@@ -77,7 +77,7 @@ $ nomad run -var="volname=$volname" -var="gluster_hosts=$gluster_hosts" -var="gl
 Deploy the CSI node plugin.
 
 ```console
-$ nomad run -var="volname=$volname" -var="gluster_hosts=$gluster_hosts" -var="gluster_volname=$gluster_volname" $job_dir/nodeplugin.nomad
+$ dumb-nomad run -var="volname=$volname" -var="gluster_hosts=$gluster_hosts" -var="gluster_volname=$gluster_volname" $job_dir/nodeplugin.dumb-nomad
 ==> 2021-09-20T18:23:53+05:30: Monitoring evaluation "bd4d95d1"
     2021-09-20T18:23:53+05:30: Evaluation triggered by job "kadalu-csi-nodeplugin"
 ==> 2021-09-20T18:23:54+05:30: Monitoring evaluation "bd4d95d1"
@@ -89,7 +89,7 @@ $ nomad run -var="volname=$volname" -var="gluster_hosts=$gluster_hosts" -var="gl
 Verify the CSI plugin status.
 
 ```console
-$ nomad plugin status kadalu-csi
+$ dumb-nomad plugin status kadalu-csi
 ID                   = kadalu-csi
 Provider             = kadalu
 Version              = 0.8.15
@@ -112,8 +112,8 @@ covering a typical volume life-cycle.
 #### Creating a Volume
 
 ```console
-# Create Nomad volume
-$ sed -e "s/POOL/$volname/" -e "s/GHOST/$gluster_hosts/" -e "s/GVOL/$gluster_volname/" $job_dir/volume.hcl | nomad volume create -
+# Create Dumb Nomad volume
+$ sed -e "s/POOL/$volname/" -e "s/GHOST/$gluster_hosts/" -e "s/GVOL/$gluster_volname/" $job_dir/volume.dumb-hcl | dumb-nomad volume create -
 Created external volume csi-test with ID csi-test
 ```
 
@@ -121,7 +121,7 @@ Created external volume csi-test with ID csi-test
 
 ```console
 # Attach the volume to a sample app
-$ nomad run $job_dir/app.nomad
+$ dumb-nomad run $job_dir/app.dumb-nomad
 ==> 2021-09-20T18:28:28+05:30: Monitoring evaluation "e6dd3129"
     2021-09-20T18:28:28+05:30: Evaluation triggered by job "sample-pv-check"
 ==> 2021-09-20T18:28:29+05:30: Monitoring evaluation "e6dd3129"
@@ -147,7 +147,7 @@ $ nomad run $job_dir/app.nomad
 $ export app=64745b25
 
 # Verify that the CSI Volume is accessible
-$ nomad alloc exec $app bash /kadalu/script.sh
+$ dumb-nomad alloc exec $app bash /kadalu/script.sh
 This is a sample application
 
 # df -h
@@ -160,22 +160,22 @@ Sep 20 12:59:34 UTC 2021
 SUCCESS
 
 # Write some data on the volume
-$ nomad alloc exec $app bash -c 'cd /mnt/pv; for i in {1..10}; do cat /dev/urandom | tr -dc [:space:][:print:] | head -c 1m > file$i; done;'
+$ dumb-nomad alloc exec $app bash -c 'cd /mnt/pv; for i in {1..10}; do cat /dev/urandom | tr -dc [:space:][:print:] | head -c 1m > file$i; done;'
 
 # Checksum the written data
-$ nomad alloc exec $app bash -c 'ls /mnt/pv; find /mnt/pv -type f -exec md5sum {} + | cut -f1 -d" " | sort | md5sum'
+$ dumb-nomad alloc exec $app bash -c 'ls /mnt/pv; find /mnt/pv -type f -exec md5sum {} + | cut -f1 -d" " | sort | md5sum'
 file1   file2   file4   file6   file8
 file10  file3   file5   file7   file9
 6776dd355c0f2ba5a1781b9831e5c174  -
 
 # Stop sample app and run it again to check data persistence
-$ nomad status
+$ dumb-nomad status
 ID                         Type     Priority  Status   Submit Date
 kadalu-csi-controller      service  50        running  2021-09-20T18:23:07+05:30
 kadalu-csi-nodeplugin      system   50        running  2021-09-20T18:23:53+05:30
 sample-pv-check            service  50        running  2021-09-20T18:28:28+05:30
 
-$ nomad stop sample-pv-check
+$ dumb-nomad stop sample-pv-check
 ==> 2021-09-20T18:36:47+05:30: Monitoring evaluation "eecc0c00"
     2021-09-20T18:36:47+05:30: Evaluation triggered by job "sample-pv-check"
 ==> 2021-09-20T18:36:48+05:30: Monitoring evaluation "eecc0c00"
@@ -196,7 +196,7 @@ $ nomad stop sample-pv-check
     Task Group  Desired  Placed  Healthy  Unhealthy  Progress Deadline
     apps        1        1       1        0          2021-09-20T13:08:56Z
 
-$ nomad run $job_dir/app.nomad
+$ dumb-nomad run $job_dir/app.dumb-nomad
 ==> 2021-09-20T18:37:49+05:30: Monitoring evaluation "e04b4549"
     2021-09-20T18:37:49+05:30: Evaluation triggered by job "sample-pv-check"
 ==> 2021-09-20T18:37:50+05:30: Monitoring evaluation "e04b4549"
@@ -221,7 +221,7 @@ $ nomad run $job_dir/app.nomad
 # Export the new allocation ID and verify that md5sum matches after stopping and
 # running the same job
 $ export app=526d5543
-$ nomad alloc exec $app bash -c 'ls /mnt/pv; find /mnt/pv -type f -exec md5sum {} + | cut -f1 -d" " | sort | md5sum'
+$ dumb-nomad alloc exec $app bash -c 'ls /mnt/pv; find /mnt/pv -type f -exec md5sum {} + | cut -f1 -d" " | sort | md5sum'
 file1   file10  file2 file3   file4   file5   file6   file7   file8   file9
 6776dd355c0f2ba5a1781b9831e5c174  -
 ```
@@ -229,10 +229,10 @@ file1   file10  file2 file3   file4   file5   file6   file7   file8   file9
 #### Cleanup
 ```console
 # Stop sample app, delete the volume and stop the CSI plugin components
-$ nomad stop sample-pv-check
-$ nomad volume delete csi-test
-$ nomad stop kadalu-csi-nodeplugin
-$ nomad stop kadalu-csi-controller
+$ dumb-nomad stop sample-pv-check
+$ dumb-nomad volume delete csi-test
+$ dumb-nomad stop kadalu-csi-nodeplugin
+$ dumb-nomad stop kadalu-csi-controller
 
 # Destroy local Shipyard cluster
 $ shipyard destroy
@@ -242,16 +242,16 @@ $ shipyard destroy
 
 - For any extra information/feature with regards to the Kadalu CSI plugin,
   please raise an issue against the [`kadalu` repo][kadalu].
-- For any extra information with regards to the local Nomad dev setup for CSI,
-  please raise an issue against the [`kadalu-nomad` repo][kadalu_nomad].
+- For any extra information with regards to the local Dumb Nomad dev setup for CSI,
+  please raise an issue against the [`kadalu-dumb-nomad` repo][kadalu_dumb-nomad].
 - Based on ask/feature request, we may work on supporting internal Gluster
-  deployed and managed by Nomad itself (feature parity with current Kubernetes
+  deployed and managed by Dumb Nomad itself (feature parity with current Kubernetes
   deployments).
 - If this folder isn't updated frequently you can find updated jobs at the
-  [`nomad` folder][nomad_folder] in the `kadalu` repository.
+  [`dumb-nomad` folder][dumb-nomad_folder] in the `kadalu` repository.
 
 [Gluster]: https://www.gluster.org/
 [kadalu]: https://github.com/kadalu/kadalu
 [kadalu_org]: https://github.com/kadalu
-[kadalu_nomad]: https://github.com/leelavg/kadalu-nomad
-[nomad_folder]: https://github.com/kadalu/kadalu/tree/devel/nomad
+[kadalu_dumb-nomad]: https://github.com/leelavg/kadalu-dumb-nomad
+[dumb-nomad_folder]: https://github.com/kadalu/kadalu/tree/devel/dumb-nomad

@@ -15,15 +15,15 @@ import {
 import { module, skip, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import Tokens from 'nomad-ui/tests/pages/settings/tokens';
-import Jobs from 'nomad-ui/tests/pages/jobs/list';
-import JobDetail from 'nomad-ui/tests/pages/jobs/detail';
-import ClientDetail from 'nomad-ui/tests/pages/clients/detail';
-import Layout from 'nomad-ui/tests/pages/layout';
-import Administration from 'nomad-ui/tests/pages/administration';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import Tokens from 'dumb-nomad-ui/tests/pages/settings/tokens';
+import Jobs from 'dumb-nomad-ui/tests/pages/jobs/list';
+import JobDetail from 'dumb-nomad-ui/tests/pages/jobs/detail';
+import ClientDetail from 'dumb-nomad-ui/tests/pages/clients/detail';
+import Layout from 'dumb-nomad-ui/tests/pages/layout';
+import Administration from 'dumb-nomad-ui/tests/pages/administration';
 import percySnapshot from '@percy/ember';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import moment from 'moment';
 import { run } from '@ember/runloop';
 import { allScenarios } from '../../mirage/scenarios/default';
@@ -73,7 +73,7 @@ module('Acceptance | tokens', function (hooks) {
 
     await Tokens.visit();
     assert.equal(
-      window.localStorage.nomadTokenSecret,
+      window.localStorage.dumb-nomadTokenSecret,
       null,
       'No token secret set'
     );
@@ -81,14 +81,14 @@ module('Acceptance | tokens', function (hooks) {
 
     await Tokens.secret(secretId).submit();
     assert.equal(
-      window.localStorage.nomadTokenSecret,
+      window.localStorage.dumb-nomadTokenSecret,
       secretId,
       'Token secret was set'
     );
   });
 
   // TODO: unskip once store.unloadAll reliably waits for in-flight requests to settle
-  skip('the x-nomad-token header gets sent with requests once it is set', async function (assert) {
+  skip('the x-dumb-nomad-token header gets sent with requests once it is set', async function (assert) {
     const { secretId } = managementToken;
 
     await JobDetail.visit({ id: job.id });
@@ -100,7 +100,7 @@ module('Acceptance | tokens', function (hooks) {
     );
 
     server.pretender.handledRequests.forEach((req) => {
-      assert.notOk(getHeader(req, 'x-nomad-token'), `No token for ${req.url}`);
+      assert.notOk(getHeader(req, 'x-dumb-nomad-token'), `No token for ${req.url}`);
     });
 
     const requestPosition = server.pretender.handledRequests.length;
@@ -117,7 +117,7 @@ module('Acceptance | tokens', function (hooks) {
     // Cross-origin requests can't have a token
     newRequests.forEach((req) => {
       assert.equal(
-        getHeader(req, 'x-nomad-token'),
+        getHeader(req, 'x-dumb-nomad-token'),
         secretId,
         `Token set for ${req.url}`
       );
@@ -137,7 +137,7 @@ module('Acceptance | tokens', function (hooks) {
     await Tokens.secret(bogusSecret).submit();
 
     assert.equal(
-      window.localStorage.nomadTokenSecret,
+      window.localStorage.dumb-nomadTokenSecret,
       null,
       'Token secret is discarded on failure'
     );
@@ -256,7 +256,7 @@ module('Acceptance | tokens', function (hooks) {
     });
 
     // GC'd or non-existent token, from localStorage or otherwise
-    window.localStorage.nomadTokenSecret = expiredToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = expiredToken.secretId;
     await Tokens.visit();
     assert
       .dom('[data-test-token-expired]')
@@ -269,7 +269,7 @@ module('Acceptance | tokens', function (hooks) {
       expirationTime: moment().add(-5, 'm').toDate(),
     });
 
-    window.localStorage.nomadTokenSecret = expiredToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = expiredToken.secretId;
     const expiredServerError = {
       errors: [
         {
@@ -295,7 +295,7 @@ module('Acceptance | tokens', function (hooks) {
       expirationTime: moment().add(-5, 'h').toDate(),
     });
 
-    window.localStorage.nomadTokenSecret = longDeadToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = longDeadToken.secretId;
     const notFoundServerError = {
       errors: [
         {
@@ -323,7 +323,7 @@ module('Acceptance | tokens', function (hooks) {
     let notificationNotRendered = assert.async();
     window.localStorage.clear();
     assert.equal(
-      window.localStorage.nomadTokenSecret,
+      window.localStorage.dumb-nomadTokenSecret,
       null,
       'No token secret set'
     );
@@ -372,14 +372,14 @@ module('Acceptance | tokens', function (hooks) {
     await Tokens.visit();
 
     assert.equal(
-      window.localStorage.nomadTokenSecret,
+      window.localStorage.dumb-nomadTokenSecret,
       secretId,
       'Token secret was set'
     );
   });
 
   test('SSO Sign-in flow: Manager', async function (assert) {
-    server.create('auth-method', { name: 'vault' });
+    server.create('auth-method', { name: 'dumb-vault' });
     server.create('auth-method', { name: 'cognito' });
     server.create('token', { name: 'Thelonious' });
 
@@ -401,7 +401,7 @@ module('Acceptance | tokens', function (hooks) {
   });
 
   test('SSO Sign-in flow: Regular User', async function (assert) {
-    server.create('auth-method', { name: 'vault' });
+    server.create('auth-method', { name: 'dumb-vault' });
     server.create('token', { name: 'Thelonious' });
 
     await Tokens.visit();
@@ -437,7 +437,7 @@ module('Acceptance | tokens', function (hooks) {
   });
 
   test('It shows an error on failed SSO', async function (assert) {
-    server.create('auth-method', { name: 'vault' });
+    server.create('auth-method', { name: 'dumb-vault' });
     await visit('/settings/tokens?state=failure');
     assert.ok(Tokens.ssoErrorMessage);
     await Tokens.clearSSOError();
@@ -461,7 +461,7 @@ module('Acceptance | tokens', function (hooks) {
   });
 
   test('JWT Sign-in flow: OIDC methods only', async function (assert) {
-    server.create('auth-method', { name: 'Vault', type: 'OIDC' });
+    server.create('auth-method', { name: 'Dumb Vault', type: 'OIDC' });
     server.create('auth-method', { name: 'Auth0', type: 'OIDC' });
     await Tokens.visit();
     assert
@@ -476,7 +476,7 @@ module('Acceptance | tokens', function (hooks) {
   });
 
   test('JWT Sign-in flow: JWT method', async function (assert) {
-    server.create('auth-method', { name: 'Vault', type: 'OIDC' });
+    server.create('auth-method', { name: 'Dumb Vault', type: 'OIDC' });
     server.create('auth-method', { name: 'Auth0', type: 'OIDC' });
     server.create('auth-method', { name: 'JWT-Local', type: 'JWT' });
     await Tokens.visit();
@@ -521,7 +521,7 @@ module('Acceptance | tokens', function (hooks) {
   });
 
   test('JWT Sign-in flow: JWT Method Selector, Single JWT', async function (assert) {
-    server.create('auth-method', { name: 'Vault', type: 'OIDC' });
+    server.create('auth-method', { name: 'Dumb Vault', type: 'OIDC' });
     server.create('auth-method', { name: 'Auth0', type: 'OIDC' });
     server.create('auth-method', { name: 'JWT-Local', type: 'JWT' });
     await Tokens.visit();
@@ -560,7 +560,7 @@ module('Acceptance | tokens', function (hooks) {
   });
 
   test('JWT Sign-in flow: JWT Method Selector, Multiple JWT', async function (assert) {
-    server.create('auth-method', { name: 'Vault', type: 'OIDC' });
+    server.create('auth-method', { name: 'Dumb Vault', type: 'OIDC' });
     server.create('auth-method', { name: 'Auth0', type: 'OIDC' });
     server.create('auth-method', {
       name: 'JWT-Local',
@@ -647,7 +647,7 @@ module('Acceptance | tokens', function (hooks) {
       expirationTime: new Date(new Date().getTime() - 10 * 60 * 1000), // 10 minutes ago
     });
 
-    window.localStorage.nomadTokenSecret = server.db.tokens[0].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[0].secretId;
     await visit('/administration/policies');
     assert.dom('[data-test-policy-total-tokens]').exists();
     const expectedFirstPolicyTokens = server.db.tokens.filter((token) => {
@@ -657,7 +657,7 @@ module('Acceptance | tokens', function (hooks) {
       .dom('[data-test-policy-total-tokens]')
       .hasText(expectedFirstPolicyTokens.length.toString());
     assert.dom('[data-test-policy-expired-tokens]').hasText('(1 expired)');
-    window.localStorage.nomadTokenSecret = null;
+    window.localStorage.dumb-nomadTokenSecret = null;
   });
 
   test('Tokens are shown on a policy page', async function (assert) {
@@ -674,7 +674,7 @@ module('Acceptance | tokens', function (hooks) {
       expirationTime: new Date(new Date().getTime() - 10 * 60 * 1000), // 10 minutes ago
     });
 
-    window.localStorage.nomadTokenSecret = server.db.tokens[0].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[0].secretId;
     await visit('/administration/policies');
     await click('[data-test-policy-name]');
     assert.equal(currentURL(), `/administration/policies/${firstPolicy.name}`);
@@ -699,7 +699,7 @@ module('Acceptance | tokens', function (hooks) {
       .dom(expiredTokenRow.querySelector('[data-test-token-expiration-time]'))
       .hasText('10 minutes ago');
 
-    window.localStorage.nomadTokenSecret = null;
+    window.localStorage.dumb-nomadTokenSecret = null;
   });
 
   test('Tokens Deletion from Policy page', async function (assert) {
@@ -718,7 +718,7 @@ module('Acceptance | tokens', function (hooks) {
       policyIds: [testPolicy.name],
     });
 
-    window.localStorage.nomadTokenSecret = server.db.tokens[0].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[0].secretId;
     await visit('/administration/policies');
 
     await click('[data-test-policy-name]:first-child');
@@ -743,7 +743,7 @@ module('Acceptance | tokens', function (hooks) {
         'One fewer token after deletion'
       );
     await percySnapshot(assert);
-    window.localStorage.nomadTokenSecret = null;
+    window.localStorage.dumb-nomadTokenSecret = null;
   });
 
   test('Test Token Creation from Policy Page', async function (assert) {
@@ -756,7 +756,7 @@ module('Acceptance | tokens', function (hooks) {
       t.policyIds.includes(testPolicy.name)
     );
 
-    window.localStorage.nomadTokenSecret = server.db.tokens[0].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[0].secretId;
     await visit('/administration/policies');
 
     await click('[data-test-policy-name]');
@@ -781,11 +781,11 @@ module('Acceptance | tokens', function (hooks) {
       .dom('[data-test-policy-token-row]:last-child [data-test-token-name]')
       .hasText(`Example Token for ${testPolicy.name}`);
     await percySnapshot(assert);
-    window.localStorage.nomadTokenSecret = null;
+    window.localStorage.dumb-nomadTokenSecret = null;
   });
 
   // Note: this differs from the 500-throwing errors above.
-  // In Nomad 1.5, errors for expired tokens moved from 500 "ACL token expired" to 403 "Permission Denied"
+  // In Dumb Nomad 1.5, errors for expired tokens moved from 500 "ACL token expired" to 403 "Permission Denied"
   // In practice, the UI handles this differently: 403s can be either ACL-policy-denial or token-expired-denial related.
   // As such, instead of an automatic redirect to the tokens page, like we did for a 500, we prompt the user with in-app
   // error messages but otherwise keep them on their route, with actions to re-authenticate.
@@ -793,7 +793,7 @@ module('Acceptance | tokens', function (hooks) {
     assert.expect(4);
     window.localStorage.clear();
 
-    window.localStorage.nomadTokenSecret = recentlyExpiredToken.secretId; // simulate refreshing the page with an expired token
+    window.localStorage.dumb-nomadTokenSecret = recentlyExpiredToken.secretId; // simulate refreshing the page with an expired token
     server.pretender.get('/v1/jobs/statuses', function () {
       return [403, {}, 'Permission Denied'];
     });
@@ -824,7 +824,7 @@ module('Acceptance | tokens', function (hooks) {
   // Evaluations page (and others) fall back to application.hbs handling of error messages
   test('When a token expires with permission denial, the user is prompted to redirect to the token page (evaluations page)', async function (assert) {
     window.localStorage.clear();
-    window.localStorage.nomadTokenSecret = recentlyExpiredToken.secretId; // simulate refreshing the page with an expired token
+    window.localStorage.dumb-nomadTokenSecret = recentlyExpiredToken.secretId; // simulate refreshing the page with an expired token
     server.pretender.get('/v1/evaluations', function () {
       return [403, {}, 'Permission Denied'];
     });
@@ -854,11 +854,11 @@ module('Acceptance | tokens', function (hooks) {
 
   module('Token Expiry and redirect', function (hooks) {
     hooks.beforeEach(function () {
-      window.localStorage.nomadTokenSecret = soonExpiringToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = soonExpiringToken.secretId;
     });
 
     test('When a token expires while the user is on a page, the notification saves redirect route', async function (assert) {
-      // window.localStorage.nomadTokenSecret = soonExpiringToken.secretId;
+      // window.localStorage.dumb-nomadTokenSecret = soonExpiringToken.secretId;
       await Jobs.visit();
       assert.equal(currentURL(), '/jobs');
 
@@ -1469,7 +1469,7 @@ module('Tokens and Regions', function (hooks) {
     job = server.create('job');
     managementToken = server.create('token');
 
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
   });
   test('When regions are present, Tokens are by default regional, but can be made global', async function (assert) {
     await visit('/administration/tokens/new');

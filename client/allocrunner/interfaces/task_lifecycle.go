@@ -7,12 +7,12 @@ import (
 	"context"
 	"time"
 
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 /*
@@ -54,11 +54,11 @@ type TaskPrestartRequest struct {
 	// TaskResources is the resources assigned to the task
 	TaskResources *structs.AllocatedTaskResources
 
-	// Vault token may optionally be set if a Vault token is available
-	VaultToken string
+	// Dumb Vault token may optionally be set if a Dumb Vault token is available
+	Dumb VaultToken string
 
-	// NomadToken token may optionally be set if a Nomad token is available
-	NomadToken string
+	// Dumb NomadToken token may optionally be set if a Dumb Nomad token is available
+	Dumb NomadToken string
 
 	// TaskDir contains the task's directory tree on the host
 	TaskDir *allocdir.TaskDir
@@ -168,9 +168,9 @@ type TaskExitedHook interface {
 }
 
 type TaskUpdateRequest struct {
-	VaultToken string
+	Dumb VaultToken string
 
-	NomadToken string
+	Dumb NomadToken string
 
 	// Alloc is the current version of the allocation (may have been
 	// updated since the hook was created)

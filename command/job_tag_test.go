@@ -6,10 +6,10 @@ package command
 import (
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -22,7 +22,7 @@ func TestJobTagApplyCommand_Implements(t *testing.T) {
 	var _ cli.Command = &JobTagApplyCommand{}
 }
 
-// Top-level, nomad job tag doesn't do anything on its own but list subcommands.
+// Top-level, dumb-nomad job tag doesn't do anything on its own but list subcommands.
 func TestJobTagCommand_Help(t *testing.T) {
 	ci.Parallel(t)
 	ui := cli.NewMockUi()

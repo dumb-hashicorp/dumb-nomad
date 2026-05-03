@@ -13,9 +13,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -88,9 +88,9 @@ func TestHTTP_Variables(t *testing.T) {
 
 			// Check for the index
 
-			must.NonZero(t, len(respW.HeaderMap.Get("X-Nomad-Index")))
-			must.Eq(t, "true", respW.HeaderMap.Get("X-Nomad-KnownLeader"))
-			must.NonZero(t, len(respW.HeaderMap.Get("X-Nomad-LastContact")))
+			must.NonZero(t, len(respW.HeaderMap.Get("X-Dumb Nomad-Index")))
+			must.Eq(t, "true", respW.HeaderMap.Get("X-Dumb Nomad-KnownLeader"))
+			must.NonZero(t, len(respW.HeaderMap.Get("X-Dumb Nomad-LastContact")))
 
 			// Check the output (the 4 we register )
 			must.Len(t, 4, obj.([]*structs.VariableMetadata))
@@ -163,9 +163,9 @@ func TestHTTP_Variables(t *testing.T) {
 			must.NoError(t, err)
 
 			// Check for the index
-			must.NonZero(t, len(respW.HeaderMap.Get("X-Nomad-Index")))
-			must.Eq(t, "true", respW.HeaderMap.Get("X-Nomad-KnownLeader"))
-			must.NonZero(t, len(respW.HeaderMap.Get("X-Nomad-LastContact")))
+			must.NonZero(t, len(respW.HeaderMap.Get("X-Dumb Nomad-Index")))
+			must.Eq(t, "true", respW.HeaderMap.Get("X-Dumb Nomad-KnownLeader"))
+			must.NonZero(t, len(respW.HeaderMap.Get("X-Dumb Nomad-LastContact")))
 
 			// Check the output
 			must.Eq(t, out, obj.(*structs.VariableDecrypted))
@@ -216,8 +216,8 @@ func TestHTTP_Variables(t *testing.T) {
 			must.True(t, ok, must.Sprint(must.Sprint("Unable to convert obj to VariableDecrypted")))
 
 			// Check for the index
-			must.NonZero(t, len(respW.HeaderMap.Get("X-Nomad-Index")))
-			must.Eq(t, fmt.Sprint(sv1.ModifyIndex), respW.HeaderMap.Get("X-Nomad-Index"))
+			must.NonZero(t, len(respW.HeaderMap.Get("X-Dumb Nomad-Index")))
+			must.Eq(t, fmt.Sprint(sv1.ModifyIndex), respW.HeaderMap.Get("X-Dumb Nomad-Index"))
 
 			// Check the variable was put and that the returned item matched the
 			// fetched value
@@ -287,8 +287,8 @@ func TestHTTP_Variables(t *testing.T) {
 			must.True(t, ok, must.Sprint("Unable to convert obj to VariableDecrypted"))
 
 			// Check for the index
-			must.NonZero(t, len(respW.HeaderMap.Get("X-Nomad-Index")))
-			must.Eq(t, fmt.Sprint(out.ModifyIndex), respW.HeaderMap.Get("X-Nomad-Index"))
+			must.NonZero(t, len(respW.HeaderMap.Get("X-Dumb Nomad-Index")))
+			must.Eq(t, fmt.Sprint(out.ModifyIndex), respW.HeaderMap.Get("X-Dumb Nomad-Index"))
 
 			{
 				// Check that written varible does not equal the input to rule out input mutation
@@ -328,7 +328,7 @@ func TestHTTP_Variables(t *testing.T) {
 				must.Eq(t, conflict, sv)
 
 				// Check for the index
-				must.NonZero(t, len(respW.HeaderMap.Get("X-Nomad-Index")))
+				must.NonZero(t, len(respW.HeaderMap.Get("X-Dumb Nomad-Index")))
 			}
 			// Check the variable was not updated
 			{
@@ -353,8 +353,8 @@ func TestHTTP_Variables(t *testing.T) {
 				must.True(t, ok, must.Sprint("Unable to convert obj to VariableDecrypted"))
 
 				// Check for the index
-				must.NonZero(t, len(respW.HeaderMap.Get("X-Nomad-Index")))
-				must.Eq(t, fmt.Sprint(sv1.ModifyIndex), respW.HeaderMap.Get("X-Nomad-Index"))
+				must.NonZero(t, len(respW.HeaderMap.Get("X-Dumb Nomad-Index")))
+				must.Eq(t, fmt.Sprint(sv1.ModifyIndex), respW.HeaderMap.Get("X-Dumb Nomad-Index"))
 
 				// Check the variable was put and that the returned item matched the
 				// fetched value
@@ -465,8 +465,8 @@ func TestHTTP_Variables(t *testing.T) {
 			must.True(t, ok, must.Sprint("Unable to convert obj to VariableDecrypted"))
 
 			// Check for the index
-			must.NonZero(t, len(respW.HeaderMap.Get("X-Nomad-Index")))
-			must.Eq(t, fmt.Sprint(out.ModifyIndex), respW.HeaderMap.Get("X-Nomad-Index"))
+			must.NonZero(t, len(respW.HeaderMap.Get("X-Dumb Nomad-Index")))
+			must.Eq(t, fmt.Sprint(out.ModifyIndex), respW.HeaderMap.Get("X-Dumb Nomad-Index"))
 
 			// Check for the lock
 			must.NotNil(t, out.VariableMetadata.Lock)
@@ -536,8 +536,8 @@ func TestHTTP_Variables(t *testing.T) {
 			must.True(t, ok, must.Sprint("Unable to convert obj to VariableDecrypted"))
 
 			// Check for the index
-			must.NonZero(t, len(respW.HeaderMap.Get("X-Nomad-Index")))
-			must.Eq(t, fmt.Sprint(out.ModifyIndex), respW.HeaderMap.Get("X-Nomad-Index"))
+			must.NonZero(t, len(respW.HeaderMap.Get("X-Dumb Nomad-Index")))
+			must.Eq(t, fmt.Sprint(out.ModifyIndex), respW.HeaderMap.Get("X-Dumb Nomad-Index"))
 
 			// Check for the lock
 			must.Nil(t, out.VariableMetadata.Lock)
@@ -587,7 +587,7 @@ func TestHTTP_Variables(t *testing.T) {
 				must.True(t, sv.Equal(*conflict))
 
 				// Check for the index
-				must.NonZero(t, len(respW.HeaderMap.Get("X-Nomad-Index")))
+				must.NonZero(t, len(respW.HeaderMap.Get("X-Dumb Nomad-Index")))
 			}
 
 			// Check variable was not deleted
@@ -630,7 +630,7 @@ func TestHTTP_Variables(t *testing.T) {
 			must.Nil(t, obj)
 
 			// Check for the index
-			must.NonZero(t, len(respW.HeaderMap.Get("X-Nomad-Index")))
+			must.NonZero(t, len(respW.HeaderMap.Get("X-Dumb Nomad-Index")))
 			must.Eq(t, http.StatusNoContent, respW.Result().StatusCode)
 
 			// Check variable was deleted

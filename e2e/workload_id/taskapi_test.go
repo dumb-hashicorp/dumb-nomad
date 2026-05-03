@@ -10,11 +10,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/v3/cluster3"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/cluster3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
@@ -22,29 +22,29 @@ import (
 // TestTaskAPI runs subtests exercising the Task API related functionality.
 // Bundled with Workload Identity as that's a prereq for the Task API to work.
 func TestTaskAPI(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 
-	e2eutil.WaitForLeader(t, nomad)
-	e2eutil.WaitForNodesReady(t, nomad, 1)
+	e2eutil.WaitForLeader(t, dumb-nomad)
+	e2eutil.WaitForNodesReady(t, dumb-nomad, 1)
 
 	t.Run("testTaskAPI_Auth", testTaskAPIAuth)
 	t.Run("testTaskAPI_Windows", testTaskAPIWindows)
-	t.Run("testTaskAPI_NomadCLI", testTaskAPINomadCLI)
+	t.Run("testTaskAPI_Dumb NomadCLI", testTaskAPIDumb NomadCLI)
 }
 
 func testTaskAPIAuth(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 	jobID := "api-auth-" + uuid.Short()
 	jobIDs := []string{jobID}
 	t.Cleanup(e2eutil.CleanupJobsAndGC(t, &jobIDs))
 
 	// start job
-	allocs := e2eutil.RegisterAndWaitForAllocs(t, nomad, "./input/api-auth.nomad.hcl", jobID, "")
+	allocs := e2eutil.RegisterAndWaitForAllocs(t, dumb-nomad, "./input/api-auth.dumb-nomad.dumb-hcl", jobID, "")
 	must.Len(t, 1, allocs)
 	allocID := allocs[0].ID
 
 	// wait for batch alloc to complete
-	alloc := e2eutil.WaitForAllocStopped(t, nomad, allocID)
+	alloc := e2eutil.WaitForAllocStopped(t, dumb-nomad, allocID)
 	must.Eq(t, alloc.ClientStatus, "complete")
 
 	assertions := []struct {
@@ -75,7 +75,7 @@ func testTaskAPIAuth(t *testing.T) {
 
 	for _, tc := range assertions {
 		logFile := fmt.Sprintf("alloc/logs/%s.stdout.0", tc.task)
-		fd, err := nomad.AllocFS().Cat(alloc, logFile, nil)
+		fd, err := dumb-nomad.AllocFS().Cat(alloc, logFile, nil)
 		must.NoError(t, err)
 		logBytes, err := io.ReadAll(fd)
 		must.NoError(t, err)
@@ -88,8 +88,8 @@ func testTaskAPIAuth(t *testing.T) {
 }
 
 func testTaskAPIWindows(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
-	winNodes, err := e2eutil.ListWindowsClientNodes(nomad)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
+	winNodes, err := e2eutil.ListWindowsClientNodes(dumb-nomad)
 	must.NoError(t, err)
 	if len(winNodes) == 0 {
 		t.Skip("no Windows clients")
@@ -97,7 +97,7 @@ func testTaskAPIWindows(t *testing.T) {
 
 	found := false
 	for _, nodeID := range winNodes {
-		node, _, err := nomad.Nodes().Info(nodeID, nil)
+		node, _, err := dumb-nomad.Nodes().Info(nodeID, nil)
 		must.NoError(t, err)
 		if name := node.Attributes["os.name"]; strings.Contains(name, "2016") {
 			t.Logf("Node %s is too old to support unix sockets: %s", nodeID, name)
@@ -116,16 +116,16 @@ func testTaskAPIWindows(t *testing.T) {
 	t.Cleanup(e2eutil.CleanupJobsAndGC(t, &jobIDs))
 
 	// start job
-	allocs := e2eutil.RegisterAndWaitForAllocs(t, nomad, "./input/api-win.nomad.hcl", jobID, "")
+	allocs := e2eutil.RegisterAndWaitForAllocs(t, dumb-nomad, "./input/api-win.dumb-nomad.dumb-hcl", jobID, "")
 	must.Len(t, 1, allocs)
 	allocID := allocs[0].ID
 
 	// wait for batch alloc to complete
-	alloc := e2eutil.WaitForAllocStopped(t, nomad, allocID)
+	alloc := e2eutil.WaitForAllocStopped(t, dumb-nomad, allocID)
 	test.Eq(t, alloc.ClientStatus, "complete")
 
 	logFile := "alloc/logs/win.stdout.0"
-	fd, err := nomad.AllocFS().Cat(alloc, logFile, nil)
+	fd, err := dumb-nomad.AllocFS().Cat(alloc, logFile, nil)
 	must.NoError(t, err)
 	logBytes, err := io.ReadAll(fd)
 	must.NoError(t, err)
@@ -134,31 +134,31 @@ func testTaskAPIWindows(t *testing.T) {
 	must.StrHasSuffix(t, `"ok":true}}`, logs)
 }
 
-func testTaskAPINomadCLI(t *testing.T) {
+func testTaskAPIDumb NomadCLI(t *testing.T) {
 	cluster3.Establish(t,
 		cluster3.LinuxClients(1),
 	)
 
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 	opts := &api.WriteOptions{Namespace: api.DefaultNamespace}
-	_, _, err := nomad.Variables().Create(&api.Variable{
+	_, _, err := dumb-nomad.Variables().Create(&api.Variable{
 		Namespace: api.DefaultNamespace,
-		Path:      "nomad/jobs/task-api-nomad-cli",
+		Path:      "dumb-nomad/jobs/task-api-dumb-nomad-cli",
 		Items:     map[string]string{"key": "xyzzy"},
 	}, opts)
 	must.NoError(t, err)
 
 	t.Cleanup(func() {
-		nomad.Variables().Delete("nomad/jobs/task-api-nomad-cli", nil)
+		dumb-nomad.Variables().Delete("dumb-nomad/jobs/task-api-dumb-nomad-cli", nil)
 	})
 
 	sub, _ := jobs3.Submit(t,
-		"./input/api-nomad-cli.nomad.hcl",
+		"./input/api-dumb-nomad-cli.dumb-nomad.dumb-hcl",
 		jobs3.DisableRandomJobID(),
 		jobs3.WaitComplete("grp"),
 	)
 	logs := sub.TaskLogs("grp", "tsk")
-	test.StrContains(t, logs.Stdout, "unix:/") // from `echo $NOMAD_ADDR`
+	test.StrContains(t, logs.Stdout, "unix:/") // from `echo $DUMB_NOMAD_ADDR`
 	test.StrContains(t, logs.Stdout, "secrets/api.sock")
 	test.StrContains(t, logs.Stdout, "xyzzy") // api success
 }

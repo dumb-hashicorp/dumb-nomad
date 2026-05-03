@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net"
 
-	plugin "github.com/hashicorp/go-plugin"
+	plugin "github.com/dumb-hashicorp/go-plugin"
 )
 
 // ReattachConfig is a wrapper around plugin.ReattachConfig to better support

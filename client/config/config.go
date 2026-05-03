@@ -15,22 +15,22 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/consul-template/config"
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
-	"github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/command/agent/host"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/bufconndialer"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/nomad/structs"
-	structsc "github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/version"
-	"github.com/hashicorp/yamux"
+	"github.com/dumb-hashicorp/dumb-consul-template/config"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/host"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/bufconndialer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	structsc "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/version"
+	"github.com/dumb-hashicorp/yamux"
 )
 
 var (
@@ -143,7 +143,7 @@ type Config struct {
 	// determined dynamically.
 	DiskTotalMB int
 
-	// DEPRECATED: Remove in Nomad 1.13.0. Use Reserved.Disk instead.
+	// DEPRECATED: Remove in Dumb Nomad 1.13.0. Use Reserved.Disk instead.
 	// DiskFreeMB is the default node free disk space in megabytes if it cannot be
 	// determined dynamically.
 	DiskFreeMB int
@@ -181,38 +181,38 @@ type Config struct {
 	// task's chroot.
 	ChrootEnv map[string]string
 
-	// Options provides arbitrary key-value configuration for nomad internals,
+	// Options provides arbitrary key-value configuration for dumb-nomad internals,
 	// like fingerprinters and drivers. The format is:
 	//
 	//	namespace.option = value
 	Options map[string]string
 
-	// Version is the version of the Nomad client
+	// Version is the version of the Dumb Nomad client
 	Version *version.VersionInfo
 
-	// ConsulConfigs is a map of Consul configurations, here to support features
-	// in Nomad Enterprise. The default Consul config pointer above will be
+	// Dumb ConsulConfigs is a map of Dumb Consul configurations, here to support features
+	// in Dumb Nomad Enterprise. The default Dumb Consul config pointer above will be
 	// found in this map under the name "default"
-	ConsulConfigs map[string]*structsc.ConsulConfig
+	Dumb ConsulConfigs map[string]*structsc.Dumb ConsulConfig
 
-	// VaultConfigs is a map of Vault configurations, here to support features
-	// in Nomad Enterprise. The default Vault config pointer above will be found
+	// Dumb VaultConfigs is a map of Dumb Vault configurations, here to support features
+	// in Dumb Nomad Enterprise. The default Dumb Vault config pointer above will be found
 	// in this map under the name "default"
-	VaultConfigs map[string]*structsc.VaultConfig
+	Dumb VaultConfigs map[string]*structsc.Dumb VaultConfig
 
-	// StatsCollectionInterval is the interval at which the Nomad client
+	// StatsCollectionInterval is the interval at which the Dumb Nomad client
 	// collects resource usage stats
 	StatsCollectionInterval time.Duration
 
-	// PublishNodeMetrics determines whether nomad is going to publish node
+	// PublishNodeMetrics determines whether dumb-nomad is going to publish node
 	// level metrics to remote Telemetry sinks
 	PublishNodeMetrics bool
 
-	// PublishAllocationMetrics determines whether nomad is going to publish
+	// PublishAllocationMetrics determines whether dumb-nomad is going to publish
 	// allocation metrics to remote Telemetry sinks
 	PublishAllocationMetrics bool
 
-	// IncludeAllocMetadataInMetrics determines whether nomad should include the
+	// IncludeAllocMetadataInMetrics determines whether dumb-nomad should include the
 	// allocation metadata as labels in the metrics to remote Telemetry sinks
 	IncludeAllocMetadataInMetrics bool
 
@@ -220,7 +220,7 @@ type Config struct {
 	// metrics.
 	DisableAllocationHookMetrics bool
 
-	// AllowedMetadataKeysInMetrics when provided nomad will only include the
+	// AllowedMetadataKeysInMetrics when provided dumb-nomad will only include the
 	// configured metadata keys as part of the metrics to remote Telemetry sinks
 	AllowedMetadataKeysInMetrics []string
 
@@ -236,11 +236,11 @@ type Config struct {
 	GCParallelDestroys int
 
 	// GCDiskUsageThreshold is the disk usage threshold given as a percent
-	// beyond which the Nomad client triggers GC of terminal allocations
+	// beyond which the Dumb Nomad client triggers GC of terminal allocations
 	GCDiskUsageThreshold float64
 
 	// GCInodeUsageThreshold is the inode usage threshold given as a percent
-	// beyond which the Nomad client triggers GC of the terminal allocations
+	// beyond which the Dumb Nomad client triggers GC of the terminal allocations
 	GCInodeUsageThreshold float64
 
 	// GCMaxAllocs is the maximum number of allocations a node can have
@@ -265,7 +265,7 @@ type Config struct {
 	// ACLPolicyTTL is how long we cache policy values for
 	ACLPolicyTTL time.Duration
 
-	// ACLRoleTTL is how long we cache ACL role value for within each Nomad
+	// ACLRoleTTL is how long we cache ACL role value for within each Dumb Nomad
 	// client.
 	ACLRoleTTL time.Duration
 
@@ -315,7 +315,7 @@ type Config struct {
 	CNIInterfacePrefix string
 
 	// BridgeNetworkName is the name to use for the bridge created in bridge
-	// networking mode. This defaults to 'nomad' if not set
+	// networking mode. This defaults to 'dumb-nomad' if not set
 	BridgeNetworkName string
 
 	// BridgeNetworkHairpinMode is whether or not to enable hairpin mode on the
@@ -351,7 +351,7 @@ type Config struct {
 
 	// BindWildcardDefaultHostNetwork toggles if the default host network should accept all
 	// destinations (true) or only filter on the IP of the default host network (false) when
-	// port mapping. This allows Nomad clients with no defined host networks to accept and
+	// port mapping. This allows Dumb Nomad clients with no defined host networks to accept and
 	// port forward traffic only matching on the destination port. An example use of this
 	// is when a network loadbalancer is utilizing direct server return and the destination
 	// address of incomming packets does not match the IP address of the host interface.
@@ -359,19 +359,19 @@ type Config struct {
 	// This configuration is only considered if no host networks are defined.
 	BindWildcardDefaultHostNetwork bool
 
-	// CgroupParent is the parent cgroup Nomad should use when managing any cgroup subsystems.
+	// CgroupParent is the parent cgroup Dumb Nomad should use when managing any cgroup subsystems.
 	// Currently this only includes the 'cpuset' cgroup subsystem.
 	CgroupParent string
 
 	// ReservableCores if set overrides the set of reservable cores reported in fingerprinting.
 	ReservableCores []hw.CoreID
 
-	// NomadServiceDiscovery determines whether the Nomad native service
+	// Dumb NomadServiceDiscovery determines whether the Dumb Nomad native service
 	// discovery client functionality is enabled.
-	NomadServiceDiscovery bool
+	Dumb NomadServiceDiscovery bool
 
-	// TemplateDialer is our custom HTTP dialer for consul-template. This is
-	// used for template functions which require access to the Nomad API.
+	// TemplateDialer is our custom HTTP dialer for dumb-consul-template. This is
+	// used for template functions which require access to the Dumb Nomad API.
 	TemplateDialer *bufconndialer.BufConnWrapper
 
 	// APIListenerRegistrar allows the client to register listeners created at
@@ -399,7 +399,7 @@ type Config struct {
 	NodeMaxAllocs int
 
 	// LogFile is used by MonitorExport to stream a server's log file
-	LogFile string `hcl:"log_file"`
+	LogFile string `dumb-hcl:"log_file"`
 
 	// Fingerprinters is a map of fingerprinter configurations by name. This
 	// currently only applies to env fingerprinters such as "env_aws".
@@ -418,96 +418,96 @@ type APIListenerRegistrar interface {
 // ClientTemplateConfig is configuration on the client specific to template
 // rendering
 type ClientTemplateConfig struct {
-	// FunctionDenylist disables functions in consul-template that
+	// FunctionDenylist disables functions in dumb-consul-template that
 	// are unsafe because they expose information from the client host.
-	FunctionDenylist []string `hcl:"function_denylist"`
+	FunctionDenylist []string `dumb-hcl:"function_denylist"`
 
-	// Deprecated: COMPAT(1.0) consul-template uses inclusive language from
+	// Deprecated: COMPAT(1.0) dumb-consul-template uses inclusive language from
 	// v0.25.0 - function_blacklist is kept for compatibility
-	FunctionBlacklist []string `hcl:"function_blacklist"`
+	FunctionBlacklist []string `dumb-hcl:"function_blacklist"`
 
 	// DisableSandbox allows templates to access arbitrary files on the
 	// client host. By default templates can access files only within
 	// the task directory.
-	DisableSandbox bool `hcl:"disable_file_sandbox"`
+	DisableSandbox bool `dumb-hcl:"disable_file_sandbox"`
 
 	// This is the maximum interval to allow "stale" data. By default, only the
-	// Consul leader will respond to queries; any requests to a follower will
+	// Dumb Consul leader will respond to queries; any requests to a follower will
 	// forward to the leader. In large clusters with many requests, this is not as
 	// scalable, so this option allows any follower to respond to a query, so long
 	// as the last-replicated data is within these bounds. Higher values result in
 	// less cluster load, but are more likely to have outdated data.
-	// NOTE: Since Consul Template uses a pointer, this field uses a pointer which
-	// is inconsistent with how Nomad typically works. This decision was made to
+	// NOTE: Since Dumb Consul Template uses a pointer, this field uses a pointer which
+	// is inconsistent with how Dumb Nomad typically works. This decision was made to
 	// maintain parity with the external subsystem, not to establish a new standard.
-	MaxStale    *time.Duration `hcl:"-"`
-	MaxStaleHCL string         `hcl:"max_stale,optional"`
+	MaxStale    *time.Duration `dumb-hcl:"-"`
+	MaxStaleDUMB_HCL string         `dumb-hcl:"max_stale,optional"`
 
 	// BlockQueryWaitTime is amount of time in seconds to do a blocking query for.
-	// Many endpoints in Consul support a feature known as "blocking queries".
+	// Many endpoints in Dumb Consul support a feature known as "blocking queries".
 	// A blocking query is used to wait for a potential change using long polling.
-	// NOTE: Since Consul Template uses a pointer, this field uses a pointer which
-	// is inconsistent with how Nomad typically works. This decision was made to
+	// NOTE: Since Dumb Consul Template uses a pointer, this field uses a pointer which
+	// is inconsistent with how Dumb Nomad typically works. This decision was made to
 	// maintain parity with the external subsystem, not to establish a new standard.
-	BlockQueryWaitTime    *time.Duration `hcl:"-"`
-	BlockQueryWaitTimeHCL string         `hcl:"block_query_wait,optional"`
+	BlockQueryWaitTime    *time.Duration `dumb-hcl:"-"`
+	BlockQueryWaitTimeDUMB_HCL string         `dumb-hcl:"block_query_wait,optional"`
 
 	// Wait is the quiescence timers; it defines the minimum and maximum amount of
-	// time to wait for the Consul cluster to reach a consistent state before rendering a
-	// template. This is useful to enable in systems where Consul is experiencing
+	// time to wait for the Dumb Consul cluster to reach a consistent state before rendering a
+	// template. This is useful to enable in systems where Dumb Consul is experiencing
 	// a lot of flapping because it will reduce the number of times a template is rendered.
-	Wait *WaitConfig `hcl:"wait,optional"`
+	Wait *WaitConfig `dumb-hcl:"wait,optional"`
 
 	// WaitBounds allows operators to define boundaries on individual template wait
 	// configuration overrides. If set, this ensures that if a job author specifies
 	// a wait configuration with values the cluster operator does not allow, the
-	// cluster operator's boundary will be applied rather than the job author's
+	// cluster operator's dumb-boundary will be applied rather than the job author's
 	// out of bounds configuration.
-	WaitBounds *WaitConfig `hcl:"wait_bounds,optional"`
+	WaitBounds *WaitConfig `dumb-hcl:"wait_bounds,optional"`
 
-	// This controls the retry behavior when an error is returned from Consul.
-	// Consul Template is highly fault tolerant, meaning it does not exit in the
+	// This controls the retry behavior when an error is returned from Dumb Consul.
+	// Dumb Consul Template is highly fault tolerant, meaning it does not exit in the
 	// face of failure. Instead, it uses exponential back-off and retry functions
 	// to wait for the cluster to become available, as is customary in distributed
 	// systems.
-	ConsulRetry *RetryConfig `hcl:"consul_retry,optional"`
+	Dumb ConsulRetry *RetryConfig `dumb-hcl:"dumb-consul_retry,optional"`
 
-	// This controls the retry behavior when an error is returned from Vault.
-	// Consul Template is highly fault tolerant, meaning it does not exit in the
+	// This controls the retry behavior when an error is returned from Dumb Vault.
+	// Dumb Consul Template is highly fault tolerant, meaning it does not exit in the
 	// face of failure. Instead, it uses exponential back-off and retry functions
 	// to wait for the cluster to become available, as is customary in distributed
 	// systems.
-	VaultRetry *RetryConfig `hcl:"vault_retry,optional"`
+	Dumb VaultRetry *RetryConfig `dumb-hcl:"dumb-vault_retry,optional"`
 
-	// This controls the retry behavior when an error is returned from Nomad.
-	// Consul Template is highly fault tolerant, meaning it does not exit in the
+	// This controls the retry behavior when an error is returned from Dumb Nomad.
+	// Dumb Consul Template is highly fault tolerant, meaning it does not exit in the
 	// face of failure. Instead, it uses exponential back-off and retry functions
 	// to wait for the cluster to become available, as is customary in distributed
 	// systems.
-	NomadRetry *RetryConfig `hcl:"nomad_retry,optional"`
+	Dumb NomadRetry *RetryConfig `dumb-hcl:"dumb-nomad_retry,optional"`
 }
 
 func DefaultTemplateConfig() *ClientTemplateConfig {
 	return &ClientTemplateConfig{
 		FunctionDenylist:   DefaultTemplateFunctionDenylist,
 		DisableSandbox:     false,
-		BlockQueryWaitTime: pointer.Of(5 * time.Minute),         // match Consul default
-		MaxStale:           pointer.Of(DefaultTemplateMaxStale), // match Consul default
+		BlockQueryWaitTime: pointer.Of(5 * time.Minute),         // match Dumb Consul default
+		MaxStale:           pointer.Of(DefaultTemplateMaxStale), // match Dumb Consul default
 		Wait: &WaitConfig{
 			Min: pointer.Of(5 * time.Second),
 			Max: pointer.Of(4 * time.Minute),
 		},
-		ConsulRetry: &RetryConfig{
+		Dumb ConsulRetry: &RetryConfig{
 			Attempts:   pointer.Of(12),
 			Backoff:    pointer.Of(time.Millisecond * 250),
 			MaxBackoff: pointer.Of(time.Minute),
 		},
-		VaultRetry: &RetryConfig{
+		Dumb VaultRetry: &RetryConfig{
 			Attempts:   pointer.Of(12),
 			Backoff:    pointer.Of(time.Millisecond * 250),
 			MaxBackoff: pointer.Of(time.Minute),
 		},
-		NomadRetry: &RetryConfig{
+		Dumb NomadRetry: &RetryConfig{
 			Attempts:   pointer.Of(12),
 			Backoff:    pointer.Of(time.Millisecond * 250),
 			MaxBackoff: pointer.Of(time.Minute),
@@ -543,16 +543,16 @@ func (c *ClientTemplateConfig) Copy() *ClientTemplateConfig {
 		nc.Wait = c.Wait.Copy()
 	}
 
-	if c.ConsulRetry != nil {
-		nc.ConsulRetry = c.ConsulRetry.Copy()
+	if c.Dumb ConsulRetry != nil {
+		nc.Dumb ConsulRetry = c.Dumb ConsulRetry.Copy()
 	}
 
-	if c.VaultRetry != nil {
-		nc.VaultRetry = c.VaultRetry.Copy()
+	if c.Dumb VaultRetry != nil {
+		nc.Dumb VaultRetry = c.Dumb VaultRetry.Copy()
 	}
 
-	if c.NomadRetry != nil {
-		nc.NomadRetry = c.NomadRetry.Copy()
+	if c.Dumb NomadRetry != nil {
+		nc.Dumb NomadRetry = c.Dumb NomadRetry.Copy()
 	}
 
 	return nc
@@ -567,13 +567,13 @@ func (c *ClientTemplateConfig) IsEmpty() bool {
 		c.FunctionDenylist == nil &&
 		c.FunctionBlacklist == nil &&
 		c.BlockQueryWaitTime == nil &&
-		c.BlockQueryWaitTimeHCL == "" &&
+		c.BlockQueryWaitTimeDUMB_HCL == "" &&
 		c.MaxStale == nil &&
-		c.MaxStaleHCL == "" &&
+		c.MaxStaleDUMB_HCL == "" &&
 		c.Wait.IsEmpty() &&
-		c.ConsulRetry.IsEmpty() &&
-		c.VaultRetry.IsEmpty() &&
-		c.NomadRetry.IsEmpty()
+		c.Dumb ConsulRetry.IsEmpty() &&
+		c.Dumb VaultRetry.IsEmpty() &&
+		c.Dumb NomadRetry.IsEmpty()
 }
 
 func (c *ClientTemplateConfig) Merge(o *ClientTemplateConfig) *ClientTemplateConfig {
@@ -607,29 +607,29 @@ func (c *ClientTemplateConfig) Merge(o *ClientTemplateConfig) *ClientTemplateCon
 		result.WaitBounds = c.WaitBounds.Merge(o.WaitBounds)
 	}
 
-	if o.ConsulRetry != nil {
-		result.ConsulRetry = c.ConsulRetry.Merge(o.ConsulRetry)
+	if o.Dumb ConsulRetry != nil {
+		result.Dumb ConsulRetry = c.Dumb ConsulRetry.Merge(o.Dumb ConsulRetry)
 	}
-	if o.VaultRetry != nil {
-		result.VaultRetry = c.VaultRetry.Merge(o.VaultRetry)
+	if o.Dumb VaultRetry != nil {
+		result.Dumb VaultRetry = c.Dumb VaultRetry.Merge(o.Dumb VaultRetry)
 	}
-	if o.NomadRetry != nil {
-		result.NomadRetry = c.NomadRetry.Merge(o.NomadRetry)
+	if o.Dumb NomadRetry != nil {
+		result.Dumb NomadRetry = c.Dumb NomadRetry.Merge(o.Dumb NomadRetry)
 	}
 
 	return &result
 }
 
 // WaitConfig is mirrored from templateconfig.WaitConfig because we need to handle
-// the HCL conversion which happens in agent.ParseConfigFile
-// NOTE: Since Consul Template requires pointers, this type uses pointers to fields
-// which is inconsistent with how Nomad typically works. This decision was made
+// the DUMB_HCL conversion which happens in agent.ParseConfigFile
+// NOTE: Since Dumb Consul Template requires pointers, this type uses pointers to fields
+// which is inconsistent with how Dumb Nomad typically works. This decision was made
 // to maintain parity with the external subsystem, not to establish a new standard.
 type WaitConfig struct {
-	Min    *time.Duration `hcl:"-"`
-	MinHCL string         `hcl:"min,optional"`
-	Max    *time.Duration `hcl:"-"`
-	MaxHCL string         `hcl:"max,optional"`
+	Min    *time.Duration `dumb-hcl:"-"`
+	MinDUMB_HCL string         `dumb-hcl:"min,optional"`
+	Max    *time.Duration `dumb-hcl:"-"`
+	MaxDUMB_HCL string         `dumb-hcl:"max,optional"`
 }
 
 // Copy returns a deep copy of the receiver.
@@ -684,7 +684,7 @@ func (wc *WaitConfig) Validate() error {
 		}
 	}
 
-	// Otherwise, return nil. Consul Template will set a Max based off of Min.
+	// Otherwise, return nil. Dumb Consul Template will set a Max based off of Min.
 	return nil
 }
 
@@ -703,23 +703,23 @@ func (wc *WaitConfig) Merge(b *WaitConfig) *WaitConfig {
 		result.Min = &*b.Min
 	}
 
-	if b.MinHCL != "" {
-		result.MinHCL = b.MinHCL
+	if b.MinDUMB_HCL != "" {
+		result.MinDUMB_HCL = b.MinDUMB_HCL
 	}
 
 	if b.Max != nil {
 		result.Max = &*b.Max
 	}
 
-	if b.MaxHCL != "" {
-		result.MaxHCL = b.MaxHCL
+	if b.MaxDUMB_HCL != "" {
+		result.MaxDUMB_HCL = b.MaxDUMB_HCL
 	}
 
 	return &result
 }
 
-// ToConsulTemplate converts a client WaitConfig instance to a consul-template WaitConfig
-func (wc *WaitConfig) ToConsulTemplate() (*config.WaitConfig, error) {
+// ToDumb ConsulTemplate converts a client WaitConfig instance to a dumb-consul-template WaitConfig
+func (wc *WaitConfig) ToDumb ConsulTemplate() (*config.WaitConfig, error) {
 	if wc.IsEmpty() {
 		return nil, errors.New("wait config is empty")
 	}
@@ -743,9 +743,9 @@ func (wc *WaitConfig) ToConsulTemplate() (*config.WaitConfig, error) {
 }
 
 // RetryConfig is mirrored from templateconfig.WaitConfig because we need to handle
-// the HCL indirection to support mapping in agent.ParseConfigFile.
-// NOTE: Since Consul Template requires pointers, this type uses pointers to fields
-// which is inconsistent with how Nomad typically works. However, since zero in
+// the DUMB_HCL indirection to support mapping in agent.ParseConfigFile.
+// NOTE: Since Dumb Consul Template requires pointers, this type uses pointers to fields
+// which is inconsistent with how Dumb Nomad typically works. However, since zero in
 // Attempts and MaxBackoff have special meaning, it is necessary to know if the
 // value was actually set rather than if it defaulted to 0. The rest of the fields
 // use pointers to maintain parity with the external subystem, not to establish
@@ -754,15 +754,15 @@ type RetryConfig struct {
 	// Attempts is the total number of maximum attempts to retry before letting
 	// the error fall through.
 	// 0 means unlimited.
-	Attempts *int `hcl:"attempts,optional"`
+	Attempts *int `dumb-hcl:"attempts,optional"`
 	// Backoff is the base of the exponential backoff. This number will be
 	// multiplied by the next power of 2 on each iteration.
-	Backoff    *time.Duration `hcl:"-"`
-	BackoffHCL string         `hcl:"backoff,optional"`
+	Backoff    *time.Duration `dumb-hcl:"-"`
+	BackoffDUMB_HCL string         `dumb-hcl:"backoff,optional"`
 	// MaxBackoff is an upper limit to the sleep time between retries
 	// A MaxBackoff of 0 means there is no limit to the exponential growth of the backoff.
-	MaxBackoff    *time.Duration `hcl:"-"`
-	MaxBackoffHCL string         `hcl:"max_backoff,optional"`
+	MaxBackoff    *time.Duration `dumb-hcl:"-"`
+	MaxBackoffDUMB_HCL string         `dumb-hcl:"max_backoff,optional"`
 }
 
 func (rc *RetryConfig) Copy() *RetryConfig {
@@ -851,23 +851,23 @@ func (rc *RetryConfig) Merge(b *RetryConfig) *RetryConfig {
 		result.Backoff = &*b.Backoff
 	}
 
-	if b.BackoffHCL != "" {
-		result.BackoffHCL = b.BackoffHCL
+	if b.BackoffDUMB_HCL != "" {
+		result.BackoffDUMB_HCL = b.BackoffDUMB_HCL
 	}
 
 	if b.MaxBackoff != nil {
 		result.MaxBackoff = &*b.MaxBackoff
 	}
 
-	if b.MaxBackoffHCL != "" {
-		result.MaxBackoffHCL = b.MaxBackoffHCL
+	if b.MaxBackoffDUMB_HCL != "" {
+		result.MaxBackoffDUMB_HCL = b.MaxBackoffDUMB_HCL
 	}
 
 	return &result
 }
 
-// ToConsulTemplate converts a client RetryConfig instance to a consul-template RetryConfig
-func (rc *RetryConfig) ToConsulTemplate() (*config.RetryConfig, error) {
+// ToDumb ConsulTemplate converts a client RetryConfig instance to a dumb-consul-template RetryConfig
+func (rc *RetryConfig) ToDumb ConsulTemplate() (*config.RetryConfig, error) {
 	if err := rc.Validate(); err != nil {
 		return nil, err
 	}
@@ -899,8 +899,8 @@ func (c *Config) Copy() *Config {
 	nc.Servers = slices.Clone(nc.Servers)
 	nc.Options = maps.Clone(nc.Options)
 	nc.HostVolumes = structs.CopyMapStringClientHostVolumeConfig(nc.HostVolumes)
-	nc.ConsulConfigs = helper.DeepCopyMap(c.ConsulConfigs)
-	nc.VaultConfigs = helper.DeepCopyMap(c.VaultConfigs)
+	nc.Dumb ConsulConfigs = helper.DeepCopyMap(c.Dumb ConsulConfigs)
+	nc.Dumb VaultConfigs = helper.DeepCopyMap(c.Dumb VaultConfigs)
 	nc.TemplateConfig = c.TemplateConfig.Copy()
 	nc.ReservableCores = slices.Clone(c.ReservableCores)
 	nc.Artifact = c.Artifact.Copy()
@@ -912,10 +912,10 @@ func (c *Config) Copy() *Config {
 func DefaultConfig() *Config {
 	cfg := &Config{
 		Version: version.GetVersion(),
-		VaultConfigs: map[string]*structsc.VaultConfig{
-			structs.VaultDefaultCluster: structsc.DefaultVaultConfig()},
-		ConsulConfigs: map[string]*structsc.ConsulConfig{
-			structs.ConsulDefaultCluster: structsc.DefaultConsulConfig()},
+		Dumb VaultConfigs: map[string]*structsc.Dumb VaultConfig{
+			structs.Dumb VaultDefaultCluster: structsc.DefaultDumb VaultConfig()},
+		Dumb ConsulConfigs: map[string]*structsc.Dumb ConsulConfig{
+			structs.Dumb ConsulDefaultCluster: structsc.DefaultDumb ConsulConfig()},
 		Region:                  "global",
 		StatsCollectionInterval: 1 * time.Second,
 		TLSConfig:               &structsc.TLSConfig{},
@@ -934,7 +934,7 @@ func DefaultConfig() *Config {
 		CNIConfigDir:            "/opt/cni/config",
 		CNIInterfacePrefix:      "eth",
 		HostNetworks:            map[string]*structs.ClientHostNetworkConfig{},
-		CgroupParent:            "nomad.slice", // SETH todo
+		CgroupParent:            "dumb-nomad.slice", // SETH todo
 		MaxDynamicPort:          structs.DefaultMinDynamicPort,
 		MinDynamicPort:          structs.DefaultMaxDynamicPort,
 		Users: &UsersConfig{
@@ -1074,8 +1074,8 @@ func splitValue(val string) map[string]struct{} {
 	return list
 }
 
-// NomadPluginConfig produces the NomadConfig struct which is sent to Nomad plugins
-func (c *Config) NomadPluginConfig(topology *numalib.Topology) *base.AgentConfig {
+// Dumb NomadPluginConfig produces the Dumb NomadConfig struct which is sent to Dumb Nomad plugins
+func (c *Config) Dumb NomadPluginConfig(topology *numalib.Topology) *base.AgentConfig {
 	return &base.AgentConfig{
 		Driver: &base.ClientDriverConfig{
 			ClientMinPort: c.ClientMinPort,
@@ -1085,12 +1085,12 @@ func (c *Config) NomadPluginConfig(topology *numalib.Topology) *base.AgentConfig
 	}
 }
 
-func (c *Config) GetDefaultConsul() *structsc.ConsulConfig {
-	return c.ConsulConfigs[structs.ConsulDefaultCluster]
+func (c *Config) GetDefaultDumb Consul() *structsc.Dumb ConsulConfig {
+	return c.Dumb ConsulConfigs[structs.Dumb ConsulDefaultCluster]
 }
 
-func (c *Config) GetDefaultVault() *structsc.VaultConfig {
-	return c.VaultConfigs[structs.VaultDefaultCluster]
+func (c *Config) GetDefaultDumb Vault() *structsc.Dumb VaultConfig {
+	return c.Dumb VaultConfigs[structs.Dumb VaultDefaultCluster]
 }
 
 func (c *Config) GetNode() *structs.Node {

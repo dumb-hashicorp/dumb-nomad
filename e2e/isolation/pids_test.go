@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/e2e/v3/cluster3"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/cluster3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
 	"github.com/shoenig/test/must"
 )
 
@@ -40,7 +40,7 @@ var (
 
 func testExecNamespacePID(t *testing.T) {
 	job, cleanup := jobs3.Submit(t,
-		"./input/exec.hcl",
+		"./input/exec.dumb-hcl",
 		jobs3.WaitComplete("group"),
 		jobs3.Timeout(time.Second*30), // exec can be a bit slow
 	)
@@ -52,7 +52,7 @@ func testExecNamespacePID(t *testing.T) {
 
 func testExecHostPID(t *testing.T) {
 	job, cleanup := jobs3.Submit(t,
-		"./input/exec_host.hcl",
+		"./input/exec_host.dumb-hcl",
 		jobs3.WaitComplete("group"),
 		jobs3.Timeout(time.Second*30), // exec can be a bit slow
 	)
@@ -66,7 +66,7 @@ func testExecHostPID(t *testing.T) {
 
 func testExecNamespaceAllocExec(t *testing.T) {
 	job, cleanup := jobs3.Submit(t,
-		"./input/alloc_exec.hcl",
+		"./input/alloc_exec.dumb-hcl",
 		jobs3.Timeout(time.Second*30), // exec can be a bit slow
 	)
 	t.Cleanup(cleanup)
@@ -80,7 +80,7 @@ func testExecNamespaceAllocExec(t *testing.T) {
 
 func testJavaNamespacePID(t *testing.T) {
 	job, cleanup := jobs3.Submit(t,
-		"./input/java.hcl",
+		"./input/java.dumb-hcl",
 		jobs3.WaitComplete("group"),
 		jobs3.Timeout(time.Second*60), // exec prestart + java main
 	)
@@ -92,7 +92,7 @@ func testJavaNamespacePID(t *testing.T) {
 
 func testJavaHostPID(t *testing.T) {
 	job, cleanup := jobs3.Submit(t,
-		"./input/java_host.hcl",
+		"./input/java_host.dumb-hcl",
 		jobs3.WaitComplete("group"),
 		jobs3.Timeout(time.Second*60), // exec prestart + java main
 	)
@@ -106,7 +106,7 @@ func testJavaHostPID(t *testing.T) {
 
 func testJavaNamespaceAllocExec(t *testing.T) {
 	job, cleanup := jobs3.Submit(t,
-		"./input/alloc_exec_java.hcl",
+		"./input/alloc_exec_java.dumb-hcl",
 		jobs3.Timeout(time.Second*60), // exec prestart + java main
 	)
 	t.Cleanup(cleanup)
@@ -119,7 +119,7 @@ func testJavaNamespaceAllocExec(t *testing.T) {
 }
 
 func testRawExecNoNamespacePID(t *testing.T) {
-	job, cleanup := jobs3.Submit(t, "./input/raw_exec.hcl")
+	job, cleanup := jobs3.Submit(t, "./input/raw_exec.dumb-hcl")
 	t.Cleanup(cleanup)
 
 	logs := job.TaskLogs("group", "bash")

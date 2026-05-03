@@ -10,13 +10,13 @@ import (
 )
 
 const (
-	ipKey     = "NOMAD_IP"
+	ipKey     = "DUMB_NOMAD_IP"
 	ipVal     = "127.0.0.1"
-	portKey   = "NOMAD_PORT_WEB"
+	portKey   = "DUMB_NOMAD_PORT_WEB"
 	portVal   = ":80"
-	periodKey = "NOMAD.PERIOD"
+	periodKey = "DUMB_NOMAD.PERIOD"
 	periodVal = "period"
-	dashKey   = "NOMAD-DASH"
+	dashKey   = "DUMB_NOMAD-DASH"
 	dashVal   = "dash"
 )
 

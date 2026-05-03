@@ -9,10 +9,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -48,13 +48,13 @@ func TestHTTP_NodesList(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Header().Get("X-Nomad-Index") == "" {
+		if respW.Header().Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Header().Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Header().Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Header().Get("X-Nomad-LastContact") == "" {
+		if respW.Header().Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -105,13 +105,13 @@ func TestHTTP_NodesPrefixList(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Header().Get("X-Nomad-Index") == "" {
+		if respW.Header().Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Header().Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Header().Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Header().Get("X-Nomad-LastContact") == "" {
+		if respW.Header().Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -163,13 +163,13 @@ func TestHTTP_NodesOSList(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Header().Get("X-Nomad-Index") == "" {
+		if respW.Header().Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Header().Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Header().Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Header().Get("X-Nomad-LastContact") == "" {
+		if respW.Header().Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -222,7 +222,7 @@ func TestHTTP_NodeForceEval(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Header().Get("X-Nomad-Index") == "" {
+		if respW.Header().Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -279,13 +279,13 @@ func TestHTTP_NodeAllocations(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Header().Get("X-Nomad-Index") == "" {
+		if respW.Header().Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Header().Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Header().Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Header().Get("X-Nomad-LastContact") == "" {
+		if respW.Header().Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -336,13 +336,13 @@ func TestHTTP_NodeDrain(t *testing.T) {
 		require.Nil(err)
 
 		// Check for the index
-		require.NotEmpty(respW.Header().Get("X-Nomad-Index"))
+		require.NotEmpty(respW.Header().Get("X-Dumb Nomad-Index"))
 
 		// Check the response
 		dresp, ok := obj.(structs.NodeDrainUpdateResponse)
 		require.True(ok)
 
-		t.Logf("response index=%v node_update_index=0x%x", respW.Header().Get("X-Nomad-Index"),
+		t.Logf("response index=%v node_update_index=0x%x", respW.Header().Get("X-Dumb Nomad-Index"),
 			dresp.NodeModifyIndex)
 
 		// Check that the node has been updated
@@ -424,7 +424,7 @@ func TestHTTP_NodeEligible(t *testing.T) {
 		require.Nil(err)
 
 		// Check for the index
-		require.NotZero(respW.Header().Get("X-Nomad-Index"))
+		require.NotZero(respW.Header().Get("X-Dumb Nomad-Index"))
 
 		// Check the response
 		_, ok := obj.(structs.NodeEligibilityUpdateResponse)
@@ -485,7 +485,7 @@ func TestHTTP_NodePurge(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Header().Get("X-Nomad-Index") == "" {
+		if respW.Header().Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -538,13 +538,13 @@ func TestHTTP_NodeQuery(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Header().Get("X-Nomad-Index") == "" {
+		if respW.Header().Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Header().Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Header().Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Header().Get("X-Nomad-LastContact") == "" {
+		if respW.Header().Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 

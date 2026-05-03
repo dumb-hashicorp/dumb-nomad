@@ -20,7 +20,7 @@ func ShortID(prefix string) string {
 // Do not call this directly from tests.
 func Log3(t *testing.T, verbose bool, msg string, args ...any) {
 	t.Helper()
-	env := os.Getenv("NOMAD_E2E_VERBOSE")
+	env := os.Getenv("DUMB_NOMAD_E2E_VERBOSE")
 	on := verbose || env == "1" || env == "true"
 	if on {
 		t.Logf(msg, args...)

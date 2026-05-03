@@ -277,7 +277,7 @@ module('Unit | Model | job', function (hooks) {
       assert.deepEqual(result, '{"name": "Tomster"}', 'Returns the JSON input');
     });
 
-    test('it dispatches a POST request to the /parse endpoint (eagerly assumes HCL specification) if JSON parse method errors', async function (assert) {
+    test('it dispatches a POST request to the /parse endpoint (eagerly assumes DUMB_HCL specification) if JSON parse method errors', async function (assert) {
       assert.expect(2);
 
       const store = this.owner.lookup('service:store');

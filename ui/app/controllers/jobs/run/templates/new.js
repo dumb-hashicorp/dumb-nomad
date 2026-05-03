@@ -27,7 +27,7 @@ export default class JobsRunTemplatesNewController extends Controller {
 
   get isDuplicateTemplate() {
     const templates = this.store.peekAll('variable');
-    const templateName = trimPath([`nomad/job-templates/${this.templateName}`]);
+    const templateName = trimPath([`dumb-nomad/job-templates/${this.templateName}`]);
 
     return !!templates
       .without(this.model)
@@ -65,7 +65,7 @@ export default class JobsRunTemplatesNewController extends Controller {
       }
     }
 
-    this.model.set('path', `nomad/job-templates/${this.templateName}`);
+    this.model.set('path', `dumb-nomad/job-templates/${this.templateName}`);
     this.model.setAndTrimPath();
 
     try {

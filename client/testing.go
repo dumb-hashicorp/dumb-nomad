@@ -10,17 +10,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/fingerprint"
-	"github.com/hashicorp/nomad/client/servers"
-	"github.com/hashicorp/nomad/client/serviceregistration/mock"
-	"github.com/hashicorp/nomad/client/state"
-	agentconsul "github.com/hashicorp/nomad/command/agent/consul"
-	"github.com/hashicorp/nomad/helper/pluginutils/catalog"
-	"github.com/hashicorp/nomad/helper/pluginutils/singleton"
-	"github.com/hashicorp/nomad/helper/pool"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/yamux"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/fingerprint"
+	"github.com/dumb-hashicorp/dumb-nomad/client/servers"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	agentdumb-consul "github.com/dumb-hashicorp/dumb-nomad/command/agent/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/catalog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/singleton"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pool"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/yamux"
 	"github.com/shoenig/test/must"
 )
 
@@ -44,7 +44,7 @@ func TestClientWithRPCs(t testing.TB, cb func(c *config.Config), rpcs map[string
 	}
 	conf.Options[fingerprint.TightenNetworkTimeoutsConfig] = "true"
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	conf.Logger = logger
 
 	if cb != nil {
@@ -58,7 +58,7 @@ func TestClientWithRPCs(t testing.TB, cb func(c *config.Config), rpcs map[string
 	if conf.PluginSingletonLoader == nil {
 		conf.PluginSingletonLoader = singleton.NewSingletonLoader(logger, conf.PluginLoader)
 	}
-	mockCatalog := agentconsul.NewMockCatalog(logger)
+	mockCatalog := agentdumb-consul.NewMockCatalog(logger)
 	mockService := mock.NewServiceRegistrationHandler(logger)
 	client, err := NewClient(conf, mockCatalog, nil, mockService, rpcs)
 	if err != nil {
@@ -102,7 +102,7 @@ func TestRPCOnlyClient(t testing.TB, cb func(c *config.Config), srvAddr net.Addr
 		cb(conf)
 	}
 
-	testLogger := testlog.HCLogger(t)
+	testLogger := testlog.DUMB_HCLogger(t)
 
 	client := &Client{
 		config:           conf,
@@ -120,7 +120,7 @@ func TestRPCOnlyClient(t testing.TB, cb func(c *config.Config), srvAddr net.Addr
 	}
 	client.heartbeatStop = newHeartbeatStop(
 		client.getAllocRunner, time.Second, client.logger, client.shutdownCh)
-	client.connPool = pool.NewPool(testlog.HCLogger(t), 10*time.Second, 10, nil, yamux.DefaultConfig(), 10*time.Second)
+	client.connPool = pool.NewPool(testlog.DUMB_HCLogger(t), 10*time.Second, 10, nil, yamux.DefaultConfig(), 10*time.Second)
 	client.init()
 
 	cancelFunc := func() {

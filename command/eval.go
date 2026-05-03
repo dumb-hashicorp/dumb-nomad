@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type EvalCommand struct {
@@ -15,7 +15,7 @@ type EvalCommand struct {
 
 func (f *EvalCommand) Help() string {
 	helpText := `
-Usage: nomad eval <subcommand> [options] [args]
+Usage: dumb-nomad eval <subcommand> [options] [args]
 
   This command groups subcommands for interacting with evaluations. Evaluations
   are used to trigger a scheduling event. As such, evaluations are an internal
@@ -24,15 +24,15 @@ Usage: nomad eval <subcommand> [options] [args]
 
   List evaluations:
 
-      $ nomad eval list
+      $ dumb-nomad eval list
 
   Examine an evaluations status:
 
-      $ nomad eval status <eval-id>
+      $ dumb-nomad eval status <eval-id>
 
   Delete evaluations:
 
-      $ nomad eval delete <eval-id>
+      $ dumb-nomad eval delete <eval-id>
 
   Please see the individual subcommand help for detailed usage information.
 `

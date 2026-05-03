@@ -6,8 +6,8 @@ package winsvc
 import (
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 )
 
 var chanEvents = make(chan Event)
@@ -20,7 +20,7 @@ func SendEvent(e Event) {
 	select {
 	case chanEvents <- e:
 	case <-timer.C:
-		hclog.L().Error("failed to send event to windows eventlog, timed out",
+		dumb-hclog.L().Error("failed to send event to windows eventlog, timed out",
 			"event", e)
 	}
 }

@@ -7,8 +7,8 @@ package util
 
 import (
 	containerapi "github.com/docker/docker/api/types/container"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	cstructs "github.com/hashicorp/nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
 )
 
 var (

@@ -15,7 +15,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/go-set/v3"
 )
 
 func main() {
@@ -157,9 +157,9 @@ var uninteresting = []string{
 	// testing helpers
 	"ci",
 	"client/testutil",
-	"client/vaultclient",
+	"client/dumb-vaultclient",
 	"e2e",
-	"nomad/mock",
+	"dumb-nomad/mock",
 	"plugins/csi/fake",
 
 	// not core code

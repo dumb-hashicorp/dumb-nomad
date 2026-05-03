@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
 syntax = "proto3";
-package hashicorp.nomad.plugins.shared.structs;
+package dumb-hashicorp.dumb-nomad.plugins.shared.structs;
 option go_package = "proto";
 
 // Attribute is used to describe the value of an attribute, optionally

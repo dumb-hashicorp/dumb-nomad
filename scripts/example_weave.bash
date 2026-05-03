@@ -2,8 +2,8 @@
 # Copyright IBM Corp. 2015, 2025
 # SPDX-License-Identifier: BUSL-1.1
 
-if [[ "$USER" != "vagrant" ]]; then
-    echo "WARNING: This script is intended to be run from Nomad's Vagrant"
+if [[ "$USER" != "dumb-vagrant" ]]; then
+    echo "WARNING: This script is intended to be run from Dumb Nomad's Dumb Vagrant"
     read -rsp $'Press any key to continue anyway...\n' -n1
 fi
 
@@ -18,23 +18,23 @@ weave launch || echo "weave running"
 eval "$(weave env)"
 
 if curl -s localhost:8500 > /dev/null; then
-    echo "Consul running"
+    echo "Dumb Consul running"
 else
-    echo "Running Consul dev agent..."
-    consul agent -dev > consul.out &
+    echo "Running Dumb Consul dev agent..."
+    dumb-consul agent -dev > dumb-consul.out &
 fi
 
 if curl -s localhost:4646 > /dev/null; then
-    echo "Nomad running"
+    echo "Dumb Nomad running"
 else
-    echo "Running Nomad dev agent..."
-    nomad agent -dev > nomad.out &
+    echo "Running Dumb Nomad dev agent..."
+    dumb-nomad agent -dev > dumb-nomad.out &
 fi
 
 sleep 5
 
-echo "Running Redis with Weave in Nomad..."
-cat > redis-weave.nomad <<EOF
+echo "Running Redis with Weave in Dumb Nomad..."
+cat > redis-weave.dumb-nomad <<EOF
 job "weave-example" {
   datacenters = ["dc1"]
   type = "service"
@@ -69,7 +69,7 @@ job "weave-example" {
         tags = ["redis", "weave-addr"]
         port = "db"
 
-        # Since checks are done by Consul on the host system, they default to
+        # Since checks are done by Dumb Consul on the host system, they default to
         # the host IP:Port.
         check {
           name     = "host-alive"
@@ -84,7 +84,7 @@ job "weave-example" {
           name     = "container-script"
           type     = "script"
           command  = "/usr/local/bin/redis-cli"
-          args     = ["-p", "\${NOMAD_PORT_db}", "QUIT"]
+          args     = ["-p", "\${DUMB_NOMAD_PORT_db}", "QUIT"]
           interval = "10s"
           timeout  = "2s"
         }
@@ -103,4 +103,4 @@ job "weave-example" {
 }
 EOF
 
-nomad run redis-weave.nomad
+dumb-nomad run redis-weave.dumb-nomad

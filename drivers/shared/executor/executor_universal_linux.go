@@ -12,11 +12,11 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/nsutil"
-	"github.com/hashicorp/nomad/drivers/shared/executor/procstats"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/nsutil"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor/procstats"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/opencontainers/cgroups"
 	"golang.org/x/sys/unix"
 )
@@ -55,7 +55,7 @@ func (e *UniversalExecutor) setSubCmdCgroup(cmd *exec.Cmd, cgroup string) (func(
 func (e *UniversalExecutor) ListProcesses() set.Collection[procstats.ProcessID] {
 	switch cgroupslib.GetMode() {
 	case cgroupslib.OFF:
-		// cgroup is unavailable, could possibly due to rootless nomad client
+		// cgroup is unavailable, could possibly due to rootless dumb-nomad client
 		return procstats.ListByPid(e.childCmd.Process.Pid)
 	default:
 		return procstats.List(e.command)
@@ -139,7 +139,7 @@ func (e *UniversalExecutor) configureResourceContainer(
 // enterCG1 will write the executor PID (i.e. itself) into the cgroups we
 // created for the task - so that the task and its children will spawn in
 // those cgroups. The cleanup function moves the executor out of the task's
-// cgroups and into the nomad/ parent cgroups.
+// cgroups and into the dumb-nomad/ parent cgroups.
 func (e *UniversalExecutor) enterCG1(statsCgroup, cpusetCgroup string) (runningFunc, cleanupFunc) {
 	ed := cgroupslib.OpenPath(cpusetCgroup)
 	pid := strconv.Itoa(unix.Getpid())
@@ -163,7 +163,7 @@ func (e *UniversalExecutor) enterCG1(statsCgroup, cpusetCgroup string) (runningF
 	move := func() error {
 		// move the executor back out
 		for _, iface := range append(ifaces, "cpuset") {
-			err := cgroupslib.WriteNomadCG1(iface, "cgroup.procs", pid)
+			err := cgroupslib.WriteDumb NomadCG1(iface, "cgroup.procs", pid)
 			if err != nil {
 				e.logger.Warn("failed to move executor cgroup", "interface", iface, "error", err)
 				return err
@@ -184,7 +184,7 @@ func (e *UniversalExecutor) configureCG1(cgroup string, command *ExecCommand) er
 		return nil
 	}
 
-	// if custom cgroups are set join those instead of configuring the /nomad
+	// if custom cgroups are set join those instead of configuring the /dumb-nomad
 	// cgroups we are not going to use
 	if len(e.command.OverrideCgroupV1) > 0 {
 		pid := unix.Getpid()
@@ -201,7 +201,7 @@ func (e *UniversalExecutor) configureCG1(cgroup string, command *ExecCommand) er
 	}
 
 	// write memory limits
-	memHard, memReserved := memoryLimits(command.Resources.NomadResources.Memory)
+	memHard, memReserved := memoryLimits(command.Resources.Dumb NomadResources.Memory)
 	ed := cgroupslib.OpenFromFreezerCG1(cgroup, "memory")
 	_ = ed.Write("memory.limit_in_bytes", strconv.FormatInt(memHard, 10))
 	if memReserved > 0 {
@@ -237,7 +237,7 @@ func (e *UniversalExecutor) configureCG2(cgroup string, command *ExecCommand) {
 	}
 
 	// write memory cgroup files
-	memHard, memReserved := memoryLimits(command.Resources.NomadResources.Memory)
+	memHard, memReserved := memoryLimits(command.Resources.Dumb NomadResources.Memory)
 	ed := cgroupslib.OpenPath(cgroup)
 	if memHard == MemoryNoLimit {
 		_ = ed.Write("memory.max", "max")

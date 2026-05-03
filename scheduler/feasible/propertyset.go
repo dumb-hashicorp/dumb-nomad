@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"strconv"
 
-	log "github.com/hashicorp/go-hclog"
-	memdb "github.com/hashicorp/go-memdb"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/nomad/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	memdb "github.com/dumb-hashicorp/go-memdb"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // propertySet is used to track the values used for a particular property.

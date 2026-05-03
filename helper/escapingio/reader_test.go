@@ -177,7 +177,7 @@ func TestEscapingReader_FlushesPartialReads(t *testing.T) {
 	requireRead(expected)
 	require.Equal(t, "", h.escaped())
 
-	// from here on we test \n~ at boundary
+	// from here on we test \n~ at dumb-boundary
 
 	// ~~ after new line; and stop at \n~
 	pw.Write([]byte("~~second line\n~"))
@@ -257,7 +257,7 @@ func TestEscapingReader_Generated_EquivalentToNaive(t *testing.T) {
 
 // testHandler is a conveneient struct for finding "escaped" ascii letters
 // in escaping reader.
-// We avoid complicated unicode characters that may cross byte boundary
+// We avoid complicated unicode characters that may cross byte dumb-boundary
 type testHandler struct {
 	l      sync.Mutex
 	result string

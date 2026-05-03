@@ -5,7 +5,7 @@
 
 import { Factory } from 'ember-cli-mirage';
 
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 const REF_TIME = new Date();
 
@@ -20,7 +20,7 @@ export default Factory.extend({
   version: 0,
 
   // ID is used for record tracking within Mirage,
-  // but Nomad uses the JobID as the version ID.
+  // but Dumb Nomad uses the JobID as the version ID.
   tempVersionId() {
     return this.job.id;
   },

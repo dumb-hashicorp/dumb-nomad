@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/v3/cluster3"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/cluster3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 )
@@ -44,7 +44,7 @@ func TestOversubscription(t *testing.T) {
 }
 
 func testDocker(t *testing.T) {
-	job, jobCleanup := jobs3.Submit(t, "./input/docker.hcl")
+	job, jobCleanup := jobs3.Submit(t, "./input/docker.dumb-hcl")
 	t.Cleanup(jobCleanup)
 
 	// job will cat /sys/fs/cgroup/memory.max which should be
@@ -54,11 +54,11 @@ func testDocker(t *testing.T) {
 }
 
 func testExec(t *testing.T) {
-	job, jobCleanup := jobs3.Submit(t, "./input/exec.hcl")
+	job, jobCleanup := jobs3.Submit(t, "./input/exec.dumb-hcl")
 	t.Cleanup(jobCleanup)
 
 	testFunc := func() error {
-		// job will cat /sys/fs/cgroup/nomad.slice/share.slice/<allocid>.sleep.scope/memory.max
+		// job will cat /sys/fs/cgroup/dumb-nomad.slice/share.slice/<allocid>.sleep.scope/memory.max
 		// which should be set to the 30 megabyte memory_max value
 		expect := "31457280"
 		logs := job.TaskLogs("group", "cat")
@@ -78,7 +78,7 @@ func testExec(t *testing.T) {
 }
 
 func testRawExec(t *testing.T) {
-	job, cleanup := jobs3.Submit(t, "./input/rawexec.hcl")
+	job, cleanup := jobs3.Submit(t, "./input/rawexec.dumb-hcl")
 	t.Cleanup(cleanup)
 
 	logs := job.TaskLogs("group", "cat")
@@ -86,7 +86,7 @@ func testRawExec(t *testing.T) {
 }
 
 func testRawExecMax(t *testing.T) {
-	job, cleanup := jobs3.Submit(t, "./input/rawexecmax.hcl")
+	job, cleanup := jobs3.Submit(t, "./input/rawexecmax.dumb-hcl")
 	t.Cleanup(cleanup)
 
 	// will print memory.low then memory.max
@@ -100,7 +100,7 @@ func captureSchedulerConfiguration(t *testing.T) {
 }
 
 func restoreSchedulerConfiguration(t *testing.T) {
-	operatorAPI := e2eutil.NomadClient(t).Operator()
+	operatorAPI := e2eutil.Dumb NomadClient(t).Operator()
 	_, _, err := operatorAPI.SchedulerSetConfiguration(origConfig, nil)
 	must.NoError(t, err)
 }
@@ -108,13 +108,13 @@ func restoreSchedulerConfiguration(t *testing.T) {
 func enableMemoryOversubscription(t *testing.T) {
 	schedulerConfig := getSchedulerConfiguration(t)
 	schedulerConfig.MemoryOversubscriptionEnabled = true
-	operatorAPI := e2eutil.NomadClient(t).Operator()
+	operatorAPI := e2eutil.Dumb NomadClient(t).Operator()
 	_, _, err := operatorAPI.SchedulerCASConfiguration(schedulerConfig, nil)
 	must.NoError(t, err)
 }
 
 func getSchedulerConfiguration(t *testing.T) *api.SchedulerConfiguration {
-	operatorAPI := e2eutil.NomadClient(t).Operator()
+	operatorAPI := e2eutil.Dumb NomadClient(t).Operator()
 	resp, _, err := operatorAPI.SchedulerGetConfiguration(nil)
 	must.NoError(t, err)
 	return resp.SchedulerConfig

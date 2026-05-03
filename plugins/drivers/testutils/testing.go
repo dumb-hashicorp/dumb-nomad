@@ -12,20 +12,20 @@ import (
 	"testing"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/logmon"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/logmon"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 	"github.com/shoenig/test/must"
 )
 
@@ -34,7 +34,7 @@ type DriverHarness struct {
 	client *plugin.GRPCClient
 	server *plugin.GRPCServer
 	t      *testing.T
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 	impl   drivers.DriverPlugin
 	cgroup string
 }
@@ -43,7 +43,7 @@ func (h *DriverHarness) Impl() drivers.DriverPlugin {
 	return h.impl
 }
 func NewDriverHarness(t *testing.T, d drivers.DriverPlugin) *DriverHarness {
-	logger := testlog.HCLogger(t).Named("driver_harness")
+	logger := testlog.DUMB_HCLogger(t).Named("driver_harness")
 	pd := drivers.NewDriverPlugin(d, logger)
 
 	client, server := plugin.TestPluginGRPCConn(t,
@@ -80,10 +80,10 @@ func (h *DriverHarness) Kill() {
 // A cleanup func is returned and should be deferred so as to not leak dirs
 // between tests.
 func (h *DriverHarness) MkAllocDir(t *drivers.TaskConfig, enableLogs bool) func() {
-	dir, err := os.MkdirTemp("", "nomad_driver_harness-")
+	dir, err := os.MkdirTemp("", "dumb-nomad_driver_harness-")
 	must.NoError(h.t, err)
 
-	mountsDir, err := os.MkdirTemp("", "nomad_driver_harness-mounts-")
+	mountsDir, err := os.MkdirTemp("", "dumb-nomad_driver_harness-mounts-")
 	must.NoError(h.t, err)
 	must.NoError(h.t, os.Chmod(mountsDir, 0755))
 
@@ -110,7 +110,7 @@ func (h *DriverHarness) MkAllocDir(t *drivers.TaskConfig, enableLogs bool) func(
 	alloc := mock.Alloc()
 	alloc.ID = t.AllocID
 	if t.Resources != nil {
-		alloc.AllocatedResources.Tasks[task.Name] = t.Resources.NomadResources
+		alloc.AllocatedResources.Tasks[task.Name] = t.Resources.Dumb NomadResources
 	}
 
 	taskBuilder := taskenv.NewBuilder(mock.Node(), alloc, task, "global")
@@ -188,7 +188,7 @@ func (h *DriverHarness) WaitUntilStarted(taskID string, timeout time.Duration) e
 // is passed through the base plugin layer.
 type MockDriver struct {
 	base.MockPlugin
-	TaskConfigSchemaF  func() (*hclspec.Spec, error)
+	TaskConfigSchemaF  func() (*dumb-hclspec.Spec, error)
 	FingerprintF       func(context.Context) (<-chan *drivers.Fingerprint, error)
 	CapabilitiesF      func() (*drivers.Capabilities, error)
 	RecoverTaskF       func(*drivers.TaskHandle) error
@@ -217,7 +217,7 @@ func (m *MockNetworkManager) DestroyNetwork(id string, spec *drivers.NetworkIsol
 	return m.DestroyNetworkF(id, spec)
 }
 
-func (d *MockDriver) TaskConfigSchema() (*hclspec.Spec, error) { return d.TaskConfigSchemaF() }
+func (d *MockDriver) TaskConfigSchema() (*dumb-hclspec.Spec, error) { return d.TaskConfigSchemaF() }
 func (d *MockDriver) Fingerprint(ctx context.Context) (<-chan *drivers.Fingerprint, error) {
 	return d.FingerprintF(ctx)
 }

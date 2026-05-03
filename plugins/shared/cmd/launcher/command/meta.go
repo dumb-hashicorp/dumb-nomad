@@ -7,18 +7,18 @@ import (
 	"flag"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	hclog "github.com/hashicorp/go-hclog"
+	"github.com/dumb-hashicorp/cli"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
 )
 
 type Meta struct {
 	Ui     cli.Ui
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	verbose bool
 }
 
-func NewMeta(ui cli.Ui, logger hclog.Logger) Meta {
+func NewMeta(ui cli.Ui, logger dumb-hclog.Logger) Meta {
 	return Meta{
 		Ui:     ui,
 		logger: logger,

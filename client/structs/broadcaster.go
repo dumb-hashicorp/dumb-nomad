@@ -7,8 +7,8 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (
@@ -41,11 +41,11 @@ type AllocBroadcaster struct {
 	// last alloc sent to prime new listeners
 	last *structs.Allocation
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 // NewAllocBroadcaster returns a new AllocBroadcaster.
-func NewAllocBroadcaster(l hclog.Logger) *AllocBroadcaster {
+func NewAllocBroadcaster(l dumb-hclog.Logger) *AllocBroadcaster {
 	return &AllocBroadcaster{
 		logger: l,
 	}

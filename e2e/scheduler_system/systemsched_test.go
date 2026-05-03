@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/v3/cluster3"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/cluster3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -28,7 +28,7 @@ func TestSystemScheduler(t *testing.T) {
 
 func testJobUpdateOnIneligbleNode(t *testing.T) {
 	job, cleanup := jobs3.Submit(t,
-		"./input/system_job0.nomad",
+		"./input/system_job0.dumb-nomad",
 		jobs3.DisableRandomJobID(),
 		jobs3.Timeout(60*time.Second),
 	)
@@ -66,7 +66,7 @@ func testJobUpdateOnIneligbleNode(t *testing.T) {
 
 	// Update job
 	job2, cleanup2 := jobs3.Submit(t,
-		"./input/system_job1.nomad",
+		"./input/system_job1.dumb-nomad",
 		jobs3.DisableRandomJobID(),
 		jobs3.Timeout(60*time.Second),
 	)
@@ -94,7 +94,7 @@ func testJobUpdateOnIneligbleNode(t *testing.T) {
 
 func testCanaryUpdate(t *testing.T) {
 	job, cleanup := jobs3.Submit(t,
-		"./input/system_canary_v0.nomad.hcl",
+		"./input/system_canary_v0.dumb-nomad.dumb-hcl",
 		jobs3.DisableRandomJobID(),
 		jobs3.Timeout(60*time.Second),
 	)
@@ -106,7 +106,7 @@ func testCanaryUpdate(t *testing.T) {
 
 	// Update job
 	job2, cleanup2 := jobs3.Submit(t,
-		"./input/system_canary_v1.nomad.hcl",
+		"./input/system_canary_v1.dumb-nomad.dumb-hcl",
 		jobs3.DisableRandomJobID(),
 		jobs3.Timeout(60*time.Second),
 		jobs3.Detach(),
@@ -198,7 +198,7 @@ func testCanaryUpdate(t *testing.T) {
 
 func testCanaryDeploymentToAllEligibleNodes(t *testing.T) {
 	job, cleanup := jobs3.Submit(t,
-		"./input/system_canary_v0_100.nomad.hcl",
+		"./input/system_canary_v0_100.dumb-nomad.dumb-hcl",
 		jobs3.DisableRandomJobID(),
 		jobs3.Timeout(60*time.Second),
 	)
@@ -210,7 +210,7 @@ func testCanaryDeploymentToAllEligibleNodes(t *testing.T) {
 
 	// Update job
 	job2, cleanup2 := jobs3.Submit(t,
-		"./input/system_canary_v1_100.nomad.hcl",
+		"./input/system_canary_v1_100.dumb-nomad.dumb-hcl",
 		jobs3.DisableRandomJobID(),
 		jobs3.Timeout(60*time.Second),
 		jobs3.Detach(),

@@ -74,9 +74,9 @@
     <div class="boxed-section" style="margin-top: 10px">
       <div class="boxed-section-head">
         {{#if @data.job.isNew}}
-        HCL Variable Values
+        DUMB_HCL Variable Values
         {{else}}
-        Edit HCL Variable Values
+        Edit DUMB_HCL Variable Values
         {{/if}}
       </div>
       <div class="boxed-section-body is-full-bleed">
@@ -89,7 +89,7 @@
             content=@data.job._newDefinitionVariables
             theme="hashi"
             onUpdate=@fns.onUpdate
-            type="hclVariables"
+            type="dumb-hclVariables"
             mode="ruby"
             lineWrapping=@data.shouldWrap
           }}
@@ -105,7 +105,7 @@
     data-test-plan
     @text="Plan"
   />
-  {{#if (can "write variable" path="nomad/job-templates/*" namespace="*")}}
+  {{#if (can "write variable" path="dumb-nomad/job-templates/*" namespace="*")}}
     {{#if @data.job.isNew}}
       <Hds::Button
         @text="Save as template"
@@ -117,7 +117,7 @@
     {{/if}}
   {{/if}}
   <Hds::Button
-    @text="Save as .nomad.hcl"
+    @text="Save as .dumb-nomad.dumb-hcl"
     @color="secondary"
     {{on "click" @fns.onSaveFile}}
     disabled={{not @data.job._newDefinition}}

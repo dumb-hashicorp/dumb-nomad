@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/posener/complete"
 )
 
@@ -19,7 +19,7 @@ type OperatorGossipKeyringRemoveCommand struct {
 
 func (c *OperatorGossipKeyringRemoveCommand) Help() string {
 	helpText := `
-Usage: nomad operator gossip keyring remove [options] <key>
+Usage: dumb-nomad operator gossip keyring remove [options] <key>
 
   Remove the given key from the cluster. This operation may only be performed
   on keys which are not currently the primary key.
@@ -76,7 +76,7 @@ func (c *OperatorGossipKeyringRemoveCommand) Run(args []string) int {
 
 	client, err := c.Meta.Client()
 	if err != nil {
-		c.Ui.Error(fmt.Sprintf("Error creating nomad cli client: %s", err))
+		c.Ui.Error(fmt.Sprintf("Error creating dumb-nomad cli client: %s", err))
 		return 1
 	}
 

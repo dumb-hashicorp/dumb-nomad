@@ -1,7 +1,7 @@
 // Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: BUSL-1.1
 
-// Package clientintro provides end-to-end tests for Nomad's client introduction
+// Package clientintro provides end-to-end tests for Dumb Nomad's client introduction
 // feature. This does not involve running jobs and does not run against the
 // nightly cluster. Instead it uses local agents to verify client introduction
 // behavior.

@@ -10,13 +10,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/posener/complete"
 	"github.com/shoenig/test/must"
 )
@@ -55,7 +55,7 @@ func TestJobStatusCommand_Run(t *testing.T) {
 	}
 
 	// Check for this awkward nil string, since a nil bytes.Buffer
-	// returns this purposely, and hashicorp/cli has a nil pointer
+	// returns this purposely, and dumb-hashicorp/cli has a nil pointer
 	// if nothing was ever output.
 	exp := "No running jobs"
 	if out := strings.TrimSpace(ui.OutputWriter.String()); out != exp {

@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type VolumeSnapshotCommand struct {
@@ -25,22 +25,22 @@ func (f *VolumeSnapshotCommand) Synopsis() string {
 
 func (f *VolumeSnapshotCommand) Help() string {
 	helpText := `
-Usage: nomad volume snapshot <subcommand> [options] [args]
+Usage: dumb-nomad volume snapshot <subcommand> [options] [args]
 
   This command groups subcommands for interacting with CSI volume snapshots.
 
   Create a snapshot of an external storage volume:
 
-      $ nomad volume snapshot create <volume id>
+      $ dumb-nomad volume snapshot create <volume id>
 
   Display a list of CSI volume snapshots along with their
   source volume ID as known to the external storage provider.
 
-      $ nomad volume snapshot list -plugin <plugin id>
+      $ dumb-nomad volume snapshot list -plugin <plugin id>
 
   Delete a snapshot of an external storage volume:
 
-      $ nomad volume snapshot delete <snapshot id>
+      $ dumb-nomad volume snapshot delete <snapshot id>
 
   Please see the individual subcommand help for detailed usage information.
 `

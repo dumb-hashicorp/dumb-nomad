@@ -8,15 +8,15 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
 
 // ApplyJobPolicy applies an ACL job policy or noops if ACLs are disabled.
 // Registers a cleanup function to delete the policy.
-func ApplyJobPolicy(t *testing.T, nomad *api.Client, ns, j, g, task, rules string) *api.ACLPolicy {
+func ApplyJobPolicy(t *testing.T, dumb-nomad *api.Client, ns, j, g, task, rules string) *api.ACLPolicy {
 
 	policy := &api.ACLPolicy{
 		Name: j + uuid.Short(),
@@ -31,7 +31,7 @@ func ApplyJobPolicy(t *testing.T, nomad *api.Client, ns, j, g, task, rules strin
 		},
 	}
 
-	wm, err := nomad.ACLPolicies().Upsert(policy, nil)
+	wm, err := dumb-nomad.ACLPolicies().Upsert(policy, nil)
 	if err != nil {
 		if strings.Contains(err.Error(), "ACL support disabled") {
 			t.Logf("ACL support disabled. Skipping ApplyJobPolicy(t, c, %q, %q, %q, %q, %q)",
@@ -42,7 +42,7 @@ func ApplyJobPolicy(t *testing.T, nomad *api.Client, ns, j, g, task, rules strin
 	}
 
 	t.Cleanup(func() {
-		_, err := nomad.ACLPolicies().Delete(policy.Name, nil)
+		_, err := dumb-nomad.ACLPolicies().Delete(policy.Name, nil)
 		test.NoError(t, err)
 	})
 

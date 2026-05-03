@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -24,13 +24,13 @@ type StatusCommand struct {
 
 func (c *StatusCommand) Help() string {
 	helpText := `
-Usage: nomad status [options] <identifier>
+Usage: dumb-nomad status [options] <identifier>
 
   Display the status output for any given resource. The command will
   detect the type of resource being queried and display the appropriate
   status output.
 
-  If no arguments are provided, the command will fallback to "nomad job status",
+  If no arguments are provided, the command will fallback to "dumb-nomad job status",
   which will list all jobs.
 
 General Options:

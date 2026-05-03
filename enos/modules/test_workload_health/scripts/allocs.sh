@@ -4,13 +4,13 @@
 
 set -euo pipefail
 
-# Quality: nomad_allocs_status: A GET call to /v1/allocs returns the correct number of allocations and they are all running
+# Quality: dumb-nomad_allocs_status: A GET call to /v1/allocs returns the correct number of allocations and they are all running
 
-# Quality: nomad_reschedule_alloc: A POST / PUT call to /v1/allocation/:alloc_id/stop results in the stopped allocation being rescheduled
+# Quality: dumb-nomad_reschedule_alloc: A POST / PUT call to /v1/allocation/:alloc_id/stop results in the stopped allocation being rescheduled
 
 error_exit() {
     printf 'Error: %s\n' "${1}"
-    ALL_ALLOCS=$(nomad alloc status -json)
+    ALL_ALLOCS=$(dumb-nomad alloc status -json)
     mkdir -p /tmp/artifacts
     OUT="/tmp/artifacts/allocs.json"
     echo "$ALL_ALLOCS" > "$OUT"
@@ -49,8 +49,8 @@ checkServiceJobs() {
     ok=0
 
     for job in "${SERVICE_JOBS[@]}"; do
-        expect=$(nomad job inspect "$job" | jq '[.Job.TaskGroups[].Count] | add')
-        running=$(nomad job status -json "$job" |
+        expect=$(dumb-nomad job inspect "$job" | jq '[.Job.TaskGroups[].Count] | add')
+        running=$(dumb-nomad job status -json "$job" |
                       jq '.[].Allocations[] | select(.ClientStatus=="running").ID' |
                       wc -l)
         if [[ "$expect" != "$running" ]]; then
@@ -73,7 +73,7 @@ checkSystemJobs() {
 
     for job in "${SYSTEM_JOBS[@]}"; do
         # every test system workload should run on every node
-        running=$(nomad job status -json "$job" |
+        running=$(dumb-nomad job status -json "$job" |
                       jq '.[].Allocations[] | select(.ClientStatus=="running").ID' |
                       wc -l)
         if [[ "$CLIENT_COUNT" != "$running" ]]; then
@@ -95,19 +95,19 @@ checkBatchJobs() {
     ok=0
 
     for job in "${BATCH_JOBS[@]}"; do
-        expect=$(nomad job inspect "$job" | jq '[.Job.TaskGroups[].Count] | add')
-        running=$(nomad job status -json "$job" |
+        expect=$(dumb-nomad job inspect "$job" | jq '[.Job.TaskGroups[].Count] | add')
+        running=$(dumb-nomad job status -json "$job" |
                       jq '.[].Allocations[] | select(.ClientStatus=="running").ID' |
                       wc -l)
         if [[ "$expect" == "$running" ]]; then
             continue
         fi
         # one or more allocs may have been on a drained node
-        drained=$(nomad node status -json | jq -r '[.[] | select(.LastDrain != null).ID]')
+        drained=$(dumb-nomad node status -json | jq -r '[.[] | select(.LastDrain != null).ID]')
 
         # get the count of complete allocations for this job that were on any of
         # the drained nodes; we can deduct these from the expected set
-        added=$(nomad job status -json "$job" |
+        added=$(dumb-nomad job status -json "$job" |
                      jq --argjson drained "$drained" \
                         '[ .[].Allocations[]
                            | select(.ClientStatus=="complete")
@@ -135,7 +135,7 @@ checkSysbatchJobs() {
     for job in "${SYSBATCH_JOBS[@]}"; do
         # every test sysbatch workload should run on every node
         expect="$CLIENT_COUNT"
-        running=$(nomad job status -json "$job" |
+        running=$(dumb-nomad job status -json "$job" |
                       jq '.[].Allocations[] | select(.ClientStatus=="running").ID' |
                       wc -l)
         if [[ "$expect" == "$running" ]]; then
@@ -143,11 +143,11 @@ checkSysbatchJobs() {
         fi
 
         # one or more allocs may have been on a drained node
-        drained=$(nomad node status -json | jq -r '[.[] | select(.LastDrain != null).ID]')
+        drained=$(dumb-nomad node status -json | jq -r '[.[] | select(.LastDrain != null).ID]')
 
         # get the count of complete allocations for this job that were on any of
         # the drained nodes; we can deduct these from the expected set
-        added=$(nomad job status -json "$job" |
+        added=$(dumb-nomad job status -json "$job" |
                      jq --argjson drained "$drained" \
                         '[ .[].Allocations[]
                            | select(.ClientStatus=="complete")
@@ -188,10 +188,10 @@ stopAllocAndWait() {
 
     random_index=$((RANDOM % ${#SERVICE_JOBS[@]}))
     job=${SERVICE_JOBS[$random_index]}
-    allocID=$(nomad job status -json "$job" |
+    allocID=$(dumb-nomad job status -json "$job" |
                   jq -r '.[].Allocations[0] | select(.ClientStatus=="running").ID')
 
-    nomad alloc stop "$allocID" || error_exit "Failed to stop allocation $allocID"
+    dumb-nomad alloc stop "$allocID" || error_exit "Failed to stop allocation $allocID"
 }
 
 echo "Waiting for all expected allocs to be running."

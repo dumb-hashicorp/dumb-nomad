@@ -18,11 +18,11 @@ import { selectChoose } from 'ember-power-select/test-support';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import setupCodeMirror from 'nomad-ui/tests/helpers/codemirror';
-import JobRun from 'nomad-ui/tests/pages/jobs/run';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import setupCodeMirror from 'dumb-nomad-ui/tests/helpers/codemirror';
+import JobRun from 'dumb-nomad-ui/tests/pages/jobs/run';
 import percySnapshot from '@percy/ember';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 const newJobName = 'new-job';
 const newJobTaskGroupName = 'redis';
@@ -74,7 +74,7 @@ module('Acceptance | job run', function (hooks) {
     managementToken = server.create('token');
     clientToken = server.create('token');
 
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
   });
 
   test('it passes an accessibility audit', async function (assert) {
@@ -88,7 +88,7 @@ module('Acceptance | job run', function (hooks) {
     await JobRun.visit();
 
     assert.equal(currentURL(), '/jobs/run');
-    assert.equal(document.title, 'Run a job - Nomad');
+    assert.equal(document.title, 'Run a job - Dumb Nomad');
   });
 
   test('when submitting a job, the site redirects to the new job overview page', async function (assert) {
@@ -125,7 +125,7 @@ module('Acceptance | job run', function (hooks) {
   });
 
   test('when the user doesn’t have permission to run a job, redirects to the job overview page', async function (assert) {
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     await JobRun.visit();
     assert.equal(currentURL(), '/jobs');
@@ -159,7 +159,7 @@ module('Acceptance | job run', function (hooks) {
 
     clientTokenWithPolicy.policyIds = [policy.id];
     clientTokenWithPolicy.save();
-    window.localStorage.nomadTokenSecret = clientTokenWithPolicy.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientTokenWithPolicy.secretId;
 
     await JobRun.visit({ namespace: newNamespace });
     assert.equal(currentURL(), `/jobs/run?namespace=${newNamespace}`);
@@ -193,7 +193,7 @@ module('Acceptance | job run', function (hooks) {
 
     clientTokenWithPolicy.policyIds = [policy.id];
     clientTokenWithPolicy.save();
-    window.localStorage.nomadTokenSecret = clientTokenWithPolicy.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientTokenWithPolicy.secretId;
 
     await JobRun.visit({ namespace: newNamespace });
     assert.equal(currentURL(), `/jobs/run?namespace=${newNamespace}`);
@@ -212,22 +212,22 @@ module('Acceptance | job run', function (hooks) {
         assert.deepEqual(
           fakeRequest.queryParams,
           {
-            prefix: 'nomad/job-templates',
+            prefix: 'dumb-nomad/job-templates',
             namespace: '*',
           },
           'It makes a request to the /vars endpoint with the appropriate query parameters for job templates.'
         );
         return [
           {
-            ID: 'nomad/job-templates/foo',
+            ID: 'dumb-nomad/job-templates/foo',
             Namespace: 'default',
-            Path: 'nomad/job-templates/foo',
+            Path: 'dumb-nomad/job-templates/foo',
           },
         ];
       });
 
       server.get(
-        '/var/nomad%2Fjob-templates%2Ffoo',
+        '/var/dumb-nomad%2Fjob-templates%2Ffoo',
         function (_server, fakeRequest) {
           assert.deepEqual(
             fakeRequest.queryParams,
@@ -237,9 +237,9 @@ module('Acceptance | job run', function (hooks) {
             'Dispatches O(n+1) query to retrive items.'
           );
           return {
-            ID: 'nomad/job-templates/foo',
+            ID: 'dumb-nomad/job-templates/foo',
             Namespace: 'default',
-            Path: 'nomad/job-templates/foo',
+            Path: 'dumb-nomad/job-templates/foo',
             Items: {
               template: 'Hello World!',
               label: 'foo',
@@ -267,7 +267,7 @@ module('Acceptance | job run', function (hooks) {
 
       assert.equal(
         currentURL(),
-        '/jobs/run?template=nomad%2Fjob-templates%2Ffoo%40default'
+        '/jobs/run?template=dumb-nomad%2Fjob-templates%2Ffoo%40default'
       );
       assert.dom('[data-test-editor]').containsText('Hello World!');
     });
@@ -298,11 +298,11 @@ module('Acceptance | job run', function (hooks) {
         assert.deepEqual(
           JSON.parse(fakeRequest.requestBody),
           {
-            Path: 'nomad/job-templates/foo',
+            Path: 'dumb-nomad/job-templates/foo',
             CreateIndex: null,
             ModifyIndex: null,
             Namespace: 'default',
-            ID: 'nomad/job-templates/foo',
+            ID: 'dumb-nomad/job-templates/foo',
             Items: { description: 'foo-bar-baz', template: jsonJob() },
           },
           'It makes a PUT request to the /vars/:varId endpoint with the appropriate request body for job templates.'
@@ -310,7 +310,7 @@ module('Acceptance | job run', function (hooks) {
         return {
           Items: { description: 'foo-bar-baz', template: jsonJob() },
           Namespace: 'default',
-          Path: 'nomad/job-templates/foo',
+          Path: 'dumb-nomad/job-templates/foo',
         };
       });
 
@@ -318,22 +318,22 @@ module('Acceptance | job run', function (hooks) {
         assert.deepEqual(
           fakeRequest.queryParams,
           {
-            prefix: 'nomad/job-templates',
+            prefix: 'dumb-nomad/job-templates',
             namespace: '*',
           },
           'It makes a request to the /vars endpoint with the appropriate query parameters for job templates.'
         );
         return [
           {
-            ID: 'nomad/job-templates/foo',
+            ID: 'dumb-nomad/job-templates/foo',
             Namespace: 'default',
-            Path: 'nomad/job-templates/foo',
+            Path: 'dumb-nomad/job-templates/foo',
           },
         ];
       });
 
       server.get(
-        '/var/nomad%2Fjob-templates%2Ffoo',
+        '/var/dumb-nomad%2Fjob-templates%2Ffoo',
         function (_server, fakeRequest) {
           assert.deepEqual(
             fakeRequest.queryParams,
@@ -343,9 +343,9 @@ module('Acceptance | job run', function (hooks) {
             'Dispatches O(n+1) query to retrive items.'
           );
           return {
-            ID: 'nomad/job-templates/foo',
+            ID: 'dumb-nomad/job-templates/foo',
             Namespace: 'default',
-            Path: 'nomad/job-templates/foo',
+            Path: 'dumb-nomad/job-templates/foo',
             Items: {
               template: 'qud',
               label: 'foo',
@@ -388,7 +388,7 @@ module('Acceptance | job run', function (hooks) {
 
       server.put('/var/:varId?cas=0', function () {
         return new AdapterError({
-          detail: `invalid path "nomad/job-templates/try@"`,
+          detail: `invalid path "dumb-nomad/job-templates/try@"`,
           status: 500,
         });
       });
@@ -410,9 +410,9 @@ module('Acceptance | job run', function (hooks) {
       await JobRun.visit();
       await click('[data-test-choose-template]');
       server.create('variable', {
-        path: 'nomad/job-templates/foo',
+        path: 'dumb-nomad/job-templates/foo',
         namespace: 'default',
-        id: 'nomad/job-templates/foo',
+        id: 'dumb-nomad/job-templates/foo',
       });
       server.create('namespace', { id: 'test' });
 
@@ -484,9 +484,9 @@ module('Acceptance | job run', function (hooks) {
 
       // Arrange
       server.create('variable', {
-        path: 'nomad/job-templates/foo',
+        path: 'dumb-nomad/job-templates/foo',
         namespace: 'default',
-        id: 'nomad/job-templates/foo',
+        id: 'dumb-nomad/job-templates/foo',
         Items: {},
       });
 
@@ -497,7 +497,7 @@ module('Acceptance | job run', function (hooks) {
         .dom('[data-test-template-list]')
         .exists('A list of templates is visible');
       await percySnapshot(assert);
-      await click('[data-test-edit-template="nomad/job-templates/foo"]');
+      await click('[data-test-edit-template="dumb-nomad/job-templates/foo"]');
       assert.equal(
         currentRouteName(),
         'jobs.run.templates.template',
@@ -508,11 +508,11 @@ module('Acceptance | job run', function (hooks) {
         assert.deepEqual(
           JSON.parse(fakeRequest.requestBody),
           {
-            Path: 'nomad/job-templates/foo',
+            Path: 'dumb-nomad/job-templates/foo',
             CreateIndex: null,
             ModifyIndex: null,
             Namespace: 'default',
-            ID: 'nomad/job-templates/foo',
+            ID: 'dumb-nomad/job-templates/foo',
             Items: { description: 'baz qud thud' },
           },
           'It makes a PUT request to the /vars/:varId endpoint with the appropriate request body for job templates.'
@@ -521,7 +521,7 @@ module('Acceptance | job run', function (hooks) {
         return {
           Items: { description: 'baz qud thud' },
           Namespace: 'default',
-          Path: 'nomad/job-templates/foo',
+          Path: 'dumb-nomad/job-templates/foo',
         };
       });
 
@@ -540,23 +540,23 @@ module('Acceptance | job run', function (hooks) {
 
       // Arrange
       server.create('variable', {
-        path: 'nomad/job-templates/foo',
+        path: 'dumb-nomad/job-templates/foo',
         namespace: 'default',
-        id: 'nomad/job-templates/foo',
+        id: 'dumb-nomad/job-templates/foo',
         Items: {},
       });
 
       server.create('variable', {
-        path: 'nomad/job-templates/bar',
+        path: 'dumb-nomad/job-templates/bar',
         namespace: 'default',
-        id: 'nomad/job-templates/bar',
+        id: 'dumb-nomad/job-templates/bar',
         Items: {},
       });
 
       server.create('variable', {
-        path: 'nomad/job-templates/baz',
+        path: 'dumb-nomad/job-templates/baz',
         namespace: 'default',
-        id: 'nomad/job-templates/baz',
+        id: 'dumb-nomad/job-templates/baz',
         Items: {},
       });
 
@@ -570,10 +570,10 @@ module('Acceptance | job run', function (hooks) {
       await click('[data-test-idle-button]');
       await click('[data-test-confirm-button]');
       assert
-        .dom('[data-test-edit-template="nomad/job-templates/foo"]')
+        .dom('[data-test-edit-template="dumb-nomad/job-templates/foo"]')
         .doesNotExist('The template is removed from the list.');
 
-      await click('[data-test-edit-template="nomad/job-templates/bar"]');
+      await click('[data-test-edit-template="dumb-nomad/job-templates/bar"]');
       await click('[data-test-idle-button]');
       await click('[data-test-confirm-button]');
 
@@ -584,7 +584,7 @@ module('Acceptance | job run', function (hooks) {
       );
 
       assert
-        .dom('[data-test-edit-template="nomad/job-templates/bar"]')
+        .dom('[data-test-edit-template="dumb-nomad/job-templates/bar"]')
         .doesNotExist('The template is removed from the list.');
     });
 
@@ -593,9 +593,9 @@ module('Acceptance | job run', function (hooks) {
 
       // Arrange
       server.create('variable', {
-        path: 'nomad/job-templates/foo',
+        path: 'dumb-nomad/job-templates/foo',
         namespace: 'default',
-        id: 'nomad/job-templates/foo',
+        id: 'dumb-nomad/job-templates/foo',
         Items: {
           template: 'qud',
           label: 'foo',
@@ -636,7 +636,7 @@ module('Acceptance | job run', function (hooks) {
 
       assert.equal(
         currentURL(),
-        '/jobs/run?template=nomad%2Fjob-templates%2Fdefault%2Fhello-world'
+        '/jobs/run?template=dumb-nomad%2Fjob-templates%2Fdefault%2Fhello-world'
       );
       assert.dom('[data-test-editor]').includesText('job "hello-world"');
     });

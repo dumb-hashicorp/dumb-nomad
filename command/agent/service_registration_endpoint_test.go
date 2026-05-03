@@ -9,10 +9,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/hashicorp/go-memdb"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-memdb"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -46,7 +46,7 @@ func TestHTTPServer_ServiceRegistrationListRequest(t *testing.T) {
 				require.NotNil(t, obj)
 
 				// Check the index is not zero.
-				require.EqualValues(t, "10", respW.Header().Get("X-Nomad-Index"))
+				require.EqualValues(t, "10", respW.Header().Get("X-Dumb Nomad-Index"))
 				require.ElementsMatch(t, []*structs.ServiceRegistrationListStub{
 					{
 						Namespace: "default",
@@ -83,7 +83,7 @@ func TestHTTPServer_ServiceRegistrationListRequest(t *testing.T) {
 				require.NotNil(t, obj)
 
 				// Check the index is not zero.
-				require.EqualValues(t, "10", respW.Header().Get("X-Nomad-Index"))
+				require.EqualValues(t, "10", respW.Header().Get("X-Dumb Nomad-Index"))
 				require.ElementsMatch(t, []*structs.ServiceRegistrationListStub{
 					{
 						Namespace: "platform",
@@ -120,7 +120,7 @@ func TestHTTPServer_ServiceRegistrationListRequest(t *testing.T) {
 				require.NotNil(t, obj)
 
 				// Check the index is not zero.
-				require.EqualValues(t, "10", respW.Header().Get("X-Nomad-Index"))
+				require.EqualValues(t, "10", respW.Header().Get("X-Dumb Nomad-Index"))
 				require.ElementsMatch(t, []*structs.ServiceRegistrationListStub{
 					{
 						Namespace: "default",
@@ -184,7 +184,7 @@ func TestHTTPServer_ServiceRegistrationRequest(t *testing.T) {
 				require.Nil(t, obj)
 
 				// Check the index is not zero.
-				require.NotZero(t, respW.Header().Get("X-Nomad-Index"))
+				require.NotZero(t, respW.Header().Get("X-Dumb Nomad-Index"))
 
 				// Check that the service is not found within state.
 				out, err := testState.GetServiceRegistrationByID(memdb.NewWatchSet(), serviceReg.Namespace, serviceReg.ID)
@@ -216,7 +216,7 @@ func TestHTTPServer_ServiceRegistrationRequest(t *testing.T) {
 
 				// Check the index is not zero and that we see the service
 				// registration.
-				require.NotZero(t, respW.Header().Get("X-Nomad-Index"))
+				require.NotZero(t, respW.Header().Get("X-Dumb Nomad-Index"))
 				require.Equal(t, serviceReg, obj.([]*structs.ServiceRegistration)[0])
 			},
 		},

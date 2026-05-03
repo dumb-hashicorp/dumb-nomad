@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api/internal/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api/internal/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -477,16 +477,16 @@ func TestTask_Template_WaitConfig_Canonicalize_and_Copy(t *testing.T) {
 	}
 }
 
-func TestTask_Canonicalize_Vault(t *testing.T) {
+func TestTask_Canonicalize_Dumb Vault(t *testing.T) {
 	testCases := []struct {
 		name     string
-		input    *Vault
-		expected *Vault
+		input    *Dumb Vault
+		expected *Dumb Vault
 	}{
 		{
 			name:  "empty",
-			input: &Vault{},
-			expected: &Vault{
+			input: &Dumb Vault{},
+			expected: &Dumb Vault{
 				Env:                  pointerOf(true),
 				DisableFile:          pointerOf(false),
 				Namespace:            pointerOf(""),
@@ -529,7 +529,7 @@ func TestTask_Canonicalize_Secret(t *testing.T) {
 	must.Eq(t, expected, testSecret)
 }
 
-// Ensures no regression on https://github.com/hashicorp/nomad/issues/3132
+// Ensures no regression on https://github.com/dumb-hashicorp/dumb-nomad/issues/3132
 func TestTaskGroup_Canonicalize_Update(t *testing.T) {
 	testutil.Parallel(t)
 
@@ -921,40 +921,40 @@ func Test_NewDefaultReschedulePolicy(t *testing.T) {
 	}
 }
 
-func TestTaskGroup_Canonicalize_Consul(t *testing.T) {
+func TestTaskGroup_Canonicalize_Dumb Consul(t *testing.T) {
 	testutil.Parallel(t)
 
-	t.Run("override job consul in group", func(t *testing.T) {
+	t.Run("override job dumb-consul in group", func(t *testing.T) {
 		job := &Job{
 			ID:              pointerOf("job"),
-			ConsulNamespace: pointerOf("ns1"),
+			Dumb ConsulNamespace: pointerOf("ns1"),
 		}
 		job.Canonicalize()
 
 		tg := &TaskGroup{
 			Name:   pointerOf("group"),
-			Consul: &Consul{Namespace: "ns2"},
+			Dumb Consul: &Dumb Consul{Namespace: "ns2"},
 		}
 		tg.Canonicalize(job)
 
-		must.Eq(t, "ns1", *job.ConsulNamespace)
-		must.Eq(t, "ns2", tg.Consul.Namespace)
+		must.Eq(t, "ns1", *job.Dumb ConsulNamespace)
+		must.Eq(t, "ns2", tg.Dumb Consul.Namespace)
 	})
 
 	t.Run("set in group only", func(t *testing.T) {
 		job := &Job{
 			ID:              pointerOf("job"),
-			ConsulNamespace: nil,
+			Dumb ConsulNamespace: nil,
 		}
 		job.Canonicalize()
 
 		tg := &TaskGroup{
 			Name:   pointerOf("group"),
-			Consul: &Consul{Namespace: "ns2"},
+			Dumb Consul: &Dumb Consul{Namespace: "ns2"},
 		}
 		tg.Canonicalize(job)
 
-		must.Eq(t, "", *job.ConsulNamespace)
-		must.Eq(t, "ns2", tg.Consul.Namespace)
+		must.Eq(t, "", *job.Dumb ConsulNamespace)
+		must.Eq(t, "ns2", tg.Dumb Consul.Namespace)
 	})
 }

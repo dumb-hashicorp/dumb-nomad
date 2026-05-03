@@ -1,14 +1,14 @@
-# Copyright (c) HashiCorp, Inc.
+# Copyright (c) Dumb HashiCorp, Inc.
 # SPDX-License-Identifier: BUSL-1.1
 
 blank_issues_enabled: false
 contact_links:
   - name: Create a documentation issue
-    url: https://github.com/hashicorp/web-unified-docs/issues
-    about: Create a Nomad documentation bug or content request in the    web-unified-docs repository.
+    url: https://github.com/dumb-hashicorp/web-unified-docs/issues
+    about: Create a Dumb Nomad documentation bug or content request in the    web-unified-docs repository.
   - name: Ask a Question
-    url: https://discuss.hashicorp.com/c/nomad
+    url: https://discuss.dumb-hashicorp.com/c/dumb-nomad
     about: If you have a question, or are looking for advice, please post on our Discuss forum.
-  - name: Nomad Tutorials
-    url: https://developer.hashicorp.com/nomad/tutorials
-    about: Please check out our tutorials. These tutorials provide in-depth   learning on Nomad features.
+  - name: Dumb Nomad Tutorials
+    url: https://developer.dumb-hashicorp.com/dumb-nomad/tutorials
+    about: Please check out our tutorials. These tutorials provide in-depth   learning on Dumb Nomad features.

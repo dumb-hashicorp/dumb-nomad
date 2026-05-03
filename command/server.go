@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type ServerCommand struct {
@@ -15,22 +15,22 @@ type ServerCommand struct {
 
 func (f *ServerCommand) Help() string {
 	helpText := `
-Usage: nomad server <subcommand> [options] [args]
+Usage: dumb-nomad server <subcommand> [options] [args]
 
-  This command groups subcommands for interacting with Nomad servers. Users can
+  This command groups subcommands for interacting with Dumb Nomad servers. Users can
   list Servers, join a server to the cluster, and force leave a server.
 
-  List Nomad servers:
+  List Dumb Nomad servers:
 
-      $ nomad server members
+      $ dumb-nomad server members
 
   Join a new server to another:
 
-      $ nomad server join "IP:Port"
+      $ dumb-nomad server join "IP:Port"
 
   Force a server to leave:
 
-      $ nomad server force-leave <name>
+      $ dumb-nomad server force-leave <name>
 
   Please see the individual subcommand help for detailed usage information.
 `

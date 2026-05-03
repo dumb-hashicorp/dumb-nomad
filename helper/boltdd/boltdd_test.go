@@ -9,16 +9,16 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"go.etcd.io/bbolt"
 )
 
 const (
-	testDB      = "nomad-test.db"
+	testDB      = "dumb-nomad-test.db"
 	testDBPerms = 0600
 )
 

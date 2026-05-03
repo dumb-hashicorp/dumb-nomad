@@ -15,11 +15,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	dproto "github.com/hashicorp/nomad/plugins/drivers/proto"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	dproto "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -199,7 +199,7 @@ func TestExecFSIsolation(t *testing.T, driver *DriverHarness, taskID string) {
 		switch cgroupslib.GetMode() {
 
 		case cgroupslib.CG1:
-			acceptable := []string{":freezer:/nomad", ":freezer:/docker"}
+			acceptable := []string{":freezer:/dumb-nomad", ":freezer:/docker"}
 			if testutil.IsCI() {
 				// github actions freezer cgroup
 				acceptable = append(acceptable, ":freezer:/actions_job")

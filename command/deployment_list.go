@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -17,9 +17,9 @@ type DeploymentListCommand struct {
 
 func (c *DeploymentListCommand) Help() string {
 	helpText := `
-Usage: nomad deployment list [options]
+Usage: dumb-nomad deployment list [options]
 
-  List is used to list the set of deployments tracked by Nomad.
+  List is used to list the set of deployments tracked by Dumb Nomad.
 
   When ACLs are enabled, this command requires a token with the 'read-job'
   capability for the deployment's namespace.

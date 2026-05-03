@@ -17,7 +17,7 @@ export default function pageSizeSelect({
     resourceName
   )} is equal to the localStorage user setting for page size`, async function (assert) {
     const storedPageSize = 10;
-    window.localStorage.nomadPageSize = storedPageSize;
+    window.localStorage.dumb-nomadPageSize = storedPageSize;
 
     await setup.call(this);
 
@@ -39,13 +39,13 @@ export default function pageSizeSelect({
 
     await setup.call(this);
 
-    assert.equal(window.localStorage.nomadPageSize, null);
+    assert.equal(window.localStorage.dumb-nomadPageSize, null);
     assert.equal(pageObjectList.length, pageObject.pageSize);
     assert.equal(pageObject.pageSizeSelect.selectedOption, pageObject.pageSize);
 
     await selectChoose('[data-test-page-size-select-parent]', desiredPageSize);
 
-    assert.equal(window.localStorage.nomadPageSize, desiredPageSize);
+    assert.equal(window.localStorage.dumb-nomadPageSize, desiredPageSize);
     assert.equal(pageObjectList.length, desiredPageSize);
     assert.equal(pageObject.pageSizeSelect.selectedOption, desiredPageSize);
   });

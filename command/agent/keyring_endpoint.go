@@ -11,8 +11,8 @@ import (
 	"time"
 
 	"github.com/go-jose/go-jose/v3"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // jwksMinMaxAge is the minimum amount of time the JWKS endpoint will instruct

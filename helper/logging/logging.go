@@ -6,14 +6,14 @@ package logging
 import (
 	"fmt"
 
-	"github.com/hashicorp/go-hclog"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
 )
 
-// HcLogUI is an implementation of Ui that takes a hclogger
+// HcLogUI is an implementation of Ui that takes a dumb-hclogger
 // and uses it to Log the output. It is intended for write only
 // use cases and the Ask/AskSecret methods are not implemented.
 type HcLogUI struct {
-	Log hclog.Logger
+	Log dumb-hclog.Logger
 }
 
 func (l *HcLogUI) Ask(query string) (string, error) {

@@ -39,7 +39,7 @@ export default `job "parameterized-job" {
 
       template {
         data = <<EOH
-MY_META_KEY: {{env "NOMAD_META_MY_META_KEY"}}
+MY_META_KEY: {{env "DUMB_NOMAD_META_MY_META_KEY"}}
   EOH
 
         destination = "local/template.out"

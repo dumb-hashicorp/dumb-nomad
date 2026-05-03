@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 	"github.com/stretchr/testify/require"
 )
 
@@ -26,7 +26,7 @@ func TestPluginGroup_RegisterAndRun(t *testing.T) {
 		wg.Done()
 	}}
 
-	group := New(testlog.HCLogger(t))
+	group := New(testlog.DUMB_HCLogger(t))
 	require.NoError(group.RegisterAndRun(manager))
 	wg.Wait()
 	require.True(hasRun)
@@ -40,7 +40,7 @@ func TestPluginGroup_Shutdown(t *testing.T) {
 	var stackMu sync.Mutex
 	var runWg sync.WaitGroup
 	var shutdownWg sync.WaitGroup
-	group := New(testlog.HCLogger(t))
+	group := New(testlog.DUMB_HCLogger(t))
 	for i := 1; i < 4; i++ {
 		i := i
 		runWg.Add(1)
@@ -82,7 +82,7 @@ func TestPluginGroup_WaitForFirstFingerprint(t *testing.T) {
 	// close immediately to beat the context timeout
 	close(managerCh)
 
-	group := New(testlog.HCLogger(t))
+	group := New(testlog.DUMB_HCLogger(t))
 	require.NoError(group.RegisterAndRun(manager))
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
@@ -108,7 +108,7 @@ func TestPluginGroup_WaitForFirstFingerprint_Timeout(t *testing.T) {
 		WaitForFirstFingerprintCh: managerCh,
 	}
 
-	group := New(testlog.HCLogger(t))
+	group := New(testlog.DUMB_HCLogger(t))
 	require.NoError(group.RegisterAndRun(manager))
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond)

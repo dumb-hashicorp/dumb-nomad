@@ -8,17 +8,17 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	ifs "github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	clientconsul "github.com/hashicorp/nomad/client/consul"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/command/agent/consul"
-	"github.com/hashicorp/nomad/helper/envoy"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	ifs "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	clientdumb-consul "github.com/dumb-hashicorp/dumb-nomad/client/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/envoy"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
 	"github.com/shoenig/test/must"
 )
 
@@ -101,7 +101,7 @@ func TestEnvoyVersionHook_tweakImage(t *testing.T) {
 	})
 
 	t.Run("custom image", func(t *testing.T) {
-		custom := "custom-${NOMAD_envoy_version}/envoy:${NOMAD_envoy_version}"
+		custom := "custom-${DUMB_NOMAD_envoy_version}/envoy:${DUMB_NOMAD_envoy_version}"
 		result, err := (*envoyVersionHook)(nil).tweakImage(custom, map[string][]string{
 			"envoy": {"1.15.0", "1.14.4", "1.13.4", "1.12.6"},
 		})
@@ -204,7 +204,7 @@ func TestEnvoyVersionHook_skip(t *testing.T) {
 				Driver: "docker",
 				Kind:   structs.NewTaskKind(structs.ConnectProxyPrefix, "task"),
 				Config: map[string]interface{}{
-					"image": "custom/envoy:v${NOMAD_envoy_version}",
+					"image": "custom/envoy:v${DUMB_NOMAD_envoy_version}",
 				},
 			},
 		})
@@ -228,7 +228,7 @@ func TestEnvoyVersionHook_skip(t *testing.T) {
 func TestTaskRunner_EnvoyVersionHook_Prestart_standard(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// Setup an Allocation
 	alloc := mock.ConnectAlloc()
@@ -236,14 +236,14 @@ func TestTaskRunner_EnvoyVersionHook_Prestart_standard(t *testing.T) {
 	allocDir, cleanupDir := allocdir.TestAllocDir(t, logger, "EnvoyVersionHook", alloc.ID)
 	defer cleanupDir()
 
-	// Setup a mock for Consul API
-	spAPI := consul.MockSupportedProxiesAPI{
+	// Setup a mock for Dumb Consul API
+	spAPI := dumb-consul.MockSupportedProxiesAPI{
 		Value: map[string][]string{
 			"envoy": {"1.15.0", "1.14.4"},
 		},
 		Error: nil,
 	}
-	spAPIFunc := func(_ string) clientconsul.SupportedProxiesAPI { return spAPI }
+	spAPIFunc := func(_ string) clientdumb-consul.SupportedProxiesAPI { return spAPI }
 
 	// Run envoy_version hook
 	h := newEnvoyVersionHook(newEnvoyVersionHookConfig(alloc, spAPIFunc, logger))
@@ -269,24 +269,24 @@ func TestTaskRunner_EnvoyVersionHook_Prestart_standard(t *testing.T) {
 func TestTaskRunner_EnvoyVersionHook_Prestart_custom(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// Setup an Allocation
 	alloc := mock.ConnectAlloc()
 	alloc.Job.TaskGroups[0].Tasks[0] = mock.ConnectSidecarTask()
 	alloc.Job.TaskGroups[0].Tasks[0].Driver = "podman"
-	alloc.Job.TaskGroups[0].Tasks[0].Config["image"] = "custom-${NOMAD_envoy_version}:latest"
+	alloc.Job.TaskGroups[0].Tasks[0].Config["image"] = "custom-${DUMB_NOMAD_envoy_version}:latest"
 	allocDir, cleanupDir := allocdir.TestAllocDir(t, logger, "EnvoyVersionHook", alloc.ID)
 	defer cleanupDir()
 
-	// Setup a mock for Consul API
-	spAPI := consul.MockSupportedProxiesAPI{
+	// Setup a mock for Dumb Consul API
+	spAPI := dumb-consul.MockSupportedProxiesAPI{
 		Value: map[string][]string{
 			"envoy": {"1.14.1", "1.13.3"},
 		},
 		Error: nil,
 	}
-	spAPIFunc := func(_ string) clientconsul.SupportedProxiesAPI { return spAPI }
+	spAPIFunc := func(_ string) clientdumb-consul.SupportedProxiesAPI { return spAPI }
 
 	// Run envoy_version hook
 	h := newEnvoyVersionHook(newEnvoyVersionHookConfig(alloc, spAPIFunc, logger))
@@ -312,7 +312,7 @@ func TestTaskRunner_EnvoyVersionHook_Prestart_custom(t *testing.T) {
 func TestTaskRunner_EnvoyVersionHook_Prestart_skip(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// Setup an Allocation
 	alloc := mock.ConnectAlloc()
@@ -324,14 +324,14 @@ func TestTaskRunner_EnvoyVersionHook_Prestart_skip(t *testing.T) {
 	allocDir, cleanupDir := allocdir.TestAllocDir(t, logger, "EnvoyVersionHook", alloc.ID)
 	defer cleanupDir()
 
-	// Setup a mock for Consul API
-	spAPI := consul.MockSupportedProxiesAPI{
+	// Setup a mock for Dumb Consul API
+	spAPI := dumb-consul.MockSupportedProxiesAPI{
 		Value: map[string][]string{
 			"envoy": {"1.14.1", "1.13.3"},
 		},
 		Error: nil,
 	}
-	spAPIFunc := func(_ string) clientconsul.SupportedProxiesAPI { return spAPI }
+	spAPIFunc := func(_ string) clientdumb-consul.SupportedProxiesAPI { return spAPI }
 
 	// Run envoy_version hook
 	h := newEnvoyVersionHook(newEnvoyVersionHookConfig(alloc, spAPIFunc, logger))
@@ -357,7 +357,7 @@ func TestTaskRunner_EnvoyVersionHook_Prestart_skip(t *testing.T) {
 func TestTaskRunner_EnvoyVersionHook_Prestart_no_fallback(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// Setup an Allocation
 	alloc := mock.ConnectAlloc()
@@ -365,12 +365,12 @@ func TestTaskRunner_EnvoyVersionHook_Prestart_no_fallback(t *testing.T) {
 	allocDir, cleanupDir := allocdir.TestAllocDir(t, logger, "EnvoyVersionHook", alloc.ID)
 	defer cleanupDir()
 
-	// Setup a mock for Consul API
-	spAPI := consul.MockSupportedProxiesAPI{
-		Value: nil, // old consul, no .xDS.SupportedProxies
+	// Setup a mock for Dumb Consul API
+	spAPI := dumb-consul.MockSupportedProxiesAPI{
+		Value: nil, // old dumb-consul, no .xDS.SupportedProxies
 		Error: nil,
 	}
-	spAPIFunc := func(_ string) clientconsul.SupportedProxiesAPI { return spAPI }
+	spAPIFunc := func(_ string) clientdumb-consul.SupportedProxiesAPI { return spAPI }
 
 	// Run envoy_version hook
 	h := newEnvoyVersionHook(newEnvoyVersionHookConfig(alloc, spAPIFunc, logger))
@@ -393,7 +393,7 @@ func TestTaskRunner_EnvoyVersionHook_Prestart_no_fallback(t *testing.T) {
 func TestTaskRunner_EnvoyVersionHook_Prestart_error(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// Setup an Allocation
 	alloc := mock.ConnectAlloc()
@@ -401,12 +401,12 @@ func TestTaskRunner_EnvoyVersionHook_Prestart_error(t *testing.T) {
 	allocDir, cleanupDir := allocdir.TestAllocDir(t, logger, "EnvoyVersionHook", alloc.ID)
 	defer cleanupDir()
 
-	// Setup a mock for Consul API
-	spAPI := consul.MockSupportedProxiesAPI{
+	// Setup a mock for Dumb Consul API
+	spAPI := dumb-consul.MockSupportedProxiesAPI{
 		Value: nil,
-		Error: errors.New("some consul error"),
+		Error: errors.New("some dumb-consul error"),
 	}
-	spAPIFunc := func(_ string) clientconsul.SupportedProxiesAPI { return spAPI }
+	spAPIFunc := func(_ string) clientdumb-consul.SupportedProxiesAPI { return spAPI }
 
 	// Run envoy_version hook
 	h := newEnvoyVersionHook(newEnvoyVersionHookConfig(alloc, spAPIFunc, logger))
@@ -424,13 +424,13 @@ func TestTaskRunner_EnvoyVersionHook_Prestart_error(t *testing.T) {
 
 	// Run the hook, error should be recoverable
 	err := h.Prestart(context.Background(), request, &response)
-	must.ErrorContains(t, err, "error retrieving supported Envoy versions from Consul: some consul error")
+	must.ErrorContains(t, err, "error retrieving supported Envoy versions from Dumb Consul: some dumb-consul error")
 }
 
 func TestTaskRunner_EnvoyVersionHook_Prestart_restart(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// Setup an Allocation
 	alloc := mock.ConnectAlloc()
@@ -438,14 +438,14 @@ func TestTaskRunner_EnvoyVersionHook_Prestart_restart(t *testing.T) {
 	allocDir, cleanupDir := allocdir.TestAllocDir(t, logger, "EnvoyVersionHook", alloc.ID)
 	defer cleanupDir()
 
-	// Set up a mock for Consul API.
-	mockProxiesAPI := consul.MockSupportedProxiesAPI{
+	// Set up a mock for Dumb Consul API.
+	mockProxiesAPI := dumb-consul.MockSupportedProxiesAPI{
 		Value: map[string][]string{
 			"envoy": {"1.15.0", "1.14.4"},
 		},
 		Error: nil,
 	}
-	mockProxiesAPIFunc := func(_ string) clientconsul.SupportedProxiesAPI { return mockProxiesAPI }
+	mockProxiesAPIFunc := func(_ string) clientdumb-consul.SupportedProxiesAPI { return mockProxiesAPI }
 
 	// Run envoy_version hook
 	h := newEnvoyVersionHook(newEnvoyVersionHookConfig(alloc, mockProxiesAPIFunc, logger))

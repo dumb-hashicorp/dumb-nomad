@@ -8,7 +8,7 @@ import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import TEMPLATES from 'nomad-ui/utils/default-sentinel-policy-templates';
+import TEMPLATES from 'dumb-nomad-ui/utils/default-sentinel-policy-templates';
 
 export default class SentinelPoliciesNewGalleryController extends Controller {
   @service notifications;

@@ -5,9 +5,9 @@
 
 // @ts-check
 import Controller from '@ember/controller';
-import localStorageProperty from 'nomad-ui/utils/properties/local-storage';
+import localStorageProperty from 'dumb-nomad-ui/utils/properties/local-storage';
 
 export default class SettingsUserSettingsController extends Controller {
-  @localStorageProperty('nomadShouldWrapCode', false) wordWrap;
-  @localStorageProperty('nomadLiveUpdateJobsIndex', true) liveUpdateJobsIndex;
+  @localStorageProperty('dumb-nomadShouldWrapCode', false) wordWrap;
+  @localStorageProperty('dumb-nomadLiveUpdateJobsIndex', true) liveUpdateJobsIndex;
 }

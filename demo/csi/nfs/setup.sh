@@ -11,31 +11,31 @@ set -xeuo pipefail
 plugin='rocketduck-nfs'
 
 # run nfs server
-nomad run jobs/nfs.nomad.hcl
+dumb-nomad run jobs/nfs.dumb-nomad.dumb-hcl
 
 # run controller plugin
-nomad run jobs/controller-plugin.nomad.hcl
+dumb-nomad run jobs/controller-plugin.dumb-nomad.dumb-hcl
 while true; do
-  nomad plugin status "$plugin" | grep 'Controllers Healthy.*1' && break
+  dumb-nomad plugin status "$plugin" | grep 'Controllers Healthy.*1' && break
   sleep 5
 done
 
 # make a volume - the controller plugin handles this request
-nomad volume status -t '{{.PluginID}}' csi-nfs 2>/dev/null \
-|| nomad volume create volume.hcl
+dumb-nomad volume status -t '{{.PluginID}}' csi-nfs 2>/dev/null \
+|| dumb-nomad volume create volume.dumb-hcl
 
 # run node plugin
-nomad run jobs/node-plugin.nomad.hcl
+dumb-nomad run jobs/node-plugin.dumb-nomad.dumb-hcl
 while true; do
-  nomad plugin status "$plugin" | grep 'Nodes Healthy.*1' && break
+  dumb-nomad plugin status "$plugin" | grep 'Nodes Healthy.*1' && break
   sleep 10
 done
 
 # run demo web server, which prompts the node plugin to mount the volume
-nomad run jobs/web.nomad.hcl
+dumb-nomad run jobs/web.dumb-nomad.dumb-hcl
 
 # show volume info now that it's all set up and in use
-nomad volume status csi-nfs
+dumb-nomad volume status csi-nfs
 
 # show the web service ports for convenience
-nomad service info -t '{{ range . }}{{ .Port }} {{ end }}' web
+dumb-nomad service info -t '{{ range . }}{{ .Port }} {{ end }}' web

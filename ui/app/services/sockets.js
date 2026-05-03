@@ -5,7 +5,7 @@
 
 // @ts-check
 import Service from '@ember/service';
-import config from 'nomad-ui/config/environment';
+import config from 'dumb-nomad-ui/config/environment';
 import { getOwner } from '@ember/application';
 import { inject as service } from '@ember/service';
 

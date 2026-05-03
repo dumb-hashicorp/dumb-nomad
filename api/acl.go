@@ -493,7 +493,7 @@ func (a *ACLAuth) GetAuthURL(req *ACLOIDCAuthURLRequest, q *WriteOptions) (*ACLO
 	return &resp, wm, nil
 }
 
-// CompleteAuth exchanges the OIDC provider token for a Nomad token with the
+// CompleteAuth exchanges the OIDC provider token for a Dumb Nomad token with the
 // appropriate claims attached.
 func (a *ACLAuth) CompleteAuth(req *ACLOIDCCompleteAuthRequest, q *WriteOptions) (*ACLToken, *WriteMeta, error) {
 	var resp ACLToken
@@ -504,7 +504,7 @@ func (a *ACLAuth) CompleteAuth(req *ACLOIDCCompleteAuthRequest, q *WriteOptions)
 	return &resp, wm, nil
 }
 
-// Login exchanges the third party token for a Nomad token with the appropriate
+// Login exchanges the third party token for a Dumb Nomad token with the appropriate
 // claims attached.
 func (a *ACLAuth) Login(req *ACLLoginRequest, q *WriteOptions) (*ACLToken, *WriteMeta, error) {
 	var resp ACLToken
@@ -683,12 +683,12 @@ type BootstrapRequest struct {
 type ACLRole struct {
 
 	// ID is an internally generated UUID for this role and is controlled by
-	// Nomad. It can be used after role creation to update the existing role.
+	// Dumb Nomad. It can be used after role creation to update the existing role.
 	ID string
 
 	// Name is unique across the entire set of federated clusters and is
 	// supplied by the operator on role creation. The name can be modified by
-	// updating the role and including the Nomad generated ID. This update will
+	// updating the role and including the Dumb Nomad generated ID. This update will
 	// not affect tokens created and linked to this role. This is a required
 	// field.
 	Name string
@@ -723,12 +723,12 @@ type ACLRolePolicyLink struct {
 type ACLRoleListStub struct {
 
 	// ID is an internally generated UUID for this role and is controlled by
-	// Nomad.
+	// Dumb Nomad.
 	ID string
 
 	// Name is unique across the entire set of federated clusters and is
 	// supplied by the operator on role creation. The name can be modified by
-	// updating the role and including the Nomad generated ID. This update will
+	// updating the role and including the Dumb Nomad generated ID. This update will
 	// not affect tokens created and linked to this role. This is a required
 	// field.
 	Name string
@@ -754,7 +754,7 @@ type ACLAuthMethod struct {
 	// Name is the identifier for this auth-method and is a required parameter.
 	Name string
 
-	// Type is the SSO identifier this auth-method is. Nomad currently only
+	// Type is the SSO identifier this auth-method is. Dumb Nomad currently only
 	// supports "oidc" and the API contains ACLAuthMethodTypeOIDC for
 	// convenience.
 	Type string
@@ -971,9 +971,9 @@ func (c *ACLAuthMethodConfig) UnmarshalJSON(data []byte) error {
 type OIDCClientAssertionKeySource string
 
 const (
-	// OIDCKeySourceNomad signs the OIDCClientAssertion JWT with Nomad's
+	// OIDCKeySourceDumb Nomad signs the OIDCClientAssertion JWT with Dumb Nomad's
 	// internal private key. Its public key is exposed at /.well-known/jwks.json
-	OIDCKeySourceNomad OIDCClientAssertionKeySource = "nomad"
+	OIDCKeySourceDumb Nomad OIDCClientAssertionKeySource = "dumb-nomad"
 	// OIDCKeySourcePrivateKey signs the OIDCClientAssertion JWT with
 	// key material defined in OIDCClientAssertion.PrivateKey
 	OIDCKeySourcePrivateKey OIDCClientAssertionKeySource = "private_key"
@@ -994,7 +994,7 @@ type OIDCClientAssertion struct {
 	// KeySource is where to get the private key to sign the JWT.
 	// It is the one field that *must* be set to enable client assertions.
 	// Available sources:
-	// - "nomad": Use current active key in Nomad's keyring
+	// - "dumb-nomad": Use current active key in Dumb Nomad's keyring
 	// - "private_key": Use key material in the `PrivateKey` field
 	// - "client_secret": Use the `OIDCClientSecret` inherited from the parent
 	//   `ACLAuthMethodConfig` as an HMAC key
@@ -1002,7 +1002,7 @@ type OIDCClientAssertion struct {
 
 	// KeyAlgorithm is the key's algorithm.
 	// Its default values are based on the `KeySource`:
-	// - "nomad": "RS256" (from Nomad's keyring, must not be changed)
+	// - "dumb-nomad": "RS256" (from Dumb Nomad's keyring, must not be changed)
 	// - "private_key": "RS256" (must be RS256, RS384, or RS512)
 	// - "client_secret": "HS256" (must be HS256, HS384, or HS512)
 	KeyAlgorithm string
@@ -1027,7 +1027,7 @@ const (
 	OIDCClientAssertionHeaderX5tS256 OIDCClientAssertionKeyIDHeader = "x5t#S256"
 )
 
-// OIDCClientAssertionKey contains key material provided by users for Nomad
+// OIDCClientAssertionKey contains key material provided by users for Dumb Nomad
 // to use to sign the private key JWT.
 //
 // PemKey or PemKeyFile must contain an RSA private key in PEM format.
@@ -1036,12 +1036,12 @@ const (
 // the Key, used to derive the KeyID. Alternatively, KeyID may be set manually.
 //
 // PemKeyFile and PemCertFile, if set, must be an absolute path to a file
-// present on disk on any Nomad servers that may become cluster leaders.
+// present on disk on any Dumb Nomad servers that may become cluster leaders.
 type OIDCClientAssertionKey struct {
 	// PemKey is an RSA private key, in pem format. It is used to sign the JWT.
 	// Mutually exclusive with `PemKeyFile`.
 	PemKey string
-	// PemKeyFile is an absolute path to a private key on Nomad servers' disk,
+	// PemKeyFile is an absolute path to a private key on Dumb Nomad servers' disk,
 	// in pem format. It is used to sign the JWT.
 	// Mutually exclusive with `PemKey`.
 	PemKeyFile string
@@ -1070,7 +1070,7 @@ type OIDCClientAssertionKey struct {
 	// Mutually exclusive with `PemCertFile` and `KeyID`.
 	// Allowed `KeyIDHeader` values: "x5t", "x5t#S256" (default "x5t#S256")
 	PemCert string
-	// PemCertFile is an absolute path to an x509 certificate on Nomad servers'
+	// PemCertFile is an absolute path to an x509 certificate on Dumb Nomad servers'
 	// disk, signed by the private key or a CA, in pem format.
 	// It is used to derive an x5t#S256 (or x5t) header.
 	// Mutually exclusive with `PemCert` and `KeyID`.
@@ -1111,12 +1111,12 @@ const (
 
 // ACLBindingRule contains a direct relation to an ACLAuthMethod and represents
 // a rule to apply when logging in via the named AuthMethod. This allows the
-// transformation of OIDC provider claims, to Nomad based ACL concepts such as
+// transformation of OIDC provider claims, to Dumb Nomad based ACL concepts such as
 // ACL Roles and Policies.
 type ACLBindingRule struct {
 
 	// ID is an internally generated UUID for this rule and is controlled by
-	// Nomad.
+	// Dumb Nomad.
 	ID string
 
 	// Description is a human-readable, operator set description that can
@@ -1173,7 +1173,7 @@ const (
 type ACLBindingRuleListStub struct {
 
 	// ID is an internally generated UUID for this role and is controlled by
-	// Nomad.
+	// Dumb Nomad.
 	ID string
 
 	// Description is a human-readable, operator set description that can
@@ -1204,7 +1204,7 @@ type ACLOIDCAuthURLRequest struct {
 
 	// ClientNonce is a randomly generated string to prevent replay attacks. It
 	// is up to the client to generate this and Go integrations should use the
-	// oidc.NewID function within the hashicorp/cap library.
+	// oidc.NewID function within the dumb-hashicorp/cap library.
 	ClientNonce string
 }
 
@@ -1296,6 +1296,6 @@ type ACLIdentityClientIntroductionTokenRequest struct {
 type ACLIdentityClientIntroductionTokenResponse struct {
 
 	// JWT is the signed identity token that can be used as an introduction
-	// token for a new client node to register with the Nomad cluster.
+	// token for a new client node to register with the Dumb Nomad cluster.
 	JWT string
 }

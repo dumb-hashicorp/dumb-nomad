@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,7 +21,7 @@ func TestEventer(t *testing.T) {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	e := NewEventer(ctx, testlog.HCLogger(t))
+	e := NewEventer(ctx, testlog.DUMB_HCLogger(t))
 
 	events := []*drivers.TaskEvent{
 		{
@@ -88,7 +88,7 @@ func TestEventer_iterateConsumers(t *testing.T) {
 	e := &Eventer{
 		events: make(chan *drivers.TaskEvent),
 		ctx:    context.Background(),
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 
 	ev := &drivers.TaskEvent{

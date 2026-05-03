@@ -8,10 +8,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -97,13 +97,13 @@ func TestHTTPServer_NodeIdentityGetRequest(t *testing.T) {
 				"nbf",
 				"sub",
 				"iat",
-				"nomad_node_datacenter",
-				"nomad_node_id",
-				"nomad_node_pool",
+				"dumb-nomad_node_datacenter",
+				"dumb-nomad_node_id",
+				"dumb-nomad_node_pool",
 			})
 
 			must.MapContainsValues(t, resp.Claims, []any{
-				"nomadproject.io",
+				"dumb-nomadproject.io",
 				s.client.NodeID(),
 				s.client.Datacenter(),
 				s.client.Node().NodePool,

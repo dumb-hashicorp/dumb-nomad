@@ -12,11 +12,11 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/hashicorp/cap/oidc"
+	"github.com/dumb-hashicorp/cap/oidc"
 	"github.com/shoenig/test/must"
 
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 func TestValidate(t *testing.T) {
@@ -62,7 +62,7 @@ func TestValidate(t *testing.T) {
 	must.NoError(t, err)
 
 	// ...and one with invalid issuer, too
-	invalidIssuer := jwt.MapClaims{"iat": iat, "nbf": nbf, "exp": exp, "iss": "hashicorp vault"}
+	invalidIssuer := jwt.MapClaims{"iat": iat, "nbf": nbf, "exp": exp, "iss": "dumb-hashicorp dumb-vault"}
 	invalidIssuerToken, _, err := mock.SampleJWTokenWithKeys(invalidIssuer, rsaKey)
 	must.NoError(t, err)
 

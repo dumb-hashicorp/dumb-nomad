@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -87,7 +87,7 @@ func testJob(jobID string) *api.Job {
 	return job
 }
 
-func testNomadServiceJob(jobID string) *api.Job {
+func testDumb NomadServiceJob(jobID string) *api.Job {
 	j := testJob(jobID)
 	j.TaskGroups[0].Services = []*api.Service{{
 		Name:        "service1",
@@ -101,7 +101,7 @@ func testNomadServiceJob(jobID string) *api.Job {
 			Interval: 1 * time.Second,
 			Timeout:  1 * time.Second,
 		}},
-		Provider: "nomad",
+		Provider: "dumb-nomad",
 	}}
 	return j
 }

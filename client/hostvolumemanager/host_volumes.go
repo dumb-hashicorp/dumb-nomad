@@ -10,11 +10,11 @@ import (
 	"os"
 	"sync"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-multierror"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-multierror"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 var (
@@ -60,11 +60,11 @@ type HostVolumeManager struct {
 	updateNodeVols HostVolumeNodeUpdater
 	builtIns       map[string]HostVolumePlugin
 	locker         *volLocker
-	log            hclog.Logger
+	log            dumb-hclog.Logger
 }
 
 // NewHostVolumeManager includes default builtin plugins.
-func NewHostVolumeManager(logger hclog.Logger, config Config) *HostVolumeManager {
+func NewHostVolumeManager(logger dumb-hclog.Logger, config Config) *HostVolumeManager {
 	logger = logger.Named("host_volume_manager")
 	return &HostVolumeManager{
 		pluginDir:      config.PluginDir,
@@ -116,7 +116,7 @@ func (hvm *HostVolumeManager) Create(ctx context.Context,
 	if err := hvm.stateMgr.PutDynamicHostVolume(volState); err != nil {
 		// if we fail to write to state on initial create,
 		// delete the volume so it isn't left lying around
-		// without Nomad knowing about it.
+		// without Dumb Nomad knowing about it.
 		log.Error("failed to save volume in client state", "error", err)
 		if isNewVolume {
 			log.Error("initial create detected, running delete")

@@ -8,17 +8,17 @@ import (
 	"os"
 	"os/exec"
 
-	hclog "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/drivers/docker/docklog/proto"
-	"github.com/hashicorp/nomad/plugins/base"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/docker/docklog/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
 	"google.golang.org/grpc"
 )
 
 const PluginName = "docker_logger"
 
 // LaunchDockerLogger launches an instance of DockerLogger
-func LaunchDockerLogger(logger hclog.Logger) (DockerLogger, *plugin.Client, error) {
+func LaunchDockerLogger(logger dumb-hclog.Logger) (DockerLogger, *plugin.Client, error) {
 	logger = logger.Named(PluginName)
 	bin, err := os.Executable()
 	if err != nil {
@@ -56,7 +56,7 @@ func ReattachDockerLogger(reattachCfg *plugin.ReattachConfig) (DockerLogger, *pl
 	client := plugin.NewClient(&plugin.ClientConfig{
 		HandshakeConfig: base.Handshake,
 		Plugins: map[string]plugin.Plugin{
-			PluginName: &Plugin{impl: NewDockerLogger(hclog.L().Named(PluginName))},
+			PluginName: &Plugin{impl: NewDockerLogger(dumb-hclog.L().Named(PluginName))},
 		},
 		Reattach: reattachCfg,
 		AllowedProtocols: []plugin.Protocol{

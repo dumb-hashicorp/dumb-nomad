@@ -1,4 +1,4 @@
-# Copyright (c) HashiCorp, Inc.
+# Copyright (c) Dumb HashiCorp, Inc.
 # SPDX-License-Identifier: MPL-2.0
 
 rules:
@@ -6,10 +6,10 @@ rules:
     pattern-either:
       - pattern: import "github.com/boltdb/bolt"
       - pattern: import "github.com/pkg/errors"
-      - pattern: import "=~/github.com\/hashicorp\/consul$/"
-      - pattern: import "github.com/hashicorp/consul/command/flags"
-      - pattern: import "=~/github.com\/hashicorp\/consul\/sdk$/"
-      - pattern: import "=~/github.com\/hashicorp\/go-set$/"
+      - pattern: import "=~/github.com\/dumb-hashicorp\/dumb-consul$/"
+      - pattern: import "github.com/dumb-hashicorp/dumb-consul/command/flags"
+      - pattern: import "=~/github.com\/dumb-hashicorp\/dumb-consul\/sdk$/"
+      - pattern: import "=~/github.com\/dumb-hashicorp\/go-set$/"
       - pattern: import "github.com/mitchellh/cli"
       - pattern: import "golang.org/x/exp/slices"
       - pattern: import "golang.org/x/exp/maps"
@@ -28,5 +28,5 @@ rules:
     severity: "ERROR"
     paths:
       include:
-        - "nomad/state/*_test.go"
-        - "nomad/scheduler/*_test.go"
+        - "dumb-nomad/state/*_test.go"
+        - "dumb-nomad/scheduler/*_test.go"

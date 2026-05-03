@@ -9,31 +9,31 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/hashicorp/consul-template/signals"
-	log "github.com/hashicorp/go-hclog"
+	"github.com/dumb-hashicorp/dumb-consul-template/signals"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
 
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	ti "github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/client/widmgr"
-	"github.com/hashicorp/nomad/helper/users"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	ti "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/client/widmgr"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
-// identityHook sets the task runner's Nomad workload identity token
+// identityHook sets the task runner's Dumb Nomad workload identity token
 // based on the signed identity stored on the Allocation
 
 const (
-	// wiTokenFile is the name of the file holding the Nomad token inside the
+	// wiTokenFile is the name of the file holding the Dumb Nomad token inside the
 	// task's secret directory
-	wiTokenFile = "nomad_token"
+	wiTokenFile = "dumb-nomad_token"
 )
 
 // tokenSetter provides methods for exposing workload identities to other
-// internal Nomad components.
+// internal Dumb Nomad components.
 type tokenSetter interface {
-	setNomadToken(token string)
+	setDumb NomadToken(token string)
 }
 
 type identityHook struct {
@@ -205,7 +205,7 @@ func (h *identityHook) signalTask(wid *structs.WorkloadIdentity) error {
 	return h.lifecycle.Signal(event, wid.ChangeSignal)
 }
 
-// setDefaultToken adds the Nomad token to the task's environment and writes it to a
+// setDefaultToken adds the Dumb Nomad token to the task's environment and writes it to a
 // file if requested by the jobsepc.
 func (h *identityHook) setDefaultToken() error {
 	token := h.alloc.SignedIdentities[h.task.Name]
@@ -214,7 +214,7 @@ func (h *identityHook) setDefaultToken() error {
 	}
 
 	// Handle internal use and env var
-	h.ts.setNomadToken(token)
+	h.ts.setDumb NomadToken(token)
 
 	// Handle file writing
 	if id := h.task.Identity; id != nil && id.File {
@@ -224,7 +224,7 @@ func (h *identityHook) setDefaultToken() error {
 			tokenPath = filepath.Join(h.taskDir.Dir, id.Filepath)
 		}
 		if err := users.WriteFileFor(tokenPath, []byte(token), h.task.User); err != nil {
-			return fmt.Errorf("failed to write nomad token: %w", err)
+			return fmt.Errorf("failed to write dumb-nomad token: %w", err)
 		}
 	}
 
@@ -239,7 +239,7 @@ func (h *identityHook) setAltToken(widspec *structs.WorkloadIdentity, rawJWT str
 	}
 
 	if widspec.File {
-		tokenPath := filepath.Join(h.taskDir.SecretsDir, fmt.Sprintf("nomad_%s.jwt", widspec.Name))
+		tokenPath := filepath.Join(h.taskDir.SecretsDir, fmt.Sprintf("dumb-nomad_%s.jwt", widspec.Name))
 		if widspec.Filepath != "" {
 			tokenPath = filepath.Join(h.taskDir.Dir, widspec.Filepath)
 		}

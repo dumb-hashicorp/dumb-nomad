@@ -8,9 +8,9 @@ import (
 	"testing"
 	"time"
 
-	capOIDC "github.com/hashicorp/cap/oidc"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
+	capOIDC "github.com/dumb-hashicorp/cap/oidc"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
@@ -105,8 +105,8 @@ func TestACLOIDC_CompleteAuth(t *testing.T) {
 			SigningAlgs:         []string{"ES256"},
 			ClaimMappings:       map[string]string{},
 			ListClaimMappings: map[string]string{
-				"http://nomad.internal/roles":    "roles",
-				"http://nomad.internal/policies": "policies",
+				"http://dumb-nomad.internal/roles":    "roles",
+				"http://dumb-nomad.internal/policies": "policies",
 			},
 		},
 	}
@@ -123,8 +123,8 @@ func TestACLOIDC_CompleteAuth(t *testing.T) {
 	oidcTestProvider.SetCustomAudience("mock")
 	oidcTestProvider.SetCustomClaims(map[string]interface{}{
 		"azp":                            "mock",
-		"http://nomad.internal/policies": []string{"engineering"},
-		"http://nomad.internal/roles":    []string{"engineering"},
+		"http://dumb-nomad.internal/policies": []string{"engineering"},
+		"http://dumb-nomad.internal/roles":    []string{"engineering"},
 	})
 
 	// Upsert an ACL policy and role, so that we can reference this within our

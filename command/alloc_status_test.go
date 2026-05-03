@@ -9,12 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/posener/complete"
 	"github.com/shoenig/test/must"
 )
@@ -200,7 +200,7 @@ func TestAllocStatusCommand_Run(t *testing.T) {
 	must.StrContains(t, out, allocID)
 
 	// make sure nsd checks status output is elided if none exist
-	must.StrNotContains(t, out, `Nomad Service Checks:`)
+	must.StrNotContains(t, out, `Dumb Nomad Service Checks:`)
 }
 
 func TestAllocStatusCommand_RescheduleInfo(t *testing.T) {
@@ -355,7 +355,7 @@ func TestAllocStatusCommand_HostVolumes(t *testing.T) {
 		},
 	}
 	// fakes the placement enough so that we have something to iterate
-	// on in 'nomad alloc status'
+	// on in 'dumb-nomad alloc status'
 	alloc.TaskStates = map[string]*structs.TaskState{
 		"web": {
 			Events: []*structs.TaskEvent{
@@ -465,7 +465,7 @@ func TestAllocStatusCommand_NSD_Checks(t *testing.T) {
 	waitForNodes(t, client)
 
 	jobID := "job1_checks"
-	job1 := testNomadServiceJob(jobID)
+	job1 := testDumb NomadServiceJob(jobID)
 
 	resp, _, err := client.Jobs().Register(job1, nil)
 	must.NoError(t, err)
@@ -488,7 +488,7 @@ func TestAllocStatusCommand_NSD_Checks(t *testing.T) {
 
 	// check output
 	out := ui.OutputWriter.String()
-	must.StrContains(t, out, `Nomad Service Checks:`)
+	must.StrContains(t, out, `Dumb Nomad Service Checks:`)
 	must.RegexMatch(t, regexp.MustCompile(`Service\s+Task\s+Name\s+Mode\s+Status`), out)
 	must.RegexMatch(t, regexp.MustCompile(`service1\s+\(group\)\s+check1\s+healthiness\s+(pending|failure)`), out)
 }

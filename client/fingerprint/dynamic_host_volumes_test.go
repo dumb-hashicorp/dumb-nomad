@@ -9,10 +9,10 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/hashicorp/nomad/client/config"
-	hvm "github.com/hashicorp/nomad/client/hostvolumemanager"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	hvm "github.com/dumb-hashicorp/dumb-nomad/client/hostvolumemanager"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -22,7 +22,7 @@ func TestPluginsHostVolumeFingerprint(t *testing.T) {
 	cfg := &config.Config{HostVolumePluginDir: ""}
 	node := &structs.Node{Attributes: map[string]string{}}
 	req := &FingerprintRequest{Config: cfg, Node: node}
-	fp := NewPluginsHostVolumeFingerprint(testlog.HCLogger(t))
+	fp := NewPluginsHostVolumeFingerprint(testlog.DUMB_HCLogger(t))
 
 	// this fingerprint is not mandatory, so no error should be returned
 	for name, path := range map[string]string{

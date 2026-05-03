@@ -7,13 +7,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/hoststats"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/hoststats"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -126,7 +126,7 @@ func (m *MockStatsCollector) Stats() *hoststats.HostStats {
 func TestAllocGarbageCollector_MarkForCollection(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	gc := NewAllocGarbageCollector(logger, &MockStatsCollector{}, &MockAllocCounter{}, gcConfig())
 
 	ar1, cleanup1 := allocrunner.TestAllocRunnerFromAlloc(t, mock.Alloc())
@@ -143,7 +143,7 @@ func TestAllocGarbageCollector_MarkForCollection(t *testing.T) {
 func TestAllocGarbageCollector_Collect(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	gc := NewAllocGarbageCollector(logger, &MockStatsCollector{}, &MockAllocCounter{}, gcConfig())
 
 	ar1, cleanup1 := allocrunner.TestAllocRunnerFromAlloc(t, mock.Alloc())
@@ -170,7 +170,7 @@ func TestAllocGarbageCollector_Collect(t *testing.T) {
 func TestAllocGarbageCollector_CollectAll(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	gc := NewAllocGarbageCollector(logger, &MockStatsCollector{}, &MockAllocCounter{}, gcConfig())
 
 	ar1, cleanup1 := allocrunner.TestAllocRunnerFromAlloc(t, mock.Alloc())
@@ -245,7 +245,7 @@ func TestAllocGarbageCollector_KeepUsageBelowThreshold(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			logger := testlog.HCLogger(t)
+			logger := testlog.DUMB_HCLogger(t)
 			gc := NewAllocGarbageCollector(logger, tc.stats, tc.counter, gcConfig())
 
 			// add a single alloc for garbage collection

@@ -1,2 +1,2 @@
-volume-ebs.hcl
-volume-efs.hcl
+volume-ebs.dumb-hcl
+volume-efs.dumb-hcl

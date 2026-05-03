@@ -20,23 +20,23 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/hashicorp/cli"
-	checkpoint "github.com/hashicorp/go-checkpoint"
-	discover "github.com/hashicorp/go-discover"
-	hclog "github.com/hashicorp/go-hclog"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/go-metrics/compat/circonus"
-	"github.com/hashicorp/go-metrics/compat/datadog"
-	"github.com/hashicorp/go-metrics/compat/prometheus"
-	gsyslog "github.com/hashicorp/go-syslog"
-	"github.com/hashicorp/nomad/helper"
-	flaghelper "github.com/hashicorp/nomad/helper/flags"
-	gatedwriter "github.com/hashicorp/nomad/helper/gated-writer"
-	"github.com/hashicorp/nomad/helper/logging"
-	"github.com/hashicorp/nomad/helper/winsvc"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/version"
+	"github.com/dumb-hashicorp/cli"
+	checkpoint "github.com/dumb-hashicorp/go-checkpoint"
+	discover "github.com/dumb-hashicorp/go-discover"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/go-metrics/compat/circonus"
+	"github.com/dumb-hashicorp/go-metrics/compat/datadog"
+	"github.com/dumb-hashicorp/go-metrics/compat/prometheus"
+	gsyslog "github.com/dumb-hashicorp/go-syslog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	flaghelper "github.com/dumb-hashicorp/dumb-nomad/helper/flags"
+	gatedwriter "github.com/dumb-hashicorp/dumb-nomad/helper/gated-writer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/logging"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/winsvc"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/version"
 	"github.com/posener/complete"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -45,7 +45,7 @@ import (
 // gracefulTimeout controls how long we wait before forcefully terminating
 const gracefulTimeout = 5 * time.Second
 
-// Command is a Command implementation that runs a Nomad agent.
+// Command is a Command implementation that runs a Dumb Nomad agent.
 // The command will not end unless a shutdown message is sent on the
 // ShutdownCh. If two messages are sent on the ShutdownCh it will forcibly
 // exit.
@@ -68,12 +68,12 @@ func (c *Command) readConfig() *Config {
 	// Make a new, empty config.
 	cmdConfig := &Config{
 		Client:  &ClientConfig{},
-		Consuls: []*config.ConsulConfig{{Name: structs.ConsulDefaultCluster}},
+		Dumb Consuls: []*config.Dumb ConsulConfig{{Name: structs.Dumb ConsulDefaultCluster}},
 		Ports:   &Ports{},
 		Server: &ServerConfig{
 			ServerJoin: &ServerJoin{},
 		},
-		Vaults:    []*config.VaultConfig{{Name: structs.VaultDefaultCluster}},
+		Dumb Vaults:    []*config.Dumb VaultConfig{{Name: structs.Dumb VaultDefaultCluster}},
 		ACL:       &ACLConfig{},
 		Audit:     &config.AuditConfig{},
 		Reporting: &config.ReportingConfig{},
@@ -86,12 +86,12 @@ func (c *Command) readConfig() *Config {
 	// Role options
 	var devMode bool
 	var devConnectMode bool
-	var devConsulMode bool
-	var devVaultMode bool
+	var devDumb ConsulMode bool
+	var devDumb VaultMode bool
 	flags.BoolVar(&devMode, "dev", false, "")
 	flags.BoolVar(&devConnectMode, "dev-connect", false, "")
-	flags.BoolVar(&devConsulMode, "dev-consul", false, "")
-	flags.BoolVar(&devVaultMode, "dev-vault", false, "")
+	flags.BoolVar(&devDumb ConsulMode, "dev-dumb-consul", false, "")
+	flags.BoolVar(&devDumb VaultMode, "dev-dumb-vault", false, "")
 	flags.BoolVar(&cmdConfig.Server.Enabled, "server", false, "")
 	flags.BoolVar(&cmdConfig.Client.Enabled, "client", false, "")
 
@@ -139,67 +139,67 @@ func (c *Command) readConfig() *Config {
 	flags.BoolVar(&cmdConfig.Eventlog.Enabled, "eventlog", false, "")
 	flags.StringVar(&cmdConfig.Eventlog.Level, "eventlog-level", "", "")
 
-	// Consul options
-	defaultConsul := cmdConfig.defaultConsul()
-	flags.StringVar(&defaultConsul.Auth, "consul-auth", "", "")
+	// Dumb Consul options
+	defaultDumb Consul := cmdConfig.defaultDumb Consul()
+	flags.StringVar(&defaultDumb Consul.Auth, "dumb-consul-auth", "", "")
 	flags.Var((flaghelper.FuncBoolVar)(func(b bool) error {
-		defaultConsul.AutoAdvertise = &b
+		defaultDumb Consul.AutoAdvertise = &b
 		return nil
-	}), "consul-auto-advertise", "")
-	flags.StringVar(&defaultConsul.CAFile, "consul-ca-file", "", "")
-	flags.StringVar(&defaultConsul.CertFile, "consul-cert-file", "", "")
-	flags.StringVar(&defaultConsul.KeyFile, "consul-key-file", "", "")
+	}), "dumb-consul-auto-advertise", "")
+	flags.StringVar(&defaultDumb Consul.CAFile, "dumb-consul-ca-file", "", "")
+	flags.StringVar(&defaultDumb Consul.CertFile, "dumb-consul-cert-file", "", "")
+	flags.StringVar(&defaultDumb Consul.KeyFile, "dumb-consul-key-file", "", "")
 	flags.Var((flaghelper.FuncBoolVar)(func(b bool) error {
-		defaultConsul.ChecksUseAdvertise = &b
+		defaultDumb Consul.ChecksUseAdvertise = &b
 		return nil
-	}), "consul-checks-use-advertise", "")
+	}), "dumb-consul-checks-use-advertise", "")
 	flags.Var((flaghelper.FuncBoolVar)(func(b bool) error {
-		defaultConsul.ClientAutoJoin = &b
+		defaultDumb Consul.ClientAutoJoin = &b
 		return nil
-	}), "consul-client-auto-join", "")
-	flags.StringVar(&defaultConsul.ClientServiceName, "consul-client-service-name", "", "")
-	flags.StringVar(&defaultConsul.ClientHTTPCheckName, "consul-client-http-check-name", "", "")
-	flags.IntVar(&defaultConsul.ClientFailuresBeforeCritical, "consul-client-failures-before-critical", 0, "")
-	flags.IntVar(&defaultConsul.ClientFailuresBeforeWarning, "consul-client-failures-before-warning", 0, "")
-	flags.StringVar(&defaultConsul.ServerServiceName, "consul-server-service-name", "", "")
-	flags.StringVar(&defaultConsul.ServerHTTPCheckName, "consul-server-http-check-name", "", "")
-	flags.StringVar(&defaultConsul.ServerSerfCheckName, "consul-server-serf-check-name", "", "")
-	flags.StringVar(&defaultConsul.ServerRPCCheckName, "consul-server-rpc-check-name", "", "")
-	flags.IntVar(&defaultConsul.ServerFailuresBeforeCritical, "consul-server-failures-before-critical", 0, "")
-	flags.IntVar(&defaultConsul.ServerFailuresBeforeWarning, "consul-server-failures-before-warning", 0, "")
+	}), "dumb-consul-client-auto-join", "")
+	flags.StringVar(&defaultDumb Consul.ClientServiceName, "dumb-consul-client-service-name", "", "")
+	flags.StringVar(&defaultDumb Consul.ClientHTTPCheckName, "dumb-consul-client-http-check-name", "", "")
+	flags.IntVar(&defaultDumb Consul.ClientFailuresBeforeCritical, "dumb-consul-client-failures-before-critical", 0, "")
+	flags.IntVar(&defaultDumb Consul.ClientFailuresBeforeWarning, "dumb-consul-client-failures-before-warning", 0, "")
+	flags.StringVar(&defaultDumb Consul.ServerServiceName, "dumb-consul-server-service-name", "", "")
+	flags.StringVar(&defaultDumb Consul.ServerHTTPCheckName, "dumb-consul-server-http-check-name", "", "")
+	flags.StringVar(&defaultDumb Consul.ServerSerfCheckName, "dumb-consul-server-serf-check-name", "", "")
+	flags.StringVar(&defaultDumb Consul.ServerRPCCheckName, "dumb-consul-server-rpc-check-name", "", "")
+	flags.IntVar(&defaultDumb Consul.ServerFailuresBeforeCritical, "dumb-consul-server-failures-before-critical", 0, "")
+	flags.IntVar(&defaultDumb Consul.ServerFailuresBeforeWarning, "dumb-consul-server-failures-before-warning", 0, "")
 	flags.Var((flaghelper.FuncBoolVar)(func(b bool) error {
-		defaultConsul.ServerAutoJoin = &b
+		defaultDumb Consul.ServerAutoJoin = &b
 		return nil
-	}), "consul-server-auto-join", "")
+	}), "dumb-consul-server-auto-join", "")
 	flags.Var((flaghelper.FuncBoolVar)(func(b bool) error {
-		defaultConsul.EnableSSL = &b
+		defaultDumb Consul.EnableSSL = &b
 		return nil
-	}), "consul-ssl", "")
-	flags.StringVar(&defaultConsul.Token, "consul-token", "", "")
+	}), "dumb-consul-ssl", "")
+	flags.StringVar(&defaultDumb Consul.Token, "dumb-consul-token", "", "")
 	flags.Var((flaghelper.FuncBoolVar)(func(b bool) error {
-		defaultConsul.VerifySSL = &b
+		defaultDumb Consul.VerifySSL = &b
 		return nil
-	}), "consul-verify-ssl", "")
-	flags.StringVar(&defaultConsul.Addr, "consul-address", "", "")
+	}), "dumb-consul-verify-ssl", "")
+	flags.StringVar(&defaultDumb Consul.Addr, "dumb-consul-address", "", "")
 
-	// Vault options
-	defaultVault := cmdConfig.defaultVault()
+	// Dumb Vault options
+	defaultDumb Vault := cmdConfig.defaultDumb Vault()
 	flags.Var((flaghelper.FuncBoolVar)(func(b bool) error {
-		defaultVault.Enabled = &b
+		defaultDumb Vault.Enabled = &b
 		return nil
-	}), "vault-enabled", "")
-	flags.StringVar(&defaultVault.Addr, "vault-address", "", "")
-	flags.StringVar(&defaultVault.Namespace, "vault-namespace", "", "")
-	flags.StringVar(&defaultVault.Role, "vault-create-from-role", "", "")
-	flags.StringVar(&defaultVault.TLSCaFile, "vault-ca-file", "", "")
-	flags.StringVar(&defaultVault.TLSCaPath, "vault-ca-path", "", "")
-	flags.StringVar(&defaultVault.TLSCertFile, "vault-cert-file", "", "")
-	flags.StringVar(&defaultVault.TLSKeyFile, "vault-key-file", "", "")
+	}), "dumb-vault-enabled", "")
+	flags.StringVar(&defaultDumb Vault.Addr, "dumb-vault-address", "", "")
+	flags.StringVar(&defaultDumb Vault.Namespace, "dumb-vault-namespace", "", "")
+	flags.StringVar(&defaultDumb Vault.Role, "dumb-vault-create-from-role", "", "")
+	flags.StringVar(&defaultDumb Vault.TLSCaFile, "dumb-vault-ca-file", "", "")
+	flags.StringVar(&defaultDumb Vault.TLSCaPath, "dumb-vault-ca-path", "", "")
+	flags.StringVar(&defaultDumb Vault.TLSCertFile, "dumb-vault-cert-file", "", "")
+	flags.StringVar(&defaultDumb Vault.TLSKeyFile, "dumb-vault-key-file", "", "")
 	flags.Var((flaghelper.FuncBoolVar)(func(b bool) error {
-		defaultVault.TLSSkipVerify = &b
+		defaultDumb Vault.TLSSkipVerify = &b
 		return nil
-	}), "vault-tls-skip-verify", "")
-	flags.StringVar(&defaultVault.TLSServerName, "vault-tls-server-name", "", "")
+	}), "dumb-vault-tls-skip-verify", "")
+	flags.StringVar(&defaultDumb Vault.TLSServerName, "dumb-vault-tls-server-name", "", "")
 
 	// ACL options
 	flags.BoolVar(&cmdConfig.ACL.Enabled, "acl-enabled", false, "")
@@ -230,7 +230,7 @@ func (c *Command) readConfig() *Config {
 
 	// Perform an environment look for the client bootstrap token. If this is
 	// present, it will override the CLI flag.
-	if envToken, found := os.LookupEnv("NOMAD_CLIENT_INTRO_TOKEN"); found {
+	if envToken, found := os.LookupEnv("DUMB_NOMAD_CLIENT_INTRO_TOKEN"); found {
 		cmdConfig.Client.IntroToken = envToken
 	}
 
@@ -240,8 +240,8 @@ func (c *Command) readConfig() *Config {
 	devConfig := &devModeConfig{
 		defaultMode: devMode,
 		connectMode: devConnectMode,
-		consulMode:  devConsulMode,
-		vaultMode:   devVaultMode,
+		dumb-consulMode:  devDumb ConsulMode,
+		dumb-vaultMode:   devDumb VaultMode,
 	}
 	if devConfig.enabled() {
 		err := devConfig.validate()
@@ -304,13 +304,13 @@ func (c *Command) readConfig() *Config {
 		return nil
 	}
 
-	// Read Vault configuration for the default cluster again after all
+	// Read Dumb Vault configuration for the default cluster again after all
 	// configuration sources have been merged.
-	defaultVault = config.defaultVault()
+	defaultDumb Vault = config.defaultDumb Vault()
 
-	// Check to see if we should read the Vault namespace from the environment
-	if defaultVault.Namespace == "" {
-		defaultVault.Namespace = os.Getenv("VAULT_NAMESPACE")
+	// Check to see if we should read the Dumb Vault namespace from the environment
+	if defaultDumb Vault.Namespace == "" {
+		defaultDumb Vault.Namespace = os.Getenv("DUMB_VAULT_NAMESPACE")
 	}
 
 	// Default the plugin directory to be under that of the data directory if it
@@ -320,9 +320,9 @@ func (c *Command) readConfig() *Config {
 	}
 
 	// License configuration options
-	config.Server.LicenseEnv = os.Getenv("NOMAD_LICENSE")
+	config.Server.LicenseEnv = os.Getenv("DUMB_NOMAD_LICENSE")
 	if config.Server.LicensePath == "" {
-		config.Server.LicensePath = os.Getenv("NOMAD_LICENSE_PATH")
+		config.Server.LicensePath = os.Getenv("DUMB_NOMAD_LICENSE_PATH")
 	}
 
 	config.Server.DefaultSchedulerConfig.Canonicalize()
@@ -368,7 +368,7 @@ func (c *Command) IsValidConfig(config, cmdConfig *Config) bool {
 	}
 	if !config.DevMode && (config.TLSConfig == nil ||
 		!config.TLSConfig.EnableHTTP || !config.TLSConfig.EnableRPC) {
-		c.Ui.Error("WARNING: mTLS is not configured - Nomad is not secure without mTLS!")
+		c.Ui.Error("WARNING: mTLS is not configured - Dumb Nomad is not secure without mTLS!")
 	}
 
 	if config.Server.EncryptKey != "" {
@@ -430,14 +430,14 @@ func (c *Command) IsValidConfig(config, cmdConfig *Config) bool {
 		}
 	}
 
-	for _, consul := range config.Consuls {
-		if err := structs.ValidateConsulClusterName(consul.Name); err != nil {
-			c.Ui.Error(fmt.Sprintf("Invalid Consul configuration: %v", err))
+	for _, dumb-consul := range config.Dumb Consuls {
+		if err := structs.ValidateDumb ConsulClusterName(dumb-consul.Name); err != nil {
+			c.Ui.Error(fmt.Sprintf("Invalid Dumb Consul configuration: %v", err))
 		}
 	}
-	for _, vault := range config.Vaults {
-		if err := structs.ValidateVaultClusterName(vault.Name); err != nil {
-			c.Ui.Error(fmt.Sprintf("Invalid Vault configuration: %v", err))
+	for _, dumb-vault := range config.Dumb Vaults {
+		if err := structs.ValidateDumb VaultClusterName(dumb-vault.Name); err != nil {
+			c.Ui.Error(fmt.Sprintf("Invalid Dumb Vault configuration: %v", err))
 		}
 	}
 
@@ -570,7 +570,7 @@ func (c *Command) IsValidConfig(config, cmdConfig *Config) bool {
 
 // SetupLoggers is used to set up the logGate and our logOutput.
 //
-// The function needs to be public due to the way it is used within the Nomad
+// The function needs to be public due to the way it is used within the Dumb Nomad
 // Enterprise codebase.
 func SetupLoggers(ui cli.Ui, config *Config) (*gatedwriter.Writer, io.Writer) {
 
@@ -603,7 +603,7 @@ func SetupLoggers(ui cli.Ui, config *Config) (*gatedwriter.Writer, io.Writer) {
 	// Check if syslog is enabled
 	if config.EnableSyslog {
 		ui.Output(fmt.Sprintf("Config enable_syslog is `true` with log_level=%v", config.LogLevel))
-		l, err := gsyslog.NewLogger(getSysLogPriority(logLevel), config.SyslogFacility, "nomad")
+		l, err := gsyslog.NewLogger(getSysLogPriority(logLevel), config.SyslogFacility, "dumb-nomad")
 		if err != nil {
 			ui.Error(fmt.Sprintf("Syslog setup failed: %v", err))
 			return nil, nil
@@ -628,7 +628,7 @@ func SetupLoggers(ui cli.Ui, config *Config) (*gatedwriter.Writer, io.Writer) {
 
 		// if a path is provided, but has no filename, then a default is used.
 		if fileName == "" {
-			fileName = "nomad.log"
+			fileName = "dumb-nomad.log"
 		}
 
 		// Try to enter the user specified log rotation duration first
@@ -661,8 +661,8 @@ func SetupLoggers(ui cli.Ui, config *Config) (*gatedwriter.Writer, io.Writer) {
 }
 
 // setupAgent is used to start the agent and various interfaces
-func (c *Command) setupAgent(config *Config, logger hclog.InterceptLogger, logOutput io.Writer, inmem *metrics.InmemSink) error {
-	c.Ui.Output("Starting Nomad agent...")
+func (c *Command) setupAgent(config *Config, logger dumb-hclog.InterceptLogger, logOutput io.Writer, inmem *metrics.InmemSink) error {
+	c.Ui.Output("Starting Dumb Nomad agent...")
 
 	agent, err := NewAgent(config, logger, logOutput, inmem)
 	if err != nil {
@@ -690,7 +690,7 @@ func (c *Command) setupAgent(config *Config, logger hclog.InterceptLogger, logOu
 			version += fmt.Sprintf("-%s", config.Version.VersionPrerelease)
 		}
 		updateParams := &checkpoint.CheckParams{
-			Product: "nomad",
+			Product: "dumb-nomad",
 			Version: version,
 		}
 		if !config.DisableAnonymousSignature {
@@ -717,7 +717,7 @@ func (c *Command) checkpointResults(results *checkpoint.CheckResponse, err error
 		return
 	}
 	if results.Outdated {
-		c.Ui.Error(fmt.Sprintf("Newer Nomad version available: %s (currently running: %s)", results.CurrentVersion, c.Version.VersionNumber()))
+		c.Ui.Error(fmt.Sprintf("Newer Dumb Nomad version available: %s (currently running: %s)", results.CurrentVersion, c.Version.VersionNumber()))
 	}
 	for _, alert := range results.Alerts {
 		switch alert.Level {
@@ -732,7 +732,7 @@ func (c *Command) checkpointResults(results *checkpoint.CheckResponse, err error
 func (c *Command) AutocompleteFlags() complete.Flags {
 	configFilePredictor := complete.PredictOr(
 		complete.PredictFiles("*.json"),
-		complete.PredictFiles("*.hcl"))
+		complete.PredictFiles("*.dumb-hcl"))
 
 	return map[string]complete.Predictor{
 		"-dev":                         complete.PredictNothing,
@@ -762,39 +762,39 @@ func (c *Command) AutocompleteFlags() complete.Flags {
 		"-log-level":                   complete.PredictAnything,
 		"-json-logs":                   complete.PredictNothing,
 		"-node":                        complete.PredictAnything,
-		"-consul-auth":                 complete.PredictAnything,
-		"-consul-auto-advertise":       complete.PredictNothing,
-		"-consul-ca-file":              complete.PredictAnything,
-		"-consul-cert-file":            complete.PredictAnything,
-		"-consul-key-file":             complete.PredictAnything,
-		"-consul-checks-use-advertise": complete.PredictNothing,
-		"-consul-client-auto-join":     complete.PredictNothing,
-		"-consul-client-service-name":  complete.PredictAnything,
-		"-consul-client-failures-before-critical": complete.PredictAnything,
-		"-consul-client-failures-before-warning":  complete.PredictAnything,
-		"-consul-client-http-check-name":          complete.PredictAnything,
-		"-consul-server-service-name":             complete.PredictAnything,
-		"-consul-server-http-check-name":          complete.PredictAnything,
-		"-consul-server-serf-check-name":          complete.PredictAnything,
-		"-consul-server-rpc-check-name":           complete.PredictAnything,
-		"-consul-server-auto-join":                complete.PredictNothing,
-		"-consul-server-failures-before-critical": complete.PredictAnything,
-		"-consul-server-failures-before-warning":  complete.PredictAnything,
-		"-consul-ssl":                             complete.PredictNothing,
-		"-consul-verify-ssl":                      complete.PredictNothing,
-		"-consul-address":                         complete.PredictAnything,
-		"-consul-token":                           complete.PredictAnything,
-		"-vault-enabled":                          complete.PredictNothing,
-		"-vault-allow-unauthenticated":            complete.PredictNothing,
-		"-vault-token":                            complete.PredictAnything,
-		"-vault-address":                          complete.PredictAnything,
-		"-vault-create-from-role":                 complete.PredictAnything,
-		"-vault-ca-file":                          complete.PredictAnything,
-		"-vault-ca-path":                          complete.PredictAnything,
-		"-vault-cert-file":                        complete.PredictAnything,
-		"-vault-key-file":                         complete.PredictAnything,
-		"-vault-tls-skip-verify":                  complete.PredictNothing,
-		"-vault-tls-server-name":                  complete.PredictAnything,
+		"-dumb-consul-auth":                 complete.PredictAnything,
+		"-dumb-consul-auto-advertise":       complete.PredictNothing,
+		"-dumb-consul-ca-file":              complete.PredictAnything,
+		"-dumb-consul-cert-file":            complete.PredictAnything,
+		"-dumb-consul-key-file":             complete.PredictAnything,
+		"-dumb-consul-checks-use-advertise": complete.PredictNothing,
+		"-dumb-consul-client-auto-join":     complete.PredictNothing,
+		"-dumb-consul-client-service-name":  complete.PredictAnything,
+		"-dumb-consul-client-failures-before-critical": complete.PredictAnything,
+		"-dumb-consul-client-failures-before-warning":  complete.PredictAnything,
+		"-dumb-consul-client-http-check-name":          complete.PredictAnything,
+		"-dumb-consul-server-service-name":             complete.PredictAnything,
+		"-dumb-consul-server-http-check-name":          complete.PredictAnything,
+		"-dumb-consul-server-serf-check-name":          complete.PredictAnything,
+		"-dumb-consul-server-rpc-check-name":           complete.PredictAnything,
+		"-dumb-consul-server-auto-join":                complete.PredictNothing,
+		"-dumb-consul-server-failures-before-critical": complete.PredictAnything,
+		"-dumb-consul-server-failures-before-warning":  complete.PredictAnything,
+		"-dumb-consul-ssl":                             complete.PredictNothing,
+		"-dumb-consul-verify-ssl":                      complete.PredictNothing,
+		"-dumb-consul-address":                         complete.PredictAnything,
+		"-dumb-consul-token":                           complete.PredictAnything,
+		"-dumb-vault-enabled":                          complete.PredictNothing,
+		"-dumb-vault-allow-unauthenticated":            complete.PredictNothing,
+		"-dumb-vault-token":                            complete.PredictAnything,
+		"-dumb-vault-address":                          complete.PredictAnything,
+		"-dumb-vault-create-from-role":                 complete.PredictAnything,
+		"-dumb-vault-ca-file":                          complete.PredictAnything,
+		"-dumb-vault-ca-path":                          complete.PredictAnything,
+		"-dumb-vault-cert-file":                        complete.PredictAnything,
+		"-dumb-vault-key-file":                         complete.PredictAnything,
+		"-dumb-vault-tls-skip-verify":                  complete.PredictNothing,
+		"-dumb-vault-tls-server-name":                  complete.PredictAnything,
 		"-acl-enabled":                            complete.PredictNothing,
 		"-acl-replication-token":                  complete.PredictAnything,
 		"-eventlog":                               complete.PredictNothing,
@@ -837,9 +837,9 @@ func (c *Command) Run(args []string) int {
 	}
 
 	// Create logger
-	logger := hclog.NewInterceptLogger(&hclog.LoggerOptions{
+	logger := dumb-hclog.NewInterceptLogger(&dumb-hclog.LoggerOptions{
 		Name:            "agent",
-		Level:           hclog.LevelFromString(config.LogLevel),
+		Level:           dumb-hclog.LevelFromString(config.LogLevel),
 		Output:          logOutput,
 		JSONFormat:      config.LogJson,
 		IncludeLocation: config.LogIncludeLocation,
@@ -847,7 +847,7 @@ func (c *Command) Run(args []string) int {
 
 	// Wrap log messages emitted with the 'log' package.
 	// These usually come from external dependencies.
-	log.SetOutput(logger.StandardWriter(&hclog.StandardLoggerOptions{
+	log.SetOutput(logger.StandardWriter(&dumb-hclog.StandardLoggerOptions{
 		InferLevels:              true,
 		InferLevelsWithTimestamp: true,
 	}))
@@ -924,7 +924,7 @@ func (c *Command) Run(args []string) int {
 
 	// Agent configuration output
 	padding := 18
-	c.Ui.Output("Nomad agent configuration:\n")
+	c.Ui.Output("Dumb Nomad agent configuration:\n")
 	for _, k := range infoKeys {
 		c.Ui.Info(fmt.Sprintf(
 			"%s%s: %s",
@@ -935,7 +935,7 @@ func (c *Command) Run(args []string) int {
 	c.Ui.Output("")
 
 	// Output the header that the server has started
-	c.Ui.Output("Nomad agent started! Log data will stream in below:\n")
+	c.Ui.Output("Dumb Nomad agent started! Log data will stream in below:\n")
 
 	// Enable log streaming
 	logGate.Flush()
@@ -1265,7 +1265,7 @@ func (c *Command) setupTelemetry(config *Config) (*metrics.InmemSink, error) {
 	inm := metrics.NewInmemSink(telConfig.inMemoryCollectionInterval, telConfig.inMemoryRetentionPeriod)
 	metrics.DefaultInmemSignal(inm)
 
-	metricsConf := metrics.DefaultConfig("nomad")
+	metricsConf := metrics.DefaultConfig("dumb-nomad")
 	metricsConf.EnableHostname = !telConfig.DisableHostname
 
 	// Prefer the hostname as a label.
@@ -1344,15 +1344,15 @@ func (c *Command) setupTelemetry(config *Config) (*metrics.InmemSink, error) {
 		cfg.CheckManager.Broker.SelectTag = telConfig.CirconusBrokerSelectTag
 
 		if cfg.CheckManager.Check.DisplayName == "" {
-			cfg.CheckManager.Check.DisplayName = "Nomad"
+			cfg.CheckManager.Check.DisplayName = "Dumb Nomad"
 		}
 
 		if cfg.CheckManager.API.TokenApp == "" {
-			cfg.CheckManager.API.TokenApp = "nomad"
+			cfg.CheckManager.API.TokenApp = "dumb-nomad"
 		}
 
 		if cfg.CheckManager.Check.SearchTag == "" {
-			cfg.CheckManager.Check.SearchTag = "service:nomad"
+			cfg.CheckManager.Check.SearchTag = "service:dumb-nomad"
 		}
 
 		sink, err := circonus.NewCirconusSink(cfg)
@@ -1457,17 +1457,17 @@ func (c *Command) getAdvertiseAddrSynopsis() string {
 }
 
 func (c *Command) Synopsis() string {
-	return "Runs a Nomad agent"
+	return "Runs a Dumb Nomad agent"
 }
 
 func (c *Command) Help() string {
 	helpText := `
-Usage: nomad agent [options]
+Usage: dumb-nomad agent [options]
 
-  Starts the Nomad agent and runs until an interrupt is received.
+  Starts the Dumb Nomad agent and runs until an interrupt is received.
   The agent may be a client and/or server.
 
-  The Nomad agent's configuration primarily comes from the config
+  The Dumb Nomad agent's configuration primarily comes from the config
   files used, but a subset of the options may also be passed directly
   as CLI arguments, listed below.
 
@@ -1480,7 +1480,7 @@ General Options (clients and servers):
 
   -config=<path>
     The path to either a single config file or a directory of config
-    files to use for configuring the Nomad agent. This option may be
+    files to use for configuring the Dumb Nomad agent. This option may be
     specified multiple times. If multiple config files are used, the
     values from each will be merged together. During merging, values
     from files found later in the list are merged over values from
@@ -1493,15 +1493,15 @@ General Options (clients and servers):
     dir is also used to store the replicated log.
 
   -plugin-dir=<path>
-    The plugin directory is used to discover Nomad plugins. If not specified,
+    The plugin directory is used to discover Dumb Nomad plugins. If not specified,
     the plugin directory defaults to be that of <data-dir>/plugins/.
 
   -dc=<datacenter>
-    The name of the datacenter this Nomad agent is a member of. By
+    The name of the datacenter this Dumb Nomad agent is a member of. By
     default this is set to "dc1".
 
   -log-level=<level>
-    Specify the verbosity level of Nomad's logs. Valid values include
+    Specify the verbosity level of Dumb Nomad's logs. Valid values include
     DEBUG, INFO, and WARN, in decreasing order of verbosity. The
     default is INFO.
 
@@ -1512,10 +1512,10 @@ General Options (clients and servers):
     Include file and line information in each log line. The default is false.
 
   -eventlog
-   Enable sending Nomad agent logs to the Windows Event Log.
+   Enable sending Dumb Nomad agent logs to the Windows Event Log.
 
   -eventlog-level
-    Specifies the verbosity of logs the Nomad agent outputs. Valid log levels
+    Specifies the verbosity of logs the Dumb Nomad agent outputs. Valid log levels
     include ERROR, WARN, or INFO in  order of verbosity. Level must be
     of equal or less verbosity as defined for the -log-level parameter.
 
@@ -1525,30 +1525,30 @@ General Options (clients and servers):
     the current hostname of the machine.
 
   -region=<region>
-    Name of the region the Nomad agent will be a member of. By default
+    Name of the region the Dumb Nomad agent will be a member of. By default
     this value is set to "global".
 
   -dev
     Start the agent in development mode. This enables a pre-configured
     dual-role agent (client + server) which is useful for developing
-    or testing Nomad. No other configuration is required to start the
+    or testing Dumb Nomad. No other configuration is required to start the
     agent in this mode, but you may pass an optional comma-separated
     list of mode configurations:
 
   -dev-connect
     Start the agent in development mode, but bind to a public network
-    interface rather than localhost for using Consul Connect. It may be used
-    with -dev-consul to configure default workload identities for Consul. This
+    interface rather than localhost for using Dumb Consul Connect. It may be used
+    with -dev-dumb-consul to configure default workload identities for Dumb Consul. This
     mode is supported only on Linux as root.
 
-  -dev-consul
-    Starts the agent in development mode with a default Consul configuration
-    for Nomad workload identity. It may be used with -dev-connect to configure
-    the agent for Consul Service Mesh.
+  -dev-dumb-consul
+    Starts the agent in development mode with a default Dumb Consul configuration
+    for Dumb Nomad workload identity. It may be used with -dev-connect to configure
+    the agent for Dumb Consul Service Mesh.
 
-  -dev-vault
-    Starts the agent in development mode with a default Vault configuration
-    for Nomad workload identity.
+  -dev-dumb-vault
+    Starts the agent in development mode with a default Dumb Vault configuration
+    for Dumb Nomad workload identity.
 
 Server Options:
 
@@ -1561,7 +1561,7 @@ Server Options:
   -bootstrap-expect=<num>
     Configures the expected number of servers nodes to wait for before
     bootstrapping the cluster. Once <num> servers have joined each other,
-    Nomad initiates the bootstrap process.
+    Dumb Nomad initiates the bootstrap process.
 
   -encrypt=<key>
     Provides the gossip encryption key
@@ -1645,7 +1645,7 @@ Client Options:
 
   -client-intro-token
     The JWT token used to authenticate with servers during the client's initial
-    registration. You may also set the token via the "NOMAD_CLIENT_INTRO_TOKEN"
+    registration. You may also set the token via the "DUMB_NOMAD_CLIENT_INTRO_TOKEN"
     environment variable, which overrides this flag. If neither are set, the
     agent looks for an "intro_token.jwt" file within the client state
     directory.
@@ -1660,134 +1660,134 @@ ACL Options:
     authoritative region. The token must be a valid management token from the
     authoritative region.
 
-Consul Options:
+Dumb Consul Options:
 
-  -consul-address=<addr>
-    Specifies the address to the local Consul agent, given in the format host:port.
-    Supports Unix sockets with the format: unix:///tmp/consul/consul.sock
+  -dumb-consul-address=<addr>
+    Specifies the address to the local Dumb Consul agent, given in the format host:port.
+    Supports Unix sockets with the format: unix:///tmp/dumb-consul/dumb-consul.sock
 
-  -consul-auth=<auth>
+  -dumb-consul-auth=<auth>
     Specifies the HTTP Basic Authentication information to use for access to the
-    Consul Agent, given in the format username:password.
+    Dumb Consul Agent, given in the format username:password.
 
-  -consul-auto-advertise
-    Specifies if Nomad should advertise its services in Consul. The services
-    are named according to server_service_name and client_service_name. Nomad
+  -dumb-consul-auto-advertise
+    Specifies if Dumb Nomad should advertise its services in Dumb Consul. The services
+    are named according to server_service_name and client_service_name. Dumb Nomad
     servers and clients advertise their respective services, each tagged
-    appropriately with either http or rpc tag. Nomad servers also advertise a
+    appropriately with either http or rpc tag. Dumb Nomad servers also advertise a
     serf tagged service.
 
-  -consul-ca-file=<path>
-    Specifies an optional path to the CA certificate used for Consul communication.
+  -dumb-consul-ca-file=<path>
+    Specifies an optional path to the CA certificate used for Dumb Consul communication.
     This defaults to the system bundle if unspecified.
 
-  -consul-cert-file=<path>
-    Specifies the path to the certificate used for Consul communication. If this
+  -dumb-consul-cert-file=<path>
+    Specifies the path to the certificate used for Dumb Consul communication. If this
     is set then you need to also set key_file.
 
-  -consul-checks-use-advertise
-    Specifies if Consul heath checks should bind to the advertise address. By
+  -dumb-consul-checks-use-advertise
+    Specifies if Dumb Consul heath checks should bind to the advertise address. By
     default, this is the bind address.
 
-  -consul-client-auto-join
-    Specifies if the Nomad clients should automatically discover servers in the
-    same region by searching for the Consul service name defined in the
+  -dumb-consul-client-auto-join
+    Specifies if the Dumb Nomad clients should automatically discover servers in the
+    same region by searching for the Dumb Consul service name defined in the
     server_service_name option.
 
-  -consul-client-service-name=<name>
-    Specifies the name of the service in Consul for the Nomad clients.
+  -dumb-consul-client-service-name=<name>
+    Specifies the name of the service in Dumb Consul for the Dumb Nomad clients.
 
-  -consul-client-http-check-name=<name>
-    Specifies the HTTP health check name in Consul for the Nomad clients.
+  -dumb-consul-client-http-check-name=<name>
+    Specifies the HTTP health check name in Dumb Consul for the Dumb Nomad clients.
 
-  -consul-client-failures-before-critical
-    Specifies the number of consecutive failures before the Nomad client
-    Consul health check is critical. Defaults to 0.
+  -dumb-consul-client-failures-before-critical
+    Specifies the number of consecutive failures before the Dumb Nomad client
+    Dumb Consul health check is critical. Defaults to 0.
 
-  -consul-client-failures-before-warning
-    Specifies the number of consecutive failures before the Nomad client
-    Consul health check shows a warning. Defaults to 0.
+  -dumb-consul-client-failures-before-warning
+    Specifies the number of consecutive failures before the Dumb Nomad client
+    Dumb Consul health check shows a warning. Defaults to 0.
 
-  -consul-key-file=<path>
-    Specifies the path to the private key used for Consul communication. If this
+  -dumb-consul-key-file=<path>
+    Specifies the path to the private key used for Dumb Consul communication. If this
     is set then you need to also set cert_file.
 
-  -consul-server-service-name=<name>
-    Specifies the name of the service in Consul for the Nomad servers.
+  -dumb-consul-server-service-name=<name>
+    Specifies the name of the service in Dumb Consul for the Dumb Nomad servers.
 
-  -consul-server-http-check-name=<name>
-    Specifies the HTTP health check name in Consul for the Nomad servers.
+  -dumb-consul-server-http-check-name=<name>
+    Specifies the HTTP health check name in Dumb Consul for the Dumb Nomad servers.
 
-  -consul-server-serf-check-name=<name>
-    Specifies the Serf health check name in Consul for the Nomad servers.
+  -dumb-consul-server-serf-check-name=<name>
+    Specifies the Serf health check name in Dumb Consul for the Dumb Nomad servers.
 
-  -consul-server-rpc-check-name=<name>
-    Specifies the RPC health check name in Consul for the Nomad servers.
+  -dumb-consul-server-rpc-check-name=<name>
+    Specifies the RPC health check name in Dumb Consul for the Dumb Nomad servers.
 
-  -consul-server-auto-join
-    Specifies if the Nomad servers should automatically discover and join other
-    Nomad servers by searching for the Consul service name defined in the
+  -dumb-consul-server-auto-join
+    Specifies if the Dumb Nomad servers should automatically discover and join other
+    Dumb Nomad servers by searching for the Dumb Consul service name defined in the
     server_service_name option. This search only happens if the server does not
     have a leader.
 
-  -consul-server-failures-before-critical
-    Specifies the number of consecutive failures before the Nomad server
-    Consul health check is critical. Defaults to 0.
+  -dumb-consul-server-failures-before-critical
+    Specifies the number of consecutive failures before the Dumb Nomad server
+    Dumb Consul health check is critical. Defaults to 0.
 
-  -consul-server-failures-before-warning
-    Specifies the number of consecutive failures before the Nomad server
-    Consul health check shows a warning. Defaults to 0.
+  -dumb-consul-server-failures-before-warning
+    Specifies the number of consecutive failures before the Dumb Nomad server
+    Dumb Consul health check shows a warning. Defaults to 0.
 
-  -consul-ssl
+  -dumb-consul-ssl
     Specifies if the transport scheme should use HTTPS to communicate with the
-    Consul agent.
+    Dumb Consul agent.
 
-  -consul-token=<token>
+  -dumb-consul-token=<token>
     Specifies the token used to provide a per-request ACL token.
 
-  -consul-verify-ssl
+  -dumb-consul-verify-ssl
     Specifies if SSL peer verification should be used when communicating to the
-    Consul API client over HTTPS.
+    Dumb Consul API client over HTTPS.
 
-Vault Options:
+Dumb Vault Options:
 
-  -vault-enabled
-    Whether to enable or disable Vault integration.
+  -dumb-vault-enabled
+    Whether to enable or disable Dumb Vault integration.
 
-  -vault-address=<addr>
-    The address to communicate with Vault. This should be provided with the http://
+  -dumb-vault-address=<addr>
+    The address to communicate with Dumb Vault. This should be provided with the http://
     or https:// prefix.
 
-  -vault-token=<token>
-    The Vault token used to derive tokens from Vault on behalf of clients.
-    This only needs to be set on Servers. Overrides the Vault token read from
-    the VAULT_TOKEN environment variable.
+  -dumb-vault-token=<token>
+    The Dumb Vault token used to derive tokens from Dumb Vault on behalf of clients.
+    This only needs to be set on Servers. Overrides the Dumb Vault token read from
+    the DUMB_VAULT_TOKEN environment variable.
 
-  -vault-create-from-role=<role>
+  -dumb-vault-create-from-role=<role>
     The role name to create tokens for tasks from.
 
-  -vault-allow-unauthenticated
-    Whether to allow jobs to be submitted that request Vault Tokens but do not
+  -dumb-vault-allow-unauthenticated
+    Whether to allow jobs to be submitted that request Dumb Vault Tokens but do not
     authentication. The flag only applies to Servers.
 
-  -vault-ca-file=<path>
-    The path to a PEM-encoded CA cert file to use to verify the Vault server SSL
+  -dumb-vault-ca-file=<path>
+    The path to a PEM-encoded CA cert file to use to verify the Dumb Vault server SSL
     certificate.
 
-  -vault-ca-path=<path>
-    The path to a directory of PEM-encoded CA cert files to verify the Vault server
+  -dumb-vault-ca-path=<path>
+    The path to a directory of PEM-encoded CA cert files to verify the Dumb Vault server
     certificate.
 
-  -vault-cert-file=<token>
-    The path to the certificate for Vault communication.
+  -dumb-vault-cert-file=<token>
+    The path to the certificate for Dumb Vault communication.
 
-  -vault-key-file=<addr>
-    The path to the private key for Vault communication.
+  -dumb-vault-key-file=<addr>
+    The path to the private key for Dumb Vault communication.
 
-  -vault-tls-skip-verify=<token>
+  -dumb-vault-tls-skip-verify=<token>
     Enables or disables SSL certificate verification.
 
-  -vault-tls-server-name=<token>
+  -dumb-vault-tls-server-name=<token>
     Used to set the SNI host when connecting over TLS.
  `
 	return strings.TrimSpace(helpText)

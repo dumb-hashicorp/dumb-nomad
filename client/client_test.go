@@ -14,34 +14,34 @@ import (
 	"testing"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	memdb "github.com/hashicorp/go-memdb"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	trstate "github.com/hashicorp/nomad/client/allocrunner/taskrunner/state"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/fingerprint"
-	"github.com/hashicorp/nomad/client/servers"
-	regMock "github.com/hashicorp/nomad/client/serviceregistration/mock"
-	"github.com/hashicorp/nomad/client/state"
-	cstate "github.com/hashicorp/nomad/client/state"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	ctestutil "github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/command/agent/consul"
-	"github.com/hashicorp/nomad/helper/pluginutils/catalog"
-	"github.com/hashicorp/nomad/helper/pluginutils/singleton"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	nconfig "github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/plugins/device"
-	psstructs "github.com/hashicorp/nomad/plugins/shared/structs"
-	"github.com/hashicorp/nomad/testutil"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	memdb "github.com/dumb-hashicorp/go-memdb"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	trstate "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/fingerprint"
+	"github.com/dumb-hashicorp/dumb-nomad/client/servers"
+	regMock "github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	cstate "github.com/dumb-hashicorp/dumb-nomad/client/state"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	ctestutil "github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/catalog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/singleton"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	nconfig "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
+	psstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
@@ -49,13 +49,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func testACLServer(t *testing.T, cb func(*nomad.Config)) (*nomad.Server, string, *structs.ACLToken, func()) {
-	server, token, cleanup := nomad.TestACLServer(t, cb)
+func testACLServer(t *testing.T, cb func(*dumb-nomad.Config)) (*dumb-nomad.Server, string, *structs.ACLToken, func()) {
+	server, token, cleanup := dumb-nomad.TestACLServer(t, cb)
 	return server, server.GetConfig().RPCAddr.String(), token, cleanup
 }
 
-func testServer(t *testing.T, cb func(*nomad.Config)) (*nomad.Server, string, func()) {
-	server, cleanup := nomad.TestServer(t, cb)
+func testServer(t *testing.T, cb func(*dumb-nomad.Config)) (*dumb-nomad.Server, string, func()) {
+	server, cleanup := dumb-nomad.TestServer(t, cb)
 	return server, server.GetConfig().RPCAddr.String(), cleanup
 }
 
@@ -318,11 +318,11 @@ func TestClient_MixedTLS(t *testing.T) {
 	ci.Parallel(t)
 
 	const (
-		cafile        = "../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		fooservercert = "../helper/tlsutil/testdata/regionFoo-server-nomad.pem"
-		fooserverkey  = "../helper/tlsutil/testdata/regionFoo-server-nomad-key.pem"
+		cafile        = "../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		fooservercert = "../helper/tlsutil/testdata/regionFoo-server-dumb-nomad.pem"
+		fooserverkey  = "../helper/tlsutil/testdata/regionFoo-server-dumb-nomad-key.pem"
 	)
-	s1, addr, cleanupS1 := testServer(t, func(c *nomad.Config) {
+	s1, addr, cleanupS1 := testServer(t, func(c *dumb-nomad.Config) {
 		c.TLSConfig = &nconfig.TLSConfig{
 			EnableHTTP:           true,
 			EnableRPC:            true,
@@ -369,14 +369,14 @@ func TestClient_BadTLS(t *testing.T) {
 	ci.Parallel(t)
 
 	const (
-		cafile        = "../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		fooclientcert = "../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fooclientkey  = "../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		cafile        = "../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		fooclientcert = "../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fooclientkey  = "../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 		badca         = "../helper/tlsutil/testdata/bad-agent-ca.pem"
 		badcert       = "../helper/tlsutil/testdata/badRegion-client-bad.pem"
 		badkey        = "../helper/tlsutil/testdata/badRegion-client-bad-key.pem"
 	)
-	s1, addr, cleanupS1 := testServer(t, func(c *nomad.Config) {
+	s1, addr, cleanupS1 := testServer(t, func(c *dumb-nomad.Config) {
 		c.TLSConfig = &nconfig.TLSConfig{
 			EnableHTTP:           true,
 			EnableRPC:            true,
@@ -536,7 +536,7 @@ func TestClient_Register_NodePool(t *testing.T) {
 func TestClient_Heartbeat(t *testing.T) {
 	ci.Parallel(t)
 
-	s1, _, cleanupS1 := testServer(t, func(c *nomad.Config) {
+	s1, _, cleanupS1 := testServer(t, func(c *dumb-nomad.Config) {
 		c.MinHeartbeatTTL = 50 * time.Millisecond
 	})
 	defer cleanupS1()
@@ -871,16 +871,16 @@ func TestClient_SaveRestoreState(t *testing.T) {
 
 	t.Log("starting new client")
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	c1.config.Logger = logger
-	consulCatalog := consul.NewMockCatalog(logger)
+	dumb-consulCatalog := dumb-consul.NewMockCatalog(logger)
 	mockService := regMock.NewServiceRegistrationHandler(logger)
 
 	// ensure we use non-shutdown driver instances
 	c1.config.PluginLoader = catalog.TestPluginLoaderWithOptions(t, "", c1.config.Options, nil)
 	c1.config.PluginSingletonLoader = singleton.NewSingletonLoader(logger, c1.config.PluginLoader)
 
-	c2, err := NewClient(c1.config, consulCatalog, nil, mockService, nil)
+	c2, err := NewClient(c1.config, dumb-consulCatalog, nil, mockService, nil)
 	must.NoError(t, err)
 
 	t.Cleanup(func() {
@@ -1079,7 +1079,7 @@ func TestClient_Init(t *testing.T) {
 
 	client := &Client{
 		config: config,
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 
 	must.NoError(t, client.init())
@@ -1247,16 +1247,16 @@ func TestClient_ReloadTLS_UpgradePlaintextToTLS(t *testing.T) {
 	ci.Parallel(t)
 	assert := assert.New(t)
 
-	s1, addr, cleanupS1 := testServer(t, func(c *nomad.Config) {
+	s1, addr, cleanupS1 := testServer(t, func(c *dumb-nomad.Config) {
 		c.Region = "global"
 	})
 	defer cleanupS1()
 	testutil.WaitForLeader(t, s1.RPC)
 
 	const (
-		cafile        = "../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		fooclientcert = "../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fooclientkey  = "../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		cafile        = "../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		fooclientcert = "../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fooclientkey  = "../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 	)
 
 	c1, cleanup := TestClient(t, func(c *config.Config) {
@@ -1323,16 +1323,16 @@ func TestClient_ReloadTLS_DowngradeTLSToPlaintext(t *testing.T) {
 	ci.Parallel(t)
 	assert := assert.New(t)
 
-	s1, addr, cleanupS1 := testServer(t, func(c *nomad.Config) {
+	s1, addr, cleanupS1 := testServer(t, func(c *dumb-nomad.Config) {
 		c.Region = "global"
 	})
 	defer cleanupS1()
 	testutil.WaitForLeader(t, s1.RPC)
 
 	const (
-		cafile        = "../helper/tlsutil/testdata/nomad-agent-ca.pem"
-		fooclientcert = "../helper/tlsutil/testdata/regionFoo-client-nomad.pem"
-		fooclientkey  = "../helper/tlsutil/testdata/regionFoo-client-nomad-key.pem"
+		cafile        = "../helper/tlsutil/testdata/dumb-nomad-agent-ca.pem"
+		fooclientcert = "../helper/tlsutil/testdata/regionFoo-client-dumb-nomad.pem"
+		fooclientkey  = "../helper/tlsutil/testdata/regionFoo-client-dumb-nomad-key.pem"
 	)
 
 	c1, cleanup := TestClient(t, func(c *config.Config) {
@@ -1430,7 +1430,7 @@ func TestClient_setNodeIdentityToken(t *testing.T) {
 }
 
 // TestClient_ServerList tests client methods that interact with the internal
-// nomad server list.
+// dumb-nomad server list.
 func TestClient_ServerList(t *testing.T) {
 	ci.Parallel(t)
 
@@ -1493,7 +1493,7 @@ func TestClient_getRegistrationToken(t *testing.T) {
 
 	t.Run("secret id registered state", func(t *testing.T) {
 		testClient, testClientCleanup := TestClient(t, func(c *config.Config) {
-			c.StateDBFactory = func(logger hclog.Logger, stateDir string) (state.StateDB, error) {
+			c.StateDBFactory = func(logger dumb-hclog.Logger, stateDir string) (state.StateDB, error) {
 				return cstate.NewMemDB(logger), nil
 			}
 		})
@@ -1510,7 +1510,7 @@ func TestClient_getRegistrationToken(t *testing.T) {
 
 	t.Run("node identity registered state", func(t *testing.T) {
 		testClient, testClientCleanup := TestClient(t, func(c *config.Config) {
-			c.StateDBFactory = func(logger hclog.Logger, stateDir string) (state.StateDB, error) {
+			c.StateDBFactory = func(logger dumb-hclog.Logger, stateDir string) (state.StateDB, error) {
 				return cstate.NewMemDB(logger), nil
 			}
 		})
@@ -1534,7 +1534,7 @@ func TestClient_handleNodeUpdateResponse(t *testing.T) {
 	ci.Parallel(t)
 
 	testClient, testClientCleanup := TestClient(t, func(c *config.Config) {
-		c.StateDBFactory = func(logger hclog.Logger, stateDir string) (state.StateDB, error) {
+		c.StateDBFactory = func(logger dumb-hclog.Logger, stateDir string) (state.StateDB, error) {
 			return cstate.NewMemDB(logger), nil
 		}
 	})
@@ -1795,7 +1795,7 @@ func Test_UpdateNodeFromFingerprintMultiIP(t *testing.T) {
 func TestClient_computeAllocatedDeviceStats(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	c := &Client{logger: logger}
 
 	newDeviceStats := func(strValue string) *device.DeviceStats {
@@ -2093,7 +2093,7 @@ func TestClient_updateNodeFromDriverUpdatesAll(t *testing.T) {
 func TestClient_hasLocalState(t *testing.T) {
 	ci.Parallel(t)
 
-	newStateDB := func(logger hclog.Logger, _ string) (state.StateDB, error) {
+	newStateDB := func(logger dumb-hclog.Logger, _ string) (state.StateDB, error) {
 		return cstate.NewMemDB(logger), nil
 	}
 
@@ -2144,7 +2144,7 @@ func TestClient_hasLocalState(t *testing.T) {
 
 func Test_verifiedTasks(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// produce a result and check against expected tasks and/or error output
 	try := func(t *testing.T, a *structs.Allocation, tasks, expTasks []string, expErr string) {
@@ -2301,7 +2301,7 @@ func TestClient_ReconnectAllocs(t *testing.T) {
 func TestClient_AllocPrerunErrorDuringRestore(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// set up server
 	server, _, cleanS1 := testServer(t, nil)
@@ -2343,7 +2343,7 @@ func TestClient_AllocPrerunErrorDuringRestore(t *testing.T) {
 		conf.PluginSingletonLoader = singleton.NewSingletonLoader(logger, c1.config.PluginLoader)
 
 		// actually make and start the client
-		c2, err := NewClient(conf, c1.consulCatalog, nil, c1.consulServices, nil)
+		c2, err := NewClient(conf, c1.dumb-consulCatalog, nil, c1.dumb-consulServices, nil)
 		must.NoError(t, err)
 		t.Cleanup(func() {
 			test.NoError(t, c2.Shutdown())

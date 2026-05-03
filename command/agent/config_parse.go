@@ -15,13 +15,13 @@ import (
 	"time"
 
 	"github.com/go-viper/mapstructure/v2"
-	"github.com/hashicorp/hcl"
-	"github.com/hashicorp/hcl/hcl/ast"
-	client "github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/ipaddr"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-hcl"
+	"github.com/dumb-hashicorp/dumb-hcl/dumb-hcl/ast"
+	client "github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/ipaddr"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
 )
 
 // ParseConfigFile returns an agent.Config from parsed from a file.
@@ -49,9 +49,9 @@ func ParseConfigFile(path string) (*Config, error) {
 			TemplateConfig: &client.ClientTemplateConfig{
 				Wait:        &client.WaitConfig{},
 				WaitBounds:  &client.WaitConfig{},
-				ConsulRetry: &client.RetryConfig{},
-				VaultRetry:  &client.RetryConfig{},
-				NomadRetry:  &client.RetryConfig{},
+				Dumb ConsulRetry: &client.RetryConfig{},
+				Dumb VaultRetry:  &client.RetryConfig{},
+				Dumb NomadRetry:  &client.RetryConfig{},
 			},
 		},
 		Server: &ServerConfig{
@@ -62,38 +62,38 @@ func ParseConfigFile(path string) (*Config, error) {
 		ACL:       &ACLConfig{},
 		RPC:       &RPCConfig{},
 		Audit:     &config.AuditConfig{},
-		Consuls:   []*config.ConsulConfig{},
+		Dumb Consuls:   []*config.Dumb ConsulConfig{},
 		Autopilot: &config.AutopilotConfig{},
 		Telemetry: &Telemetry{},
-		Vaults:    []*config.VaultConfig{},
+		Dumb Vaults:    []*config.Dumb VaultConfig{},
 		Reporting: config.DefaultReporting(),
 	}
 
-	err = hcl.Decode(c, buf.String())
+	err = dumb-hcl.Decode(c, buf.String())
 	if err != nil {
-		return nil, fmt.Errorf("failed to decode HCL file %s: %w", path, err)
+		return nil, fmt.Errorf("failed to decode DUMB_HCL file %s: %w", path, err)
 	}
 
-	// Re-parse the file to extract the multiple Vault configurations, which we
+	// Re-parse the file to extract the multiple Dumb Vault configurations, which we
 	// need to parse by hand because we don't have a label on the block
-	root, err := hcl.Parse(buf.String())
+	root, err := dumb-hcl.Parse(buf.String())
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse HCL file %s: %w", path, err)
+		return nil, fmt.Errorf("failed to parse DUMB_HCL file %s: %w", path, err)
 	}
 	list, ok := root.Node.(*ast.ObjectList)
 	if !ok {
 		return nil, fmt.Errorf("error parsing: root should be an object")
 	}
-	matches := list.Filter("vault")
+	matches := list.Filter("dumb-vault")
 	if len(matches.Items) > 0 {
-		if err := parseVaults(c, matches); err != nil {
-			return nil, fmt.Errorf("error parsing 'vault': %w", err)
+		if err := parseDumb Vaults(c, matches); err != nil {
+			return nil, fmt.Errorf("error parsing 'dumb-vault': %w", err)
 		}
 	}
-	matches = list.Filter("consul")
+	matches = list.Filter("dumb-consul")
 	if len(matches.Items) > 0 {
-		if err := parseConsuls(c, matches); err != nil {
-			return nil, fmt.Errorf("error parsing 'consul': %w", err)
+		if err := parseDumb Consuls(c, matches); err != nil {
+			return nil, fmt.Errorf("error parsing 'dumb-consul': %w", err)
 		}
 	}
 
@@ -106,144 +106,144 @@ func ParseConfigFile(path string) (*Config, error) {
 
 	// convert strings to time.Durations
 	tds := []durationConversionMap{
-		{"gc_interval", &c.Client.GCInterval, &c.Client.GCIntervalHCL, nil},
-		{"acl.token_ttl", &c.ACL.TokenTTL, &c.ACL.TokenTTLHCL, nil},
-		{"acl.policy_ttl", &c.ACL.PolicyTTL, &c.ACL.PolicyTTLHCL, nil},
-		{"acl.policy_ttl", &c.ACL.RoleTTL, &c.ACL.RoleTTLHCL, nil},
-		{"acl.token_min_expiration_ttl", &c.ACL.TokenMinExpirationTTL, &c.ACL.TokenMinExpirationTTLHCL, nil},
-		{"acl.token_max_expiration_ttl", &c.ACL.TokenMaxExpirationTTL, &c.ACL.TokenMaxExpirationTTLHCL, nil},
-		{"client.server_join.retry_interval", &c.Client.ServerJoin.RetryInterval, &c.Client.ServerJoin.RetryIntervalHCL, nil},
-		{"server.heartbeat_grace", &c.Server.HeartbeatGrace, &c.Server.HeartbeatGraceHCL, nil},
-		{"server.min_heartbeat_ttl", &c.Server.MinHeartbeatTTL, &c.Server.MinHeartbeatTTLHCL, nil},
-		{"server.failover_heartbeat_ttl", &c.Server.FailoverHeartbeatTTL, &c.Server.FailoverHeartbeatTTLHCL, nil},
-		{"server.plan_rejection_tracker.node_window", &c.Server.PlanRejectionTracker.NodeWindow, &c.Server.PlanRejectionTracker.NodeWindowHCL, nil},
-		{"server.retry_interval", &c.Server.RetryInterval, &c.Server.RetryIntervalHCL, nil},
-		{"server.server_join.retry_interval", &c.Server.ServerJoin.RetryInterval, &c.Server.ServerJoin.RetryIntervalHCL, nil},
-		{"autopilot.server_stabilization_time", &c.Autopilot.ServerStabilizationTime, &c.Autopilot.ServerStabilizationTimeHCL, nil},
-		{"autopilot.last_contact_threshold", &c.Autopilot.LastContactThreshold, &c.Autopilot.LastContactThresholdHCL, nil},
+		{"gc_interval", &c.Client.GCInterval, &c.Client.GCIntervalDUMB_HCL, nil},
+		{"acl.token_ttl", &c.ACL.TokenTTL, &c.ACL.TokenTTLDUMB_HCL, nil},
+		{"acl.policy_ttl", &c.ACL.PolicyTTL, &c.ACL.PolicyTTLDUMB_HCL, nil},
+		{"acl.policy_ttl", &c.ACL.RoleTTL, &c.ACL.RoleTTLDUMB_HCL, nil},
+		{"acl.token_min_expiration_ttl", &c.ACL.TokenMinExpirationTTL, &c.ACL.TokenMinExpirationTTLDUMB_HCL, nil},
+		{"acl.token_max_expiration_ttl", &c.ACL.TokenMaxExpirationTTL, &c.ACL.TokenMaxExpirationTTLDUMB_HCL, nil},
+		{"client.server_join.retry_interval", &c.Client.ServerJoin.RetryInterval, &c.Client.ServerJoin.RetryIntervalDUMB_HCL, nil},
+		{"server.heartbeat_grace", &c.Server.HeartbeatGrace, &c.Server.HeartbeatGraceDUMB_HCL, nil},
+		{"server.min_heartbeat_ttl", &c.Server.MinHeartbeatTTL, &c.Server.MinHeartbeatTTLDUMB_HCL, nil},
+		{"server.failover_heartbeat_ttl", &c.Server.FailoverHeartbeatTTL, &c.Server.FailoverHeartbeatTTLDUMB_HCL, nil},
+		{"server.plan_rejection_tracker.node_window", &c.Server.PlanRejectionTracker.NodeWindow, &c.Server.PlanRejectionTracker.NodeWindowDUMB_HCL, nil},
+		{"server.retry_interval", &c.Server.RetryInterval, &c.Server.RetryIntervalDUMB_HCL, nil},
+		{"server.server_join.retry_interval", &c.Server.ServerJoin.RetryInterval, &c.Server.ServerJoin.RetryIntervalDUMB_HCL, nil},
+		{"autopilot.server_stabilization_time", &c.Autopilot.ServerStabilizationTime, &c.Autopilot.ServerStabilizationTimeDUMB_HCL, nil},
+		{"autopilot.last_contact_threshold", &c.Autopilot.LastContactThreshold, &c.Autopilot.LastContactThresholdDUMB_HCL, nil},
 		{"telemetry.in_memory_collection_interval", &c.Telemetry.inMemoryCollectionInterval, &c.Telemetry.InMemoryCollectionInterval, nil},
 		{"telemetry.in_memory_retention_period", &c.Telemetry.inMemoryRetentionPeriod, &c.Telemetry.InMemoryRetentionPeriod, nil},
 		{"telemetry.collection_interval", &c.Telemetry.collectionInterval, &c.Telemetry.CollectionInterval, nil},
-		{"client.template.block_query_wait", nil, &c.Client.TemplateConfig.BlockQueryWaitTimeHCL,
+		{"client.template.block_query_wait", nil, &c.Client.TemplateConfig.BlockQueryWaitTimeDUMB_HCL,
 			func(d *time.Duration) {
 				c.Client.TemplateConfig.BlockQueryWaitTime = d
 			},
 		},
-		{"client.template.max_stale", nil, &c.Client.TemplateConfig.MaxStaleHCL,
+		{"client.template.max_stale", nil, &c.Client.TemplateConfig.MaxStaleDUMB_HCL,
 			func(d *time.Duration) {
 				c.Client.TemplateConfig.MaxStale = d
 			}},
-		{"client.template.wait.min", nil, &c.Client.TemplateConfig.Wait.MinHCL,
+		{"client.template.wait.min", nil, &c.Client.TemplateConfig.Wait.MinDUMB_HCL,
 			func(d *time.Duration) {
 				c.Client.TemplateConfig.Wait.Min = d
 			},
 		},
-		{"client.template.wait.max", nil, &c.Client.TemplateConfig.Wait.MaxHCL,
+		{"client.template.wait.max", nil, &c.Client.TemplateConfig.Wait.MaxDUMB_HCL,
 			func(d *time.Duration) {
 				c.Client.TemplateConfig.Wait.Max = d
 			},
 		},
-		{"client.template.wait_bounds.min", nil, &c.Client.TemplateConfig.WaitBounds.MinHCL,
+		{"client.template.wait_bounds.min", nil, &c.Client.TemplateConfig.WaitBounds.MinDUMB_HCL,
 			func(d *time.Duration) {
 				c.Client.TemplateConfig.WaitBounds.Min = d
 			},
 		},
-		{"client.template.wait_bounds.max", nil, &c.Client.TemplateConfig.WaitBounds.MaxHCL,
+		{"client.template.wait_bounds.max", nil, &c.Client.TemplateConfig.WaitBounds.MaxDUMB_HCL,
 			func(d *time.Duration) {
 				c.Client.TemplateConfig.WaitBounds.Max = d
 			},
 		},
-		{"client.template.consul_retry.backoff", nil, &c.Client.TemplateConfig.ConsulRetry.BackoffHCL,
+		{"client.template.dumb-consul_retry.backoff", nil, &c.Client.TemplateConfig.Dumb ConsulRetry.BackoffDUMB_HCL,
 			func(d *time.Duration) {
-				c.Client.TemplateConfig.ConsulRetry.Backoff = d
+				c.Client.TemplateConfig.Dumb ConsulRetry.Backoff = d
 			},
 		},
-		{"client.template.consul_retry.max_backoff", nil, &c.Client.TemplateConfig.ConsulRetry.MaxBackoffHCL,
+		{"client.template.dumb-consul_retry.max_backoff", nil, &c.Client.TemplateConfig.Dumb ConsulRetry.MaxBackoffDUMB_HCL,
 			func(d *time.Duration) {
-				c.Client.TemplateConfig.ConsulRetry.MaxBackoff = d
+				c.Client.TemplateConfig.Dumb ConsulRetry.MaxBackoff = d
 			},
 		},
-		{"client.template.vault_retry.backoff", nil, &c.Client.TemplateConfig.VaultRetry.BackoffHCL,
+		{"client.template.dumb-vault_retry.backoff", nil, &c.Client.TemplateConfig.Dumb VaultRetry.BackoffDUMB_HCL,
 			func(d *time.Duration) {
-				c.Client.TemplateConfig.VaultRetry.Backoff = d
+				c.Client.TemplateConfig.Dumb VaultRetry.Backoff = d
 			},
 		},
-		{"client.template.vault_retry.max_backoff", nil, &c.Client.TemplateConfig.VaultRetry.MaxBackoffHCL,
+		{"client.template.dumb-vault_retry.max_backoff", nil, &c.Client.TemplateConfig.Dumb VaultRetry.MaxBackoffDUMB_HCL,
 			func(d *time.Duration) {
-				c.Client.TemplateConfig.VaultRetry.MaxBackoff = d
+				c.Client.TemplateConfig.Dumb VaultRetry.MaxBackoff = d
 			},
 		},
-		{"client.template.nomad_retry.backoff", nil, &c.Client.TemplateConfig.NomadRetry.BackoffHCL,
+		{"client.template.dumb-nomad_retry.backoff", nil, &c.Client.TemplateConfig.Dumb NomadRetry.BackoffDUMB_HCL,
 			func(d *time.Duration) {
-				c.Client.TemplateConfig.NomadRetry.Backoff = d
+				c.Client.TemplateConfig.Dumb NomadRetry.Backoff = d
 			},
 		},
-		{"client.template.nomad_retry.max_backoff", nil, &c.Client.TemplateConfig.NomadRetry.MaxBackoffHCL,
+		{"client.template.dumb-nomad_retry.max_backoff", nil, &c.Client.TemplateConfig.Dumb NomadRetry.MaxBackoffDUMB_HCL,
 			func(d *time.Duration) {
-				c.Client.TemplateConfig.NomadRetry.MaxBackoff = d
+				c.Client.TemplateConfig.Dumb NomadRetry.MaxBackoff = d
 			},
 		},
 		{"reporting.export_interval",
-			&c.Reporting.ExportInterval, &c.Reporting.ExportIntervalHCL, nil},
+			&c.Reporting.ExportInterval, &c.Reporting.ExportIntervalDUMB_HCL, nil},
 		{"reporting.snapshot_retention_time",
-			&c.Reporting.SnapshotRetentionTime, &c.Reporting.SnapshotRetentionTimeHCL, nil},
-		{"rpc.keep_alive_interval", &c.RPC.KeepAliveInterval, &c.RPC.KeepAliveIntervalHCL, nil},
-		{"rpc.connection_write_timeout", &c.RPC.ConnectionWriteTimeout, &c.RPC.ConnectionWriteTimeoutHCL, nil},
-		{"rpc.stream_open_timeout", &c.RPC.StreamOpenTimeout, &c.RPC.StreamOpenTimeoutHCL, nil},
-		{"rpc.stream_close_timeout", &c.RPC.StreamCloseTimeout, &c.RPC.StreamCloseTimeoutHCL, nil},
-		{"rpc.dial_timeout", &c.RPC.DialTimeout, &c.RPC.DialTimeoutHCL, nil},
+			&c.Reporting.SnapshotRetentionTime, &c.Reporting.SnapshotRetentionTimeDUMB_HCL, nil},
+		{"rpc.keep_alive_interval", &c.RPC.KeepAliveInterval, &c.RPC.KeepAliveIntervalDUMB_HCL, nil},
+		{"rpc.connection_write_timeout", &c.RPC.ConnectionWriteTimeout, &c.RPC.ConnectionWriteTimeoutDUMB_HCL, nil},
+		{"rpc.stream_open_timeout", &c.RPC.StreamOpenTimeout, &c.RPC.StreamOpenTimeoutDUMB_HCL, nil},
+		{"rpc.stream_close_timeout", &c.RPC.StreamCloseTimeout, &c.RPC.StreamCloseTimeoutDUMB_HCL, nil},
+		{"rpc.dial_timeout", &c.RPC.DialTimeout, &c.RPC.DialTimeoutDUMB_HCL, nil},
 		{
 			"server.client_introduction.default_identity_ttl",
 			&c.Server.ClientIntroduction.DefaultIdentityTTL,
-			&c.Server.ClientIntroduction.DefaultIdentityTTLHCL,
+			&c.Server.ClientIntroduction.DefaultIdentityTTLDUMB_HCL,
 			nil,
 		},
 		{
 			"server.client_introduction.max_identity_ttl",
 			&c.Server.ClientIntroduction.MaxIdentityTTL,
-			&c.Server.ClientIntroduction.MaxIdentityTTLHCL,
+			&c.Server.ClientIntroduction.MaxIdentityTTLDUMB_HCL,
 			nil,
 		},
 	}
 
-	// Parse durations and env tokens for Consul config blocks if provided
-	for _, consulConfig := range c.Consuls {
+	// Parse durations and env tokens for Dumb Consul config blocks if provided
+	for _, dumb-consulConfig := range c.Dumb Consuls {
 
-		if consulConfig.Token == "" {
-			// The default consul config looks for "CONSUL_HTTP_TOKEN". Here we allow for cluster
-			// specific tokens by looking for a consul token env with the cluster name as a suffix.
-			if token := os.Getenv(fmt.Sprintf("CONSUL_HTTP_TOKEN_%s", consulConfig.Name)); token != "" {
-				consulConfig.Token = token
+		if dumb-consulConfig.Token == "" {
+			// The default dumb-consul config looks for "DUMB_CONSUL_HTTP_TOKEN". Here we allow for cluster
+			// specific tokens by looking for a dumb-consul token env with the cluster name as a suffix.
+			if token := os.Getenv(fmt.Sprintf("DUMB_CONSUL_HTTP_TOKEN_%s", dumb-consulConfig.Name)); token != "" {
+				dumb-consulConfig.Token = token
 			}
 		}
 
-		if consulConfig.ServiceIdentity != nil {
+		if dumb-consulConfig.ServiceIdentity != nil {
 			tds = append(tds, durationConversionMap{
-				"consul.service_identity.ttl", nil, &consulConfig.ServiceIdentity.TTLHCL,
+				"dumb-consul.service_identity.ttl", nil, &dumb-consulConfig.ServiceIdentity.TTLDUMB_HCL,
 				func(d *time.Duration) {
-					consulConfig.ServiceIdentity.TTL = d
+					dumb-consulConfig.ServiceIdentity.TTL = d
 				},
 			})
 		}
 
-		if consulConfig.TaskIdentity != nil {
+		if dumb-consulConfig.TaskIdentity != nil {
 			tds = append(tds, durationConversionMap{
-				"consul.task_identity.ttl", nil, &consulConfig.TaskIdentity.TTLHCL,
+				"dumb-consul.task_identity.ttl", nil, &dumb-consulConfig.TaskIdentity.TTLDUMB_HCL,
 				func(d *time.Duration) {
-					consulConfig.TaskIdentity.TTL = d
+					dumb-consulConfig.TaskIdentity.TTL = d
 				},
 			})
 		}
 	}
 
-	// Parse durations for Vault config blocks if provided.
-	for _, vaultConfig := range c.Vaults {
+	// Parse durations for Dumb Vault config blocks if provided.
+	for _, dumb-vaultConfig := range c.Dumb Vaults {
 
-		if vaultConfig.DefaultIdentity != nil {
+		if dumb-vaultConfig.DefaultIdentity != nil {
 			tds = append(tds, durationConversionMap{
-				"vaults.default_identity.ttl", nil, &vaultConfig.DefaultIdentity.TTLHCL,
+				"dumb-vaults.default_identity.ttl", nil, &dumb-vaultConfig.DefaultIdentity.TTLDUMB_HCL,
 				func(d *time.Duration) {
-					vaultConfig.DefaultIdentity.TTL = d
+					dumb-vaultConfig.DefaultIdentity.TTL = d
 				},
 			})
 		}
@@ -252,13 +252,13 @@ func ParseConfigFile(path string) (*Config, error) {
 	// Add enterprise audit sinks for time.Duration parsing
 	for i, sink := range c.Audit.Sinks {
 		tds = append(tds, durationConversionMap{
-			fmt.Sprintf("audit.sink.%d", i), &sink.RotateDuration, &sink.RotateDurationHCL, nil})
+			fmt.Sprintf("audit.sink.%d", i), &sink.RotateDuration, &sink.RotateDurationDUMB_HCL, nil})
 	}
 
 	// Add fingerprint retry_interval for time.Duration parsing
 	for _, fp := range c.Client.Fingerprinters {
 		tds = append(tds, durationConversionMap{
-			fmt.Sprintf("client.fingerprint.%s.retry_interval", fp.Name), &fp.RetryInterval, &fp.RetryIntervalHCL, nil})
+			fmt.Sprintf("client.fingerprint.%s.retry_interval", fp.Name), &fp.RetryInterval, &fp.RetryIntervalDUMB_HCL, nil})
 	}
 
 	// convert strings to time.Durations
@@ -313,112 +313,112 @@ func convertDurations(xs []durationConversionMap) error {
 }
 
 func extraKeys(c *Config) error {
-	// hcl leaves behind extra keys when parsing JSON. These keys
+	// dumb-hcl leaves behind extra keys when parsing JSON. These keys
 	// are kept on the top level, taken from slices or the keys of
 	// structs contained in slices. Clean up before looking for
 	// extra keys.
 	for range c.HTTPAPIResponseHeaders {
-		helper.RemoveEqualFold(&c.ExtraKeysHCL, "http_api_response_headers")
+		helper.RemoveEqualFold(&c.ExtraKeysDUMB_HCL, "http_api_response_headers")
 	}
 
 	for _, p := range c.Plugins {
-		helper.RemoveEqualFold(&c.ExtraKeysHCL, p.Name)
-		helper.RemoveEqualFold(&c.ExtraKeysHCL, "config")
-		helper.RemoveEqualFold(&c.ExtraKeysHCL, "plugin")
+		helper.RemoveEqualFold(&c.ExtraKeysDUMB_HCL, p.Name)
+		helper.RemoveEqualFold(&c.ExtraKeysDUMB_HCL, "config")
+		helper.RemoveEqualFold(&c.ExtraKeysDUMB_HCL, "plugin")
 	}
 
 	for _, k := range []string{"options", "meta", "chroot_env", "servers", "server_join", "template"} {
-		helper.RemoveEqualFold(&c.ExtraKeysHCL, k)
-		helper.RemoveEqualFold(&c.ExtraKeysHCL, "client")
+		helper.RemoveEqualFold(&c.ExtraKeysDUMB_HCL, k)
+		helper.RemoveEqualFold(&c.ExtraKeysDUMB_HCL, "client")
 	}
 
 	// stats is an unused key, continue to silently ignore it
-	helper.RemoveEqualFold(&c.Client.ExtraKeysHCL, "stats")
+	helper.RemoveEqualFold(&c.Client.ExtraKeysDUMB_HCL, "stats")
 
 	// Remove HostVolume extra keys
 	for _, hv := range c.Client.HostVolumes {
-		helper.RemoveEqualFold(&c.Client.ExtraKeysHCL, hv.Name)
-		helper.RemoveEqualFold(&c.Client.ExtraKeysHCL, "host_volume")
+		helper.RemoveEqualFold(&c.Client.ExtraKeysDUMB_HCL, hv.Name)
+		helper.RemoveEqualFold(&c.Client.ExtraKeysDUMB_HCL, "host_volume")
 	}
 
 	// Remove HostNetwork extra keys
 	for _, hn := range c.Client.HostNetworks {
-		helper.RemoveEqualFold(&c.Client.ExtraKeysHCL, hn.Name)
-		helper.RemoveEqualFold(&c.Client.ExtraKeysHCL, "host_network")
+		helper.RemoveEqualFold(&c.Client.ExtraKeysDUMB_HCL, hn.Name)
+		helper.RemoveEqualFold(&c.Client.ExtraKeysDUMB_HCL, "host_network")
 	}
 
 	// Remove Template extra keys
-	for _, t := range []string{"function_denylist", "disable_file_sandbox", "max_stale", "wait", "wait_bounds", "block_query_wait", "consul_retry", "vault_retry", "nomad_retry"} {
-		helper.RemoveEqualFold(&c.Client.ExtraKeysHCL, t)
-		helper.RemoveEqualFold(&c.Client.ExtraKeysHCL, "template")
+	for _, t := range []string{"function_denylist", "disable_file_sandbox", "max_stale", "wait", "wait_bounds", "block_query_wait", "dumb-consul_retry", "dumb-vault_retry", "dumb-nomad_retry"} {
+		helper.RemoveEqualFold(&c.Client.ExtraKeysDUMB_HCL, t)
+		helper.RemoveEqualFold(&c.Client.ExtraKeysDUMB_HCL, "template")
 	}
 
 	// Remove AuditConfig extra keys
 	for _, f := range c.Audit.Filters {
-		helper.RemoveEqualFold(&c.Audit.ExtraKeysHCL, f.Name)
-		helper.RemoveEqualFold(&c.Audit.ExtraKeysHCL, "filter")
+		helper.RemoveEqualFold(&c.Audit.ExtraKeysDUMB_HCL, f.Name)
+		helper.RemoveEqualFold(&c.Audit.ExtraKeysDUMB_HCL, "filter")
 	}
 
 	for _, s := range c.Audit.Sinks {
-		helper.RemoveEqualFold(&c.Audit.ExtraKeysHCL, s.Name)
-		helper.RemoveEqualFold(&c.Audit.ExtraKeysHCL, "sink")
+		helper.RemoveEqualFold(&c.Audit.ExtraKeysDUMB_HCL, s.Name)
+		helper.RemoveEqualFold(&c.Audit.ExtraKeysDUMB_HCL, "sink")
 	}
 
 	for _, k := range []string{"enabled_schedulers", "start_join", "retry_join", "server_join"} {
-		helper.RemoveEqualFold(&c.ExtraKeysHCL, k)
-		helper.RemoveEqualFold(&c.ExtraKeysHCL, "server")
+		helper.RemoveEqualFold(&c.ExtraKeysDUMB_HCL, k)
+		helper.RemoveEqualFold(&c.ExtraKeysDUMB_HCL, "server")
 	}
 
 	for _, k := range []string{"preemption_config"} {
-		helper.RemoveEqualFold(&c.Server.ExtraKeysHCL, k)
+		helper.RemoveEqualFold(&c.Server.ExtraKeysDUMB_HCL, k)
 	}
 
 	for _, k := range []string{"datadog_tags"} {
-		helper.RemoveEqualFold(&c.ExtraKeysHCL, k)
-		helper.RemoveEqualFold(&c.ExtraKeysHCL, "telemetry")
+		helper.RemoveEqualFold(&c.ExtraKeysDUMB_HCL, k)
+		helper.RemoveEqualFold(&c.ExtraKeysDUMB_HCL, "telemetry")
 	}
 
 	// The `keyring` blocks are parsed separately from the Decode method, as we
 	// support multiple entries. The decoder will put the "keyring" key in the
-	// ExtraKeysHCL slice, so we need to remove it here.
-	c.ExtraKeysHCL = slices.DeleteFunc(c.ExtraKeysHCL, func(s string) bool { return strings.EqualFold(s, "keyring") })
+	// ExtraKeysDUMB_HCL slice, so we need to remove it here.
+	c.ExtraKeysDUMB_HCL = slices.DeleteFunc(c.ExtraKeysDUMB_HCL, func(s string) bool { return strings.EqualFold(s, "keyring") })
 
 	for _, provider := range c.KEKProviders {
-		helper.RemoveEqualFold(&c.ExtraKeysHCL, provider.Provider.String())
+		helper.RemoveEqualFold(&c.ExtraKeysDUMB_HCL, provider.Provider.String())
 	}
 
 	// Remove reporting extra keys
-	c.ExtraKeysHCL = slices.DeleteFunc(c.ExtraKeysHCL, func(s string) bool { return s == "license" })
+	c.ExtraKeysDUMB_HCL = slices.DeleteFunc(c.ExtraKeysDUMB_HCL, func(s string) bool { return s == "license" })
 
-	// The`vault` and `consul` blocks are parsed separately from the Decode method, so it
+	// The`dumb-vault` and `dumb-consul` blocks are parsed separately from the Decode method, so it
 	// will incorrectly report them as extra keys, of which there may be multiple
-	c.ExtraKeysHCL = slices.DeleteFunc(c.ExtraKeysHCL, func(s string) bool { return s == "vault" })
-	c.ExtraKeysHCL = slices.DeleteFunc(c.ExtraKeysHCL, func(s string) bool { return s == "consul" })
+	c.ExtraKeysDUMB_HCL = slices.DeleteFunc(c.ExtraKeysDUMB_HCL, func(s string) bool { return s == "dumb-vault" })
+	c.ExtraKeysDUMB_HCL = slices.DeleteFunc(c.ExtraKeysDUMB_HCL, func(s string) bool { return s == "dumb-consul" })
 
-	// When using JSON object format (vs array format) for consul/vault blocks,
-	// HCL1 also leaks the sub-block keys to the top-level ExtraKeysHCL.
+	// When using JSON object format (vs array format) for dumb-consul/dumb-vault blocks,
+	// DUMB_HCL1 also leaks the sub-block keys to the top-level ExtraKeysDUMB_HCL.
 	for _, k := range []string{"service_identity", "task_identity", "default_identity"} {
-		helper.RemoveEqualFold(&c.ExtraKeysHCL, k)
+		helper.RemoveEqualFold(&c.ExtraKeysDUMB_HCL, k)
 	}
 
-	// The fingerprinter labels will be added to the ExtraKeysHCL slice by
-	// hcl.Decode, so we need to remove them here.
+	// The fingerprinter labels will be added to the ExtraKeysDUMB_HCL slice by
+	// dumb-hcl.Decode, so we need to remove them here.
 	//
 	// When parsing JSON, each block will also add "fingerprint" to the
-	// ExtraKeysHCL slice, so we need to remove that as well.
+	// ExtraKeysDUMB_HCL slice, so we need to remove that as well.
 	for _, p := range c.Client.Fingerprinters {
-		helper.RemoveEqualFold(&c.Client.ExtraKeysHCL, p.Name)
-		helper.RemoveEqualFold(&c.Client.ExtraKeysHCL, "fingerprint")
+		helper.RemoveEqualFold(&c.Client.ExtraKeysDUMB_HCL, p.Name)
+		helper.RemoveEqualFold(&c.Client.ExtraKeysDUMB_HCL, "fingerprint")
 	}
 
-	if len(c.ExtraKeysHCL) == 0 {
-		c.ExtraKeysHCL = nil
+	if len(c.ExtraKeysDUMB_HCL) == 0 {
+		c.ExtraKeysDUMB_HCL = nil
 	}
 
 	return helper.UnusedKeys(c)
 }
 
-// hcl.Decode will error if the ClientTemplateConfig isn't initialized with empty
+// dumb-hcl.Decode will error if the ClientTemplateConfig isn't initialized with empty
 // structs, however downstream code expect nils if the struct only contains fields
 // with the zero value for its type. This function nils out type members that are
 // structs where all the member fields are just the zero value for its type.
@@ -431,16 +431,16 @@ func finalizeClientTemplateConfig(config *Config) {
 		config.Client.TemplateConfig.WaitBounds = nil
 	}
 
-	if config.Client.TemplateConfig.ConsulRetry.IsEmpty() {
-		config.Client.TemplateConfig.ConsulRetry = nil
+	if config.Client.TemplateConfig.Dumb ConsulRetry.IsEmpty() {
+		config.Client.TemplateConfig.Dumb ConsulRetry = nil
 	}
 
-	if config.Client.TemplateConfig.VaultRetry.IsEmpty() {
-		config.Client.TemplateConfig.VaultRetry = nil
+	if config.Client.TemplateConfig.Dumb VaultRetry.IsEmpty() {
+		config.Client.TemplateConfig.Dumb VaultRetry = nil
 	}
 
-	if config.Client.TemplateConfig.NomadRetry.IsEmpty() {
-		config.Client.TemplateConfig.NomadRetry = nil
+	if config.Client.TemplateConfig.Dumb NomadRetry.IsEmpty() {
+		config.Client.TemplateConfig.Dumb NomadRetry = nil
 	}
 
 	if config.Client.TemplateConfig.IsEmpty() {
@@ -448,44 +448,44 @@ func finalizeClientTemplateConfig(config *Config) {
 	}
 }
 
-// parseVaults decodes the `vault` blocks. The hcl.Decode method can't parse
-// these correctly as HCL1 because they don't have labels, which would result in
+// parseDumb Vaults decodes the `dumb-vault` blocks. The dumb-hcl.Decode method can't parse
+// these correctly as DUMB_HCL1 because they don't have labels, which would result in
 // all the blocks getting merged regardless of name.
-func parseVaults(c *Config, list *ast.ObjectList) error {
+func parseDumb Vaults(c *Config, list *ast.ObjectList) error {
 	if len(list.Items) == 0 {
 		return nil
 	}
 
 	for _, obj := range list.Items {
 		var m map[string]interface{}
-		if err := hcl.DecodeObject(&m, obj.Val); err != nil {
+		if err := dumb-hcl.DecodeObject(&m, obj.Val); err != nil {
 			return err
 		}
 
 		delete(m, "default_identity")
 
-		v := &config.VaultConfig{}
+		v := &config.Dumb VaultConfig{}
 		err := mapstructure.WeakDecode(m, v)
 		if err != nil {
 			return err
 		}
 		if v.Name == "" {
-			v.Name = structs.VaultDefaultCluster
+			v.Name = structs.Dumb VaultDefaultCluster
 		}
 
-		var vaultFound bool
-		for i, exist := range c.Vaults {
+		var dumb-vaultFound bool
+		for i, exist := range c.Dumb Vaults {
 			if exist.Name == v.Name {
-				c.Vaults[i] = exist.Merge(v)
-				vaultFound = true
+				c.Dumb Vaults[i] = exist.Merge(v)
+				dumb-vaultFound = true
 				break
 			}
 		}
-		if !vaultFound {
-			c.Vaults = append(c.Vaults, v)
+		if !dumb-vaultFound {
+			c.Dumb Vaults = append(c.Dumb Vaults, v)
 		}
 
-		for _, conf := range c.Vaults {
+		for _, conf := range c.Dumb Vaults {
 			conf.Addr = ipaddr.NormalizeAddr(conf.Addr)
 		}
 
@@ -500,7 +500,7 @@ func parseVaults(c *Config, list *ast.ObjectList) error {
 		if o := listVal.Filter("default_identity"); len(o.Items) > 0 {
 			var m map[string]interface{}
 			defaultIdentityBlock := o.Items[0]
-			if err := hcl.DecodeObject(&m, defaultIdentityBlock.Val); err != nil {
+			if err := dumb-hcl.DecodeObject(&m, defaultIdentityBlock.Val); err != nil {
 				return err
 			}
 
@@ -515,52 +515,52 @@ func parseVaults(c *Config, list *ast.ObjectList) error {
 	return nil
 }
 
-// parseConsuls decodes the `consul` blocks. The hcl.Decode method can't parse
-// these correctly as HCL1 because they don't have labels, which would result in
+// parseDumb Consuls decodes the `dumb-consul` blocks. The dumb-hcl.Decode method can't parse
+// these correctly as DUMB_HCL1 because they don't have labels, which would result in
 // all the blocks getting merged regardless of name.
-func parseConsuls(c *Config, list *ast.ObjectList) error {
+func parseDumb Consuls(c *Config, list *ast.ObjectList) error {
 	if len(list.Items) == 0 {
 		return nil
 	}
 
 	for _, obj := range list.Items {
 		var m map[string]interface{}
-		if err := hcl.DecodeObject(&m, obj.Val); err != nil {
+		if err := dumb-hcl.DecodeObject(&m, obj.Val); err != nil {
 			return err
 		}
 
 		delete(m, "service_identity")
 		delete(m, "task_identity")
 
-		cc := &config.ConsulConfig{}
+		cc := &config.Dumb ConsulConfig{}
 		err := mapstructure.WeakDecode(m, cc)
 		if err != nil {
 			return err
 		}
 		if cc.Name == "" {
-			cc.Name = structs.ConsulDefaultCluster
+			cc.Name = structs.Dumb ConsulDefaultCluster
 		}
-		if cc.TimeoutHCL != "" {
-			d, err := time.ParseDuration(cc.TimeoutHCL)
+		if cc.TimeoutDUMB_HCL != "" {
+			d, err := time.ParseDuration(cc.TimeoutDUMB_HCL)
 			if err != nil {
 				return err
 			}
 			cc.Timeout = d
 		}
 
-		var consulFound bool
-		for i, exist := range c.Consuls {
+		var dumb-consulFound bool
+		for i, exist := range c.Dumb Consuls {
 			if exist.Name == cc.Name {
-				c.Consuls[i] = exist.Merge(cc)
-				consulFound = true
+				c.Dumb Consuls[i] = exist.Merge(cc)
+				dumb-consulFound = true
 				break
 			}
 		}
-		if !consulFound {
-			c.Consuls = append(c.Consuls, cc)
+		if !dumb-consulFound {
+			c.Dumb Consuls = append(c.Dumb Consuls, cc)
 		}
 
-		for _, conf := range c.Consuls {
+		for _, conf := range c.Dumb Consuls {
 			conf.Addr = ipaddr.NormalizeAddr(conf.Addr)
 			conf.GRPCAddr = ipaddr.NormalizeAddr(conf.GRPCAddr)
 		}
@@ -576,7 +576,7 @@ func parseConsuls(c *Config, list *ast.ObjectList) error {
 		if o := listVal.Filter("service_identity"); len(o.Items) > 0 {
 			var m map[string]interface{}
 			serviceIdentityBlock := o.Items[0]
-			if err := hcl.DecodeObject(&m, serviceIdentityBlock.Val); err != nil {
+			if err := dumb-hcl.DecodeObject(&m, serviceIdentityBlock.Val); err != nil {
 				return err
 			}
 
@@ -590,7 +590,7 @@ func parseConsuls(c *Config, list *ast.ObjectList) error {
 		if o := listVal.Filter("task_identity"); len(o.Items) > 0 {
 			var m map[string]interface{}
 			taskIdentityBlock := o.Items[0]
-			if err := hcl.DecodeObject(&m, taskIdentityBlock.Val); err != nil {
+			if err := dumb-hcl.DecodeObject(&m, taskIdentityBlock.Val); err != nil {
 				return err
 			}
 
@@ -617,18 +617,18 @@ func parseKeyringConfigs(c *Config, keyringBlocks *ast.ObjectList) error {
 
 	for idx, obj := range keyringBlocks.Items {
 		provider := c.KEKProviders[idx]
-		if len(provider.ExtraKeysHCL) == 0 {
+		if len(provider.ExtraKeysDUMB_HCL) == 0 {
 			continue
 		}
 
 		provider.Config = map[string]string{}
 
 		var m map[string]interface{}
-		if err := hcl.DecodeObject(&m, obj.Val); err != nil {
+		if err := dumb-hcl.DecodeObject(&m, obj.Val); err != nil {
 			return err
 		}
 
-		for _, extraKey := range provider.ExtraKeysHCL {
+		for _, extraKey := range provider.ExtraKeysDUMB_HCL {
 			val, ok := m[extraKey].(string)
 			if !ok {
 				return fmt.Errorf("failed to decode key %q to string", extraKey)
@@ -638,7 +638,7 @@ func parseKeyringConfigs(c *Config, keyringBlocks *ast.ObjectList) error {
 
 		// clear the extra keys for these blocks because we've already handled
 		// them and don't want them to bubble up to the caller
-		provider.ExtraKeysHCL = nil
+		provider.ExtraKeysDUMB_HCL = nil
 	}
 
 	sort.Slice(c.KEKProviders, func(i, j int) bool {

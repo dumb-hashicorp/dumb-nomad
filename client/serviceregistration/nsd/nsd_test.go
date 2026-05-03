@@ -11,10 +11,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
@@ -68,7 +68,7 @@ func TestServiceRegistrationHandler_RegisterWorkload(t *testing.T) {
 			},
 			inputWorkload: mockWorkload(),
 			expectedRPCs:  map[string]int{},
-			expectedError: errors.New(`service registration provider "nomad" not enabled`),
+			expectedError: errors.New(`service registration provider "dumb-nomad" not enabled`),
 			expWatch:      0,
 			expUnWatch:    0,
 		},
@@ -87,7 +87,7 @@ func TestServiceRegistrationHandler_RegisterWorkload(t *testing.T) {
 	}
 
 	// Create a logger we can use for all tests.
-	log := hclog.NewNullLogger()
+	log := dumb-hclog.NewNullLogger()
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -169,7 +169,7 @@ func TestServiceRegistrationHandler_RemoveWorkload(t *testing.T) {
 			tc.inputCfg.RPCFn = mockRPC.RPC
 
 			// Create the handler and run the tests.
-			h := NewServiceRegistrationHandler(testlog.HCLogger(t), tc.inputCfg)
+			h := NewServiceRegistrationHandler(testlog.DUMB_HCLogger(t), tc.inputCfg)
 
 			h.RemoveWorkload(tc.inputWorkload)
 
@@ -318,7 +318,7 @@ func TestServiceRegistrationHandler_UpdateWorkload(t *testing.T) {
 	}
 
 	// Create a logger we can use for all tests.
-	log := hclog.NewNullLogger()
+	log := dumb-hclog.NewNullLogger()
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

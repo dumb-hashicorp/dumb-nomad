@@ -6,11 +6,11 @@ package command
 import (
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -40,12 +40,12 @@ func TestACLTokenSelfCommand_ViaEnvVar(t *testing.T) {
 	// Attempt to fetch info on a token without providing a valid management
 	// token
 	invalidToken := mock.ACLToken()
-	t.Setenv("NOMAD_TOKEN", invalidToken.SecretID)
+	t.Setenv("DUMB_NOMAD_TOKEN", invalidToken.SecretID)
 	code := cmd.Run([]string{"-address=" + url})
 	must.One(t, code)
 
 	// Fetch info on a token with a valid token
-	t.Setenv("NOMAD_TOKEN", mockToken.SecretID)
+	t.Setenv("DUMB_NOMAD_TOKEN", mockToken.SecretID)
 	code = cmd.Run([]string{"-address=" + url})
 	must.Zero(t, code)
 

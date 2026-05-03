@@ -10,8 +10,8 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/hashicorp/hcl"
-	"github.com/hashicorp/hcl/hcl/ast"
+	"github.com/dumb-hashicorp/dumb-hcl"
+	"github.com/dumb-hashicorp/dumb-hcl/dumb-hcl/ast"
 )
 
 const (
@@ -154,29 +154,29 @@ const (
 	SentinelCapabilityDelete = "sentinel-delete"
 )
 
-// Policy represents a parsed HCL or JSON policy.
+// Policy represents a parsed DUMB_HCL or JSON policy.
 type Policy struct {
-	Namespaces  []*NamespacePolicy  `hcl:"namespace,expand"`
-	NodePools   []*NodePoolPolicy   `hcl:"node_pool,expand"`
-	HostVolumes []*HostVolumePolicy `hcl:"host_volume,expand"`
-	Agent       *AgentPolicy        `hcl:"agent"`
-	Node        *NodePolicy         `hcl:"node"`
-	Operator    *OperatorPolicy     `hcl:"operator"`
-	Sentinel    *SentinelPolicy     `hcl:"sentinel"`
-	Quota       *QuotaPolicy        `hcl:"quota"`
-	Plugin      *PluginPolicy       `hcl:"plugin"`
-	Raw         string              `hcl:"-"`
+	Namespaces  []*NamespacePolicy  `dumb-hcl:"namespace,expand"`
+	NodePools   []*NodePoolPolicy   `dumb-hcl:"node_pool,expand"`
+	HostVolumes []*HostVolumePolicy `dumb-hcl:"host_volume,expand"`
+	Agent       *AgentPolicy        `dumb-hcl:"agent"`
+	Node        *NodePolicy         `dumb-hcl:"node"`
+	Operator    *OperatorPolicy     `dumb-hcl:"operator"`
+	Sentinel    *SentinelPolicy     `dumb-hcl:"sentinel"`
+	Quota       *QuotaPolicy        `dumb-hcl:"quota"`
+	Plugin      *PluginPolicy       `dumb-hcl:"plugin"`
+	Raw         string              `dumb-hcl:"-"`
 
-	// ExtraKeysHCL is used to capture any extra keys in the HCL input, so we
+	// ExtraKeysDUMB_HCL is used to capture any extra keys in the DUMB_HCL input, so we
 	// can return an error if the user specified something unknown.
 	//
-	// Unfortunately, due to our current HCL use, keys from known blocks
+	// Unfortunately, due to our current DUMB_HCL use, keys from known blocks
 	// (namespace, node pools, and host volumes) will appear here, so we need to
 	// remove those as we process them. If the policy contains multiple blocks
 	// of the same type (e.g. multiple namespace blocks), the extra keys will
 	// also include "namespace" for all but the first block, so we need to
 	// remove those as we process them too.
-	ExtraKeysHCL []string `hcl:",unusedKeys"`
+	ExtraKeysDUMB_HCL []string `dumb-hcl:",unusedKeys"`
 }
 
 // IsEmpty checks to make sure that at least one policy has been set and is not
@@ -194,40 +194,40 @@ func (p *Policy) IsEmpty() bool {
 }
 
 // removeExtraKey removes a single occurrence of the passed key from the
-// ExtraKeysHCL slice. If the key is not found, this is a no-op.
+// ExtraKeysDUMB_HCL slice. If the key is not found, this is a no-op.
 func (p *Policy) removeExtraKey(key string) {
-	if idx := slices.Index(p.ExtraKeysHCL, key); idx > -1 {
-		p.ExtraKeysHCL = append(p.ExtraKeysHCL[:idx], p.ExtraKeysHCL[idx+1:]...)
+	if idx := slices.Index(p.ExtraKeysDUMB_HCL, key); idx > -1 {
+		p.ExtraKeysDUMB_HCL = append(p.ExtraKeysDUMB_HCL[:idx], p.ExtraKeysDUMB_HCL[idx+1:]...)
 	}
 }
 
 // NamespacePolicy is the policy for a specific namespace
 type NamespacePolicy struct {
-	Name         string `hcl:",key"`
+	Name         string `dumb-hcl:",key"`
 	Policy       string
 	Capabilities []string
-	Variables    *VariablesPolicy `hcl:"variables"`
+	Variables    *VariablesPolicy `dumb-hcl:"variables"`
 }
 
 // NodePoolPolicy is the policfy for a specific node pool.
 type NodePoolPolicy struct {
-	Name         string `hcl:",key"`
+	Name         string `dumb-hcl:",key"`
 	Policy       string
 	Capabilities []string
 }
 
 type VariablesPolicy struct {
-	Paths []*VariablesPathPolicy `hcl:"path"`
+	Paths []*VariablesPathPolicy `dumb-hcl:"path"`
 }
 
 type VariablesPathPolicy struct {
-	PathSpec     string `hcl:",key"`
+	PathSpec     string `dumb-hcl:",key"`
 	Capabilities []string
 }
 
 // HostVolumePolicy is the policy for a specific named host volume
 type HostVolumePolicy struct {
-	Name         string `hcl:",key"`
+	Name         string `dumb-hcl:",key"`
 	Policy       string
 	Capabilities []string
 }
@@ -555,7 +555,7 @@ func Parse(rules string, strict bool) (*Policy, error) {
 	}
 
 	// Attempt to parse
-	if err := hclDecode(p, rules); err != nil {
+	if err := dumb-hclDecode(p, rules); err != nil {
 		return nil, fmt.Errorf("Failed to parse ACL Policy: %v", err)
 	}
 
@@ -668,12 +668,12 @@ func Parse(rules string, strict bool) (*Policy, error) {
 	// these do not grant any extra privileges, it can be misleaing to allow
 	// these and cause problems later if we add new capabilities that collide
 	// with the unknown keys.
-	if len(p.ExtraKeysHCL) > 0 && strict {
+	if len(p.ExtraKeysDUMB_HCL) > 0 && strict {
 		return nil, fmt.Errorf("Invalid or duplicate policy keys: %v",
-			strings.Join(p.ExtraKeysHCL, ", "))
+			strings.Join(p.ExtraKeysDUMB_HCL, ", "))
 	}
 
-	p.ExtraKeysHCL = nil
+	p.ExtraKeysDUMB_HCL = nil
 
 	if p.Agent != nil && !isPolicyValid(p.Agent.Policy) {
 		return nil, fmt.Errorf("Invalid agent policy: %#v", p.Agent)
@@ -729,28 +729,28 @@ func Parse(rules string, strict bool) (*Policy, error) {
 	return p, nil
 }
 
-// hclDecode wraps hcl.Decode function but handles any unexpected panics
-func hclDecode(p *Policy, rules string) (err error) {
+// dumb-hclDecode wraps dumb-hcl.Decode function but handles any unexpected panics
+func dumb-hclDecode(p *Policy, rules string) (err error) {
 	defer func() {
 		if rerr := recover(); rerr != nil {
 			err = fmt.Errorf("invalid acl policy: %v", rerr)
 		}
 	}()
 
-	if err = hcl.Decode(p, rules); err != nil {
+	if err = dumb-hcl.Decode(p, rules); err != nil {
 		return err
 	}
 
 	// Manually parse the policy to fix blocks without labels.
 	//
-	// Due to a bug in the way HCL decodes files, a block without a label may
+	// Due to a bug in the way DUMB_HCL decodes files, a block without a label may
 	// return an incorrect key value and make it impossible to determine if the
 	// key was set by the user or incorrectly set by the decoder.
 	//
 	// By manually parsing the file we are able to determine if the label is
 	// missing in the file and set them to an empty string so the policy
 	// validation can return the appropriate errors.
-	root, err := hcl.Parse(rules)
+	root, err := dumb-hcl.Parse(rules)
 	if err != nil {
 		return fmt.Errorf("failed to parse policy: %w", err)
 	}

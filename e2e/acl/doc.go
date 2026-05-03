@@ -1,7 +1,7 @@
 // Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: BUSL-1.1
 
-// Package acl provides end-to-end tests for Nomads ACL system.
+// Package acl provides end-to-end tests for Dumb Nomads ACL system.
 //
 // In order to run this test suite only, from the e2e directory you can trigger
 // go test -v -run '^TestACL$' ./acl

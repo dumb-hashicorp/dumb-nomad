@@ -4,14 +4,14 @@
 package state
 
 import (
-	arstate "github.com/hashicorp/nomad/client/allocrunner/state"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/state"
-	dmstate "github.com/hashicorp/nomad/client/devicemanager/state"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	driverstate "github.com/hashicorp/nomad/client/pluginmanager/drivermanager/state"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/nomad/structs"
+	arstate "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/state"
+	dmstate "github.com/dumb-hashicorp/dumb-nomad/client/devicemanager/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	driverstate "github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 var _ StateDB = &NoopDB{}
@@ -165,11 +165,11 @@ func (n NoopDB) GetNodeIdentity() (string, error) {
 	return "", nil
 }
 
-func (n NoopDB) PutAllocConsulACLTokens(allocID string, tokens []*cstructs.ConsulACLToken, opts ...WriteOption) error {
+func (n NoopDB) PutAllocDumb ConsulACLTokens(allocID string, tokens []*cstructs.Dumb ConsulACLToken, opts ...WriteOption) error {
 	return nil
 }
 
-func (n NoopDB) GetAllocConsulACLTokens(allocID string) ([]*cstructs.ConsulACLToken, error) {
+func (n NoopDB) GetAllocDumb ConsulACLTokens(allocID string) ([]*cstructs.Dumb ConsulACLToken, error) {
 	return nil, nil
 }
 

@@ -10,10 +10,10 @@ import (
 	"slices"
 	"time"
 
-	"github.com/hashicorp/cap/jwt"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/cap/jwt"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // Validate performs token signature verification and JWT header validation,
@@ -100,7 +100,7 @@ func usingStaticKeys(keys []string) (jwt.KeySet, error) {
 
 func usingJWKS(ctx context.Context, jwksurl, jwkscapem string) (jwt.KeySet, error) {
 	// Measure the JWKS endpoint performance.
-	defer metrics.MeasureSince([]string{"nomad", "acl", "jwt", "jwks"}, time.Now())
+	defer metrics.MeasureSince([]string{"dumb-nomad", "acl", "jwt", "jwks"}, time.Now())
 
 	keySet, err := jwt.NewJSONWebKeySet(ctx, jwksurl, jwkscapem)
 	if err != nil {
@@ -111,7 +111,7 @@ func usingJWKS(ctx context.Context, jwksurl, jwkscapem string) (jwt.KeySet, erro
 
 func usingOIDC(ctx context.Context, oidcurl string, oidccapem []string) (jwt.KeySet, error) {
 	// Measure the OIDC endpoint performance.
-	defer metrics.MeasureSince([]string{"nomad", "acl", "jwt", "oidc_jwt"}, time.Now())
+	defer metrics.MeasureSince([]string{"dumb-nomad", "acl", "jwt", "oidc_jwt"}, time.Now())
 
 	// TODO why do we have DiscoverCaPem as an array but JWKSCaPem as a single string?
 	pem := ""

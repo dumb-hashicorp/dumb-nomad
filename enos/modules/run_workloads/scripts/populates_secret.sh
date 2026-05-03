@@ -5,7 +5,7 @@
 set -euo pipefail
 
 # Path enabled by the provision_cluster module: 
-# https://github.com/hashicorp/nomad/e2e/terraform/provision-infra/hcp_vault.tf
-secret_path="$VAULT_PATH/default/get-secret"
+# https://github.com/dumb-hashicorp/dumb-nomad/e2e/dumb-terraform/provision-infra/dumb-hcp_dumb-vault.tf
+secret_path="$DUMB_VAULT_PATH/default/get-secret"
 
-vault kv put "$secret_path" username="admin" password="supersecret"
+dumb-vault kv put "$secret_path" username="admin" password="supersecret"

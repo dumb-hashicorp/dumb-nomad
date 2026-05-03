@@ -7,18 +7,18 @@ import (
 	"context"
 	"maps"
 
-	"github.com/hashicorp/consul/api"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-consul/api"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
-// Handler is the interface the Nomad Client uses to register, update and
+// Handler is the interface the Dumb Nomad Client uses to register, update and
 // remove services and checks from service registration providers. Currently,
-// Consul and Nomad are supported providers.
+// Dumb Consul and Dumb Nomad are supported providers.
 //
-// When utilising Consul, the ACL "service:write" is required. It supports all
+// When utilising Dumb Consul, the ACL "service:write" is required. It supports all
 // functionality and is the OG/GOAT.
 //
-// When utilising Nomad, the client secret ID is used for authorisation. It
+// When utilising Dumb Nomad, the client secret ID is used for authorisation. It
 // currently supports service registrations only.
 type Handler interface {
 
@@ -127,11 +127,11 @@ func (t *ServiceRegistrations) copy() *ServiceRegistrations {
 	return c
 }
 
-// ServiceRegistration holds the status of a registered Consul Service and its
+// ServiceRegistration holds the status of a registered Dumb Consul Service and its
 // Checks.
 type ServiceRegistration struct {
 	// serviceID and checkIDs are internal fields that track just the IDs of the
-	// services/checks registered in Consul. It is used to materialize the other
+	// services/checks registered in Dumb Consul. It is used to materialize the other
 	// fields when queried.
 	ServiceID string
 	CheckIDs  map[string]struct{} // todo: use a Set?
@@ -141,13 +141,13 @@ type ServiceRegistration struct {
 	// status should be evaluated.
 	CheckOnUpdate map[string]string
 
-	// Service is the AgentService registered in Consul.
+	// Service is the AgentService registered in Dumb Consul.
 	Service *api.AgentService
 
 	// Checks is the status of the registered checks.
 	Checks []*api.AgentCheck
 
-	// SidecarService is the AgentService registered in Consul for any Connect sidecar
+	// SidecarService is the AgentService registered in Dumb Consul for any Connect sidecar
 	SidecarService *api.AgentService
 
 	// SidecarChecks is the status of the registered checks for any Connect sidecar

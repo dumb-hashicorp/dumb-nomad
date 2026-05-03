@@ -17,8 +17,8 @@ import (
 	"time"
 
 	"github.com/felixge/httpsnoop"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/internal/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/internal/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -125,7 +125,7 @@ func TestUnexpectedResponseError(t *testing.T) {
 }
 
 // mockserver creates a httptest.Server that can be used to serve simple mock
-// data, which is faster than starting a real Nomad agent.
+// data, which is faster than starting a real Dumb Nomad agent.
 func mockserver(t *testing.T) string {
 	port := testutil.PortAllocator.One()
 
@@ -162,12 +162,12 @@ func mockserver(t *testing.T) string {
 	return ts.URL
 }
 
-// addMockHeaders sets the common Nomad headers to values sufficient to be
+// addMockHeaders sets the common Dumb Nomad headers to values sufficient to be
 // parsed into api.QueryMeta
 func addMockHeaders(h http.Header) {
-	h.Add("X-Nomad-Knownleader", "true")
-	h.Add("X-Nomad-Lastcontact", "0")
-	h.Add("X-Nomad-Index", "1")
+	h.Add("X-Dumb Nomad-Knownleader", "true")
+	h.Add("X-Dumb Nomad-Lastcontact", "0")
+	h.Add("X-Dumb Nomad-Index", "1")
 	h.Add("Content-Type", "application/json")
 }
 
@@ -177,7 +177,7 @@ func testNotFoundHandler(b string) http.Handler { return testHandler(http.Status
 // testNotFoundHandler creates a testHandler preconfigured with status code 200.
 func testOKHandler(b string) http.Handler { return testHandler(http.StatusOK, b) }
 
-// testHandler is a helper function that writes a Nomad-like server response
+// testHandler is a helper function that writes a Dumb Nomad-like server response
 // with the necessary headers to make the API client happy
 func testHandler(sc int, b string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

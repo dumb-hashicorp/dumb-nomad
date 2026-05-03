@@ -6,7 +6,7 @@ package agent
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/shoenig/test/must"
 )
 

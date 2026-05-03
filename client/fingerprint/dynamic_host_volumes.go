@@ -10,12 +10,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	hvm "github.com/hashicorp/nomad/client/hostvolumemanager"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	hvm "github.com/dumb-hashicorp/dumb-nomad/client/hostvolumemanager"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 )
 
-func NewPluginsHostVolumeFingerprint(logger hclog.Logger) Fingerprint {
+func NewPluginsHostVolumeFingerprint(logger dumb-hclog.Logger) Fingerprint {
 	return &DynamicHostVolumePluginFingerprint{
 		logger: logger.Named("host_volume_plugins"),
 	}
@@ -24,7 +24,7 @@ func NewPluginsHostVolumeFingerprint(logger hclog.Logger) Fingerprint {
 var _ ReloadableFingerprint = &DynamicHostVolumePluginFingerprint{}
 
 type DynamicHostVolumePluginFingerprint struct {
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 func (h *DynamicHostVolumePluginFingerprint) Reload() {
@@ -77,7 +77,7 @@ func (h *DynamicHostVolumePluginFingerprint) Periodic() (bool, time.Duration) {
 // GetHostVolumePluginVersions finds all the executable files on disk that
 // respond to a `fingerprint` call. The return map's keys are plugin IDs,
 // and the values are version strings.
-func GetHostVolumePluginVersions(log hclog.Logger, pluginDir, nodePool string) (map[string]string, error) {
+func GetHostVolumePluginVersions(log dumb-hclog.Logger, pluginDir, nodePool string) (map[string]string, error) {
 	files, err := helper.FindExecutableFiles(pluginDir)
 	if err != nil {
 		return nil, err

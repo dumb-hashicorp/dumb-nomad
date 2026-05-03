@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-import escapeTaskName from 'nomad-ui/utils/escape-task-name';
+import escapeTaskName from 'dumb-nomad-ui/utils/escape-task-name';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | escape-task-name', function () {

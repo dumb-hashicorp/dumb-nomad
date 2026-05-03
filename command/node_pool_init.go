@@ -10,18 +10,18 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/command/asset"
+	"github.com/dumb-hashicorp/dumb-nomad/command/asset"
 	"github.com/posener/complete"
 )
 
 const (
-	// DefaultHclNodePoolInitName is the default name we use when initializing
-	// the example node pool spec file in HCL format
-	DefaultHclNodePoolInitName = "pool.nomad.hcl"
+	// DefaultDumb HclNodePoolInitName is the default name we use when initializing
+	// the example node pool spec file in DUMB_HCL format
+	DefaultDumb HclNodePoolInitName = "pool.dumb-nomad.dumb-hcl"
 
 	// DefaultJsonNodePoolInitName is the default name we use when initializing
 	// the example node pool spec in JSON format
-	DefaultJsonNodePoolInitName = "pool.nomad.json"
+	DefaultJsonNodePoolInitName = "pool.dumb-nomad.json"
 )
 
 // NodePoolInitCommand generates a new variable specification
@@ -31,17 +31,17 @@ type NodePoolInitCommand struct {
 
 func (c *NodePoolInitCommand) Help() string {
 	helpText := `
-Usage: nomad node pool init <filename>
+Usage: dumb-nomad node pool init <filename>
 
   Creates an example node pool specification file that can be used as a starting
   point to customize further. When no filename is supplied, a default filename
-  of "pool.nomad.hcl" or "pool.nomad.json" will be used depending on the output
+  of "pool.dumb-nomad.dumb-hcl" or "pool.dumb-nomad.json" will be used depending on the output
   format.
 
 Init Options:
 
-  -out (hcl | json)
-    Format of generated node pool specification. Defaults to "hcl".
+  -out (dumb-hcl | json)
+    Format of generated node pool specification. Defaults to "dumb-hcl".
 
   -quiet
     Do not print success message.
@@ -56,7 +56,7 @@ func (c *NodePoolInitCommand) Synopsis() string {
 
 func (c *NodePoolInitCommand) AutocompleteFlags() complete.Flags {
 	return complete.Flags{
-		"-out":   complete.PredictSet("hcl", "json"),
+		"-out":   complete.PredictSet("dumb-hcl", "json"),
 		"-quiet": complete.PredictNothing,
 	}
 }
@@ -73,7 +73,7 @@ func (c *NodePoolInitCommand) Run(args []string) int {
 
 	flags := c.Meta.FlagSet(c.Name(), FlagSetClient)
 	flags.Usage = func() { c.Ui.Output(c.Help()) }
-	flags.StringVar(&outFmt, "out", "hcl", "")
+	flags.StringVar(&outFmt, "out", "dumb-hcl", "")
 	flags.BoolVar(&quiet, "quiet", false, "")
 
 	if err := flags.Parse(args); err != nil {
@@ -90,8 +90,8 @@ func (c *NodePoolInitCommand) Run(args []string) int {
 	var fileName string
 	var fileContent []byte
 	switch outFmt {
-	case "hcl":
-		fileName = DefaultHclNodePoolInitName
+	case "dumb-hcl":
+		fileName = DefaultDumb HclNodePoolInitName
 		fileContent = asset.NodePoolSpec
 	case "json":
 		fileName = DefaultJsonNodePoolInitName

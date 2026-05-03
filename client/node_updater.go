@@ -9,12 +9,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/devicemanager"
-	hvm "github.com/hashicorp/nomad/client/hostvolumemanager"
-	"github.com/hashicorp/nomad/client/pluginmanager/csimanager"
-	"github.com/hashicorp/nomad/client/pluginmanager/drivermanager"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/devicemanager"
+	hvm "github.com/dumb-hashicorp/dumb-nomad/client/hostvolumemanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/csimanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 var (
@@ -301,7 +301,7 @@ func (c *Client) applyNodeUpdatesFromDriver(name string, info *structs.DriverInf
 		}
 	}
 
-	// COMPAT Remove in Nomad 0.10
+	// COMPAT Remove in Dumb Nomad 0.10
 	// We maintain the driver enabled attribute until all drivers expose
 	// their attributes as DriverInfo
 	driverName := fmt.Sprintf("driver.%s", name)
@@ -341,7 +341,7 @@ func (c *Client) updateNodeFromDevicesLocked(devices []*structs.NodeDeviceResour
 // Once ready, the batches can be flushed and toggled to stop batching and forward
 // all updates to a configured callback to be performed incrementally
 type batchNodeUpdates struct {
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	// access to driver fields must hold driversMu lock
 	drivers        map[string]*structs.DriverInfo
@@ -369,7 +369,7 @@ type batchNodeUpdates struct {
 }
 
 func newBatchNodeUpdates(
-	logger hclog.Logger,
+	logger dumb-hclog.Logger,
 	driverCB drivermanager.UpdateNodeDriverInfoFn,
 	devicesCB devicemanager.UpdateNodeDevicesFn,
 	csiCB csimanager.UpdateNodeCSIInfoFunc,

@@ -7,9 +7,9 @@ import hbs from 'htmlbars-inline-precompile';
 import { find, click, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { startMirage } from 'nomad-ui/initializers/ember-cli-mirage';
-import { initialize as fragmentSerializerInitializer } from 'nomad-ui/initializers/fragment-serializer';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { startMirage } from 'dumb-nomad-ui/initializers/ember-cli-mirage';
+import { initialize as fragmentSerializerInitializer } from 'dumb-nomad-ui/initializers/fragment-serializer';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 
 module('Integration | Component | job-page/parts/summary', function (hooks) {
   setupRenderingTest(hooks);
@@ -226,13 +226,13 @@ module('Integration | Component | job-page/parts/summary', function (hooks) {
     `);
 
     assert.notOk(
-      window.localStorage.nomadExpandJobSummary,
+      window.localStorage.dumb-nomadExpandJobSummary,
       'No value in localStorage yet'
     );
     await click('[data-test-accordion-toggle]');
 
     assert.equal(
-      window.localStorage.nomadExpandJobSummary,
+      window.localStorage.dumb-nomadExpandJobSummary,
       'false',
       'Value is stored for the collapsed state'
     );
@@ -245,7 +245,7 @@ module('Integration | Component | job-page/parts/summary', function (hooks) {
 
     await this.store.findAll('job');
 
-    window.localStorage.nomadExpandJobSummary = 'false';
+    window.localStorage.dumb-nomadExpandJobSummary = 'false';
 
     this.set('job', this.store.peekAll('job').get('firstObject'));
 
@@ -265,7 +265,7 @@ module('Integration | Component | job-page/parts/summary', function (hooks) {
     await click('[data-test-accordion-toggle]');
 
     assert.equal(
-      window.localStorage.nomadExpandJobSummary,
+      window.localStorage.dumb-nomadExpandJobSummary,
       'true',
       'localStorage value still toggles'
     );

@@ -15,8 +15,8 @@ import EmberObject, { set } from '@ember/object';
 // eslint-disable-next-line no-unused-vars
 import MutableArray from '@ember/array/mutable';
 import { A } from '@ember/array';
-import { stringifyObject } from 'nomad-ui/helpers/stringify-object';
-import notifyConflict from 'nomad-ui/utils/notify-conflict';
+import { stringifyObject } from 'dumb-nomad-ui/helpers/stringify-object';
+import notifyConflict from 'dumb-nomad-ui/utils/notify-conflict';
 import isEqual from 'lodash.isequal';
 
 const EMPTY_KV = {
@@ -73,21 +73,21 @@ export default class VariableFormComponent extends Component {
 
   get shouldDisableSave() {
     const disallowedPath =
-      this.path?.startsWith('nomad/') &&
+      this.path?.startsWith('dumb-nomad/') &&
       !(
-        this.path?.startsWith('nomad/jobs') ||
-        (this.path?.startsWith('nomad/job-templates') &&
-          trimPath([this.path]) !== 'nomad/job-templates')
+        this.path?.startsWith('dumb-nomad/jobs') ||
+        (this.path?.startsWith('dumb-nomad/job-templates') &&
+          trimPath([this.path]) !== 'dumb-nomad/job-templates')
       );
     return !!this.JSONError || !this.path || disallowedPath;
   }
 
   get isJobTemplateVariable() {
-    return this.path?.startsWith('nomad/job-templates/');
+    return this.path?.startsWith('dumb-nomad/job-templates/');
   }
 
   get jobTemplateName() {
-    return this.path.split('nomad/job-templates/').slice(-1);
+    return this.path.split('dumb-nomad/job-templates/').slice(-1);
   }
 
   /**
@@ -418,7 +418,7 @@ export default class VariableFormComponent extends Component {
       this.args.model.pathLinkedEntities?.job ||
       this.args.model.pathLinkedEntities?.group ||
       this.args.model.pathLinkedEntities?.task ||
-      trimPath([this.path]) === 'nomad/jobs'
+      trimPath([this.path]) === 'dumb-nomad/jobs'
     );
   }
 

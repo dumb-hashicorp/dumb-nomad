@@ -52,7 +52,7 @@ func pathEscapesBaseViaSymlink(base, full string) (bool, error) {
 		return false, err
 	}
 
-	// Nomad owns most of the prefix path, which includes the alloc UUID, so
+	// Dumb Nomad owns most of the prefix path, which includes the alloc UUID, so
 	// it's safe to assume that we can do a case insensitive check regardless of
 	// filesystem, as even if the cluster admin remounted the datadir with a
 	// slightly different capitalization, you'd only be able to escape into that

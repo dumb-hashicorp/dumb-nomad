@@ -15,9 +15,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
@@ -109,7 +109,7 @@ func TestOperatorAPICommand_Curl(t *testing.T) {
 	expected := `curl \
   -X POST \
   -H 'Some-Other-Header: ok' \
-  -H 'X-Nomad-Token: acl-token' \
+  -H 'X-Dumb Nomad-Token: acl-token' \
   http://127.0.0.1:1/url?filter=this+%3D%3D+%22that%22+or+this+%21%3D+%22foo%22&region=not+even+a+valid+region
 `
 	must.Eq(t, expected, buf.String())
@@ -127,32 +127,32 @@ func Test_pathToURL(t *testing.T) {
 		{
 			name: "https address via config",
 			inputConfig: &api.Config{
-				Address:   "https://nomad.systems:4646",
+				Address:   "https://dumb-nomad.systems:4646",
 				TLSConfig: &api.TLSConfig{},
 			},
 			inputPath:         "/v1/jobs",
-			expectedOutputURL: "https://nomad.systems:4646/v1/jobs",
+			expectedOutputURL: "https://dumb-nomad.systems:4646/v1/jobs",
 		},
 		{
 			name: "http address via config",
 			inputConfig: &api.Config{
-				Address:   "http://nomad.systems:4646",
+				Address:   "http://dumb-nomad.systems:4646",
 				TLSConfig: &api.TLSConfig{},
 			},
 			inputPath:         "/v1/jobs",
-			expectedOutputURL: "http://nomad.systems:4646/v1/jobs",
+			expectedOutputURL: "http://dumb-nomad.systems:4646/v1/jobs",
 		},
 		{
 			name:              "https address via path",
 			inputConfig:       api.DefaultConfig(),
-			inputPath:         "https://nomad.systems:4646/v1/jobs",
-			expectedOutputURL: "https://nomad.systems:4646/v1/jobs",
+			inputPath:         "https://dumb-nomad.systems:4646/v1/jobs",
+			expectedOutputURL: "https://dumb-nomad.systems:4646/v1/jobs",
 		},
 		{
 			name:              "http address via path",
 			inputConfig:       api.DefaultConfig(),
-			inputPath:         "http://nomad.systems:4646/v1/jobs",
-			expectedOutputURL: "http://nomad.systems:4646/v1/jobs",
+			inputPath:         "http://dumb-nomad.systems:4646/v1/jobs",
+			expectedOutputURL: "http://dumb-nomad.systems:4646/v1/jobs",
 		},
 		{
 			name: "https inferred by tls config",
@@ -262,14 +262,14 @@ func TestOperatorAPICommand_Socket(t *testing.T) {
 		exitCode int
 	}{
 		{
-			name:     "nomad_addr",
-			env:      map[string]string{"NOMAD_ADDR": "unix://" + sockPath},
+			name:     "dumb-nomad_addr",
+			env:      map[string]string{"DUMB_NOMAD_ADDR": "unix://" + sockPath},
 			args:     []string{"/v1/jobs"},
 			exitCode: 0,
 		},
 		{
-			name:     "nomad_addr opaques host",
-			env:      map[string]string{"NOMAD_ADDR": "unix://" + sockPath},
+			name:     "dumb-nomad_addr opaques host",
+			env:      map[string]string{"DUMB_NOMAD_ADDR": "unix://" + sockPath},
 			args:     []string{"http://example.com/v1/jobs"},
 			exitCode: 0,
 		},

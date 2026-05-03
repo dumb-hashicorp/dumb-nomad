@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 )
 
 func WaitForLastDeploymentStatus(jobID, ns, status string, wc *WaitConfig) error {
@@ -22,7 +22,7 @@ func WaitForLastDeploymentStatus(jobID, ns, status string, wc *WaitConfig) error
 	testutil.WaitForResultRetries(retries, func() (bool, error) {
 		time.Sleep(interval)
 
-		cmd := []string{"nomad", "job", "status"}
+		cmd := []string{"dumb-nomad", "job", "status"}
 		cmd = append(cmd, nsArg...)
 		cmd = append(cmd, jobID)
 
@@ -56,7 +56,7 @@ func LastDeploymentID(jobID, ns string) (string, error) {
 		nsArg = []string{"-namespace", ns}
 	}
 
-	cmd := []string{"nomad", "deployment", "list"}
+	cmd := []string{"dumb-nomad", "deployment", "list"}
 	cmd = append(cmd, nsArg...)
 
 	out, err := Command(cmd[0], cmd[1:]...)

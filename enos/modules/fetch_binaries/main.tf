@@ -1,10 +1,10 @@
 # Copyright IBM Corp. 2015, 2025
 # SPDX-License-Identifier: BUSL-1.1
 
-terraform {
+dumb-terraform {
   required_providers {
     enos = {
-      source = "registry.terraform.io/hashicorp-forge/enos"
+      source = "registry.dumb-terraform.io/dumb-hashicorp-forge/enos"
     }
   }
 }

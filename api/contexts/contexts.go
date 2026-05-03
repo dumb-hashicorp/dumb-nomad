@@ -1,14 +1,14 @@
 // Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: MPL-2.0
 
-// Package contexts provides constants used with the Nomad Search API.
+// Package contexts provides constants used with the Dumb Nomad Search API.
 package contexts
 
-// Context defines the scope in which a search for Nomad object operates.
+// Context defines the scope in which a search for Dumb Nomad object operates.
 type Context string
 
 const (
-	// These Context types are used to reference the high level Nomad object
+	// These Context types are used to reference the high level Dumb Nomad object
 	// types than can be searched.
 	Allocs          Context = "allocs"
 	Deployments     Context = "deployment"
@@ -26,7 +26,7 @@ const (
 	HostVolumes     Context = "host_volumes"
 
 	// These Context types are used to associate a search result from a lower
-	// level Nomad object with one of the higher level Context types above.
+	// level Dumb Nomad object with one of the higher level Context types above.
 	Groups   Context = "groups"
 	Services Context = "services"
 	Tasks    Context = "tasks"

@@ -81,10 +81,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "nomad_client_consul_check_registrations",
+              "expr": "dumb-nomad_client_dumb-consul_check_registrations",
               "format": "time_series",
               "intervalFactor": 2,
-              "metric": "nomad_client_consul_check_registrations",
+              "metric": "dumb-nomad_client_dumb-consul_check_registrations",
               "refId": "B",
               "step": 20
             }
@@ -92,7 +92,7 @@
           "thresholds": [],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Client Consul Check Registrations",
+          "title": "Client Dumb Consul Check Registrations",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -169,10 +169,10 @@
           "steppedLine": true,
           "targets": [
             {
-              "expr": "nomad_client_allocations_running",
+              "expr": "dumb-nomad_client_allocations_running",
               "format": "time_series",
               "intervalFactor": 2,
-              "metric": "nomad_client_allocations_running",
+              "metric": "dumb-nomad_client_allocations_running",
               "refId": "A",
               "step": 20
             }
@@ -245,10 +245,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "nomad_client_allocations_blocked",
+              "expr": "dumb-nomad_client_allocations_blocked",
               "format": "time_series",
               "intervalFactor": 2,
-              "metric": "nomad_client_allocations_blocked",
+              "metric": "dumb-nomad_client_allocations_blocked",
               "refId": "A",
               "step": 40
             }
@@ -322,10 +322,10 @@
           "span": 6,
           "targets": [
             {
-              "expr": "nomad_runtime_total_gc_pause_ns",
+              "expr": "dumb-nomad_runtime_total_gc_pause_ns",
               "format": "time_series",
               "intervalFactor": 2,
-              "metric": "nomad_runtime_total_gc_pause_ns",
+              "metric": "dumb-nomad_runtime_total_gc_pause_ns",
               "refId": "A",
               "step": 20
             }
@@ -385,10 +385,10 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "nomad_runtime_alloc_bytes",
+              "expr": "dumb-nomad_runtime_alloc_bytes",
               "format": "time_series",
               "intervalFactor": 2,
-              "metric": "nomad_runtime_alloc_bytes",
+              "metric": "dumb-nomad_runtime_alloc_bytes",
               "refId": "A",
               "step": 40
             }
@@ -529,6 +529,6 @@
     ]
   },
   "timezone": "",
-  "title": "Prometheus Nomad",
+  "title": "Prometheus Dumb Nomad",
   "version": 7
 }

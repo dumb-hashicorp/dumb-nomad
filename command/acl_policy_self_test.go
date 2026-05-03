@@ -6,10 +6,10 @@ package command
 import (
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -48,7 +48,7 @@ func TestACLPolicySelfCommand_ViaEnvVar(t *testing.T) {
 	runCommand := func(t *testing.T, url, token string) string {
 		ui := cli.NewMockUi()
 		cmd := &ACLPolicySelfCommand{Meta: Meta{Ui: ui, flagAddress: url}}
-		t.Setenv("NOMAD_TOKEN", token)
+		t.Setenv("DUMB_NOMAD_TOKEN", token)
 		must.Zero(t, cmd.Run([]string{"-address=" + url}))
 		return ui.OutputWriter.String()
 	}

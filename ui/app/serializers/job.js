@@ -238,7 +238,7 @@ export default class JobSerializer extends ApplicationSerializer {
       variables: {
         links: {
           related: buildURL(`/${apiNamespace}/vars`, {
-            prefix: `nomad/jobs/${variableLookup}`,
+            prefix: `dumb-nomad/jobs/${variableLookup}`,
             namespace,
           }),
         },

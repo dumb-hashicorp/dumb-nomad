@@ -8,13 +8,13 @@ import (
 	"math"
 	"slices"
 
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/safemath"
-	"github.com/hashicorp/nomad/nomad/structs"
-	sstructs "github.com/hashicorp/nomad/scheduler/structs"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/safemath"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	sstructs "github.com/dumb-hashicorp/dumb-nomad/scheduler/structs"
 )
 
 const (
@@ -677,7 +677,7 @@ NEXTNODE:
 
 			// Handle CPU core reservations
 			if wantedCores := task.Resources.Cores; wantedCores > 0 {
-				// set of cores on this node allowable for use by nomad
+				// set of cores on this node allowable for use by dumb-nomad
 				nodeCores := option.Node.NodeResources.Processors.Topology.UsableCores()
 
 				// set of consumed cores on this node

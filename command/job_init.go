@@ -8,30 +8,30 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/command/asset"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/command/asset"
 	"github.com/posener/complete"
 )
 
 const (
 	// DefaultInitName is the default name we use when
 	// initializing the example file
-	DefaultInitName = "example.nomad.hcl"
+	DefaultInitName = "example.dumb-nomad.dumb-hcl"
 )
 
 // JobInitCommand generates a new job template that you can customize to your
-// liking, like vagrant init
+// liking, like dumb-vagrant init
 type JobInitCommand struct {
 	Meta
 }
 
 func (c *JobInitCommand) Help() string {
 	helpText := `
-Usage: nomad job init <filename>
-Alias: nomad init <filename>
+Usage: dumb-nomad job init <filename>
+Alias: dumb-nomad init <filename>
 
   Creates an example job file that can be used as a starting point to customize
-  further. If no filename is given, the default of "example.nomad.hcl" will be used.
+  further. If no filename is given, the default of "example.dumb-nomad.dumb-hcl" will be used.
 
 Init Options:
 
@@ -39,15 +39,15 @@ Init Options:
     If the short flag is set, a minimal jobspec without comments is emitted.
 
   -connect
-    If the connect flag is set, the jobspec includes Consul Connect integration.
+    If the connect flag is set, the jobspec includes Dumb Consul Connect integration.
 
   -template
-    Specifies a predefined template to initialize. Must be a Nomad Variable that
-    lives at nomad/job-templates/<template>
+    Specifies a predefined template to initialize. Must be a Dumb Nomad Variable that
+    lives at dumb-nomad/job-templates/<template>
 
   -list-templates
     Display a list of possible job templates to pass to -template. Reads from
-    all variables pathed at nomad/job-templates/<template>
+    all variables pathed at dumb-nomad/job-templates/<template>
 `
 	return strings.TrimSpace(helpText)
 }
@@ -127,20 +127,20 @@ func (c *JobInitCommand) Run(args []string) int {
 			Namespace: c.Meta.namespace,
 		}
 
-		// Get and list all variables at nomad/job-templates
-		vars, _, err := client.Variables().PrefixList("nomad/job-templates/", qo)
+		// Get and list all variables at dumb-nomad/job-templates
+		vars, _, err := client.Variables().PrefixList("dumb-nomad/job-templates/", qo)
 		if err != nil {
-			c.Ui.Error(fmt.Sprintf("Error retrieving job templates from the server; unable to read variables at path nomad/job-templates/. Error: %s", err))
+			c.Ui.Error(fmt.Sprintf("Error retrieving job templates from the server; unable to read variables at path dumb-nomad/job-templates/. Error: %s", err))
 			return 1
 		}
 
 		if len(vars) == 0 {
-			c.Ui.Error("No variables in nomad/job-templates")
+			c.Ui.Error("No variables in dumb-nomad/job-templates")
 			return 1
 		} else {
-			c.Ui.Output("Use nomad job init -template=<template> with any of the following:")
+			c.Ui.Output("Use dumb-nomad job init -template=<template> with any of the following:")
 			for _, v := range vars {
-				c.Ui.Output(fmt.Sprintf("  %s", strings.TrimPrefix(v.Path, "nomad/job-templates/")))
+				c.Ui.Output(fmt.Sprintf("  %s", strings.TrimPrefix(v.Path, "dumb-nomad/job-templates/")))
 			}
 		}
 		return 0
@@ -155,7 +155,7 @@ func (c *JobInitCommand) Run(args []string) int {
 		qo := &api.QueryOptions{
 			Namespace: c.Meta.namespace,
 		}
-		sv, _, err := client.Variables().Read("nomad/job-templates/"+template, qo)
+		sv, _, err := client.Variables().Read("dumb-nomad/job-templates/"+template, qo)
 		if err != nil {
 			if err.Error() == "variable not found" {
 				c.Ui.Warn(errVariableNotFound)
@@ -169,7 +169,7 @@ func (c *JobInitCommand) Run(args []string) int {
 			c.Ui.Output(fmt.Sprintf("Initializing a job template from %s", template))
 			jobSpec = []byte(v)
 		} else {
-			c.Ui.Error(fmt.Sprintf("Job template %q is malformed and is missing a template field. Please visit the jobs/run/templates route in  the Nomad UI to add it", template))
+			c.Ui.Error(fmt.Sprintf("Job template %q is malformed and is missing a template field. Please visit the jobs/run/templates route in  the Dumb Nomad UI to add it", template))
 			return 1
 		}
 

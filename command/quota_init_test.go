@@ -7,8 +7,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
@@ -17,7 +17,7 @@ func TestQuotaInitCommand_Implements(t *testing.T) {
 	var _ cli.Command = &QuotaInitCommand{}
 }
 
-func TestQuotaInitCommand_Run_HCL(t *testing.T) {
+func TestQuotaInitCommand_Run_DUMB_HCL(t *testing.T) {
 	ui := cli.NewMockUi()
 	cmd := &QuotaInitCommand{Meta: Meta{Ui: ui}}
 
@@ -43,9 +43,9 @@ func TestQuotaInitCommand_Run_HCL(t *testing.T) {
 	must.Eq(t, "", ui.ErrorWriter.String())
 	must.Zero(t, code)
 
-	content, err := os.ReadFile(DefaultHclQuotaInitName)
+	content, err := os.ReadFile(DefaultDumb HclQuotaInitName)
 	must.NoError(t, err)
-	must.Eq(t, defaultHclQuotaSpec, string(content))
+	must.Eq(t, defaultDumb HclQuotaSpec, string(content))
 
 	// Fails if the file exists
 	code = cmd.Run([]string{})
@@ -54,13 +54,13 @@ func TestQuotaInitCommand_Run_HCL(t *testing.T) {
 	ui.ErrorWriter.Reset()
 
 	// Works if file is passed
-	code = cmd.Run([]string{"mytest.hcl"})
+	code = cmd.Run([]string{"mytest.dumb-hcl"})
 	must.Eq(t, "", ui.ErrorWriter.String())
 	must.Zero(t, code)
 
-	content, err = os.ReadFile("mytest.hcl")
+	content, err = os.ReadFile("mytest.dumb-hcl")
 	must.NoError(t, err)
-	must.Eq(t, defaultHclQuotaSpec, string(content))
+	must.Eq(t, defaultDumb HclQuotaSpec, string(content))
 }
 
 func TestQuotaInitCommand_Run_JSON(t *testing.T) {

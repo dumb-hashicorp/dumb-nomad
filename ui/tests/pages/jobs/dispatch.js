@@ -14,7 +14,7 @@ import {
   text,
   visitable,
 } from 'ember-cli-page-object';
-import { codeFillable, code } from 'nomad-ui/tests/pages/helpers/codemirror';
+import { codeFillable, code } from 'dumb-nomad-ui/tests/pages/helpers/codemirror';
 
 export default create({
   visit: visitable('/jobs/:id/dispatch'),

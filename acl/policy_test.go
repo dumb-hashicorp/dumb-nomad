@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
@@ -526,13 +526,13 @@ func TestParse(t *testing.T) {
 			`
 			namespace "dev" {
 			  variables {
-                path "/nomad/job" {
+                path "/dumb-nomad/job" {
 			      capabilities = ["read", "write"]
                 }
 			  }
 			}
 			`,
-			"Invalid variable path \"/nomad/job\" in namespace dev: cannot start with a leading '/'",
+			"Invalid variable path \"/dumb-nomad/job\" in namespace dev: cannot start with a leading '/'",
 			nil,
 		},
 		{
@@ -542,7 +542,7 @@ func TestParse(t *testing.T) {
 
 				variables {
 					path {}
-					path "nomad/jobs/example" {
+					path "dumb-nomad/jobs/example" {
 						capabilities = ["read"]
 					}
 				}

@@ -8,9 +8,9 @@ import { get } from '@ember/object';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import moment from 'moment';
-import Deployments from 'nomad-ui/tests/pages/jobs/job/deployments';
+import Deployments from 'dumb-nomad-ui/tests/pages/jobs/job/deployments';
 
 const sum = (list, key, getter = (a) => a) =>
   list.reduce((sum, item) => sum + getter(get(item, key)), 0);
@@ -61,7 +61,7 @@ module('Acceptance | job deployments', function (hooks) {
       deployments.length,
       'Each deployment gets a row in the timeline'
     );
-    assert.equal(document.title, `Job ${job.name} deployments - Nomad`);
+    assert.equal(document.title, `Job ${job.name} deployments - Dumb Nomad`);
   });
 
   test('each deployment mentions the deployment shortId, status, version, and time since it was submitted', async function (assert) {

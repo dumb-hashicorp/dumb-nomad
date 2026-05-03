@@ -10,7 +10,7 @@ import (
 
 	"github.com/containerd/go-cni"
 	"github.com/containernetworking/cni/pkg/types"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 )
 
 var _ cni.CNI = &mockCNIPlugin{}

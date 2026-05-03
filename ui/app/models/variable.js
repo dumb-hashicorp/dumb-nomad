@@ -105,7 +105,7 @@ export default class VariableModel extends Model {
     const entityTypes = ['job', 'group', 'task'];
     const emptyEntities = { job: '', group: '', task: '' };
     if (
-      this.path?.startsWith('nomad/jobs/') &&
+      this.path?.startsWith('dumb-nomad/jobs/') &&
       this.path?.split('/').length <= 5
     ) {
       return this.path

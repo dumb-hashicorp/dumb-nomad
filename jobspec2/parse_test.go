@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -17,7 +17,7 @@ import (
 func TestParse_ConnectJob(t *testing.T) {
 	t.Parallel()
 
-	name := "./test-fixtures/connect-example.hcl"
+	name := "./test-fixtures/connect-example.dumb-hcl"
 	f, err := os.Open(name)
 	must.NoError(t, err)
 	t.Cleanup(func() { _ = f.Close() })
@@ -32,7 +32,7 @@ func TestParse_ConnectJob(t *testing.T) {
 func TestParse_VarsAndFunctions(t *testing.T) {
 	t.Parallel()
 
-	hcl := `
+	dumb-hcl := `
 variables {
   region_var = "default"
 }
@@ -43,8 +43,8 @@ job "example" {
 `
 
 	out, err := ParseWithConfig(&ParseConfig{
-		Path:    "input.hcl",
-		Body:    []byte(hcl),
+		Path:    "input.dumb-hcl",
+		Body:    []byte(dumb-hcl),
 		ArgVars: []string{"region_var=aug"},
 		AllowFS: true,
 	})
@@ -58,7 +58,7 @@ job "example" {
 func TestParse_VariablesDefaultsAndSet(t *testing.T) {
 	t.Parallel()
 
-	hcl := `
+	dumb-hcl := `
 variables {
   region_var = "default_region"
 }
@@ -75,8 +75,8 @@ job "example" {
 
 	t.Run("defaults", func(t *testing.T) {
 		out, err := ParseWithConfig(&ParseConfig{
-			Path:    "input.hcl",
-			Body:    []byte(hcl),
+			Path:    "input.dumb-hcl",
+			Body:    []byte(dumb-hcl),
 			AllowFS: true,
 		})
 		require.NoError(t, err)
@@ -88,8 +88,8 @@ job "example" {
 
 	t.Run("set via -var args", func(t *testing.T) {
 		out, err := ParseWithConfig(&ParseConfig{
-			Path:    "input.hcl",
-			Body:    []byte(hcl),
+			Path:    "input.dumb-hcl",
+			Body:    []byte(dumb-hcl),
 			ArgVars: []string{"dc_var=set_dc", "region_var=set_region"},
 			AllowFS: true,
 		})
@@ -102,11 +102,11 @@ job "example" {
 
 	t.Run("set via envvars", func(t *testing.T) {
 		out, err := ParseWithConfig(&ParseConfig{
-			Path: "input.hcl",
-			Body: []byte(hcl),
+			Path: "input.dumb-hcl",
+			Body: []byte(dumb-hcl),
 			Envs: []string{
-				"NOMAD_VAR_dc_var=set_dc",
-				"NOMAD_VAR_region_var=set_region",
+				"DUMB_NOMAD_VAR_dc_var=set_dc",
+				"DUMB_NOMAD_VAR_region_var=set_region",
 			},
 			AllowFS: true,
 		})
@@ -128,8 +128,8 @@ job "example" {
 		require.NoError(t, err)
 
 		out, err := ParseWithConfig(&ParseConfig{
-			Path:     "input.hcl",
-			Body:     []byte(hcl),
+			Path:     "input.dumb-hcl",
+			Body:     []byte(dumb-hcl),
 			VarFiles: []string{varFile.Name()},
 			AllowFS:  true,
 		})
@@ -143,9 +143,9 @@ job "example" {
 	t.Run("var-file does not exist", func(t *testing.T) {
 
 		out, err := ParseWithConfig(&ParseConfig{
-			Path:     "input.hcl",
-			Body:     []byte(hcl),
-			VarFiles: []string{"does-not-exist.hcl"},
+			Path:     "input.dumb-hcl",
+			Body:     []byte(dumb-hcl),
+			VarFiles: []string{"does-not-exist.dumb-hcl"},
 			AllowFS:  true,
 		})
 		require.Error(t, err)
@@ -157,7 +157,7 @@ job "example" {
 func TestParse_UnknownVariables(t *testing.T) {
 	t.Parallel()
 
-	hcl := `
+	dumb-hcl := `
 variables {
   region_var = "default"
 }
@@ -172,8 +172,8 @@ job "example" {
 `
 
 	out, err := ParseWithConfig(&ParseConfig{
-		Path:    "input.hcl",
-		Body:    []byte(hcl),
+		Path:    "input.dumb-hcl",
+		Body:    []byte(dumb-hcl),
 		ArgVars: []string{"region_var=aug"},
 		AllowFS: true,
 	})
@@ -192,7 +192,7 @@ job "example" {
 func TestParse_UnsetVariables(t *testing.T) {
 	t.Parallel()
 
-	hcl := `
+	dumb-hcl := `
 variable "region_var" {}
 job "example" {
   datacenters = [for s in ["dc1", "dc2"] : upper(s)]
@@ -201,8 +201,8 @@ job "example" {
 `
 
 	_, err := ParseWithConfig(&ParseConfig{
-		Path:    "input.hcl",
-		Body:    []byte(hcl),
+		Path:    "input.dumb-hcl",
+		Body:    []byte(dumb-hcl),
 		ArgVars: []string{},
 		AllowFS: true,
 	})
@@ -214,7 +214,7 @@ job "example" {
 func TestParse_Locals(t *testing.T) {
 	t.Parallel()
 
-	hcl := `
+	dumb-hcl := `
 variables {
   region_var = "default_region"
 }
@@ -234,8 +234,8 @@ job "example" {
 
 	t.Run("defaults", func(t *testing.T) {
 		out, err := ParseWithConfig(&ParseConfig{
-			Path:    "input.hcl",
-			Body:    []byte(hcl),
+			Path:    "input.dumb-hcl",
+			Body:    []byte(dumb-hcl),
 			AllowFS: true,
 		})
 		require.NoError(t, err)
@@ -247,8 +247,8 @@ job "example" {
 
 	t.Run("set via -var argments", func(t *testing.T) {
 		out, err := ParseWithConfig(&ParseConfig{
-			Path:    "input.hcl",
-			Body:    []byte(hcl),
+			Path:    "input.dumb-hcl",
+			Body:    []byte(dumb-hcl),
 			ArgVars: []string{"region_var=set_region"},
 			AllowFS: true,
 		})
@@ -263,7 +263,7 @@ job "example" {
 func TestParse_FileOperators(t *testing.T) {
 	t.Parallel()
 
-	hcl := `
+	dumb-hcl := `
 job "example" {
   region      = file("parse_test.go")
 }
@@ -271,8 +271,8 @@ job "example" {
 
 	t.Run("enabled", func(t *testing.T) {
 		out, err := ParseWithConfig(&ParseConfig{
-			Path:    "input.hcl",
-			Body:    []byte(hcl),
+			Path:    "input.dumb-hcl",
+			Body:    []byte(dumb-hcl),
 			ArgVars: nil,
 			AllowFS: true,
 		})
@@ -287,8 +287,8 @@ job "example" {
 
 	t.Run("disabled", func(t *testing.T) {
 		_, err := ParseWithConfig(&ParseConfig{
-			Path:    "input.hcl",
-			Body:    []byte(hcl),
+			Path:    "input.dumb-hcl",
+			Body:    []byte(dumb-hcl),
 			ArgVars: nil,
 			AllowFS: false,
 		})
@@ -300,7 +300,7 @@ job "example" {
 func TestParseDynamic(t *testing.T) {
 	t.Parallel()
 
-	hcl := `
+	dumb-hcl := `
 job "example" {
 
   dynamic "group" {
@@ -338,8 +338,8 @@ job "example" {
 }
 `
 	out, err := ParseWithConfig(&ParseConfig{
-		Path:    "input.hcl",
-		Body:    []byte(hcl),
+		Path:    "input.dumb-hcl",
+		Body:    []byte(dumb-hcl),
 		ArgVars: nil,
 		AllowFS: false,
 	})
@@ -360,15 +360,15 @@ job "example" {
 	require.Equal(t, "3", out.TaskGroups[2].Tasks[0].Meta["VERSION"])
 }
 
-func TestParse_InvalidHCL(t *testing.T) {
+func TestParse_InvalidDUMB_HCL(t *testing.T) {
 	t.Parallel()
 
 	t.Run("invalid body", func(t *testing.T) {
-		hcl := `invalid{hcl`
+		dumb-hcl := `invalid{dumb-hcl`
 
 		_, err := ParseWithConfig(&ParseConfig{
-			Path:    "input.hcl",
-			Body:    []byte(hcl),
+			Path:    "input.dumb-hcl",
+			Body:    []byte(dumb-hcl),
 			ArgVars: []string{},
 			AllowFS: true,
 		})
@@ -376,15 +376,15 @@ func TestParse_InvalidHCL(t *testing.T) {
 	})
 
 	t.Run("invalid vars file", func(t *testing.T) {
-		tmp, err := os.CreateTemp("", "nomad-jobspec2-")
+		tmp, err := os.CreateTemp("", "dumb-nomad-jobspec2-")
 		require.NoError(t, err)
 		defer os.Remove(tmp.Name())
 
-		vars := `invalid{hcl`
+		vars := `invalid{dumb-hcl`
 		_, err = tmp.Write([]byte(vars))
 		require.NoError(t, err)
 
-		hcl := `
+		dumb-hcl := `
 variables {
   region_var = "default"
 }
@@ -395,8 +395,8 @@ job "example" {
 `
 
 		_, err = ParseWithConfig(&ParseConfig{
-			Path:     "input.hcl",
-			Body:     []byte(hcl),
+			Path:     "input.dumb-hcl",
+			Body:     []byte(dumb-hcl),
 			VarFiles: []string{tmp.Name()},
 			ArgVars:  []string{},
 			AllowFS:  true,
@@ -411,7 +411,7 @@ func TestParse_InvalidScalingSyntax(t *testing.T) {
 	cases := []struct {
 		name        string
 		expectedErr string
-		hcl         string
+		dumb-hcl         string
 	}{
 		{
 			"valid",
@@ -557,8 +557,8 @@ job "example" {
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
 			_, err := ParseWithConfig(&ParseConfig{
-				Path:    c.name + ".hcl",
-				Body:    []byte(c.hcl),
+				Path:    c.name + ".dumb-hcl",
+				Body:    []byte(c.dumb-hcl),
 				AllowFS: false,
 			})
 			if c.expectedErr == "" {
@@ -574,7 +574,7 @@ job "example" {
 func TestParseJob_JobWithFunctionsAndLookups(t *testing.T) {
 	t.Parallel()
 
-	hcl := `
+	dumb-hcl := `
 variable "env" {
   description = "target environment for the job"
 }
@@ -597,7 +597,7 @@ job "job-webserver" {
       driver = "docker"
 
       config {
-        image = "hashicorp/http-echo"
+        image = "dumb-hashicorp/http-echo"
         args  = ["-text", "Hello from ${var.env}"]
       }
     }
@@ -625,7 +625,7 @@ job "job-webserver" {
 								Driver: "docker",
 
 								Config: map[string]interface{}{
-									"image": "hashicorp/http-echo",
+									"image": "dumb-hashicorp/http-echo",
 									"args":  []interface{}{"-text", "Hello from prod"},
 								},
 							},
@@ -651,7 +651,7 @@ job "job-webserver" {
 								Driver: "docker",
 
 								Config: map[string]interface{}{
-									"image": "hashicorp/http-echo",
+									"image": "dumb-hashicorp/http-echo",
 									"args":  []interface{}{"-text", "Hello from staging"},
 								},
 							},
@@ -677,7 +677,7 @@ job "job-webserver" {
 								Driver: "docker",
 
 								Config: map[string]interface{}{
-									"image": "hashicorp/http-echo",
+									"image": "dumb-hashicorp/http-echo",
 									"args":  []interface{}{"-text", "Hello from unknown"},
 								},
 							},
@@ -691,8 +691,8 @@ job "job-webserver" {
 	for _, c := range cases {
 		t.Run(c.env, func(t *testing.T) {
 			found, err := ParseWithConfig(&ParseConfig{
-				Path:    "example.hcl",
-				Body:    []byte(hcl),
+				Path:    "example.dumb-hcl",
+				Body:    []byte(dumb-hcl),
 				AllowFS: false,
 				ArgVars: []string{"env=" + c.env},
 			})
@@ -754,7 +754,7 @@ env = {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			hcl := `
+			dumb-hcl := `
 job "example" {
   group "group" {
     task "task" {
@@ -767,8 +767,8 @@ job "example" {
 }`
 
 			out, err := ParseWithConfig(&ParseConfig{
-				Path: "input.hcl",
-				Body: []byte(hcl),
+				Path: "input.dumb-hcl",
+				Body: []byte(dumb-hcl),
 			})
 			require.NoError(t, err)
 
@@ -780,7 +780,7 @@ job "example" {
 func TestParse_TaskEnvs_Multiple(t *testing.T) {
 	t.Parallel()
 
-	hcl := `
+	dumb-hcl := `
 job "example" {
   group "group" {
     task "task" {
@@ -796,8 +796,8 @@ job "example" {
 }`
 
 	_, err := ParseWithConfig(&ParseConfig{
-		Path: "input.hcl",
-		Body: []byte(hcl),
+		Path: "input.dumb-hcl",
+		Body: []byte(dumb-hcl),
 	})
 	require.Error(t, err)
 	require.Contains(t, err.Error(), "Duplicate env block")
@@ -832,7 +832,7 @@ func Test_TaskEnvs_Invalid(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			hcl := `
+			dumb-hcl := `
 job "example" {
   group "group" {
     task "task" {
@@ -844,8 +844,8 @@ job "example" {
   }
 }`
 			_, err := ParseWithConfig(&ParseConfig{
-				Path: "input.hcl",
-				Body: []byte(hcl),
+				Path: "input.dumb-hcl",
+				Body: []byte(dumb-hcl),
 			})
 			require.Error(t, err)
 			require.Contains(t, err.Error(), c.expectedErr)
@@ -856,7 +856,7 @@ job "example" {
 func TestParse_Meta_Alternatives(t *testing.T) {
 	t.Parallel()
 
-	hcl := ` job "example" {
+	dumb-hcl := ` job "example" {
   group "group" {
     task "task" {
       driver = "config"
@@ -880,17 +880,17 @@ func TestParse_Meta_Alternatives(t *testing.T) {
 `
 
 	asBlock, err := ParseWithConfig(&ParseConfig{
-		Path: "input.hcl",
-		Body: []byte(hcl),
+		Path: "input.dumb-hcl",
+		Body: []byte(dumb-hcl),
 	})
 	require.NoError(t, err)
 
-	hclAsAttr := strings.ReplaceAll(hcl, "meta {", "meta = {")
-	require.Equal(t, 3, strings.Count(hclAsAttr, "meta = {"))
+	dumb-hclAsAttr := strings.ReplaceAll(dumb-hcl, "meta {", "meta = {")
+	require.Equal(t, 3, strings.Count(dumb-hclAsAttr, "meta = {"))
 
 	asAttr, err := ParseWithConfig(&ParseConfig{
-		Path: "input.hcl",
-		Body: []byte(hclAsAttr),
+		Path: "input.dumb-hcl",
+		Body: []byte(dumb-hclAsAttr),
 	})
 	require.NoError(t, err)
 
@@ -904,7 +904,7 @@ func TestParse_Meta_Alternatives(t *testing.T) {
 func TestParse_Constraint_Alternatives(t *testing.T) {
 	t.Parallel()
 
-	hclOpVal := `
+	dumb-hclOpVal := `
 job "example" {
   constraint {
     operator = "distinct_hosts"
@@ -941,7 +941,7 @@ job "example" {
   }
 }
 `
-	hclCompact := `
+	dumb-hclCompact := `
 job "example" {
   constraint {
     distinct_hosts = true
@@ -973,14 +973,14 @@ job "example" {
 }
 `
 	asOpValue, err := ParseWithConfig(&ParseConfig{
-		Path: "input.hcl",
-		Body: []byte(hclOpVal),
+		Path: "input.dumb-hcl",
+		Body: []byte(dumb-hclOpVal),
 	})
 	must.NoError(t, err)
 
 	asCompact, err := ParseWithConfig(&ParseConfig{
-		Path: "input.hcl",
-		Body: []byte(hclCompact),
+		Path: "input.dumb-hcl",
+		Body: []byte(dumb-hclCompact),
 	})
 	must.NoError(t, err)
 
@@ -1017,13 +1017,13 @@ func TestParse_UndefinedVariables(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c, func(t *testing.T) {
-			hcl := `job "example" {
+			dumb-hcl := `job "example" {
   region = "` + c + `"
 }`
 
 			job, err := ParseWithConfig(&ParseConfig{
-				Path: "input.hcl",
-				Body: []byte(hcl),
+				Path: "input.dumb-hcl",
+				Body: []byte(dumb-hcl),
 			})
 			require.NoError(t, err)
 
@@ -1032,13 +1032,13 @@ func TestParse_UndefinedVariables(t *testing.T) {
 	}
 
 	t.Run("unquoted", func(t *testing.T) {
-		hcl := `job "example" {
+		dumb-hcl := `job "example" {
   region = meta.mytest
 }`
 
 		job, err := ParseWithConfig(&ParseConfig{
-			Path: "input.hcl",
-			Body: []byte(hcl),
+			Path: "input.dumb-hcl",
+			Body: []byte(dumb-hcl),
 		})
 		require.NoError(t, err)
 
@@ -1050,7 +1050,7 @@ func TestParse_UndefinedVariables(t *testing.T) {
 func TestParseServiceCheck(t *testing.T) {
 	t.Parallel()
 
-	hcl := ` job "group_service_check_script" {
+	dumb-hcl := ` job "group_service_check_script" {
   group "group" {
     service {
       name = "foo-service"
@@ -1066,8 +1066,8 @@ func TestParseServiceCheck(t *testing.T) {
 }
 `
 	parsedJob, err := ParseWithConfig(&ParseConfig{
-		Path: "input.hcl",
-		Body: []byte(hcl),
+		Path: "input.dumb-hcl",
+		Body: []byte(dumb-hcl),
 	})
 	require.NoError(t, err)
 
@@ -1101,12 +1101,12 @@ func TestParseServiceCheck(t *testing.T) {
 func TestWaitConfig(t *testing.T) {
 	t.Parallel()
 
-	hclBytes, err := os.ReadFile("test-fixtures/template-wait-config.hcl")
+	dumb-hclBytes, err := os.ReadFile("test-fixtures/template-wait-config.dumb-hcl")
 	require.NoError(t, err)
 
 	job, err := ParseWithConfig(&ParseConfig{
-		Path:    "test-fixtures/template-wait-config.hcl",
-		Body:    hclBytes,
+		Path:    "test-fixtures/template-wait-config.dumb-hcl",
+		Body:    dumb-hclBytes,
 		AllowFS: false,
 	})
 
@@ -1121,11 +1121,11 @@ func TestWaitConfig(t *testing.T) {
 
 func TestErrMissingKey(t *testing.T) {
 	t.Parallel()
-	hclBytes, err := os.ReadFile("test-fixtures/template-err-missing-key.hcl")
+	dumb-hclBytes, err := os.ReadFile("test-fixtures/template-err-missing-key.dumb-hcl")
 	require.NoError(t, err)
 	job, err := ParseWithConfig(&ParseConfig{
-		Path:    "test-fixtures/template-err-missing-key.hcl",
-		Body:    hclBytes,
+		Path:    "test-fixtures/template-err-missing-key.dumb-hcl",
+		Body:    dumb-hclBytes,
 		AllowFS: false,
 	})
 	require.NoError(t, err)
@@ -1137,11 +1137,11 @@ func TestErrMissingKey(t *testing.T) {
 
 func TestRestartRenderTemplates(t *testing.T) {
 	t.Parallel()
-	hclBytes, err := os.ReadFile("test-fixtures/restart-render-templates.hcl")
+	dumb-hclBytes, err := os.ReadFile("test-fixtures/restart-render-templates.dumb-hcl")
 	require.NoError(t, err)
 	job, err := ParseWithConfig(&ParseConfig{
-		Path:    "test-fixtures/restart-render-templates.hcl",
-		Body:    hclBytes,
+		Path:    "test-fixtures/restart-render-templates.dumb-hcl",
+		Body:    dumb-hclBytes,
 		AllowFS: false,
 	})
 	require.NoError(t, err)
@@ -1158,11 +1158,11 @@ func TestRestartRenderTemplates(t *testing.T) {
 // with <1.7 APIs.
 func TestIdentity(t *testing.T) {
 	t.Parallel()
-	hclBytes, err := os.ReadFile("test-fixtures/identity-compat.nomad.hcl")
+	dumb-hclBytes, err := os.ReadFile("test-fixtures/identity-compat.dumb-nomad.dumb-hcl")
 	must.NoError(t, err)
 	job, err := ParseWithConfig(&ParseConfig{
-		Path:    "test-fixtures/identity-compat.nomad.hcl",
-		Body:    hclBytes,
+		Path:    "test-fixtures/identity-compat.dumb-nomad.dumb-hcl",
+		Body:    dumb-hclBytes,
 		AllowFS: false,
 	})
 	must.NoError(t, err)

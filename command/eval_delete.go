@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -35,7 +35,7 @@ type EvalDeleteCommand struct {
 
 func (e *EvalDeleteCommand) Help() string {
 	helpText := `
-Usage: nomad eval delete [options] <evaluation>
+Usage: dumb-nomad eval delete [options] <evaluation>
 
   Delete an evaluation by ID. If the evaluation ID is omitted, this command
   will use the filter flag to identify and delete a set of evaluations. If ACLs
@@ -43,13 +43,13 @@ Usage: nomad eval delete [options] <evaluation>
 
   This command should be used cautiously and only in outage situations where
   there is a large backlog of evaluations not being processed. During most
-  normal and outage scenarios, Nomads reconciliation and state management will
+  normal and outage scenarios, Dumb Nomads reconciliation and state management will
   handle evaluations as needed.
 
   The eval broker is expected to be paused prior to running this command and
   un-paused after. This can be done using the following two commands:
-    - nomad operator scheduler set-config -pause-eval-broker=true
-    - nomad operator scheduler set-config -pause-eval-broker=false
+    - dumb-nomad operator scheduler set-config -pause-eval-broker=true
+    - dumb-nomad operator scheduler set-config -pause-eval-broker=false
 
 General Options:
 
@@ -136,8 +136,8 @@ func (e *EvalDeleteCommand) Run(args []string) int {
 
 	if !schedulerConfig.SchedulerConfig.PauseEvalBroker {
 		e.Ui.Error("Eval broker is not paused")
-		e.Ui.Output(`To delete evaluations you must first pause the eval broker by running "nomad operator scheduler set-config -pause-eval-broker=true"`)
-		e.Ui.Output(`After the deletion is complete, unpause the eval broker by running "nomad operator scheduler set-config -pause-eval-broker=false"`)
+		e.Ui.Output(`To delete evaluations you must first pause the eval broker by running "dumb-nomad operator scheduler set-config -pause-eval-broker=true"`)
+		e.Ui.Output(`After the deletion is complete, unpause the eval broker by running "dumb-nomad operator scheduler set-config -pause-eval-broker=false"`)
 		return 1
 	}
 

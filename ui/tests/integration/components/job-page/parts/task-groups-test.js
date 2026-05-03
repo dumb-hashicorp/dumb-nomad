@@ -7,13 +7,13 @@ import { assign } from '@ember/polyfills';
 import hbs from 'htmlbars-inline-precompile';
 import { findAll, find, render } from '@ember/test-helpers';
 import { module, test } from 'qunit';
-import { startMirage } from 'nomad-ui/initializers/ember-cli-mirage';
+import { startMirage } from 'dumb-nomad-ui/initializers/ember-cli-mirage';
 import { setupRenderingTest } from 'ember-qunit';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import {
   formatScheduledHertz,
   formatScheduledBytes,
-} from 'nomad-ui/utils/units';
+} from 'dumb-nomad-ui/utils/units';
 
 module(
   'Integration | Component | job-page/parts/task-groups',

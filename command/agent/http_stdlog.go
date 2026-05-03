@@ -7,20 +7,20 @@ import (
 	"bytes"
 	"log"
 
-	hclog "github.com/hashicorp/go-hclog"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
 )
 
-func newHTTPServerLogger(logger hclog.Logger) *log.Logger {
+func newHTTPServerLogger(logger dumb-hclog.Logger) *log.Logger {
 	return log.New(&httpServerLoggerAdapter{logger}, "", 0)
 }
 
 // a logger adapter that forwards http server logs as a Trace level
-// hclog log entries. Logs related to panics are forwarded with Error level.
+// dumb-hclog log entries. Logs related to panics are forwarded with Error level.
 //
 // HTTP server logs are typically spurious as they represent HTTP
 // client errors (e.g. TLS handshake failures).
 type httpServerLoggerAdapter struct {
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 func (l *httpServerLoggerAdapter) Write(data []byte) (int, error) {

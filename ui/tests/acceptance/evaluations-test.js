@@ -17,12 +17,12 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Response } from 'ember-cli-mirage';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import { generateAcceptanceTestEvalMock } from '../../mirage/utils';
 import percySnapshot from '@percy/ember';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 const getStandardRes = () => [
   {
@@ -448,7 +448,7 @@ module('Acceptance | evaluations list', function (hooks) {
       server.get('/evaluations', function () {
         return new Response(
           200,
-          { 'x-nomad-nexttoken': 'next-token-1' },
+          { 'x-dumb-nomad-nexttoken': 'next-token-1' },
           getStandardRes()
         );
       });
@@ -469,7 +469,7 @@ module('Acceptance | evaluations list', function (hooks) {
         );
         return new Response(
           200,
-          { 'x-nomad-nexttoken': 'next-token-2' },
+          { 'x-dumb-nomad-nexttoken': 'next-token-2' },
           getStandardRes()
         );
       });
@@ -521,7 +521,7 @@ module('Acceptance | evaluations list', function (hooks) {
         );
         return new Response(
           200,
-          { 'x-nomad-nexttoken': 'next-token-2' },
+          { 'x-dumb-nomad-nexttoken': 'next-token-2' },
           getStandardRes()
         );
       });
@@ -542,7 +542,7 @@ module('Acceptance | evaluations list', function (hooks) {
         );
         return new Response(
           200,
-          { 'x-nomad-nexttoken': 'next-token-1' },
+          { 'x-dumb-nomad-nexttoken': 'next-token-1' },
           getStandardRes()
         );
       });
@@ -556,7 +556,7 @@ module('Acceptance | evaluations list', function (hooks) {
       server.get('/evaluations', function () {
         return new Response(
           200,
-          { 'x-nomad-nexttoken': 'next-token-1' },
+          { 'x-dumb-nomad-nexttoken': 'next-token-1' },
           getStandardRes()
         );
       });
@@ -586,7 +586,7 @@ module('Acceptance | evaluations list', function (hooks) {
         );
         return new Response(
           200,
-          { 'x-nomad-nexttoken': 'next-token-1' },
+          { 'x-dumb-nomad-nexttoken': 'next-token-1' },
           getStandardRes()
         );
       });
@@ -600,7 +600,7 @@ module('Acceptance | evaluations list', function (hooks) {
       server.get('/evaluations', function () {
         return new Response(
           200,
-          { 'x-nomad-nexttoken': 'next-token-1' },
+          { 'x-dumb-nomad-nexttoken': 'next-token-1' },
           getStandardRes()
         );
       });
@@ -610,7 +610,7 @@ module('Acceptance | evaluations list', function (hooks) {
       server.get('/evaluations', function () {
         return new Response(
           200,
-          { 'x-nomad-nexttoken': 'next-token-2' },
+          { 'x-dumb-nomad-nexttoken': 'next-token-2' },
           getStandardRes()
         );
       });

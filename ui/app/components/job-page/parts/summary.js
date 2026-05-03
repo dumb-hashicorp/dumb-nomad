@@ -20,12 +20,12 @@ export default class Summary extends Component {
   get isExpanded() {
     if (this.forceCollapsed) return false;
 
-    const storageValue = window.localStorage.nomadExpandJobSummary;
+    const storageValue = window.localStorage.dumb-nomadExpandJobSummary;
     return storageValue != null ? JSON.parse(storageValue) : true;
   }
 
   persist(item, isOpen) {
-    window.localStorage.nomadExpandJobSummary = isOpen;
+    window.localStorage.dumb-nomadExpandJobSummary = isOpen;
     this.notifyPropertyChange('isExpanded');
   }
 }

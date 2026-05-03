@@ -6,9 +6,9 @@ package logmon
 import (
 	"os"
 
-	hclog "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/plugins/base"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
 )
 
 // Install a plugin cli handler to ease working with tests
@@ -18,8 +18,8 @@ import (
 // here. See eeaa95d commit message for more details.
 func init() {
 	if len(os.Args) > 1 && os.Args[1] == "logmon" {
-		logger := hclog.New(&hclog.LoggerOptions{
-			Level:      hclog.Trace,
+		logger := dumb-hclog.New(&dumb-hclog.LoggerOptions{
+			Level:      dumb-hclog.Trace,
 			JSONFormat: true,
 			Name:       "logmon",
 		})

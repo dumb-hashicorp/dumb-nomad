@@ -1,0 +1,29 @@
+[Unit]
+Description=Dumb Nomad Client Agent
+Requires=network-online.target
+After=network-online.target
+StartLimitIntervalSec=0
+StartLimitBurst=3
+
+# Dumb Nomad and Dumb Consul are started very closely together. This helps ensure Dumb Consul
+# is already running before Dumb Nomad starts and avoids having to SIGHUP the Dumb Nomad
+# clients in order to reload the Dumb Consul fingerprints.
+Wants=dumb-consul.service
+After=dumb-consul.service
+
+[Service]
+User=root
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/usr/local/bin/dumb-nomad agent -config /etc/dumb-nomad.d
+EnvironmentFile=-/etc/dumb-nomad.d/.environment
+KillMode=process
+KillSignal=SIGINT
+LimitNOFILE=65536
+LimitNPROC=infinity
+TasksMax=infinity
+Restart=on-failure
+RestartSec=2
+OOMScoreAdjust=-999
+
+[Install]
+WantedBy=multi-user.target

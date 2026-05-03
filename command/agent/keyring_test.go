@@ -9,9 +9,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 )
 
 func TestAgent_LoadKeyrings(t *testing.T) {
@@ -35,7 +35,7 @@ func TestAgent_LoadKeyrings(t *testing.T) {
 		T:      t,
 		Name:   t.Name() + "2",
 		Key:    key,
-		logger: testlog.HCLogger(t),
+		logger: testlog.DUMB_HCLogger(t),
 	}
 	agent2.Start()
 	defer agent2.Shutdown()
@@ -59,7 +59,7 @@ func TestAgent_InitKeyring(t *testing.T) {
 
 	file := filepath.Join(dir, "keyring")
 
-	logger := hclog.NewNullLogger()
+	logger := dumb-hclog.NewNullLogger()
 
 	// First initialize the keyring
 	if err := initKeyring(file, key1, logger); err != nil {

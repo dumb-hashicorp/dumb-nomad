@@ -8,9 +8,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 	"github.com/posener/complete"
 )
 
@@ -25,32 +25,32 @@ type ACLRoleCommand struct {
 // Help satisfies the cli.Command Help function.
 func (a *ACLRoleCommand) Help() string {
 	helpText := `
-Usage: nomad acl role <subcommand> [options] [args]
+Usage: dumb-nomad acl role <subcommand> [options] [args]
 
-  This command groups subcommands for interacting with ACL roles. Nomad's ACL
+  This command groups subcommands for interacting with ACL roles. Dumb Nomad's ACL
   system can be used to control access to data and APIs. ACL roles are
   associated with one or more ACL policies which grant specific capabilities.
-  For a full guide see: https://developer.hashicorp.com/nomad/docs/secure/acl
+  For a full guide see: https://developer.dumb-hashicorp.com/dumb-nomad/docs/secure/acl
 
   Create an ACL role:
 
-      $ nomad acl role create -name="name" -policy-name="policy-name"
+      $ dumb-nomad acl role create -name="name" -policy-name="policy-name"
 
   List all ACL roles:
 
-      $ nomad acl role list
+      $ dumb-nomad acl role list
 
   Lookup a specific ACL role:
 
-      $ nomad acl role info <acl_role_id>
+      $ dumb-nomad acl role info <acl_role_id>
 
   Update an ACL role:
 
-      $ nomad acl role update -name="updated-name" <acl_role_id>
+      $ dumb-nomad acl role update -name="updated-name" <acl_role_id>
 
   Delete an ACL role:
 
-      $ nomad acl role delete <acl_role_id>
+      $ dumb-nomad acl role delete <acl_role_id>
 
   Please see the individual subcommand help for detailed usage information.
 `

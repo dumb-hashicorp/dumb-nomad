@@ -15,15 +15,15 @@ import (
 	"syscall"
 	"unsafe"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/drivers/shared/executor/procstats"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor/procstats"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"golang.org/x/sys/windows"
 )
 
-func NewExecutorWithIsolation(logger hclog.Logger, compute cpustats.Compute) Executor {
+func NewExecutorWithIsolation(logger dumb-hclog.Logger, compute cpustats.Compute) Executor {
 	logger = logger.Named("executor")
 	logger.Error("isolation executor is not supported on this platform, using default")
 	return NewExecutor(logger, compute)

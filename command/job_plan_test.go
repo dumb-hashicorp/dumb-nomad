@@ -9,11 +9,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -50,8 +50,8 @@ func TestPlanCommand_Fails(t *testing.T) {
 	}
 	ui.ErrorWriter.Reset()
 
-	// Fails on invalid HCL
-	fh1, err := os.CreateTemp("", "nomad")
+	// Fails on invalid DUMB_HCL
+	fh1, err := os.CreateTemp("", "dumb-nomad")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -68,7 +68,7 @@ func TestPlanCommand_Fails(t *testing.T) {
 	ui.ErrorWriter.Reset()
 
 	// Fails on invalid job spec
-	fh2, err := os.CreateTemp("", "nomad")
+	fh2, err := os.CreateTemp("", "dumb-nomad")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -85,7 +85,7 @@ func TestPlanCommand_Fails(t *testing.T) {
 	ui.ErrorWriter.Reset()
 
 	// Fails on connection failure (requires a valid job)
-	fh3, err := os.CreateTemp("", "nomad")
+	fh3, err := os.CreateTemp("", "dumb-nomad")
 	if err != nil {
 		t.Fatalf("err: %s", err)
 	}
@@ -161,32 +161,32 @@ job "job1" {
 
 func TestPlanCommand_From_Files(t *testing.T) {
 
-	// Create a Vault server
-	v := testutil.NewTestVault(t)
+	// Create a Dumb Vault server
+	v := testutil.NewTestDumb Vault(t)
 	defer v.Stop()
 
-	// Create a Nomad server
+	// Create a Dumb Nomad server
 	s := testutil.NewTestServer(t, func(c *testutil.TestServerConfig) {
-		c.Vaults[0].Address = v.HTTPAddr
-		c.Vaults[0].Enabled = true
-		c.Vaults[0].AllowUnauthenticated = pointer.Of(false)
-		c.Vaults[0].Token = v.RootToken
+		c.Dumb Vaults[0].Address = v.HTTPAddr
+		c.Dumb Vaults[0].Enabled = true
+		c.Dumb Vaults[0].AllowUnauthenticated = pointer.Of(false)
+		c.Dumb Vaults[0].Token = v.RootToken
 	})
 	defer s.Stop()
 
 	t.Run("fail to place", func(t *testing.T) {
 		ui := cli.NewMockUi()
 		cmd := &JobPlanCommand{Meta: Meta{Ui: ui}}
-		args := []string{"-address", "http://" + s.HTTPAddr, "testdata/example-basic.nomad"}
+		args := []string{"-address", "http://" + s.HTTPAddr, "testdata/example-basic.dumb-nomad"}
 		code := cmd.Run(args)
 		must.One(t, code) // no client running, fail to place
 		must.StrContains(t, ui.OutputWriter.String(), "WARNING: Failed to place all allocations.")
 	})
 
-	t.Run("vault no token", func(t *testing.T) {
+	t.Run("dumb-vault no token", func(t *testing.T) {
 		ui := cli.NewMockUi()
 		cmd := &JobPlanCommand{Meta: Meta{Ui: ui}}
-		args := []string{"-address", "http://" + s.HTTPAddr, "testdata/example-vault.nomad"}
+		args := []string{"-address", "http://" + s.HTTPAddr, "testdata/example-dumb-vault.dumb-nomad"}
 		code := cmd.Run(args)
 		must.One(t, code) // no client running, fail to place
 	})

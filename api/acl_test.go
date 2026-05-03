@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api/internal/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api/internal/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -688,7 +688,7 @@ func TestACLBindingRules(t *testing.T) {
 	bindingRule := ACLBindingRule{
 		Description: "my-binding-rule",
 		AuthMethod:  "auth0",
-		Selector:    "nomad_engineering_team in list.groups",
+		Selector:    "dumb-nomad_engineering_team in list.groups",
 		BindType:    "role",
 		BindName:    "cluster-admin",
 	}

@@ -15,18 +15,18 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	e2e "github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	e2e "github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 )
 
 func init() {
 	framework.AddSuites(&framework.TestSuite{
 		Component:   "CSI",
 		CanRunLocal: true,
-		Consul:      false,
+		Dumb Consul:      false,
 		Cases: []framework.TestCase{
 			new(CSIControllerPluginEBSTest), // see ebs.go
 			new(CSINodeOnlyPluginEFSTest),   // see efs.go
@@ -87,7 +87,7 @@ func dumpLogs(pluginIDs []string) error {
 			if err != nil {
 				return fmt.Errorf("could not write to log file: %v", err)
 			}
-			fmt.Printf("nomad alloc logs written to %s.log\n", allocID)
+			fmt.Printf("dumb-nomad alloc logs written to %s.log\n", allocID)
 		}
 	}
 	return nil
@@ -101,7 +101,7 @@ func waitForVolumeClaimRelease(volID string, wc *e2e.WaitConfig) error {
 	var err error
 	testutil.WaitForResultRetries(wc.Retries, func() (bool, error) {
 		time.Sleep(wc.Interval)
-		out, err = e2e.Command("nomad", "volume", "status", volID)
+		out, err = e2e.Command("dumb-nomad", "volume", "status", volID)
 		if err != nil {
 			return false, err
 		}
@@ -120,7 +120,7 @@ func waitForVolumeClaimRelease(volID string, wc *e2e.WaitConfig) error {
 }
 
 // TODO(tgross): replace this w/ AllocFS().Stat() after
-// https://github.com/hashicorp/nomad/issues/7365 is fixed
+// https://github.com/dumb-hashicorp/dumb-nomad/issues/7365 is fixed
 func readFile(client *api.Client, allocID string, path string) (bytes.Buffer, error) {
 	var stdout, stderr bytes.Buffer
 	alloc, _, err := client.Allocations().Info(allocID, nil)
@@ -202,7 +202,7 @@ func waitForPluginStatusCompare(pluginID string, compare func(got string) (bool,
 	var err error
 	testutil.WaitForResultRetries(wc.Retries, func() (bool, error) {
 		time.Sleep(wc.Interval)
-		out, err := e2e.Command("nomad", "plugin", "status", pluginID)
+		out, err := e2e.Command("dumb-nomad", "plugin", "status", pluginID)
 		if err != nil {
 			return false, err
 		}
@@ -228,7 +228,7 @@ func volumeRegister(volID, volFilePath, createOrRegister string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	cmd := exec.CommandContext(ctx, "nomad", "volume", createOrRegister, "-")
+	cmd := exec.CommandContext(ctx, "dumb-nomad", "volume", createOrRegister, "-")
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		return fmt.Errorf("could not open stdin?: %w", err)

@@ -9,11 +9,11 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	e2e "github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	e2e "github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 )
 
 // CSIControllerPluginEBSTest exercises the AWS EBS plugin, which is an
@@ -32,14 +32,14 @@ const ebsPluginID = "aws-ebs0"
 // BeforeAll waits for the cluster to be ready, deploys the CSI plugins, and
 // creates two EBS volumes for use in the test.
 func (tc *CSIControllerPluginEBSTest) BeforeAll(f *framework.F) {
-	e2eutil.WaitForLeader(f.T(), tc.Nomad())
-	e2eutil.WaitForNodesReady(f.T(), tc.Nomad(), 2)
+	e2eutil.WaitForLeader(f.T(), tc.Dumb Nomad())
+	e2eutil.WaitForNodesReady(f.T(), tc.Dumb Nomad(), 2)
 
 	tc.uuid = uuid.Generate()[0:8]
 
 	// deploy the controller plugin job
 	controllerJobID := "aws-ebs-plugin-controller-" + tc.uuid
-	f.NoError(e2eutil.Register(controllerJobID, "csi/input/plugin-aws-ebs-controller.nomad"))
+	f.NoError(e2eutil.Register(controllerJobID, "csi/input/plugin-aws-ebs-controller.dumb-nomad"))
 	tc.pluginJobIDs = append(tc.pluginJobIDs, controllerJobID)
 
 	f.NoError(e2e.WaitForAllocStatusComparison(
@@ -59,7 +59,7 @@ func (tc *CSIControllerPluginEBSTest) BeforeAll(f *framework.F) {
 
 	// deploy the node plugins job
 	nodesJobID := "aws-ebs-plugin-nodes-" + tc.uuid
-	f.NoError(e2eutil.Register(nodesJobID, "csi/input/plugin-aws-ebs-nodes.nomad"))
+	f.NoError(e2eutil.Register(nodesJobID, "csi/input/plugin-aws-ebs-nodes.dumb-nomad"))
 	tc.pluginJobIDs = append(tc.pluginJobIDs, nodesJobID)
 
 	f.NoError(e2eutil.WaitForAllocStatusComparison(
@@ -79,16 +79,16 @@ func (tc *CSIControllerPluginEBSTest) BeforeAll(f *framework.F) {
 	f.NoError(waitForPluginStatusMinNodeCount(ebsPluginID, 2, pluginWait),
 		"aws-ebs0 node plugins did not become healthy")
 
-	// ideally we'd wait until after we check `nomad volume status -verbose`
+	// ideally we'd wait until after we check `dumb-nomad volume status -verbose`
 	// to verify these volumes are ready, but the plugin doesn't support the
 	// CSI ListVolumes RPC
 	volID := "ebs-vol[0]"
-	err := volumeRegister(volID, "csi/input/ebs-volume0.hcl", "create")
+	err := volumeRegister(volID, "csi/input/ebs-volume0.dumb-hcl", "create")
 	requireNoErrorElseDump(f, err, "could not create volume", tc.pluginJobIDs)
 	tc.volumeIDs = append(tc.volumeIDs, volID)
 
 	volID = "ebs-vol[1]"
-	err = volumeRegister(volID, "csi/input/ebs-volume1.hcl", "create")
+	err = volumeRegister(volID, "csi/input/ebs-volume1.dumb-hcl", "create")
 	requireNoErrorElseDump(f, err, "could not create volume", tc.pluginJobIDs)
 	tc.volumeIDs = append(tc.volumeIDs, volID)
 }
@@ -97,9 +97,9 @@ func (tc *CSIControllerPluginEBSTest) AfterEach(f *framework.F) {
 
 	// Ensure nodes are all restored
 	for _, id := range tc.nodeIDs {
-		_, err := e2eutil.Command("nomad", "node", "drain", "-disable", "-yes", id)
+		_, err := e2eutil.Command("dumb-nomad", "node", "drain", "-disable", "-yes", id)
 		f.Assert().NoError(err)
-		_, err = e2eutil.Command("nomad", "node", "eligibility", "-enable", id)
+		_, err = e2eutil.Command("dumb-nomad", "node", "eligibility", "-enable", id)
 		f.Assert().NoError(err)
 	}
 	tc.nodeIDs = []string{}
@@ -112,7 +112,7 @@ func (tc *CSIControllerPluginEBSTest) AfterEach(f *framework.F) {
 	tc.testJobIDs = []string{}
 
 	// Garbage collect
-	out, err := e2eutil.Command("nomad", "system", "gc")
+	out, err := e2eutil.Command("dumb-nomad", "system", "gc")
 	f.Assert().NoError(err, out)
 }
 
@@ -123,7 +123,7 @@ func (tc *CSIControllerPluginEBSTest) AfterAll(f *framework.F) {
 		err := waitForVolumeClaimRelease(volID, reapWait)
 		f.Assert().NoError(err, "volume claims were not released")
 
-		out, err := e2eutil.Command("nomad", "volume", "delete", volID)
+		out, err := e2eutil.Command("dumb-nomad", "volume", "delete", volID)
 		assertNoErrorElseDump(f, err,
 			fmt.Sprintf("could not delete volume:\n%v", out), tc.pluginJobIDs)
 	}
@@ -136,7 +136,7 @@ func (tc *CSIControllerPluginEBSTest) AfterAll(f *framework.F) {
 	tc.pluginJobIDs = []string{}
 
 	// Garbage collect
-	out, err := e2eutil.Command("nomad", "system", "gc")
+	out, err := e2eutil.Command("dumb-nomad", "system", "gc")
 	f.Assert().NoError(err, out)
 
 }
@@ -144,11 +144,11 @@ func (tc *CSIControllerPluginEBSTest) AfterAll(f *framework.F) {
 // TestVolumeClaim exercises the volume publish/unpublish workflows for the
 // EBS plugin.
 func (tc *CSIControllerPluginEBSTest) TestVolumeClaim(f *framework.F) {
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 
 	// deploy a job that writes to the volume
 	writeJobID := "write-ebs-" + tc.uuid
-	f.NoError(e2eutil.Register(writeJobID, "csi/input/use-ebs-volume.nomad"))
+	f.NoError(e2eutil.Register(writeJobID, "csi/input/use-ebs-volume.dumb-nomad"))
 	f.NoError(
 		e2eutil.WaitForAllocStatusExpected(writeJobID, ns, []string{"running"}),
 		"job should be running")
@@ -160,7 +160,7 @@ func (tc *CSIControllerPluginEBSTest) TestVolumeClaim(f *framework.F) {
 
 	// read data from volume and assert the writer wrote a file to it
 	expectedPath := "/task/test/" + writeAllocID
-	_, err = readFile(nomadClient, writeAllocID, expectedPath)
+	_, err = readFile(dumb-nomadClient, writeAllocID, expectedPath)
 	f.NoError(err)
 
 	// Shutdown (and purge) the writer so we can run a reader.
@@ -178,7 +178,7 @@ func (tc *CSIControllerPluginEBSTest) TestVolumeClaim(f *framework.F) {
 	// deploy a job so we can read from the volume
 	readJobID := "read-ebs-" + tc.uuid
 	tc.testJobIDs = append(tc.testJobIDs, readJobID) // ensure failed tests clean up
-	f.NoError(e2eutil.Register(readJobID, "csi/input/use-ebs-volume.nomad"))
+	f.NoError(e2eutil.Register(readJobID, "csi/input/use-ebs-volume.dumb-nomad"))
 	f.NoError(
 		e2eutil.WaitForAllocStatusExpected(readJobID, ns, []string{"running"}),
 		"job should be running")
@@ -190,7 +190,7 @@ func (tc *CSIControllerPluginEBSTest) TestVolumeClaim(f *framework.F) {
 
 	// read data from volume and assert we can read the file the writer wrote
 	expectedPath = "/task/test/" + readAllocID
-	_, err = readFile(nomadClient, readAllocID, expectedPath)
+	_, err = readFile(dumb-nomadClient, readAllocID, expectedPath)
 	f.NoError(err)
 }
 
@@ -200,7 +200,7 @@ func (tc *CSIControllerPluginEBSTest) TestSnapshot(f *framework.F) {
 	// EBS snapshots can take a very long time to run
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
-	bytes, err := exec.CommandContext(ctx, "nomad", "volume", "snapshot", "create",
+	bytes, err := exec.CommandContext(ctx, "dumb-nomad", "volume", "snapshot", "create",
 		tc.volumeIDs[0], "snap-"+tc.uuid).CombinedOutput()
 	out := string(bytes)
 	requireNoErrorElseDump(f, err, "could not create volume snapshot", tc.pluginJobIDs)
@@ -208,7 +208,7 @@ func (tc *CSIControllerPluginEBSTest) TestSnapshot(f *framework.F) {
 	snaps, err := e2eutil.ParseColumns(out)
 
 	defer func() {
-		_, err := e2eutil.Command("nomad", "volume", "snapshot", "delete",
+		_, err := e2eutil.Command("dumb-nomad", "volume", "snapshot", "delete",
 			ebsPluginID, snaps[0]["Snapshot ID"])
 		requireNoErrorElseDump(f, err, "could not delete volume snapshot", tc.pluginJobIDs)
 	}()
@@ -219,7 +219,7 @@ func (tc *CSIControllerPluginEBSTest) TestSnapshot(f *framework.F) {
 	// the snapshot we're looking for should be the first one because
 	// we just created it, but give us some breathing room to allow
 	// for concurrent test runs
-	out, err = e2eutil.Command("nomad", "volume", "snapshot", "list",
+	out, err = e2eutil.Command("dumb-nomad", "volume", "snapshot", "list",
 		"-plugin", ebsPluginID, "-per-page", "10")
 	requireNoErrorElseDump(f, err, "could not list volume snapshots", tc.pluginJobIDs)
 	f.Contains(out, snaps[0]["ID"],
@@ -229,7 +229,7 @@ func (tc *CSIControllerPluginEBSTest) TestSnapshot(f *framework.F) {
 // TestNodeDrain exercises the remounting behavior in the face of a node drain
 func (tc *CSIControllerPluginEBSTest) TestNodeDrain(f *framework.F) {
 
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 
 	nodesJobID := "aws-ebs-plugin-nodes-" + tc.uuid
 	pluginAllocs, err := e2eutil.AllocsForJob(nodesJobID, ns)
@@ -238,7 +238,7 @@ func (tc *CSIControllerPluginEBSTest) TestNodeDrain(f *framework.F) {
 
 	// deploy a job that writes to the volume
 	writeJobID := "write-ebs-for-drain" + tc.uuid
-	f.NoError(e2eutil.Register(writeJobID, "csi/input/use-ebs-volume.nomad"))
+	f.NoError(e2eutil.Register(writeJobID, "csi/input/use-ebs-volume.dumb-nomad"))
 	f.NoError(
 		e2eutil.WaitForAllocStatusExpected(writeJobID, ns, []string{"running"}),
 		"job should be running")
@@ -251,17 +251,17 @@ func (tc *CSIControllerPluginEBSTest) TestNodeDrain(f *framework.F) {
 
 	// read data from volume and assert the writer wrote a file to it
 	expectedPath := "/task/test/" + writeAllocID
-	_, err = readFile(nomadClient, writeAllocID, expectedPath)
+	_, err = readFile(dumb-nomadClient, writeAllocID, expectedPath)
 	f.NoError(err)
 
 	// intentionally set a long deadline so we can check the plugins
 	// haven't been moved
 	nodeID := allocs[0]["Node ID"]
-	out, err := e2eutil.Command("nomad", "node",
+	out, err := e2eutil.Command("dumb-nomad", "node",
 		"drain", "-enable",
 		"-deadline", "10m",
 		"-yes", "-detach", nodeID)
-	f.NoError(err, fmt.Sprintf("'nomad node drain' failed: %v\n%v", err, out))
+	f.NoError(err, fmt.Sprintf("'dumb-nomad node drain' failed: %v\n%v", err, out))
 	tc.nodeIDs = append(tc.nodeIDs, nodeID)
 
 	wc := &e2eutil.WaitConfig{}

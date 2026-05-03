@@ -213,10 +213,10 @@ func (m *StopResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_StopResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*StartRequest)(nil), "hashicorp.nomad.drivers.docker.docklog.proto.StartRequest")
-	proto.RegisterType((*StartResponse)(nil), "hashicorp.nomad.drivers.docker.docklog.proto.StartResponse")
-	proto.RegisterType((*StopRequest)(nil), "hashicorp.nomad.drivers.docker.docklog.proto.StopRequest")
-	proto.RegisterType((*StopResponse)(nil), "hashicorp.nomad.drivers.docker.docklog.proto.StopResponse")
+	proto.RegisterType((*StartRequest)(nil), "dumb-hashicorp.dumb-nomad.drivers.docker.docklog.proto.StartRequest")
+	proto.RegisterType((*StartResponse)(nil), "dumb-hashicorp.dumb-nomad.drivers.docker.docklog.proto.StartResponse")
+	proto.RegisterType((*StopRequest)(nil), "dumb-hashicorp.dumb-nomad.drivers.docker.docklog.proto.StopRequest")
+	proto.RegisterType((*StopResponse)(nil), "dumb-hashicorp.dumb-nomad.drivers.docker.docklog.proto.StopResponse")
 }
 
 func init() {
@@ -275,7 +275,7 @@ func NewDockerLoggerClient(cc grpc.ClientConnInterface) DockerLoggerClient {
 
 func (c *dockerLoggerClient) Start(ctx context.Context, in *StartRequest, opts ...grpc.CallOption) (*StartResponse, error) {
 	out := new(StartResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.drivers.docker.docklog.proto.DockerLogger/Start", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.drivers.docker.docklog.proto.DockerLogger/Start", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -284,7 +284,7 @@ func (c *dockerLoggerClient) Start(ctx context.Context, in *StartRequest, opts .
 
 func (c *dockerLoggerClient) Stop(ctx context.Context, in *StopRequest, opts ...grpc.CallOption) (*StopResponse, error) {
 	out := new(StopResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.drivers.docker.docklog.proto.DockerLogger/Stop", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.drivers.docker.docklog.proto.DockerLogger/Stop", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -322,7 +322,7 @@ func _DockerLogger_Start_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.drivers.docker.docklog.proto.DockerLogger/Start",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.drivers.docker.docklog.proto.DockerLogger/Start",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DockerLoggerServer).Start(ctx, req.(*StartRequest))
@@ -340,7 +340,7 @@ func _DockerLogger_Stop_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.drivers.docker.docklog.proto.DockerLogger/Stop",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.drivers.docker.docklog.proto.DockerLogger/Stop",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DockerLoggerServer).Stop(ctx, req.(*StopRequest))
@@ -349,7 +349,7 @@ func _DockerLogger_Stop_Handler(srv interface{}, ctx context.Context, dec func(i
 }
 
 var _DockerLogger_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "hashicorp.nomad.drivers.docker.docklog.proto.DockerLogger",
+	ServiceName: "dumb-hashicorp.dumb-nomad.drivers.docker.docklog.proto.DockerLogger",
 	HandlerType: (*DockerLoggerServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

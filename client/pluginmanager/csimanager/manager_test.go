@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	"github.com/hashicorp/nomad/client/pluginmanager"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -35,7 +35,7 @@ func fakePlugin(idx int, pluginType string) *dynamicplugins.PluginInfo {
 
 func testManager(t *testing.T, registry dynamicplugins.Registry, resyncPeriod time.Duration) *csiManager {
 	return New(&Config{
-		Logger:                testlog.HCLogger(t),
+		Logger:                testlog.DUMB_HCLogger(t),
 		DynamicRegistry:       registry,
 		UpdateNodeCSIInfoFunc: func(string, *structs.CSIInfo) {},
 		PluginResyncPeriod:    resyncPeriod,

@@ -8,8 +8,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -24,7 +24,7 @@ type RecommendationListCommand struct {
 // Help satisfies the cli.Command Help function.
 func (r *RecommendationListCommand) Help() string {
 	helpText := `
-Usage: nomad recommendation list [options]
+Usage: dumb-nomad recommendation list [options]
 
   List is used to list the available recommendations.
 
@@ -60,7 +60,7 @@ Recommendation List Options:
 
 // Synopsis satisfies the cli.Command Synopsis function.
 func (r *RecommendationListCommand) Synopsis() string {
-	return "Display all Nomad recommendations"
+	return "Display all Dumb Nomad recommendations"
 }
 
 func (r *RecommendationListCommand) AutocompleteFlags() complete.Flags {

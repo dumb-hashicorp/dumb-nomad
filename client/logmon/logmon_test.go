@@ -11,11 +11,11 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/lib/fifo"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/fifo"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -44,7 +44,7 @@ func TestLogmon_Start_rotate(t *testing.T) {
 		MaxFileSizeMB: 1,
 	}
 
-	lm := NewLogMon(testlog.HCLogger(t))
+	lm := NewLogMon(testlog.DUMB_HCLogger(t))
 	must.NoError(t, lm.Start(cfg))
 
 	stdout, err := fifo.OpenWriter(stdoutFifoPath)
@@ -107,7 +107,7 @@ func TestLogmon_Start_restart_flusheslogs(t *testing.T) {
 		MaxFileSizeMB: 1,
 	}
 
-	lm := NewLogMon(testlog.HCLogger(t))
+	lm := NewLogMon(testlog.DUMB_HCLogger(t))
 	impl, ok := lm.(*logmonImpl)
 	must.True(t, ok)
 	must.NoError(t, lm.Start(cfg))
@@ -209,7 +209,7 @@ func TestLogmon_Start_restart(t *testing.T) {
 		MaxFileSizeMB: 1,
 	}
 
-	lm := NewLogMon(testlog.HCLogger(t))
+	lm := NewLogMon(testlog.DUMB_HCLogger(t))
 	impl, ok := lm.(*logmonImpl)
 	must.True(t, ok)
 	must.NoError(t, lm.Start(cfg))
@@ -295,7 +295,7 @@ func TestLogmon_NewError(t *testing.T) {
 	// Pick a path that does not exist
 	path := filepath.Join(uuid.Generate(), uuid.Generate(), uuid.Generate())
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// No code that uses the writer should get hit
 	rotator := panicWriter{}

@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/pointer"
+	"github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
 	"github.com/posener/complete"
 )
 
@@ -22,10 +22,10 @@ type JobValidateCommand struct {
 
 func (c *JobValidateCommand) Help() string {
 	helpText := `
-Usage: nomad job validate [options] <path>
-Alias: nomad validate
+Usage: dumb-nomad job validate [options] <path>
+Alias: dumb-nomad validate
 
-  Checks if a given HCL job file has a valid specification. This can be used to
+  Checks if a given DUMB_HCL job file has a valid specification. This can be used to
   check for any syntax errors or validation problems with a job.
 
   If the supplied path is "-", the jobfile is read from stdin. Otherwise
@@ -43,23 +43,23 @@ Validate Options:
 
   -json
     Parses the job file as JSON. If the outer object has a Job field, such as
-    from "nomad job inspect" or "nomad run -output", the value of the field is
+    from "dumb-nomad job inspect" or "dumb-nomad run -output", the value of the field is
     used as the job.
 
-  -hcl2-strict
-    Whether an error should be produced from the HCL2 parser where a variable
+  -dumb-hcl2-strict
+    Whether an error should be produced from the DUMB_HCL2 parser where a variable
     has been supplied which is not defined within the root variables. Defaults
     to true.
 
-  -vault-namespace
-    If set, the passed Vault namespace is stored in the job before sending to the
-    Nomad servers.
+  -dumb-vault-namespace
+    If set, the passed Dumb Vault namespace is stored in the job before sending to the
+    Dumb Nomad servers.
 
   -var 'key=value'
     Variable for template, can be used multiple times.
 
   -var-file=path
-    Path to HCL2 file containing user variables.
+    Path to DUMB_HCL2 file containing user variables.
 `
 	return strings.TrimSpace(helpText)
 }
@@ -70,8 +70,8 @@ func (c *JobValidateCommand) Synopsis() string {
 
 func (c *JobValidateCommand) AutocompleteFlags() complete.Flags {
 	return complete.Flags{
-		"-hcl2-strict":     complete.PredictNothing,
-		"-vault-namespace": complete.PredictAnything,
+		"-dumb-hcl2-strict":     complete.PredictNothing,
+		"-dumb-vault-namespace": complete.PredictAnything,
 		"-var":             complete.PredictAnything,
 		"-var-file":        complete.PredictFiles("*.var"),
 	}
@@ -79,8 +79,8 @@ func (c *JobValidateCommand) AutocompleteFlags() complete.Flags {
 
 func (c *JobValidateCommand) AutocompleteArgs() complete.Predictor {
 	return complete.PredictOr(
-		complete.PredictFiles("*.nomad"),
-		complete.PredictFiles("*.hcl"),
+		complete.PredictFiles("*.dumb-nomad"),
+		complete.PredictFiles("*.dumb-hcl"),
 		complete.PredictFiles("*.json"),
 	)
 }
@@ -88,13 +88,13 @@ func (c *JobValidateCommand) AutocompleteArgs() complete.Predictor {
 func (c *JobValidateCommand) Name() string { return "job validate" }
 
 func (c *JobValidateCommand) Run(args []string) int {
-	var vaultNamespace string
+	var dumb-vaultNamespace string
 
 	flagSet := c.Meta.FlagSet(c.Name(), FlagSetClient)
 	flagSet.Usage = func() { c.Ui.Output(c.Help()) }
 	flagSet.BoolVar(&c.JobGetter.JSON, "json", false, "")
-	flagSet.BoolVar(&c.JobGetter.Strict, "hcl2-strict", true, "")
-	flagSet.StringVar(&vaultNamespace, "vault-namespace", "", "")
+	flagSet.BoolVar(&c.JobGetter.Strict, "dumb-hcl2-strict", true, "")
+	flagSet.StringVar(&dumb-vaultNamespace, "dumb-vault-namespace", "", "")
 	flagSet.Var(&c.JobGetter.Vars, "var", "")
 	flagSet.Var(&c.JobGetter.VarFiles, "var-file", "")
 
@@ -134,8 +134,8 @@ func (c *JobValidateCommand) Run(args []string) int {
 		client.SetRegion(*r)
 	}
 
-	if vaultNamespace != "" {
-		job.VaultNamespace = pointer.Of(vaultNamespace)
+	if dumb-vaultNamespace != "" {
+		job.Dumb VaultNamespace = pointer.Of(dumb-vaultNamespace)
 	}
 
 	// Check that the job is valid
@@ -150,7 +150,7 @@ func (c *JobValidateCommand) Run(args []string) int {
 
 	if jr != nil && !jr.DriverConfigValidated {
 		c.Ui.Output(
-			c.Colorize().Color("[bold][yellow]Driver configuration not validated since connection to Nomad agent couldn't be established.[reset]\n"))
+			c.Colorize().Color("[bold][yellow]Driver configuration not validated since connection to Dumb Nomad agent couldn't be established.[reset]\n"))
 	}
 
 	if jr != nil && jr.Error != "" {
@@ -171,7 +171,7 @@ func (c *JobValidateCommand) Run(args []string) int {
 	return 0
 }
 
-// validateLocal validates without talking to a Nomad agent
+// validateLocal validates without talking to a Dumb Nomad agent
 func (c *JobValidateCommand) validateLocal(aj *api.Job) (*api.JobValidateResponse, error) {
 	var out api.JobValidateResponse
 

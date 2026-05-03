@@ -18,7 +18,7 @@ export default class AccessControlPoliciesPolicyController extends Controller {
   @alias('model.tokens') tokens;
 
   get newTokenString() {
-    return `nomad acl token create -name="<TOKEN_NAME>" -policy="${this.policy.name}" -type=client -ttl=8h`;
+    return `dumb-nomad acl token create -name="<TOKEN_NAME>" -policy="${this.policy.name}" -type=client -ttl=8h`;
   }
   @task(function* () {
     try {

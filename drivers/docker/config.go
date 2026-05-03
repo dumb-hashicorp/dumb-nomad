@@ -14,14 +14,14 @@ import (
 
 	containerapi "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/mount"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/drivers/shared/capabilities"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclutils"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/capabilities"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclutils"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
 )
 
 const (
@@ -127,7 +127,7 @@ var (
 	// PluginConfig is the docker config factory function registered in the plugin catalog.
 	PluginConfig = &loader.InternalPluginConfig{
 		Config:  map[string]interface{}{},
-		Factory: func(ctx context.Context, l hclog.Logger) interface{} { return NewDockerDriver(ctx, l) },
+		Factory: func(ctx context.Context, l dumb-hclog.Logger) interface{} { return NewDockerDriver(ctx, l) },
 	}
 
 	// pluginInfo is the response returned for the PluginInfo RPC.
@@ -138,26 +138,26 @@ var (
 		Name:              pluginName,
 	}
 
-	danglingContainersBlock = hclspec.NewObject(map[string]*hclspec.Spec{
-		"enabled": hclspec.NewDefault(
-			hclspec.NewAttr("enabled", "bool", false),
-			hclspec.NewLiteral(`true`),
+	danglingContainersBlock = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"enabled": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("enabled", "bool", false),
+			dumb-hclspec.NewLiteral(`true`),
 		),
-		"period": hclspec.NewDefault(
-			hclspec.NewAttr("period", "string", false),
-			hclspec.NewLiteral(`"5m"`),
+		"period": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("period", "string", false),
+			dumb-hclspec.NewLiteral(`"5m"`),
 		),
-		"creation_grace": hclspec.NewDefault(
-			hclspec.NewAttr("creation_grace", "string", false),
-			hclspec.NewLiteral(`"5m"`),
+		"creation_grace": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("creation_grace", "string", false),
+			dumb-hclspec.NewLiteral(`"5m"`),
 		),
-		"dry_run": hclspec.NewDefault(
-			hclspec.NewAttr("dry_run", "bool", false),
-			hclspec.NewLiteral(`false`),
+		"dry_run": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("dry_run", "bool", false),
+			dumb-hclspec.NewLiteral(`false`),
 		),
 	})
 
-	// configSpec is the hcl specification returned by the ConfigSchema RPC
+	// configSpec is the dumb-hcl specification returned by the ConfigSchema RPC
 	// and is used to parse the contents of the 'plugin "docker" {...}' block.
 	// Example:
 	//	plugin "docker" {
@@ -168,9 +168,9 @@ var (
 	//			helper = "docker-credential-aws"
 	//		}
 	//		tls {
-	//			cert = "/etc/nomad/nomad.pub"
-	//			key = "/etc/nomad/nomad.pem"
-	//			ca = "/etc/nomad/nomad.cert"
+	//			cert = "/etc/dumb-nomad/dumb-nomad.pub"
+	//			key = "/etc/dumb-nomad/dumb-nomad.pem"
+	//			ca = "/etc/dumb-nomad/dumb-nomad.cert"
 	//		}
 	//		gc {
 	//			image = true
@@ -186,30 +186,30 @@ var (
 	//		nvidia_runtime = "nvidia"
 	//		}
 	//	}
-	configSpec = hclspec.NewObject(map[string]*hclspec.Spec{
-		"endpoint": hclspec.NewAttr("endpoint", "string", false),
+	configSpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"endpoint": dumb-hclspec.NewAttr("endpoint", "string", false),
 
 		// docker daemon auth option for image registry
-		"auth": hclspec.NewBlock("auth", false, hclspec.NewObject(map[string]*hclspec.Spec{
-			"config": hclspec.NewAttr("config", "string", false),
-			"helper": hclspec.NewAttr("helper", "string", false),
+		"auth": dumb-hclspec.NewBlock("auth", false, dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+			"config": dumb-hclspec.NewAttr("config", "string", false),
+			"helper": dumb-hclspec.NewAttr("helper", "string", false),
 		})),
 
 		// client tls options
-		"tls": hclspec.NewBlock("tls", false, hclspec.NewObject(map[string]*hclspec.Spec{
-			"cert": hclspec.NewAttr("cert", "string", false),
-			"key":  hclspec.NewAttr("key", "string", false),
-			"ca":   hclspec.NewAttr("ca", "string", false),
+		"tls": dumb-hclspec.NewBlock("tls", false, dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+			"cert": dumb-hclspec.NewAttr("cert", "string", false),
+			"key":  dumb-hclspec.NewAttr("key", "string", false),
+			"ca":   dumb-hclspec.NewAttr("ca", "string", false),
 		})),
 
 		// extra docker labels, globs supported
-		"extra_labels": hclspec.NewAttr("extra_labels", "list(string)", false),
+		"extra_labels": dumb-hclspec.NewAttr("extra_labels", "list(string)", false),
 
 		// logging options
-		"logging": hclspec.NewDefault(hclspec.NewBlock("logging", false, hclspec.NewObject(map[string]*hclspec.Spec{
-			"type":   hclspec.NewAttr("type", "string", false),
-			"config": hclspec.NewBlockAttrs("config", "string", false),
-		})), hclspec.NewLiteral(`{
+		"logging": dumb-hclspec.NewDefault(dumb-hclspec.NewBlock("logging", false, dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+			"type":   dumb-hclspec.NewAttr("type", "string", false),
+			"config": dumb-hclspec.NewBlockAttrs("config", "string", false),
+		})), dumb-hclspec.NewLiteral(`{
 			type = "json-file"
 			config = {
 				max-file = "2"
@@ -220,28 +220,28 @@ var (
 		// garbage collection options
 		// default needed for both if the gc {...} block is not set and
 		// if the default fields are missing
-		"gc": hclspec.NewDefault(hclspec.NewBlock("gc", false, hclspec.NewObject(map[string]*hclspec.Spec{
-			"image": hclspec.NewDefault(
-				hclspec.NewAttr("image", "bool", false),
-				hclspec.NewLiteral("true"),
+		"gc": dumb-hclspec.NewDefault(dumb-hclspec.NewBlock("gc", false, dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+			"image": dumb-hclspec.NewDefault(
+				dumb-hclspec.NewAttr("image", "bool", false),
+				dumb-hclspec.NewLiteral("true"),
 			),
-			"image_delay": hclspec.NewDefault(
-				hclspec.NewAttr("image_delay", "string", false),
-				hclspec.NewLiteral("\"3m\""),
+			"image_delay": dumb-hclspec.NewDefault(
+				dumb-hclspec.NewAttr("image_delay", "string", false),
+				dumb-hclspec.NewLiteral("\"3m\""),
 			),
-			"container": hclspec.NewDefault(
-				hclspec.NewAttr("container", "bool", false),
-				hclspec.NewLiteral("true"),
+			"container": dumb-hclspec.NewDefault(
+				dumb-hclspec.NewAttr("container", "bool", false),
+				dumb-hclspec.NewLiteral("true"),
 			),
-			"dangling_containers": hclspec.NewDefault(
-				hclspec.NewBlock("dangling_containers", false, danglingContainersBlock),
-				hclspec.NewLiteral(`{
+			"dangling_containers": dumb-hclspec.NewDefault(
+				dumb-hclspec.NewBlock("dangling_containers", false, danglingContainersBlock),
+				dumb-hclspec.NewLiteral(`{
 					enabled = true
 					period = "5m"
 					creation_grace = "5m"
 				}`),
 			),
-		})), hclspec.NewLiteral(`{
+		})), dumb-hclspec.NewLiteral(`{
 			image = true
 			image_delay = "3m"
 			container = true
@@ -255,185 +255,185 @@ var (
 		// docker volume options
 		// defaulted needed for both if the volumes {...} block is not set and
 		// if the default fields are missing
-		"volumes": hclspec.NewDefault(hclspec.NewBlock("volumes", false, hclspec.NewObject(map[string]*hclspec.Spec{
-			"enabled":      hclspec.NewAttr("enabled", "bool", false),
-			"selinuxlabel": hclspec.NewAttr("selinuxlabel", "string", false),
-		})), hclspec.NewLiteral("{ enabled = false }")),
-		"allow_privileged": hclspec.NewAttr("allow_privileged", "bool", false),
-		"allow_caps": hclspec.NewDefault(
-			hclspec.NewAttr("allow_caps", "list(string)", false),
-			hclspec.NewLiteral(capabilities.HCLSpecLiteral),
+		"volumes": dumb-hclspec.NewDefault(dumb-hclspec.NewBlock("volumes", false, dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+			"enabled":      dumb-hclspec.NewAttr("enabled", "bool", false),
+			"selinuxlabel": dumb-hclspec.NewAttr("selinuxlabel", "string", false),
+		})), dumb-hclspec.NewLiteral("{ enabled = false }")),
+		"allow_privileged": dumb-hclspec.NewAttr("allow_privileged", "bool", false),
+		"allow_caps": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("allow_caps", "list(string)", false),
+			dumb-hclspec.NewLiteral(capabilities.DUMB_HCLSpecLiteral),
 		),
-		"nvidia_runtime": hclspec.NewDefault(
-			hclspec.NewAttr("nvidia_runtime", "string", false),
-			hclspec.NewLiteral(`"nvidia"`),
+		"nvidia_runtime": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("nvidia_runtime", "string", false),
+			dumb-hclspec.NewLiteral(`"nvidia"`),
 		),
 		// list of docker runtimes allowed to be used
-		"allow_runtimes": hclspec.NewDefault(
-			hclspec.NewAttr("allow_runtimes", "list(string)", false),
-			hclspec.NewLiteral(`["runc", "nvidia"]`),
+		"allow_runtimes": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("allow_runtimes", "list(string)", false),
+			dumb-hclspec.NewLiteral(`["runc", "nvidia"]`),
 		),
 		// image to use when creating a network namespace parent container
-		"infra_image": hclspec.NewDefault(
-			hclspec.NewAttr("infra_image", "string", false),
-			hclspec.NewLiteral(fmt.Sprintf(
+		"infra_image": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("infra_image", "string", false),
+			dumb-hclspec.NewLiteral(fmt.Sprintf(
 				`"registry.k8s.io/pause-%s:3.3"`,
 				runtime.GOARCH,
 			)),
 		),
 		// timeout to use when pulling the infra image.
-		"infra_image_pull_timeout": hclspec.NewDefault(
-			hclspec.NewAttr("infra_image_pull_timeout", "string", false),
-			hclspec.NewLiteral(`"5m"`),
+		"infra_image_pull_timeout": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("infra_image_pull_timeout", "string", false),
+			dumb-hclspec.NewLiteral(`"5m"`),
 		),
 		// default timeout to use when pulling images.
-		"image_pull_timeout": hclspec.NewDefault(
-			hclspec.NewAttr("image_pull_timeout", "string", false),
-			hclspec.NewLiteral(`"5m"`),
+		"image_pull_timeout": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("image_pull_timeout", "string", false),
+			dumb-hclspec.NewLiteral(`"5m"`),
 		),
 		// number of attempts to try to purge an existing container if it already exists
-		"container_exists_attempts": hclspec.NewDefault(
-			hclspec.NewAttr("container_exists_attempts", "number", false),
-			hclspec.NewLiteral(`5`),
+		"container_exists_attempts": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("container_exists_attempts", "number", false),
+			dumb-hclspec.NewLiteral(`5`),
 		),
 
 		// oom_score_adj is the positive integer that can be used to mark the task as
 		// more likely to be OOM killed
-		"oom_score_adj": hclspec.NewDefault(
-			hclspec.NewAttr("oom_score_adj", "number", false),
-			hclspec.NewLiteral(`0`),
+		"oom_score_adj": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("oom_score_adj", "number", false),
+			dumb-hclspec.NewLiteral(`0`),
 		),
 
 		// the duration that the driver will wait for activity from the Docker engine during an image pull
 		// before canceling the request
-		"pull_activity_timeout": hclspec.NewDefault(
-			hclspec.NewAttr("pull_activity_timeout", "string", false),
-			hclspec.NewLiteral(`"2m"`),
+		"pull_activity_timeout": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("pull_activity_timeout", "string", false),
+			dumb-hclspec.NewLiteral(`"2m"`),
 		),
-		"pids_limit": hclspec.NewAttr("pids_limit", "number", false),
+		"pids_limit": dumb-hclspec.NewAttr("pids_limit", "number", false),
 		// disable_log_collection indicates whether docker driver should collect logs of docker
-		// task containers.  If true, nomad doesn't start docker_logger/logmon processes
-		"disable_log_collection": hclspec.NewAttr("disable_log_collection", "bool", false),
+		// task containers.  If true, dumb-nomad doesn't start docker_logger/logmon processes
+		"disable_log_collection": dumb-hclspec.NewAttr("disable_log_collection", "bool", false),
 
 		// windows_allow_insecure_container_admin indicates that on windows,
 		// docker checks the task.user field or, if unset, the container image
 		// manifest after pulling the container, to see if it's running as
 		// ContainerAdmin. If so, exits with an error unless the task config has
 		// privileged=true.
-		"windows_allow_insecure_container_admin": hclspec.NewAttr("windows_allow_insecure_container_admin", "bool", false),
+		"windows_allow_insecure_container_admin": dumb-hclspec.NewAttr("windows_allow_insecure_container_admin", "bool", false),
 	})
 
-	// mountBodySpec is the hcl specification for the `mount` block
-	mountBodySpec = hclspec.NewObject(map[string]*hclspec.Spec{
-		"type": hclspec.NewDefault(
-			hclspec.NewAttr("type", "string", false),
-			hclspec.NewLiteral("\"volume\""),
+	// mountBodySpec is the dumb-hcl specification for the `mount` block
+	mountBodySpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"type": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("type", "string", false),
+			dumb-hclspec.NewLiteral("\"volume\""),
 		),
-		"target":   hclspec.NewAttr("target", "string", false),
-		"source":   hclspec.NewAttr("source", "string", false),
-		"readonly": hclspec.NewAttr("readonly", "bool", false),
-		"bind_options": hclspec.NewBlock("bind_options", false, hclspec.NewObject(map[string]*hclspec.Spec{
-			"propagation": hclspec.NewAttr("propagation", "string", false),
+		"target":   dumb-hclspec.NewAttr("target", "string", false),
+		"source":   dumb-hclspec.NewAttr("source", "string", false),
+		"readonly": dumb-hclspec.NewAttr("readonly", "bool", false),
+		"bind_options": dumb-hclspec.NewBlock("bind_options", false, dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+			"propagation": dumb-hclspec.NewAttr("propagation", "string", false),
 		})),
-		"tmpfs_options": hclspec.NewBlock("tmpfs_options", false, hclspec.NewObject(map[string]*hclspec.Spec{
-			"size": hclspec.NewAttr("size", "number", false),
-			"mode": hclspec.NewAttr("mode", "number", false),
+		"tmpfs_options": dumb-hclspec.NewBlock("tmpfs_options", false, dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+			"size": dumb-hclspec.NewAttr("size", "number", false),
+			"mode": dumb-hclspec.NewAttr("mode", "number", false),
 		})),
-		"volume_options": hclspec.NewBlock("volume_options", false, hclspec.NewObject(map[string]*hclspec.Spec{
-			"no_copy": hclspec.NewAttr("no_copy", "bool", false),
-			"labels":  hclspec.NewAttr("labels", "list(map(string))", false),
-			"driver_config": hclspec.NewBlock("driver_config", false, hclspec.NewObject(map[string]*hclspec.Spec{
-				"name":    hclspec.NewAttr("name", "string", false),
-				"options": hclspec.NewAttr("options", "list(map(string))", false),
+		"volume_options": dumb-hclspec.NewBlock("volume_options", false, dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+			"no_copy": dumb-hclspec.NewAttr("no_copy", "bool", false),
+			"labels":  dumb-hclspec.NewAttr("labels", "list(map(string))", false),
+			"driver_config": dumb-hclspec.NewBlock("driver_config", false, dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+				"name":    dumb-hclspec.NewAttr("name", "string", false),
+				"options": dumb-hclspec.NewAttr("options", "list(map(string))", false),
 			})),
 		})),
 	})
 
-	// healthchecksBodySpec is the hcl specification for the `healthchecks` block
-	healthchecksBodySpec = hclspec.NewObject(map[string]*hclspec.Spec{
-		"disable": hclspec.NewAttr("disable", "bool", false),
+	// healthchecksBodySpec is the dumb-hcl specification for the `healthchecks` block
+	healthchecksBodySpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"disable": dumb-hclspec.NewAttr("disable", "bool", false),
 	})
 
-	// taskConfigSpec is the hcl specification for the driver config section of
+	// taskConfigSpec is the dumb-hcl specification for the driver config section of
 	// a task within a job. It is returned in the TaskConfigSchema RPC
-	taskConfigSpec = hclspec.NewObject(map[string]*hclspec.Spec{
-		"image":                  hclspec.NewAttr("image", "string", true),
-		"advertise_ipv6_address": hclspec.NewAttr("advertise_ipv6_address", "bool", false),
-		"args":                   hclspec.NewAttr("args", "list(string)", false),
-		"auth": hclspec.NewBlock("auth", false, hclspec.NewObject(map[string]*hclspec.Spec{
-			"username":       hclspec.NewAttr("username", "string", false),
-			"password":       hclspec.NewAttr("password", "string", false),
-			"email":          hclspec.NewAttr("email", "string", false),
-			"server_address": hclspec.NewAttr("server_address", "string", false),
+	taskConfigSpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"image":                  dumb-hclspec.NewAttr("image", "string", true),
+		"advertise_ipv6_address": dumb-hclspec.NewAttr("advertise_ipv6_address", "bool", false),
+		"args":                   dumb-hclspec.NewAttr("args", "list(string)", false),
+		"auth": dumb-hclspec.NewBlock("auth", false, dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+			"username":       dumb-hclspec.NewAttr("username", "string", false),
+			"password":       dumb-hclspec.NewAttr("password", "string", false),
+			"email":          dumb-hclspec.NewAttr("email", "string", false),
+			"server_address": dumb-hclspec.NewAttr("server_address", "string", false),
 		})),
-		"auth_soft_fail": hclspec.NewAttr("auth_soft_fail", "bool", false),
-		"cap_add":        hclspec.NewAttr("cap_add", "list(string)", false),
-		"cap_drop":       hclspec.NewAttr("cap_drop", "list(string)", false),
-		"cgroupns":       hclspec.NewAttr("cgroupns", "string", false),
-		"command":        hclspec.NewAttr("command", "string", false),
-		"cpuset_cpus":    hclspec.NewAttr("cpuset_cpus", "string", false),
-		"cpu_hard_limit": hclspec.NewAttr("cpu_hard_limit", "bool", false),
-		"cpu_cfs_period": hclspec.NewDefault(
-			hclspec.NewAttr("cpu_cfs_period", "number", false),
-			hclspec.NewLiteral(`100000`),
+		"auth_soft_fail": dumb-hclspec.NewAttr("auth_soft_fail", "bool", false),
+		"cap_add":        dumb-hclspec.NewAttr("cap_add", "list(string)", false),
+		"cap_drop":       dumb-hclspec.NewAttr("cap_drop", "list(string)", false),
+		"cgroupns":       dumb-hclspec.NewAttr("cgroupns", "string", false),
+		"command":        dumb-hclspec.NewAttr("command", "string", false),
+		"cpuset_cpus":    dumb-hclspec.NewAttr("cpuset_cpus", "string", false),
+		"cpu_hard_limit": dumb-hclspec.NewAttr("cpu_hard_limit", "bool", false),
+		"cpu_cfs_period": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("cpu_cfs_period", "number", false),
+			dumb-hclspec.NewLiteral(`100000`),
 		),
-		"container_exists_attempts": hclspec.NewAttr("container_exists_attempts", "number", false),
-		"devices": hclspec.NewBlockList("devices", hclspec.NewObject(map[string]*hclspec.Spec{
-			"host_path":          hclspec.NewAttr("host_path", "string", false),
-			"container_path":     hclspec.NewAttr("container_path", "string", false),
-			"cgroup_permissions": hclspec.NewAttr("cgroup_permissions", "string", false),
+		"container_exists_attempts": dumb-hclspec.NewAttr("container_exists_attempts", "number", false),
+		"devices": dumb-hclspec.NewBlockList("devices", dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+			"host_path":          dumb-hclspec.NewAttr("host_path", "string", false),
+			"container_path":     dumb-hclspec.NewAttr("container_path", "string", false),
+			"cgroup_permissions": dumb-hclspec.NewAttr("cgroup_permissions", "string", false),
 		})),
-		"dns_search_domains": hclspec.NewAttr("dns_search_domains", "list(string)", false),
-		"dns_options":        hclspec.NewAttr("dns_options", "list(string)", false),
-		"dns_servers":        hclspec.NewAttr("dns_servers", "list(string)", false),
-		"entrypoint":         hclspec.NewAttr("entrypoint", "list(string)", false),
-		"extra_hosts":        hclspec.NewAttr("extra_hosts", "list(string)", false),
-		"force_pull":         hclspec.NewAttr("force_pull", "bool", false),
-		"group_add":          hclspec.NewAttr("group_add", "list(string)", false),
-		"healthchecks":       hclspec.NewBlock("healthchecks", false, healthchecksBodySpec),
-		"hostname":           hclspec.NewAttr("hostname", "string", false),
-		"init":               hclspec.NewAttr("init", "bool", false),
-		"interactive":        hclspec.NewAttr("interactive", "bool", false),
-		"ipc_mode":           hclspec.NewAttr("ipc_mode", "string", false),
-		"ipv4_address":       hclspec.NewAttr("ipv4_address", "string", false),
-		"ipv6_address":       hclspec.NewAttr("ipv6_address", "string", false),
-		"isolation":          hclspec.NewAttr("isolation", "string", false),
-		"labels":             hclspec.NewAttr("labels", "list(map(string))", false),
-		"load":               hclspec.NewAttr("load", "string", false),
-		"logging": hclspec.NewBlock("logging", false, hclspec.NewObject(map[string]*hclspec.Spec{
-			"type":   hclspec.NewAttr("type", "string", false),
-			"driver": hclspec.NewAttr("driver", "string", false),
-			"config": hclspec.NewAttr("config", "list(map(string))", false),
+		"dns_search_domains": dumb-hclspec.NewAttr("dns_search_domains", "list(string)", false),
+		"dns_options":        dumb-hclspec.NewAttr("dns_options", "list(string)", false),
+		"dns_servers":        dumb-hclspec.NewAttr("dns_servers", "list(string)", false),
+		"entrypoint":         dumb-hclspec.NewAttr("entrypoint", "list(string)", false),
+		"extra_hosts":        dumb-hclspec.NewAttr("extra_hosts", "list(string)", false),
+		"force_pull":         dumb-hclspec.NewAttr("force_pull", "bool", false),
+		"group_add":          dumb-hclspec.NewAttr("group_add", "list(string)", false),
+		"healthchecks":       dumb-hclspec.NewBlock("healthchecks", false, healthchecksBodySpec),
+		"hostname":           dumb-hclspec.NewAttr("hostname", "string", false),
+		"init":               dumb-hclspec.NewAttr("init", "bool", false),
+		"interactive":        dumb-hclspec.NewAttr("interactive", "bool", false),
+		"ipc_mode":           dumb-hclspec.NewAttr("ipc_mode", "string", false),
+		"ipv4_address":       dumb-hclspec.NewAttr("ipv4_address", "string", false),
+		"ipv6_address":       dumb-hclspec.NewAttr("ipv6_address", "string", false),
+		"isolation":          dumb-hclspec.NewAttr("isolation", "string", false),
+		"labels":             dumb-hclspec.NewAttr("labels", "list(map(string))", false),
+		"load":               dumb-hclspec.NewAttr("load", "string", false),
+		"logging": dumb-hclspec.NewBlock("logging", false, dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+			"type":   dumb-hclspec.NewAttr("type", "string", false),
+			"driver": dumb-hclspec.NewAttr("driver", "string", false),
+			"config": dumb-hclspec.NewAttr("config", "list(map(string))", false),
 		})),
-		"mac_address":       hclspec.NewAttr("mac_address", "string", false),
-		"memory_hard_limit": hclspec.NewAttr("memory_hard_limit", "number", false),
+		"mac_address":       dumb-hclspec.NewAttr("mac_address", "string", false),
+		"memory_hard_limit": dumb-hclspec.NewAttr("memory_hard_limit", "number", false),
 		// mount and mounts are effectively aliases, but `mounts` is meant for pre-1.0
 		// assignment syntax `mounts = [{type="..." ..."}]` while
 		// `mount` is 1.0 repeated block syntax `mount { type = "..." }`
-		"mount":              hclspec.NewBlockList("mount", mountBodySpec),
-		"mounts":             hclspec.NewBlockList("mounts", mountBodySpec),
-		"network_aliases":    hclspec.NewAttr("network_aliases", "list(string)", false),
-		"network_mode":       hclspec.NewAttr("network_mode", "string", false),
-		"oom_score_adj":      hclspec.NewAttr("oom_score_adj", "number", false),
-		"runtime":            hclspec.NewAttr("runtime", "string", false),
-		"pids_limit":         hclspec.NewAttr("pids_limit", "number", false),
-		"pid_mode":           hclspec.NewAttr("pid_mode", "string", false),
-		"ports":              hclspec.NewAttr("ports", "list(string)", false),
-		"port_map":           hclspec.NewAttr("port_map", "list(map(number))", false),
-		"privileged":         hclspec.NewAttr("privileged", "bool", false),
-		"image_pull_timeout": hclspec.NewAttr("image_pull_timeout", "string", false),
-		"readonly_rootfs":    hclspec.NewAttr("readonly_rootfs", "bool", false),
-		"security_opt":       hclspec.NewAttr("security_opt", "list(string)", false),
-		"shm_size":           hclspec.NewAttr("shm_size", "number", false),
-		"storage_opt":        hclspec.NewBlockAttrs("storage_opt", "string", false),
-		"sysctl":             hclspec.NewAttr("sysctl", "list(map(string))", false),
-		"tty":                hclspec.NewAttr("tty", "bool", false),
-		"ulimit":             hclspec.NewAttr("ulimit", "list(map(string))", false),
-		"uts_mode":           hclspec.NewAttr("uts_mode", "string", false),
-		"userns_mode":        hclspec.NewAttr("userns_mode", "string", false),
-		"volumes":            hclspec.NewAttr("volumes", "list(string)", false),
-		"volume_driver":      hclspec.NewAttr("volume_driver", "string", false),
-		"work_dir":           hclspec.NewAttr("work_dir", "string", false),
+		"mount":              dumb-hclspec.NewBlockList("mount", mountBodySpec),
+		"mounts":             dumb-hclspec.NewBlockList("mounts", mountBodySpec),
+		"network_aliases":    dumb-hclspec.NewAttr("network_aliases", "list(string)", false),
+		"network_mode":       dumb-hclspec.NewAttr("network_mode", "string", false),
+		"oom_score_adj":      dumb-hclspec.NewAttr("oom_score_adj", "number", false),
+		"runtime":            dumb-hclspec.NewAttr("runtime", "string", false),
+		"pids_limit":         dumb-hclspec.NewAttr("pids_limit", "number", false),
+		"pid_mode":           dumb-hclspec.NewAttr("pid_mode", "string", false),
+		"ports":              dumb-hclspec.NewAttr("ports", "list(string)", false),
+		"port_map":           dumb-hclspec.NewAttr("port_map", "list(map(number))", false),
+		"privileged":         dumb-hclspec.NewAttr("privileged", "bool", false),
+		"image_pull_timeout": dumb-hclspec.NewAttr("image_pull_timeout", "string", false),
+		"readonly_rootfs":    dumb-hclspec.NewAttr("readonly_rootfs", "bool", false),
+		"security_opt":       dumb-hclspec.NewAttr("security_opt", "list(string)", false),
+		"shm_size":           dumb-hclspec.NewAttr("shm_size", "number", false),
+		"storage_opt":        dumb-hclspec.NewBlockAttrs("storage_opt", "string", false),
+		"sysctl":             dumb-hclspec.NewAttr("sysctl", "list(map(string))", false),
+		"tty":                dumb-hclspec.NewAttr("tty", "bool", false),
+		"ulimit":             dumb-hclspec.NewAttr("ulimit", "list(map(string))", false),
+		"uts_mode":           dumb-hclspec.NewAttr("uts_mode", "string", false),
+		"userns_mode":        dumb-hclspec.NewAttr("userns_mode", "string", false),
+		"volumes":            dumb-hclspec.NewAttr("volumes", "list(string)", false),
+		"volume_driver":      dumb-hclspec.NewAttr("volume_driver", "string", false),
+		"work_dir":           dumb-hclspec.NewAttr("work_dir", "string", false),
 	})
 
 	// driverCapabilities represents the RPC response for what features are
@@ -482,7 +482,7 @@ type TaskConfig struct {
 	IPv4Address             string             `codec:"ipv4_address"`
 	IPv6Address             string             `codec:"ipv6_address"`
 	Isolation               string             `codec:"isolation"`
-	Labels                  hclutils.MapStrStr `codec:"labels"`
+	Labels                  dumb-hclutils.MapStrStr `codec:"labels"`
 	LoadImage               string             `codec:"load"`
 	Logging                 DockerLogging      `codec:"logging"`
 	MacAddress              string             `codec:"mac_address"`
@@ -495,16 +495,16 @@ type TaskConfig struct {
 	PidsLimit               int64              `codec:"pids_limit"`
 	PidMode                 string             `codec:"pid_mode"`
 	Ports                   []string           `codec:"ports"`
-	PortMap                 hclutils.MapStrInt `codec:"port_map"`
+	PortMap                 dumb-hclutils.MapStrInt `codec:"port_map"`
 	Privileged              bool               `codec:"privileged"`
 	ImagePullTimeout        string             `codec:"image_pull_timeout"`
 	ReadonlyRootfs          bool               `codec:"readonly_rootfs"`
 	SecurityOpt             []string           `codec:"security_opt"`
 	ShmSize                 int64              `codec:"shm_size"`
 	StorageOpt              map[string]string  `codec:"storage_opt"`
-	Sysctl                  hclutils.MapStrStr `codec:"sysctl"`
+	Sysctl                  dumb-hclutils.MapStrStr `codec:"sysctl"`
 	TTY                     bool               `codec:"tty"`
-	Ulimit                  hclutils.MapStrStr `codec:"ulimit"`
+	Ulimit                  dumb-hclutils.MapStrStr `codec:"ulimit"`
 	UTSMode                 string             `codec:"uts_mode"`
 	UsernsMode              string             `codec:"userns_mode"`
 	Volumes                 []string           `codec:"volumes"`
@@ -557,7 +557,7 @@ func (d DockerDevice) toDockerDevice() (containerapi.DeviceMapping, error) {
 type DockerLogging struct {
 	Type   string             `codec:"type"`
 	Driver string             `codec:"driver"`
-	Config hclutils.MapStrStr `codec:"config"`
+	Config dumb-hclutils.MapStrStr `codec:"config"`
 }
 
 type DockerHealthchecks struct {
@@ -623,7 +623,7 @@ func (m DockerMount) toDockerHostMount() (mount.Mount, error) {
 
 type DockerVolumeOptions struct {
 	NoCopy       bool                     `codec:"no_copy"`
-	Labels       hclutils.MapStrStr       `codec:"labels"`
+	Labels       dumb-hclutils.MapStrStr       `codec:"labels"`
 	DriverConfig DockerVolumeDriverConfig `codec:"driver_config"`
 }
 
@@ -639,11 +639,11 @@ type DockerTmpfsOptions struct {
 // DockerVolumeDriverConfig holds a map of volume driver specific options
 type DockerVolumeDriverConfig struct {
 	Name    string             `codec:"name"`
-	Options hclutils.MapStrStr `codec:"options"`
+	Options dumb-hclutils.MapStrStr `codec:"options"`
 }
 
 // ContainerGCConfig controls the behavior of the GC reconciler to detects
-// dangling nomad containers that aren't tracked due to docker/nomad bugs
+// dangling dumb-nomad containers that aren't tracked due to docker/dumb-nomad bugs
 type ContainerGCConfig struct {
 	// Enabled controls whether container reconciler is enabled
 	Enabled bool `codec:"enabled"`
@@ -657,7 +657,7 @@ type ContainerGCConfig struct {
 	period    time.Duration `codec:"-"`
 
 	// CreationGraceStr is the duration allowed for a newly created container
-	// to live without being registered as a running task in nomad.
+	// to live without being registered as a running task in dumb-nomad.
 	// A container is treated as leaked if it lived more than grace duration
 	// and haven't been registered in tasks.
 	CreationGraceStr string        `codec:"creation_grace"`
@@ -729,7 +729,7 @@ func (d *Driver) PluginInfo() (*base.PluginInfoResponse, error) {
 	return pluginInfo, nil
 }
 
-func (d *Driver) ConfigSchema() (*hclspec.Spec, error) {
+func (d *Driver) ConfigSchema() (*dumb-hclspec.Spec, error) {
 	return configSpec, nil
 }
 
@@ -831,7 +831,7 @@ func (d *Driver) SetConfig(c *base.Config) error {
 	return nil
 }
 
-func (d *Driver) TaskConfigSchema() (*hclspec.Spec, error) {
+func (d *Driver) TaskConfigSchema() (*dumb-hclspec.Spec, error) {
 	return taskConfigSpec, nil
 }
 

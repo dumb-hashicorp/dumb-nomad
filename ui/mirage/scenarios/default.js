@@ -4,11 +4,11 @@
  */
 
 import { assign } from '@ember/polyfills';
-import config from 'nomad-ui/config/environment';
+import config from 'dumb-nomad-ui/config/environment';
 import * as topoScenarios from './topo';
 import * as sysbatchScenarios from './sysbatch';
 import { pickOne } from '../utils';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 const withNamespaces = getConfigValue('mirageWithNamespaces', false);
 const withTokens = getConfigValue('mirageWithTokens', true);
@@ -60,7 +60,7 @@ export default function (server) {
 
 function jobsIndexTestCluster(server) {
   faker.seed(1);
-  server.createList('agent', 1, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 1, 'withDumb ConsulLink', 'withDumb VaultLink');
   server.createList('node', 1);
   server.create('node-pool');
 
@@ -91,7 +91,7 @@ function smallCluster(server) {
   faker.seed(1);
   server.create('feature', { name: 'Dynamic Application Sizing' });
   server.create('feature', { name: 'Sentinel Policies' });
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
   if (withRegions) {
     server.db.agents[0].member.Tags.region = server.db.regions[0].id;
   }
@@ -400,8 +400,8 @@ function smallCluster(server) {
   createRestartableJobs(server);
 
   server.create('job', {
-    name: 'hcl-definition-job',
-    id: 'display-hcl',
+    name: 'dumb-hcl-definition-job',
+    id: 'display-dumb-hcl',
     namespaceId: 'default',
   });
 
@@ -411,12 +411,12 @@ function smallCluster(server) {
     ui: {
       Links: [
         {
-          Label: 'HashiCorp',
-          Url: 'https://hashicorp.com',
+          Label: 'Dumb HashiCorp',
+          Url: 'https://dumb-hashicorp.com',
         },
         {
-          Label: 'Nomad',
-          Url: 'https://nomadproject.io',
+          Label: 'Dumb Nomad',
+          Url: 'https://dumb-nomadproject.io',
         },
       ],
       Description:
@@ -452,21 +452,21 @@ function smallCluster(server) {
     'just some arbitrary file',
     'another arbitrary file',
     'another arbitrary file again',
-    'nomad/jobs',
+    'dumb-nomad/jobs',
   ].forEach((path) => server.create('variable', { id: path }));
 
   server.create('variable', {
-    id: `nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}/${variableLinkedTask.name}`,
+    id: `dumb-nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}/${variableLinkedTask.name}`,
     namespace: variableLinkedJob.namespace,
   });
 
   server.create('variable', {
-    id: `nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}`,
+    id: `dumb-nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}`,
     namespace: variableLinkedJob.namespace,
   });
 
   server.create('variable', {
-    id: `nomad/jobs/${variableLinkedJob.id}`,
+    id: `dumb-nomad/jobs/${variableLinkedJob.id}`,
     namespace: variableLinkedJob.namespace,
   });
 
@@ -501,7 +501,7 @@ function smallCluster(server) {
   };
 
   server.create('variable', {
-    id: `nomad/job-templates/foo-bar`,
+    id: `dumb-nomad/job-templates/foo-bar`,
     namespace: 'namespace-2',
     Items: {
       description: 'a description',
@@ -510,7 +510,7 @@ function smallCluster(server) {
   });
 
   server.create('variable', {
-    id: `nomad/job-templates/baz-qud`,
+    id: `dumb-nomad/job-templates/baz-qud`,
     namespace: 'default',
     Items: {
       description: 'another different description',
@@ -600,7 +600,7 @@ function smallCluster(server) {
     allocations: csiAllocations,
   });
 
-  server.create('auth-method', { name: 'vault' });
+  server.create('auth-method', { name: 'dumb-vault' });
   server.create('auth-method', { name: 'auth0' });
   server.create('auth-method', { name: 'cognito' });
   server.create('auth-method', 'issuerRequired', { name: 'okta' });
@@ -608,7 +608,7 @@ function smallCluster(server) {
 }
 
 function mediumCluster(server) {
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
   server.createList('node-pool', 5);
   server.createList('node', 50);
   server.createList('job', 25);
@@ -623,7 +623,7 @@ function variableTestCluster(server) {
     type: 'client',
   });
   createNamespaces(server);
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
   server.createList('node-pool', 3);
   server.createList('node', 5);
   server.createList('job', 3);
@@ -655,17 +655,17 @@ function variableTestCluster(server) {
   ].forEach((path) => server.create('variable', { id: path }));
 
   server.create('variable', {
-    id: `nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}/${variableLinkedTask.name}`,
+    id: `dumb-nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}/${variableLinkedTask.name}`,
     namespace: variableLinkedJob.namespace,
   });
 
   server.create('variable', {
-    id: `nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}`,
+    id: `dumb-nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}`,
     namespace: variableLinkedJob.namespace,
   });
 
   server.create('variable', {
-    id: `nomad/jobs/${variableLinkedJob.id}`,
+    id: `dumb-nomad/jobs/${variableLinkedJob.id}`,
     namespace: variableLinkedJob.namespace,
   });
 
@@ -740,7 +740,7 @@ main = rule { has_tag() }
 
   faker.seed(1);
   createTokens(server);
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
 }
 
 function rolesTestCluster(server) {
@@ -751,7 +751,7 @@ function rolesTestCluster(server) {
     name: 'default',
   });
   server.createList('namespace', 4);
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
   server.createList('node-pool', 2);
   server.createList('node', 5);
   server.createList('job', 5);
@@ -955,9 +955,9 @@ function rolesTestCluster(server) {
 
   logTokens(server);
 
-  server.create('auth-method', { name: 'vault' });
+  server.create('auth-method', { name: 'dumb-vault' });
 
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
 }
 
 function namespacesTestCluster(server, opts = { enterprise: true }) {
@@ -981,13 +981,13 @@ function namespacesTestCluster(server, opts = { enterprise: true }) {
     namespace: nsWithVariable.id,
   });
 
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
 }
 
 function servicesTestCluster(server) {
   faker.seed(1);
   server.create('feature', { name: 'Dynamic Application Sizing' });
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
   server.createList('node-pool', 3);
   server.createList('node', 5);
   server.createList('job', 1, { createRecommendations: true });
@@ -1029,17 +1029,17 @@ function servicesTestCluster(server) {
   ].forEach((path) => server.create('variable', { id: path }));
 
   server.create('variable', {
-    id: `nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}/${variableLinkedTask.name}`,
+    id: `dumb-nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}/${variableLinkedTask.name}`,
     namespace: variableLinkedJob.namespace,
   });
 
   server.create('variable', {
-    id: `nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}`,
+    id: `dumb-nomad/jobs/${variableLinkedJob.id}/${variableLinkedGroup.name}`,
     namespace: variableLinkedJob.namespace,
   });
 
   server.create('variable', {
-    id: `nomad/jobs/${variableLinkedJob.id}`,
+    id: `dumb-nomad/jobs/${variableLinkedJob.id}`,
     namespace: variableLinkedJob.namespace,
   });
 
@@ -1134,7 +1134,7 @@ function massiveCluster(server) {
 }
 
 function allJobTypes(server) {
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
   server.createList('node', 5);
 
   server.create('job', { type: 'service' });
@@ -1148,7 +1148,7 @@ function allJobTypes(server) {
 }
 
 function allNodeTypes(server) {
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
 
   server.create('node');
   server.create('node', 'forceIPv4');
@@ -1161,7 +1161,7 @@ function allNodeTypes(server) {
 }
 
 function everyFeature(server) {
-  server.createList('agent', 3, 'withConsulLink', 'withVaultLink');
+  server.createList('agent', 3, 'withDumb ConsulLink', 'withDumb VaultLink');
   server.createList('node-pool', 3);
 
   server.create('node', 'forceIPv4');

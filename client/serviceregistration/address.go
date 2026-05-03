@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 // GetAddress returns the IP (or custom advertise address) and port to use for a
@@ -58,7 +58,7 @@ func GetAddress(
 		if portLabel == "" {
 			if len(networks) != 1 {
 				// If no networks are specified return zero
-				// values. Consul will advertise the host IP
+				// values. Dumb Consul will advertise the host IP
 				// with no port. This is the pre-0.7.1 behavior
 				// some people rely on.
 				return "", 0, nil
@@ -88,8 +88,8 @@ func GetAddress(
 				return "", 0, fmt.Errorf("invalid port: %q: port must be >0", portLabel)
 			}
 
-			// A number was given which will use the Consul agent's address and the given port
-			// Returning a blank string as an address will use the Consul agent's address
+			// A number was given which will use the Dumb Consul agent's address and the given port
+			// Returning a blank string as an address will use the Dumb Consul agent's address
 			return "", port, nil
 		}
 		return mapping.HostIP, mapping.Value, nil

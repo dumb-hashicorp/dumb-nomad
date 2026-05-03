@@ -11,17 +11,17 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
 func Test_NewEnvAzureFingerprint(t *testing.T) {
 	ci.Parallel(t)
 
-	f := NewEnvAzureFingerprint(testlog.HCLogger(t))
+	f := NewEnvAzureFingerprint(testlog.DUMB_HCLogger(t))
 	must.NotNil(t, f)
 
 	retryWrapper, ok := f.(*RetryWrapper)
@@ -35,7 +35,7 @@ func Test_NewEnvAzureFingerprint(t *testing.T) {
 func TestAzureFingerprint_nonAzure(t *testing.T) {
 
 	t.Setenv("AZURE_ENV_URL", "http://127.0.0.1/metadata/instance/")
-	f := NewEnvAzureFingerprint(testlog.HCLogger(t))
+	f := NewEnvAzureFingerprint(testlog.DUMB_HCLogger(t))
 	node := &structs.Node{
 		Attributes: make(map[string]string),
 	}
@@ -65,7 +65,7 @@ func testFingerprint_Azure(t *testing.T, withExternalIp bool) {
 	defer testMetadataServer.Close()
 
 	t.Setenv("AZURE_ENV_URL", testMetadataServer.URL+"/metadata/instance/")
-	f := NewEnvAzureFingerprint(testlog.HCLogger(t))
+	f := NewEnvAzureFingerprint(testlog.DUMB_HCLogger(t))
 
 	request := &FingerprintRequest{Config: &config.Config{}, Node: node}
 	var response FingerprintResponse
@@ -109,7 +109,7 @@ func testFingerprint_Azure(t *testing.T, withExternalIp bool) {
 	assertNodeAttributeEquals(t, response.Attributes, "unique.platform.azure.name", "demo01.internal")
 	assertNodeAttributeEquals(t, response.Attributes, "platform.azure.location", "eastus")
 	assertNodeAttributeEquals(t, response.Attributes, "platform.azure.resource-group", "myrg")
-	assertNodeAttributeEquals(t, response.Attributes, "platform.azure.scale-set", "nomad-clients")
+	assertNodeAttributeEquals(t, response.Attributes, "platform.azure.scale-set", "dumb-nomad-clients")
 	assertNodeAttributeEquals(t, response.Attributes, "unique.platform.azure.local-ipv4", "10.1.0.4")
 	assertNodeAttributeEquals(t, response.Attributes, "unique.platform.azure.mac", "000D3AF806EC")
 	assertNodeAttributeEquals(t, response.Attributes, "platform.azure.tag.Environment", "Test")
@@ -146,7 +146,7 @@ func azureTestMetadataServer(t *testing.T, externalIP bool) *httptest.Server {
 
 		uavalue, ok := r.Header["User-Agent"]
 		must.True(t, ok)
-		must.StrContains(t, uavalue[0], "Nomad/")
+		must.StrContains(t, uavalue[0], "Dumb Nomad/")
 
 		uri := r.RequestURI
 		if r.URL.RawQuery != "" {
@@ -200,7 +200,7 @@ const AZURE_routes = `
 	{
 		"uri": "/metadata/instance/compute/vmScaleSetName",
 		"content-type": "text/plain",
-		"body": "nomad-clients"
+		"body": "dumb-nomad-clients"
 	},
 	{
 		"uri": "/metadata/instance/compute/vmSize",
@@ -263,7 +263,7 @@ func TestEnvAzureFingerprint_azureProbe(t *testing.T) {
 				t.Setenv("AZURE_ENV_URL", "http://127.0.0.1/metadata/instance/")
 			}
 
-			f := NewEnvAzureFingerprint(testlog.HCLogger(t))
+			f := NewEnvAzureFingerprint(testlog.DUMB_HCLogger(t))
 			err := f.(*RetryWrapper).fingerprinter.(*EnvAzureFingerprint).azureProbe()
 
 			if tc.azureEnv {

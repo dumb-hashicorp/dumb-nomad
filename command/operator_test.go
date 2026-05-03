@@ -6,8 +6,8 @@ package command
 import (
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 )
 
 func TestOperator_Implements(t *testing.T) {

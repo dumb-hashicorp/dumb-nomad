@@ -7,9 +7,9 @@ import (
 	"context"
 	"fmt"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/plugins/device"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 // PluginFactory returns a new plugin instance
@@ -18,7 +18,7 @@ type PluginFactory func(log log.Logger) interface{}
 // PluginCtxFactory returns a new plugin instance, that takes in a context
 type PluginCtxFactory func(ctx context.Context, log log.Logger) interface{}
 
-// Serve is used to serve a new Nomad plugin
+// Serve is used to serve a new Dumb Nomad plugin
 func Serve(f PluginFactory) {
 	logger := log.New(&log.LoggerOptions{
 		Level:      log.Trace,
@@ -29,7 +29,7 @@ func Serve(f PluginFactory) {
 	serve(plugin, logger)
 }
 
-// ServeCtx is used to serve a new Nomad plugin
+// ServeCtx is used to serve a new Dumb Nomad plugin
 func ServeCtx(f PluginCtxFactory) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

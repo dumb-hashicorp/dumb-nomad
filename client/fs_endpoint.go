@@ -18,16 +18,16 @@ import (
 	"syscall"
 	"time"
 
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/go-msgpack/v2/codec"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
 	"github.com/hpcloud/tail/watch"
 
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/client/allocdir"
-	sframer "github.com/hashicorp/nomad/client/lib/streamframer"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	sframer "github.com/dumb-hashicorp/dumb-nomad/client/lib/streamframer"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 var (

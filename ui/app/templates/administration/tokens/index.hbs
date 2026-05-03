@@ -6,7 +6,7 @@
 <section class="section">
   <header class="acl-explainer">
     <p>
-      ACL Tokens are associated with one or more policies or roles to grant specific capabilities. Users can use these to sign into, and operate, Nomad with the permissions laid out in their policies.
+      ACL Tokens are associated with one or more policies or roles to grant specific capabilities. Users can use these to sign into, and operate, Dumb Nomad with the permissions laid out in their policies.
     </p>
     <div>
       {{#if (can "write token")}}
@@ -79,7 +79,7 @@
               <div class="tag-group">
                 {{!--
                   We don't treat roles (roleNames) the same as policies, because Roles' names are currently
-                  returning blank on the /tokens endpoint: https://github.com/hashicorp/nomad/issues/18451
+                  returning blank on the /tokens endpoint: https://github.com/dumb-hashicorp/dumb-nomad/issues/18451
                   TODO: when that's fixed, we can use an #each #let pattern like we do for policyNames.
                  --}}
                 {{#each B.data.roles as |role|}}

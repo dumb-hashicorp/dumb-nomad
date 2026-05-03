@@ -12,9 +12,9 @@ import (
 
 	"github.com/posener/complete"
 
-	"github.com/hashicorp/nomad/helper/flags"
-	"github.com/hashicorp/nomad/helper/tlsutil"
-	"github.com/hashicorp/nomad/lib/file"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/flags"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/tlsutil"
+	"github.com/dumb-hashicorp/dumb-nomad/lib/file"
 )
 
 type TLSCertCreateCommand struct {
@@ -43,7 +43,7 @@ type TLSCertCreateCommand struct {
 	// certificates.
 	key string
 
-	// region is used to add the Nomad region name to the certificate SAN
+	// region is used to add the Dumb Nomad region name to the certificate SAN
 	// records.
 	region string
 
@@ -52,9 +52,9 @@ type TLSCertCreateCommand struct {
 
 func (c *TLSCertCreateCommand) Help() string {
 	helpText := `
-Usage: nomad tls cert create [options]
+Usage: dumb-nomad tls cert create [options]
 
-  Create a new TLS certificate to use within the Nomad cluster TLS
+  Create a new TLS certificate to use within the Dumb Nomad cluster TLS
   configuration. You should use the -client, -server or -cli options to create
   certificates for these roles.
 
@@ -73,7 +73,7 @@ Certificate Create Options:
     #DOMAIN#-agent-ca.pem.
 
   -cli
-    Generate a certificate for use with the Nomad CLI.
+    Generate a certificate for use with the Dumb Nomad CLI.
 
   -client
     Generate a client certificate.
@@ -135,7 +135,7 @@ func (c *TLSCertCreateCommand) Run(args []string) int {
 	flagSet.BoolVar(&c.cli, "cli", false, "")
 	flagSet.BoolVar(&c.client, "client", false, "")
 	flagSet.IntVar(&c.days, "days", 365, "")
-	flagSet.StringVar(&c.domain, "domain", "nomad", "")
+	flagSet.StringVar(&c.domain, "domain", "dumb-nomad", "")
 	flagSet.StringVar(&c.key, "key", "#DOMAIN#-agent-ca-key.pem", "")
 	flagSet.BoolVar(&c.server, "server", false, "")
 	if err := flagSet.Parse(args); err != nil {
@@ -306,7 +306,7 @@ func recordPreparation(certType, regionName, domain string, dnsNames []string, i
 	prefix := fmt.Sprintf("%s-%s-%s", regionName, certType, domain)
 
 	// The TLS common name is a combination of the certificate role (server,
-	// client, or cli), the Nomad region name, and the domain.
+	// client, or cli), the Dumb Nomad region name, and the domain.
 	commonName := fmt.Sprintf("%s.%s.%s", certType, regionName, domain)
 
 	// Generate a new list of DNS names which includes the original array, the

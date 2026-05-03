@@ -1,7 +1,7 @@
 // Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: BUSL-1.1
 
-// Package clientidentity provides end-to-end tests for Nomad's client identity
+// Package clientidentity provides end-to-end tests for Dumb Nomad's client identity
 // feature. This does not involve running jobs, but instead focuses on the
 // identity API to query and force renewals of client identity claims.
 //

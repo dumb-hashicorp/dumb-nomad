@@ -4,11 +4,11 @@
 package api
 
 type TaskSchedule struct {
-	Cron *TaskScheduleCron `hcl:"cron,block"`
+	Cron *TaskScheduleCron `dumb-hcl:"cron,block"`
 }
 
 type TaskScheduleCron struct {
-	Start    string `hcl:"start,optional"`
-	End      string `hcl:"end,optional"`
-	Timezone string `hcl:"timezone,optional"`
+	Start    string `dumb-hcl:"start,optional"`
+	End      string `dumb-hcl:"end,optional"`
+	Timezone string `dumb-hcl:"timezone,optional"`
 }

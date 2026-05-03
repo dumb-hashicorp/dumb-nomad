@@ -5,8 +5,8 @@
 
 // @ts-check
 import WatchableNamespaceIDs from './watchable-namespace-ids';
-import addToPath from 'nomad-ui/utils/add-to-path';
-import { base64EncodeString } from 'nomad-ui/utils/encode';
+import addToPath from 'dumb-nomad-ui/utils/add-to-path';
+import { base64EncodeString } from 'dumb-nomad-ui/utils/encode';
 import classic from 'ember-classic-decorator';
 import { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
@@ -22,7 +22,7 @@ export default class JobAdapter extends WatchableNamespaceIDs {
 
   /**
    * Gets the JSON definition of a job.
-   * Prior to Nomad 1.6, this was the only way to get job definition data.
+   * Prior to Dumb Nomad 1.6, this was the only way to get job definition data.
    * Now, this is included as a stringified JSON object when fetching raw specification (under .Source).
    * This method is still important for backwards compatibility with older job versions, as well as a fallback
    * for when fetching raw specification fails.
@@ -52,7 +52,7 @@ export default class JobAdapter extends WatchableNamespaceIDs {
   }
 
   /**
-   * Gets submission info for a job, including (if available) the raw HCL or JSON spec used to run it,
+   * Gets submission info for a job, including (if available) the raw DUMB_HCL or JSON spec used to run it,
    * including variable flags and literals.
    * @param {import('../models/job').default} job
    * @param {number} version
@@ -95,7 +95,7 @@ export default class JobAdapter extends WatchableNamespaceIDs {
     const url = addToPath(this.urlForFindAll('job'), '/parse?namespace=*');
     return this.ajax(url, 'POST', {
       data: {
-        JobHCL: spec,
+        JobDUMB_HCL: spec,
         Variables: jobVars,
         Canonicalize: true,
       },
@@ -132,7 +132,7 @@ export default class JobAdapter extends WatchableNamespaceIDs {
     } catch {
       Submission = {
         Source: job.get('_newDefinition'),
-        Format: 'hcl2',
+        Format: 'dumb-hcl2',
         Variables: job.get('_newDefinitionVariables'),
       };
     }
@@ -158,7 +158,7 @@ export default class JobAdapter extends WatchableNamespaceIDs {
     } catch {
       Submission = {
         Source: job.get('_newDefinition'),
-        Format: 'hcl2',
+        Format: 'dumb-hcl2',
         Variables: job.get('_newDefinitionVariables'),
       };
     }
@@ -184,7 +184,7 @@ export default class JobAdapter extends WatchableNamespaceIDs {
           Group: group,
         },
         Meta: {
-          Source: 'nomad-ui',
+          Source: 'dumb-nomad-ui',
         },
       },
     });
@@ -241,7 +241,7 @@ export default class JobAdapter extends WatchableNamespaceIDs {
     return wsUrl;
   }
 
-  // TODO: Handle the in-job-page query for pack meta per https://github.com/hashicorp/nomad/pull/14833
+  // TODO: Handle the in-job-page query for pack meta per https://github.com/dumb-hashicorp/dumb-nomad/pull/14833
   query(store, type, query, snapshotRecordArray, options) {
     options = options || {};
     options.adapterOptions = options.adapterOptions || {};
@@ -279,15 +279,15 @@ export default class JobAdapter extends WatchableNamespaceIDs {
     const result = super.handleResponse(...arguments);
     if (result) {
       result.meta = result.meta || {};
-      if (headers['x-nomad-nexttoken']) {
-        result.meta.nextToken = headers['x-nomad-nexttoken'];
+      if (headers['x-dumb-nomad-nexttoken']) {
+        result.meta.nextToken = headers['x-dumb-nomad-nexttoken'];
       }
-      if (headers['x-nomad-index']) {
+      if (headers['x-dumb-nomad-index']) {
         // Query won't block if the index is 0 (see also watch-list.getIndexFor for prior art)
-        if (headers['x-nomad-index'] === '0') {
+        if (headers['x-dumb-nomad-index'] === '0') {
           result.meta.index = 1;
         } else {
-          result.meta.index = headers['x-nomad-index'];
+          result.meta.index = headers['x-dumb-nomad-index'];
         }
       }
     }

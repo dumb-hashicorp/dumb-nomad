@@ -10,14 +10,14 @@ import (
 	"fmt"
 	"testing"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	"github.com/hashicorp/nomad/helper/pluginutils/catalog"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/helper/pluginutils/singleton"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/catalog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/singleton"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 type testManager struct {
@@ -28,7 +28,7 @@ type testManager struct {
 
 func TestDriverManager(t *testing.T) Manager {
 	topology := numalib.Scan(numalib.PlatformScanners(false))
-	logger := testlog.HCLogger(t).Named("driver_mgr")
+	logger := testlog.DUMB_HCLogger(t).Named("driver_mgr")
 	pluginLoader := catalog.TestPluginLoader(t)
 	return &testManager{
 		logger:   logger,

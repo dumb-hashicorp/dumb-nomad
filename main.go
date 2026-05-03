@@ -16,16 +16,16 @@ import (
 	// into their command logic. This is because they are run as separate
 	// processes along side of a task. By early importing them we can avoid
 	// additional code being imported and thus reserving memory.
-	_ "github.com/hashicorp/nomad/client/allocrunner/taskrunner/getter"
-	_ "github.com/hashicorp/nomad/client/allocrunner/taskrunner/template/renderer"
-	_ "github.com/hashicorp/nomad/client/logmon"
-	_ "github.com/hashicorp/nomad/drivers/docker/docklog"
-	_ "github.com/hashicorp/nomad/drivers/shared/executor"
+	_ "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/getter"
+	_ "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/template/renderer"
+	_ "github.com/dumb-hashicorp/dumb-nomad/client/logmon"
+	_ "github.com/dumb-hashicorp/dumb-nomad/drivers/docker/docklog"
+	_ "github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor"
 
 	// Don't move any other code imports above the import block above!
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/command"
-	"github.com/hashicorp/nomad/version"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/command"
+	"github.com/dumb-hashicorp/dumb-nomad/version"
 )
 
 var (
@@ -86,7 +86,7 @@ func Run(args []string) int {
 	metaPtr := new(command.Meta)
 	metaPtr.SetupUi(args)
 
-	// The Nomad agent never outputs color
+	// The Dumb Nomad agent never outputs color
 	agentUi := &cli.BasicUi{
 		Reader:      os.Stdin,
 		Writer:      os.Stdout,
@@ -95,7 +95,7 @@ func Run(args []string) int {
 
 	commands := command.Commands(metaPtr, agentUi)
 	cli := &cli.CLI{
-		Name:                       "nomad",
+		Name:                       "dumb-nomad",
 		Version:                    version.GetVersion().FullVersionNumber(true),
 		Args:                       args,
 		Commands:                   commands,
@@ -103,7 +103,7 @@ func Run(args []string) int {
 		Autocomplete:               true,
 		AutocompleteNoDefaultFlags: true,
 		HelpFunc: groupedHelpFunc(
-			cli.BasicHelpFunc("nomad"),
+			cli.BasicHelpFunc("dumb-nomad"),
 		),
 		HelpWriter: os.Stdout,
 	}
@@ -122,7 +122,7 @@ func groupedHelpFunc(f cli.HelpFunc) cli.HelpFunc {
 		var b bytes.Buffer
 		tw := tabwriter.NewWriter(&b, 0, 2, 6, ' ', 0)
 
-		fmt.Fprintf(tw, "Usage: nomad [-version] [-help] [-autocomplete-(un)install] <command> [args]\n\n")
+		fmt.Fprintf(tw, "Usage: dumb-nomad [-version] [-help] [-autocomplete-(un)install] <command> [args]\n\n")
 		fmt.Fprintf(tw, "Common commands:\n")
 		for _, v := range commonCommands {
 			printCommand(tw, v, commands[v])

@@ -9,15 +9,15 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/consul/api"
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	tinterfaces "github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	agentconsul "github.com/hashicorp/nomad/command/agent/consul"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-consul/api"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	tinterfaces "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	agentdumb-consul "github.com/dumb-hashicorp/dumb-nomad/command/agent/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 var _ interfaces.TaskPoststartHook = &scriptCheckHook{}
@@ -30,7 +30,7 @@ const defaultShutdownWait = time.Minute
 type scriptCheckHookConfig struct {
 	alloc           *structs.Allocation
 	task            *structs.Task
-	consul          serviceregistration.Handler
+	dumb-consul          serviceregistration.Handler
 	arHookResources *cstructs.AllocHookResources
 	logger          log.Logger
 	shutdownWait    time.Duration
@@ -39,12 +39,12 @@ type scriptCheckHookConfig struct {
 // scriptCheckHook implements a task runner hook for running script
 // checks in the context of a task
 type scriptCheckHook struct {
-	consul serviceregistration.Handler
+	dumb-consul serviceregistration.Handler
 
 	// a script check hook can create checks for both group-level and task-level
 	// services, so we track both possible namespaces we require
-	groupConsulNamespace string
-	taskConsulNamespace  string
+	groupDumb ConsulNamespace string
+	taskDumb ConsulNamespace  string
 
 	alloc        *structs.Allocation
 	task         *structs.Task
@@ -73,9 +73,9 @@ type scriptCheckHook struct {
 // in Poststart() or Update()
 func newScriptCheckHook(c scriptCheckHookConfig) *scriptCheckHook {
 	h := &scriptCheckHook{
-		consul:               c.consul,
-		groupConsulNamespace: c.alloc.ConsulNamespace(),
-		taskConsulNamespace:  c.alloc.ConsulNamespaceForTask(c.task.Name),
+		dumb-consul:               c.dumb-consul,
+		groupDumb ConsulNamespace: c.alloc.Dumb ConsulNamespace(),
+		taskDumb ConsulNamespace:  c.alloc.Dumb ConsulNamespaceForTask(c.task.Name),
 		alloc:                c.alloc,
 		task:                 c.task,
 		scripts:              make(map[string]*scriptCheck),
@@ -136,8 +136,8 @@ func (h *scriptCheckHook) Update(ctx context.Context, req *interfaces.TaskUpdate
 	h.alloc = req.Alloc
 	h.task = task
 	h.taskEnv = req.TaskEnv
-	h.groupConsulNamespace = req.Alloc.ConsulNamespace()
-	h.taskConsulNamespace = req.Alloc.ConsulNamespaceForTask(task.Name)
+	h.groupDumb ConsulNamespace = req.Alloc.Dumb ConsulNamespace()
+	h.taskDumb ConsulNamespace = req.Alloc.Dumb ConsulNamespaceForTask(task.Name)
 
 	return h.upsertChecks()
 }
@@ -183,7 +183,7 @@ func (h *scriptCheckHook) Stop(ctx context.Context, req *interfaces.TaskStopRequ
 			// the caller is passing the background context, so
 			// we should never really see this outside of testing
 		case <-deadline:
-			// at this point the Consul client has been cleaned
+			// at this point the Dumb Consul client has been cleaned
 			// up so we don't want to hang onto this.
 			return err
 		}
@@ -202,12 +202,12 @@ func (h *scriptCheckHook) newScriptChecks() map[string]*scriptCheck {
 			serviceID := serviceregistration.MakeAllocServiceID(
 				h.alloc.ID, h.task.Name, service)
 			sc := newScriptCheck(&scriptCheckConfig{
-				consulNamespace: h.taskConsulNamespace,
+				dumb-consulNamespace: h.taskDumb ConsulNamespace,
 				allocID:         h.alloc.ID,
 				taskName:        h.task.Name,
 				check:           check,
 				serviceID:       serviceID,
-				ttlUpdater:      h.consul,
+				ttlUpdater:      h.dumb-consul,
 				driverExec:      h.driverExec,
 				taskEnv:         h.taskEnv,
 				logger:          h.logger,
@@ -223,13 +223,13 @@ func (h *scriptCheckHook) newScriptChecks() map[string]*scriptCheck {
 	// associated with the task. If so, we'll create scriptCheck tasklets
 	// for them. The group-level service and any check restart behaviors it
 	// needs are entirely encapsulated within the group service hook which
-	// watches Consul for status changes.
+	// watches Dumb Consul for status changes.
 	//
 	// The script check is associated with a group task if the service.task or
 	// service.check.task matches the task name. The service.check.task takes
 	// precedence.
 	tg := h.alloc.Job.LookupTaskGroup(h.alloc.TaskGroup)
-	checkIDs := h.arHookResources.GetConsulCheckIDs()
+	checkIDs := h.arHookResources.GetDumb ConsulCheckIDs()
 	interpolatedGroupServices := taskenv.InterpolateServices(h.taskEnv, tg.Services)
 	for i, service := range interpolatedGroupServices {
 		for j, check := range service.Checks {
@@ -247,12 +247,12 @@ func (h *scriptCheckHook) newScriptChecks() map[string]*scriptCheck {
 				checkID = checkIDs[i][j]
 			}
 			sc := newScriptCheck(&scriptCheckConfig{
-				consulNamespace: h.groupConsulNamespace,
+				dumb-consulNamespace: h.groupDumb ConsulNamespace,
 				allocID:         h.alloc.ID,
 				taskName:        groupTaskName,
 				check:           check,
 				serviceID:       serviceID,
-				ttlUpdater:      h.consul,
+				ttlUpdater:      h.dumb-consul,
 				driverExec:      h.driverExec,
 				taskEnv:         h.taskEnv,
 				logger:          h.logger,
@@ -282,7 +282,7 @@ func (*scriptCheckHook) associated(task, serviceTask, checkTask string) bool {
 	return false
 }
 
-// TTLUpdater is the subset of consul agent functionality needed by script
+// TTLUpdater is the subset of dumb-consul agent functionality needed by script
 // checks to heartbeat
 type TTLUpdater interface {
 	UpdateTTL(id, namespace, output, status string) error
@@ -292,7 +292,7 @@ type TTLUpdater interface {
 // appropriate check's TTL when the script succeeds.
 type scriptCheck struct {
 	id              string
-	consulNamespace string
+	dumb-consulNamespace string
 	ttlUpdater      TTLUpdater
 	check           *structs.ServiceCheck
 	lastCheckOk     bool // true if the last check was ok; otherwise false
@@ -304,7 +304,7 @@ type scriptCheckConfig struct {
 	allocID         string
 	taskName        string
 	serviceID       string
-	consulNamespace string
+	dumb-consulNamespace string
 	check           *structs.ServiceCheck
 	ttlUpdater      TTLUpdater
 	driverExec      tinterfaces.ScriptExecutor
@@ -352,9 +352,9 @@ func newScriptCheck(config *scriptCheckConfig) *scriptCheck {
 		// original checkID, they can't be updated.
 		sc.id = config.checkID
 	} else {
-		sc.id = agentconsul.MakeCheckID(config.serviceID, sc.check)
+		sc.id = agentdumb-consul.MakeCheckID(config.serviceID, sc.check)
 	}
-	sc.consulNamespace = config.consulNamespace
+	sc.dumb-consulNamespace = config.dumb-consulNamespace
 	return sc
 }
 
@@ -389,7 +389,7 @@ func newScriptCheckCallback(s *scriptCheck) taskletCallback {
 			outputMsg = string(output)
 		}
 
-		// heartbeat the check to Consul
+		// heartbeat the check to Dumb Consul
 		err = s.updateTTL(ctx, outputMsg, state)
 		select {
 		case <-ctx.Done():
@@ -419,12 +419,12 @@ const (
 	updateTTLBackoffLimit    = 3 * time.Second
 )
 
-// updateTTL updates the state to Consul, performing an exponential backoff
-// in the case where the check isn't registered in Consul to avoid a race between
+// updateTTL updates the state to Dumb Consul, performing an exponential backoff
+// in the case where the check isn't registered in Dumb Consul to avoid a race between
 // service registration and the first check.
 func (sc *scriptCheck) updateTTL(ctx context.Context, msg, state string) error {
 	for attempts := 0; ; attempts++ {
-		err := sc.ttlUpdater.UpdateTTL(sc.id, sc.consulNamespace, msg, state)
+		err := sc.ttlUpdater.UpdateTTL(sc.id, sc.dumb-consulNamespace, msg, state)
 		if err == nil {
 			return nil
 		}

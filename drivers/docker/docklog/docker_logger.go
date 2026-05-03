@@ -16,10 +16,10 @@ import (
 	containerapi "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-multierror"
 
-	"github.com/hashicorp/nomad/client/lib/fifo"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/fifo"
 )
 
 // DockerLogger is a small utility to forward logs from a docker container to a target
@@ -54,7 +54,7 @@ type StartOpts struct {
 }
 
 // NewDockerLogger returns an implementation of the DockerLogger interface
-func NewDockerLogger(logger hclog.Logger) DockerLogger {
+func NewDockerLogger(logger dumb-hclog.Logger) DockerLogger {
 	return &dockerLogger{
 		logger: logger,
 		doneCh: make(chan interface{}),
@@ -63,7 +63,7 @@ func NewDockerLogger(logger hclog.Logger) DockerLogger {
 
 // dockerLogger implements the DockerLogger interface
 type dockerLogger struct {
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	stdout  io.WriteCloser
 	stderr  io.WriteCloser

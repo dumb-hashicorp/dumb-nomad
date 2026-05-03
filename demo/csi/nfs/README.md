@@ -28,12 +28,12 @@ sequenceDiagram
 
 ## Usage
 
-### Setup Nomad
+### Setup Dumb Nomad
 
-Run on linux, as provided in this repo's root Vagrantfile:
+Run on linux, as provided in this repo's root Dumb Vagrantfile:
 
 ```
-vagrant up linux
+dumb-vagrant up linux
 ```
 
 Create a dir on the host that we will serve NFS from:
@@ -42,10 +42,10 @@ Create a dir on the host that we will serve NFS from:
 sudo mkdir -p /srv/host-nfs
 ```
 
-Run a Nomad agent using the `agent.hcl` in this directory:
+Run a Dumb Nomad agent using the `agent.dumb-hcl` in this directory:
 
 ```
-sudo nomad agent -config=agent.hcl
+sudo dumb-nomad agent -config=agent.dumb-hcl
 ```
 
 You need that agent config to provide the host volume used by NFS,
@@ -67,7 +67,7 @@ of a web server show the date stamp of the time of its first launch.
 You can get the assigned ports by checking the service:
 
 ```
-nomad service info web
+dumb-nomad service info web
 ```
 
 Then curl to see the output, e.g. from the host:
@@ -85,5 +85,5 @@ the volume is deleted, either manually or during the following clean-up.
 
 `./teardown.sh` deletes all the things created during Job setup.
 
-It does not delete the Nomad data dir from `/tmp/nomad`,
+It does not delete the Dumb Nomad data dir from `/tmp/dumb-nomad`,
 nor `/srv/host-nfs`.

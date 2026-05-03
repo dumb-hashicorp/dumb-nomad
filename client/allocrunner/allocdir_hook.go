@@ -4,20 +4,20 @@
 package allocrunner
 
 import (
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/taskenv"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
 )
 
 // allocDirHook creates and destroys the root directory and shared directories
 // for an allocation.
 type allocDirHook struct {
 	allocDir allocdir.Interface
-	logger   hclog.Logger
+	logger   dumb-hclog.Logger
 }
 
-func newAllocDirHook(logger hclog.Logger, allocDir allocdir.Interface) *allocDirHook {
+func newAllocDirHook(logger dumb-hclog.Logger, allocDir allocdir.Interface) *allocDirHook {
 	ad := &allocDirHook{
 		allocDir: allocDir,
 	}

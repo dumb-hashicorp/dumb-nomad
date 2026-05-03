@@ -13,20 +13,20 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/yamux"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/yamux"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 const (
 	// See README.md for documentation
-	cacert        = "./testdata/nomad-agent-ca.pem"
-	fooclientcert = "./testdata/regionFoo-client-nomad.pem"
-	fooclientkey  = "./testdata/regionFoo-client-nomad-key.pem"
-	fooservercert = "./testdata/regionFoo-server-nomad.pem"
-	fooserverkey  = "./testdata/regionFoo-server-nomad-key.pem"
+	cacert        = "./testdata/dumb-nomad-agent-ca.pem"
+	fooclientcert = "./testdata/regionFoo-client-dumb-nomad.pem"
+	fooclientkey  = "./testdata/regionFoo-client-dumb-nomad-key.pem"
+	fooservercert = "./testdata/regionFoo-server-dumb-nomad.pem"
+	fooserverkey  = "./testdata/regionFoo-server-dumb-nomad-key.pem"
 	badcert       = "./testdata/badRegion-client-bad.pem"
 	badkey        = "./testdata/badRegion-client-bad-key.pem"
 )
@@ -477,7 +477,7 @@ func startTLSServer(config *Config) (net.Conn, chan error) {
 	return clientConn, errc
 }
 
-// TODO sign the certificates for "server.regionFoo.nomad
+// TODO sign the certificates for "server.regionFoo.dumb-nomad
 func TestConfig_outgoingWrapper_OK(t *testing.T) {
 	ci.Parallel(t)
 

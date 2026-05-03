@@ -8,9 +8,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,9 +38,9 @@ func TestHTTP_NamespaceList(t *testing.T) {
 		assert.Nil(err)
 
 		// Check for the index
-		assert.NotZero(respW.HeaderMap.Get("X-Nomad-Index"))
-		assert.Equal("true", respW.HeaderMap.Get("X-Nomad-KnownLeader"))
-		assert.NotZero(respW.HeaderMap.Get("X-Nomad-LastContact"))
+		assert.NotZero(respW.HeaderMap.Get("X-Dumb Nomad-Index"))
+		assert.Equal("true", respW.HeaderMap.Get("X-Dumb Nomad-KnownLeader"))
+		assert.NotZero(respW.HeaderMap.Get("X-Dumb Nomad-LastContact"))
 
 		// Check the output (the 3 we register + default)
 		assert.Len(obj.([]*structs.Namespace), 4)
@@ -69,9 +69,9 @@ func TestHTTP_NamespaceQuery(t *testing.T) {
 		assert.Nil(err)
 
 		// Check for the index
-		assert.NotZero(respW.HeaderMap.Get("X-Nomad-Index"))
-		assert.Equal("true", respW.HeaderMap.Get("X-Nomad-KnownLeader"))
-		assert.NotZero(respW.HeaderMap.Get("X-Nomad-LastContact"))
+		assert.NotZero(respW.HeaderMap.Get("X-Dumb Nomad-Index"))
+		assert.Equal("true", respW.HeaderMap.Get("X-Dumb Nomad-KnownLeader"))
+		assert.NotZero(respW.HeaderMap.Get("X-Dumb Nomad-LastContact"))
 
 		// Check the output
 		assert.Equal(ns1.Name, obj.(*structs.Namespace).Name)
@@ -95,7 +95,7 @@ func TestHTTP_NamespaceCreate(t *testing.T) {
 		assert.Nil(obj)
 
 		// Check for the index
-		assert.NotZero(respW.HeaderMap.Get("X-Nomad-Index"))
+		assert.NotZero(respW.HeaderMap.Get("X-Dumb Nomad-Index"))
 
 		// Check policy was created
 		state := s.Agent.server.State()
@@ -126,7 +126,7 @@ func TestHTTP_NamespaceUpdate(t *testing.T) {
 		assert.Nil(obj)
 
 		// Check for the index
-		assert.NotZero(respW.HeaderMap.Get("X-Nomad-Index"))
+		assert.NotZero(respW.HeaderMap.Get("X-Dumb Nomad-Index"))
 
 		// Check policy was created
 		state := s.Agent.server.State()
@@ -163,7 +163,7 @@ func TestHTTP_NamespaceDelete(t *testing.T) {
 		assert.Nil(obj)
 
 		// Check for the index
-		assert.NotZero(respW.HeaderMap.Get("X-Nomad-Index"))
+		assert.NotZero(respW.HeaderMap.Get("X-Dumb Nomad-Index"))
 
 		// Check policy was created
 		state := s.Agent.server.State()

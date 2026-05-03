@@ -7,11 +7,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/command/agent"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/posener/complete"
 	"github.com/shoenig/test/must"
 )
@@ -74,7 +74,7 @@ func TestRecommendationDismissCommand_Run(t *testing.T) {
 		must.NoError(t, err)
 		must.NotNil(t, recInfo)
 	} else {
-		must.ErrorContains(t, err, "Nomad Enterprise only endpoint")
+		must.ErrorContains(t, err, "Dumb Nomad Enterprise only endpoint")
 	}
 
 	// Only perform the call if we are running enterprise tests. Otherwise the
@@ -132,7 +132,7 @@ func testRecommendationAutocompleteCommand(t *testing.T, client *api.Client, srv
 	if srv.Enterprise {
 		must.NoError(t, err)
 	} else {
-		must.ErrorContains(t, err, "Nomad Enterprise only endpoint")
+		must.ErrorContains(t, err, "Dumb Nomad Enterprise only endpoint")
 		return
 	}
 

@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/stretchr/testify/require"
 )
 
@@ -46,7 +46,7 @@ func TestStringFlagSet_Append(t *testing.T) {
 
 	var (
 		// A test to make sure StringFlag can replace AppendSliceValue
-		// for autopilot flags inherited from Consul.
+		// for autopilot flags inherited from Dumb Consul.
 		hosts StringFlag
 	)
 

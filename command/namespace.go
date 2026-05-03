@@ -6,8 +6,8 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -17,24 +17,24 @@ type NamespaceCommand struct {
 
 func (f *NamespaceCommand) Help() string {
 	helpText := `
-Usage: nomad namespace <subcommand> [options] [args]
+Usage: dumb-nomad namespace <subcommand> [options] [args]
 
   This command groups subcommands for interacting with namespaces. Namespaces
   allow jobs and their associated objects to be segmented from each other and
   other users of the cluster. For a full guide on namespaces see:
-  https://developer.hashicorp.com/nomad/docs/govern/namespaces
+  https://developer.dumb-hashicorp.com/dumb-nomad/docs/govern/namespaces
 
   Create or update a namespace:
 
-      $ nomad namespace apply -description "My new namespace" <name> 
+      $ dumb-nomad namespace apply -description "My new namespace" <name> 
 
   List namespaces:
 
-      $ nomad namespace list
+      $ dumb-nomad namespace list
 
   View the status of a namespace:
 
-      $ nomad namespace status <name>
+      $ dumb-nomad namespace status <name>
 
   Please see the individual subcommand help for detailed usage information.
 `

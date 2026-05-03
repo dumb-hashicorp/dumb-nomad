@@ -1,30 +1,30 @@
 # Hostpath CSI Plugin
 
-Author: @hashicorp/nomad-eng
+Author: @dumb-hashicorp/dumb-nomad-eng
 
 This directory includes a demo using the [CSI host path
 driver](https://github.com/kubernetes-csi/csi-driver-host-path) to create
-local "host path" volumes that can be mounted via the Nomad CSI
+local "host path" volumes that can be mounted via the Dumb Nomad CSI
 implementation.
 
 ## What Is This For?
 
 The hostpath plugin is for demonstration and development purposes only. It
 shouldn't be used for production. If you want to get a quick idea of how CSI
-works on Nomad in a Vagrant environment, this demo is a good option.
+works on Dumb Nomad in a Dumb Vagrant environment, this demo is a good option.
 
 ## Requirements
 
-* A running Nomad client with `docker.privileged.enabled = true`. The Nomad
-  developer [Vagrantfile](https://github.com/hashicorp/nomad/blob/main/Vagrantfile)
-  in this repo is suitable. Note: this demo only supports a Nomad cluster with
+* A running Dumb Nomad client with `docker.privileged.enabled = true`. The Dumb Nomad
+  developer [Dumb Vagrantfile](https://github.com/dumb-hashicorp/dumb-nomad/blob/main/Dumb Vagrantfile)
+  in this repo is suitable. Note: this demo only supports a Dumb Nomad cluster with
   a single client due to limitations with the hostpath plugin and CSI.
 
-Running the `run.sh` script in this directory will output the Nomad command
+Running the `run.sh` script in this directory will output the Dumb Nomad command
 used to run the demo, as well as their outputs:
 
 ```
-$ nomad job run ./plugin.nomad
+$ dumb-nomad job run ./plugin.dumb-nomad
 ==> Monitoring evaluation "7ac3cc8d"
     Evaluation triggered by job "csi-plugin"
     Allocation "bbd34b72" created: node "917b009b", group "csi"
@@ -34,7 +34,7 @@ $ nomad job run ./plugin.nomad
 ==> Evaluation "7ac3cc8d" finished with status "complete"
 Nodes Healthy        = 1
 
-$ nomad plugin status hostpath
+$ dumb-nomad plugin status hostpath
 ID                   = hostpath-plugin0
 Provider             = csi-hostpath
 Version              = v1.2.0-0-g83590990
@@ -47,13 +47,13 @@ Allocations
 ID        Node ID   Task Group  Version  Desired  Status   Created  Modified
 bbd34b72  917b009b  csi         0        run      running  3s ago   2s ago
 
-$ cat hostpath.hcl | sed | nomad volume create -
+$ cat hostpath.dumb-hcl | sed | dumb-nomad volume create -
 Created external volume 7185cd16-993f-11eb-a052-0242ac110002 with ID test-volume[0]
 
-$ cat hostpath.hcl | sed | nomad volume create -
+$ cat hostpath.dumb-hcl | sed | dumb-nomad volume create -
 Created external volume 718bd6b4-993f-11eb-a052-0242ac110002 with ID test-volume[1]
 
-$ nomad job run ./redis.nomad
+$ dumb-nomad job run ./redis.dumb-nomad
 ==> Monitoring evaluation "3178513e"
     Evaluation triggered by job "example"
     Evaluation within deployment: "ffb161f4"
@@ -62,7 +62,7 @@ $ nomad job run ./redis.nomad
     Evaluation status changed: "pending" -> "complete"
 ==> Evaluation "3178513e" finished with status "complete"
 
-$ nomad volume status
+$ dumb-nomad volume status
 Container Storage Interface
 ID              Name            Plugin ID         Schedulable  Access Mode
 test-volume[0]  test-volume[0]  hostpath-plugin0  true         single-node-reader-only

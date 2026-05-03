@@ -8,10 +8,10 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/client/logmon/proto"
-	"github.com/hashicorp/nomad/plugins/base"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/client/logmon/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
 	"google.golang.org/grpc"
 )
 
@@ -27,7 +27,7 @@ func getBin() string {
 
 // LaunchLogMon launches a new logmon or reattaches to an existing one.
 // TODO: Integrate with base plugin loader
-func LaunchLogMon(logger hclog.Logger, reattachConfig *plugin.ReattachConfig) (LogMon, *plugin.Client, error) {
+func LaunchLogMon(logger dumb-hclog.Logger, reattachConfig *plugin.ReattachConfig) (LogMon, *plugin.Client, error) {
 	logger = logger.Named("logmon")
 	conf := &plugin.ClientConfig{
 		HandshakeConfig: base.Handshake,

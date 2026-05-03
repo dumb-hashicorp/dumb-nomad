@@ -17,17 +17,17 @@ import (
 	"time"
 
 	"github.com/docker/docker/pkg/ioutils"
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/api"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/command/agent/host"
-	"github.com/hashicorp/nomad/command/agent/monitor"
-	"github.com/hashicorp/nomad/command/agent/pprof"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/serf/serf"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/host"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/monitor"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/pprof"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/serf/serf"
 )
 
 type Member struct {
@@ -44,7 +44,7 @@ type Member struct {
 	DelegateCur uint8
 }
 
-func nomadMember(m serf.Member) Member {
+func dumb-nomadMember(m serf.Member) Member {
 	return Member{
 		Name:        m.Name,
 		Addr:        m.Addr,
@@ -80,7 +80,7 @@ func (s *HTTPServer) AgentSelfRequest(resp http.ResponseWriter, req *http.Reques
 	}
 
 	self := agentSelf{
-		Member: nomadMember(member),
+		Member: dumb-nomadMember(member),
 		Stats:  s.agent.Stats(),
 	}
 
@@ -90,9 +90,9 @@ func (s *HTTPServer) AgentSelfRequest(resp http.ResponseWriter, req *http.Reques
 		self.Config.ACL.ReplicationToken = "<redacted>"
 	}
 
-	for _, consulConfig := range self.Config.Consuls {
-		if consulConfig.Token != "" {
-			consulConfig.Token = "<redacted>"
+	for _, dumb-consulConfig := range self.Config.Dumb Consuls {
+		if dumb-consulConfig.Token != "" {
+			dumb-consulConfig.Token = "<redacted>"
 		}
 	}
 
@@ -267,7 +267,7 @@ func (s *HTTPServer) AgentMonitorExport(resp http.ResponseWriter, req *http.Requ
 	}
 
 	if onDisk && serviceName != "" {
-		return nil, CodedError(400, "Cannot target journald and nomad log file simultaneously")
+		return nil, CodedError(400, "Cannot target journald and dumb-nomad log file simultaneously")
 	}
 
 	if !onDisk && serviceName == "" {
@@ -528,7 +528,7 @@ func (s *HTTPServer) agentPprof(reqType pprof.ReqType, resp http.ResponseWriter,
 	return reply.Payload, nil
 }
 
-// AgentServersRequest is used to query the list of servers used by the Nomad
+// AgentServersRequest is used to query the list of servers used by the Dumb Nomad
 // Client for RPCs.  This endpoint can also be used to update the list of
 // servers for a given agent.
 func (s *HTTPServer) AgentServersRequest(resp http.ResponseWriter, req *http.Request) (interface{}, error) {
@@ -765,7 +765,7 @@ type healthResponseAgent struct {
 }
 
 // AgentHostRequest runs on servers and clients, and captures information about the host system to add
-// to the nomad operator debug archive.
+// to the dumb-nomad operator debug archive.
 func (s *HTTPServer) AgentHostRequest(resp http.ResponseWriter, req *http.Request) (interface{}, error) {
 	if req.Method != http.MethodGet {
 		return nil, CodedError(405, ErrInvalidMethod)
@@ -879,7 +879,7 @@ func (s *HTTPServer) AgentSchedulerWorkerInfoRequest(resp http.ResponseWriter, r
 }
 
 // AgentSchedulerWorkerConfigRequest is used to query the count (and state eventually)
-// of the scheduler workers running in a Nomad server agent.
+// of the scheduler workers running in a Dumb Nomad server agent.
 // This endpoint can also be used to update the count of running workers for a
 // given agent.
 func (s *HTTPServer) AgentSchedulerWorkerConfigRequest(resp http.ResponseWriter, req *http.Request) (interface{}, error) {
@@ -941,7 +941,7 @@ func (s *HTTPServer) updateScheduleWorkersConfig(resp http.ResponseWriter, req *
 	}
 	// the server_id provided in the payload is ignored to allow the
 	// response to be roundtripped right into a PUT.
-	newArgs := nomad.SchedulerWorkerPoolArgs{
+	newArgs := dumb-nomad.SchedulerWorkerPoolArgs{
 		NumSchedulers:     args.NumSchedulers,
 		EnabledSchedulers: args.EnabledSchedulers,
 	}
@@ -962,7 +962,7 @@ func (s *HTTPServer) updateScheduleWorkersConfig(resp http.ResponseWriter, req *
 // aclPermissionCheckHelper takes a token string and checks it with Authenticate
 // and ResolveACL methods. If the token doesn't satisfy perm function, an error
 // is returned.
-func aclPermissionCheckHelper(srv *nomad.Server, secret string, perm func(acl *acl.ACL) bool) error {
+func aclPermissionCheckHelper(srv *dumb-nomad.Server, secret string, perm func(acl *acl.ACL) bool) error {
 	r := &structs.GenericRequest{}
 	r.AuthToken = secret
 	if authErr := srv.Authenticate(nil, r); authErr != nil {

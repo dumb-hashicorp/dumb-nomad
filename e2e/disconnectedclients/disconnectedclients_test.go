@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -31,9 +31,9 @@ type expectedAllocStatus struct {
 func TestDisconnectedClients(t *testing.T) {
 	t.Skip("disconnected clients tests disabled for now")
 
-	nomad := e2eutil.NomadClient(t)
-	e2eutil.WaitForLeader(t, nomad)
-	e2eutil.WaitForNodesReady(t, nomad, 2) // needs at least 2 to test replacement
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
+	e2eutil.WaitForLeader(t, dumb-nomad)
+	e2eutil.WaitForNodesReady(t, dumb-nomad, 2) // needs at least 2 to test replacement
 
 	testCases := []struct {
 		skip                    bool
@@ -47,7 +47,7 @@ func TestDisconnectedClients(t *testing.T) {
 			// test that allocations on clients that are netsplit and
 			// marked disconnected are replaced
 			name:         "netsplit client no max disconnect",
-			jobFile:      "./input/lost_simple.nomad",
+			jobFile:      "./input/lost_simple.dumb-nomad",
 			disconnectFn: e2eutil.AgentDisconnect,
 			expectedAfterDisconnect: expectedAllocStatus{
 				disconnected: "lost",
@@ -66,7 +66,7 @@ func TestDisconnectedClients(t *testing.T) {
 			// replacements are rolled back after reconnection
 			skip:         true,
 			name:         "netsplit client with max disconnect",
-			jobFile:      "./input/lost_max_disconnect.nomad",
+			jobFile:      "./input/lost_max_disconnect.dumb-nomad",
 			disconnectFn: e2eutil.AgentDisconnect,
 			expectedAfterDisconnect: expectedAllocStatus{
 				disconnected: "unknown",
@@ -84,7 +84,7 @@ func TestDisconnectedClients(t *testing.T) {
 			// marked disconnected are replaced
 			skip:         true,
 			name:         "shutdown client no max disconnect",
-			jobFile:      "./input/lost_simple.nomad",
+			jobFile:      "./input/lost_simple.dumb-nomad",
 			disconnectFn: e2eutil.AgentDisconnect,
 			expectedAfterDisconnect: expectedAllocStatus{
 				disconnected: "lost",
@@ -102,7 +102,7 @@ func TestDisconnectedClients(t *testing.T) {
 			// marked disconnected are replaced
 			skip:         true,
 			name:         "shutdown client with max disconnect",
-			jobFile:      "./input/lost_max_disconnect.nomad",
+			jobFile:      "./input/lost_max_disconnect.dumb-nomad",
 			disconnectFn: e2eutil.AgentDisconnect,
 			expectedAfterDisconnect: expectedAllocStatus{
 				disconnected: "unknown",
@@ -191,9 +191,9 @@ func disconnectedClientsCleanup(t *testing.T) func() {
 		nodeIDs = append(nodeIDs, nodeStatus["ID"])
 	}
 	return func() {
-		nomad := e2eutil.NomadClient(t)
+		dumb-nomad := e2eutil.Dumb NomadClient(t)
 		t.Logf("waiting for %d nodes to become ready again", len(nodeIDs))
-		e2eutil.WaitForNodesReady(t, nomad, len(nodeIDs))
+		e2eutil.WaitForNodesReady(t, dumb-nomad, len(nodeIDs))
 	}
 }
 
@@ -245,7 +245,7 @@ func waitForAllocStatusMap(jobID, disconnectedAllocID, unchangedAllocID string, 
 		fmt.Println("----------------")
 		allocs, _ := e2eutil.AllocsForJob(jobID, ns)
 		for _, alloc := range allocs {
-			out, _ := e2eutil.Command("nomad", "alloc", "status", alloc["ID"])
+			out, _ := e2eutil.Command("dumb-nomad", "alloc", "status", alloc["ID"])
 			fmt.Println(out)
 			fmt.Println("----------------")
 		}

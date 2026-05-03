@@ -9,22 +9,22 @@ import (
 	"math/big"
 	"reflect"
 
-	"github.com/hashicorp/hcl/v2"
+	"github.com/dumb-hashicorp/dumb-hcl/v2"
 	"github.com/mitchellh/reflectwalk"
 	"github.com/zclconf/go-cty/cty"
 )
 
-// decodeMapInterfaceType decodes hcl instances of `map[string]interface{}` fields
+// decodeMapInterfaceType decodes dumb-hcl instances of `map[string]interface{}` fields
 // of v.
 //
-// The HCL parser stores the hcl AST as the map values, and decodeMapInterfaceType
+// The DUMB_HCL parser stores the dumb-hcl AST as the map values, and decodeMapInterfaceType
 // evaluates the AST and converts them to the native golang types.
-func decodeMapInterfaceType(v interface{}, ctx *hcl.EvalContext) hcl.Diagnostics {
+func decodeMapInterfaceType(v interface{}, ctx *dumb-hcl.EvalContext) dumb-hcl.Diagnostics {
 	w := &walker{ctx: ctx}
 	err := reflectwalk.Walk(v, w)
 	if err != nil {
-		w.diags = append(w.diags, &hcl.Diagnostic{
-			Severity: hcl.DiagError,
+		w.diags = append(w.diags, &dumb-hcl.Diagnostic{
+			Severity: dumb-hcl.DiagError,
 			Summary:  "unexpected internal error",
 			Detail:   err.Error(),
 		})
@@ -33,8 +33,8 @@ func decodeMapInterfaceType(v interface{}, ctx *hcl.EvalContext) hcl.Diagnostics
 }
 
 type walker struct {
-	ctx   *hcl.EvalContext
-	diags hcl.Diagnostics
+	ctx   *dumb-hcl.EvalContext
+	diags dumb-hcl.Diagnostics
 }
 
 var mapStringInterfaceType = reflect.TypeOf(map[string]interface{}{})
@@ -51,7 +51,7 @@ func (w *walker) Map(m reflect.Value) error {
 
 	for _, k := range m.MapKeys() {
 		v := m.MapIndex(k)
-		if attr, ok := v.Interface().(*hcl.Attribute); ok {
+		if attr, ok := v.Interface().(*dumb-hcl.Attribute); ok {
 			c, diags := decodeInterface(attr.Expr, w.ctx)
 			w.diags = append(w.diags, diags...)
 
@@ -64,13 +64,13 @@ func (w *walker) Map(m reflect.Value) error {
 func (w *walker) MapElem(m, k, v reflect.Value) error {
 	return nil
 }
-func decodeInterface(expr hcl.Expression, ctx *hcl.EvalContext) (interface{}, hcl.Diagnostics) {
+func decodeInterface(expr dumb-hcl.Expression, ctx *dumb-hcl.EvalContext) (interface{}, dumb-hcl.Diagnostics) {
 	srvVal, diags := expr.Value(ctx)
 
 	dst, err := interfaceFromCtyValue(srvVal)
 	if err != nil {
-		diags = append(diags, &hcl.Diagnostic{
-			Severity: hcl.DiagError,
+		diags = append(diags, &dumb-hcl.Diagnostic{
+			Severity: dumb-hcl.DiagError,
 			Summary:  "unsuitable value type",
 			Detail:   fmt.Sprintf("Unsuitable value: %s", err.Error()),
 			Subject:  expr.StartRange().Ptr(),

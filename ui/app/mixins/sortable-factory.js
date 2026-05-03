@@ -56,7 +56,7 @@ export default function sortableFactory(properties, fromSortableMixin) {
           }
 
           warn(message, properties.length > 0, {
-            id: 'nomad.no-sortable-properties',
+            id: 'dumb-nomad.no-sortable-properties',
           });
           // eslint-disable-next-line ember/no-side-effects
           this.set('_sortableFactoryWarningPrinted', true);

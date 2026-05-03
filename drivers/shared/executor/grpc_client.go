@@ -13,12 +13,12 @@ import (
 
 	"github.com/LK4D4/joincontext"
 	"github.com/golang/protobuf/ptypes"
-	hclog "github.com/hashicorp/go-hclog"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/drivers/shared/executor/proto"
-	"github.com/hashicorp/nomad/helper/pluginutils/grpcutils"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	dproto "github.com/hashicorp/nomad/plugins/drivers/proto"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/grpcutils"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	dproto "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/proto"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -27,7 +27,7 @@ var _ Executor = (*grpcExecutorClient)(nil)
 
 type grpcExecutorClient struct {
 	client proto.ExecutorClient
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	// doneCtx is close when the plugin exits
 	doneCtx context.Context

@@ -6,10 +6,10 @@ package client
 import (
 	"time"
 
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/nomad/structs"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (

@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	sframer "github.com/hashicorp/nomad/client/lib/streamframer"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	sframer "github.com/dumb-hashicorp/dumb-nomad/client/lib/streamframer"
 	"github.com/shoenig/test/must"
 )
 
@@ -139,26 +139,26 @@ func TestScanServiceName(t *testing.T) {
 		expectErr  bool
 	}{
 		{
-			testString: `nomad`,
+			testString: `dumb-nomad`,
 		},
 		{
-			testString: `nomad.socket`,
+			testString: `dumb-nomad.socket`,
 		},
 		{
-			testString: `nomad-client.service`,
+			testString: `dumb-nomad-client.service`,
 		},
 		{
-			testString: `nomad.client.02.swap`,
+			testString: `dumb-nomad.client.02.swap`,
 		},
 		{
-			testString: `nomadhelper@54.device`,
+			testString: `dumb-nomadhelper@54.device`,
 		},
 		{
-			testString: `1.\@_-nomad@`,
+			testString: `1.\@_-dumb-nomad@`,
 			expectErr:  true,
 		},
 		{
-			testString: `1./@_-nomad@.automount`,
+			testString: `1./@_-dumb-nomad@.automount`,
 			expectErr:  true,
 		},
 		{
@@ -166,15 +166,15 @@ func TestScanServiceName(t *testing.T) {
 			expectErr:  true,
 		},
 		{
-			testString: `nomad.path.gotcha`,
+			testString: `dumb-nomad.path.gotcha`,
 			expectErr:  true,
 		},
 		{
-			testString: `nomad/8.path`,
+			testString: `dumb-nomad/8.path`,
 			expectErr:  true,
 		},
 		{
-			testString: `nomad%.path`,
+			testString: `dumb-nomad%.path`,
 			expectErr:  true,
 		},
 		{
@@ -182,35 +182,35 @@ func TestScanServiceName(t *testing.T) {
 			expectErr:  true,
 		},
 		{
-			testString: `nomad,.path`,
+			testString: `dumb-nomad,.path`,
 			expectErr:  true,
 		},
 		{
-			testString: `nomad.client`,
+			testString: `dumb-nomad.client`,
 			expectErr:  true,
 		},
 		{
-			testString: `nomad!.path`,
+			testString: `dumb-nomad!.path`,
 			expectErr:  true,
 		},
 		{
-			testString: `nomad%http.timer`,
+			testString: `dumb-nomad%http.timer`,
 			expectErr:  true,
 		},
 		{
-			testString: `nomad,http.mount`,
+			testString: `dumb-nomad,http.mount`,
 			expectErr:  true,
 		},
 		{
-			testString: `nomad$http.service`,
+			testString: `dumb-nomad$http.service`,
 			expectErr:  true,
 		},
 		{
-			testString: `nomad$.http.service`,
+			testString: `dumb-nomad$.http.service`,
 			expectErr:  true,
 		},
 		{
-			testString: `nomad$`,
+			testString: `dumb-nomad$`,
 			expectErr:  true,
 		},
 	}

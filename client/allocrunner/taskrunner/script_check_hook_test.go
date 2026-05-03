@@ -10,24 +10,24 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/consul/api"
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
-	"github.com/hashicorp/nomad/client/serviceregistration"
-	regMock "github.com/hashicorp/nomad/client/serviceregistration/mock"
-	"github.com/hashicorp/nomad/client/serviceregistration/wrapper"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	agentconsul "github.com/hashicorp/nomad/command/agent/consul"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-consul/api"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration"
+	regMock "github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/wrapper"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	agentdumb-consul "github.com/dumb-hashicorp/dumb-nomad/command/agent/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
 
-func newScriptMock(hb TTLUpdater, exec interfaces.ScriptExecutor, logger hclog.Logger, interval, timeout time.Duration) *scriptCheck {
+func newScriptMock(hb TTLUpdater, exec interfaces.ScriptExecutor, logger dumb-hclog.Logger, interval, timeout time.Duration) *scriptCheck {
 	script := newScriptCheck(&scriptCheckConfig{
 		allocID:   "allocid",
 		taskName:  "testtask",
@@ -48,7 +48,7 @@ func newScriptMock(hb TTLUpdater, exec interfaces.ScriptExecutor, logger hclog.L
 }
 
 // fakeHeartbeater implements the TTLUpdater interface to allow mocking out
-// Consul in script executor tests.
+// Dumb Consul in script executor tests.
 type fakeHeartbeater struct {
 	heartbeats chan heartbeat
 }
@@ -76,7 +76,7 @@ func TestScript_Exec_Cancel(t *testing.T) {
 	exec, cancel := newBlockingScriptExec()
 	defer cancel()
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	script := newScriptMock(nil, // TTLUpdater should never be called
 		exec, logger, time.Hour, time.Hour)
 
@@ -103,7 +103,7 @@ func TestScript_Exec_TimeoutBasic(t *testing.T) {
 	exec, cancel := newBlockingScriptExec()
 	defer cancel()
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	hb := newFakeHeartbeater()
 	script := newScriptMock(hb, exec, logger, time.Hour, time.Second)
 
@@ -141,7 +141,7 @@ func TestScript_Exec_TimeoutBasic(t *testing.T) {
 // Exec returns.
 func TestScript_Exec_TimeoutCritical(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	hb := newFakeHeartbeater()
 	script := newScriptMock(hb, sleeperExec{}, logger, time.Hour, time.Nanosecond)
 
@@ -165,7 +165,7 @@ func TestScript_Exec_Shutdown(t *testing.T) {
 
 	shutdown := make(chan struct{})
 	exec := newSimpleExec(0, nil)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	hb := newFakeHeartbeater()
 	script := newScriptMock(hb, exec, logger, time.Hour, 3*time.Second)
 	script.shutdownCh = shutdown
@@ -190,7 +190,7 @@ func TestScript_Exec_Shutdown(t *testing.T) {
 }
 
 // TestScript_Exec_Codes asserts script exit codes are translated to their
-// corresponding Consul health check status.
+// corresponding Dumb Consul health check status.
 func TestScript_Exec_Codes(t *testing.T) {
 	ci.Parallel(t)
 
@@ -203,7 +203,7 @@ func TestScript_Exec_Codes(t *testing.T) {
 		{[]byte("output"), 0, nil},
 		{[]byte("error9000"), 9000, nil},
 	})
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	hb := newFakeHeartbeater()
 	script := newScriptMock(
 		hb, exec, logger, time.Nanosecond, 3*time.Second)
@@ -239,17 +239,17 @@ func TestScript_Exec_Codes(t *testing.T) {
 func TestScript_TaskEnvInterpolation(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
-	consulClient := regMock.NewServiceRegistrationHandler(logger)
-	regWrap := wrapper.NewHandlerWrapper(logger, consulClient, nil)
+	logger := testlog.DUMB_HCLogger(t)
+	dumb-consulClient := regMock.NewServiceRegistrationHandler(logger)
+	regWrap := wrapper.NewHandlerWrapper(logger, dumb-consulClient, nil)
 	exec, cancel := newBlockingScriptExec()
 	defer cancel()
 
 	alloc := mock.ConnectAlloc()
 	task := alloc.Job.TaskGroups[0].Tasks[0]
 
-	task.Services[0].Name = "${NOMAD_JOB_NAME}-${SVC_NAME}-${NOMAD_ALLOC_IP_testconnect}"
-	task.Services[0].Checks[0].Name = "${NOMAD_JOB_NAME}-${SVC_NAME}-${NOMAD_ALLOC_IP_testconnect}-check"
+	task.Services[0].Name = "${DUMB_NOMAD_JOB_NAME}-${SVC_NAME}-${DUMB_NOMAD_ALLOC_IP_testconnect}"
+	task.Services[0].Checks[0].Name = "${DUMB_NOMAD_JOB_NAME}-${SVC_NAME}-${DUMB_NOMAD_ALLOC_IP_testconnect}-check"
 	alloc.Job.Canonicalize() // need to re-canonicalize b/c the mock already did it
 
 	env := taskenv.NewBuilder(mock.Node(), alloc, task, "global").SetHookEnv(
@@ -271,7 +271,7 @@ func TestScript_TaskEnvInterpolation(t *testing.T) {
 	scHook := newScriptCheckHook(scriptCheckHookConfig{
 		alloc:           alloc,
 		task:            task,
-		consul:          consulClient,
+		dumb-consul:          dumb-consulClient,
 		logger:          logger,
 		shutdownWait:    time.Hour, // TTLUpdater will never be called
 		arHookResources: arHookResources,
@@ -287,13 +287,13 @@ func TestScript_TaskEnvInterpolation(t *testing.T) {
 	must.Eq(t, "web", workload.AllocInfo.Group)
 	expectedSvc := workload.Services[0]
 
-	expected := agentconsul.MakeCheckID(serviceregistration.MakeAllocServiceID(
+	expected := agentdumb-consul.MakeCheckID(serviceregistration.MakeAllocServiceID(
 		alloc.ID, task.Name, expectedSvc), expectedSvc.Checks[0])
 
 	actual := scHook.newScriptChecks()
 	check, ok := actual[expected]
 	must.True(t, ok)
-	must.Eq(t, "my-job-frontend-${NOMAD_ALLOC_IP_testconnect}-check", check.check.Name)
+	must.Eq(t, "my-job-frontend-${DUMB_NOMAD_ALLOC_IP_testconnect}-check", check.check.Name)
 
 	// emulate an update
 	env = taskenv.NewBuilder(mock.Node(), alloc, task, "global").SetHookEnv(
@@ -304,13 +304,13 @@ func TestScript_TaskEnvInterpolation(t *testing.T) {
 
 	// both service name and check ID will be updated
 	expectedSvc = svcHook.getWorkloadServices().Services[0]
-	expected = agentconsul.MakeCheckID(serviceregistration.MakeAllocServiceID(
+	expected = agentdumb-consul.MakeCheckID(serviceregistration.MakeAllocServiceID(
 		alloc.ID, task.Name, expectedSvc), expectedSvc.Checks[0])
 
 	actual = scHook.newScriptChecks()
 	check, ok = actual[expected]
 	must.True(t, ok)
-	must.Eq(t, "my-job-backend-${NOMAD_ALLOC_IP_testconnect}-check", check.check.Name)
+	must.Eq(t, "my-job-backend-${DUMB_NOMAD_ALLOC_IP_testconnect}-check", check.check.Name)
 }
 
 func TestScript_associated(t *testing.T) {

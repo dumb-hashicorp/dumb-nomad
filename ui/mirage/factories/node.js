@@ -4,7 +4,7 @@
  */
 
 import { Factory, trait } from 'ember-cli-mirage';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import { provide, pickOne } from '../utils';
 import { DATACENTERS, HOSTS, generateResources } from '../common';
 import moment from 'moment';
@@ -21,7 +21,7 @@ const REF_DATE = new Date();
 
 export default Factory.extend({
   id: (i) => (i / 100 >= 1 ? `${UUIDS[i]}-${i}` : UUIDS[i]),
-  name: (i) => `nomad@${HOSTS[i % HOSTS.length]}`,
+  name: (i) => `dumb-nomad@${HOSTS[i % HOSTS.length]}`,
 
   datacenter: () => faker.helpers.randomize(DATACENTERS),
   nodeClass: () => faker.helpers.randomize(NODE_CLASSES),
@@ -42,7 +42,7 @@ export default Factory.extend({
   forceIPv4: trait({
     name: (i) => {
       const ipv4Hosts = HOSTS.filter((h) => !h.startsWith('['));
-      return `nomad@${ipv4Hosts[i % ipv4Hosts.length]}`;
+      return `dumb-nomad@${ipv4Hosts[i % ipv4Hosts.length]}`;
     },
   }),
 
@@ -105,7 +105,7 @@ export default Factory.extend({
     return {
       'os.version': '10.12.5',
       'cpu.modelname': 'Intel(R) Core(TM) i7-3615QM CPU @ 2.30GHz',
-      'nomad.revision': 'f551dcb83e3ac144c9dbb90583b6e82d234662e9',
+      'dumb-nomad.revision': 'f551dcb83e3ac144c9dbb90583b6e82d234662e9',
       'driver.docker.volumes.enabled': '1',
       'driver.docker': '1',
       'cpu.frequency': '2300',
@@ -113,7 +113,7 @@ export default Factory.extend({
       'driver.mock_driver': '1',
       'kernel.version': '16.6.0',
       'unique.network.ip-address': '127.0.0.1',
-      'nomad.version': '0.5.5dev',
+      'dumb-nomad.version': '0.5.5dev',
       'unique.hostname': 'bacon-mac',
       'cpu.arch': 'amd64',
       'os.name': 'darwin',

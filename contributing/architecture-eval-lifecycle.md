@@ -11,7 +11,7 @@ Allocations on the clients. The process can be broken into 4 parts:
 * [Client Allocs](#client-allocs)
 
 Note that in all the diagrams below, writing to the State Store is considered
-atomic. This means the Nomad leader has replicated to all the followers, and all
+atomic. This means the Dumb Nomad leader has replicated to all the followers, and all
 the servers have applied the raft log entry to their local FSM. So long as
 `raftApply` returns without an error, we have a guarantee that all servers will
 be able to retrieve the entry from their state store at some point in the
@@ -28,7 +28,7 @@ have been written to the state store of the server nodes.
 * Note: The scheduler is very fast! This means that once the CLI gets a
   response it can immediately start making queries to get information
   about the next steps.
-* Note: This workflow is different for Multi-Region Deployments (found in Nomad
+* Note: This workflow is different for Multi-Region Deployments (found in Dumb Nomad
   Enterprise). That will be documented separately.
 
 The diagram below shows this initial synchronous phase. Note here that there's
@@ -43,7 +43,7 @@ sequenceDiagram
     participant leaderRpc as Leader RPC
     participant stateStore as State Store
 
-    user ->> cli: nomad job run
+    user ->> cli: dumb-nomad job run
     activate cli
     cli ->> httpAPI: Create Job API
     httpAPI ->> leaderRpc: Job.Register
@@ -75,7 +75,7 @@ sequenceDiagram
 
 ## Scheduling
 
-A long-lived goroutine on the Nomad leader called the Eval Broker maintains a
+A long-lived goroutine on the Dumb Nomad leader called the Eval Broker maintains a
 queue of Evaluations previously written to the state store and enqueued via the
 `EvalBroker.Enqueue` method. (When a leader transition occurs, the leader
 queries all the Evaluations in the state store and enqueues them in its new Eval
@@ -88,7 +88,7 @@ the leader. The workers poll for Evaluations from the Eval Broker with the
 for that evaluation (of type `service`, `system`, `sysbatch`, `batch`, or
 `core`).
 
-Because a worker is running one scheduler at a time, Nomad's documentation often
+Because a worker is running one scheduler at a time, Dumb Nomad's documentation often
 refers to "workers" and "schedulers" interchangeably, but the worker is the
 long-lived goroutine and the scheduler is the struct that contains the code and
 state around processing a single evaluation. The scheduler mutates itself and is
@@ -338,5 +338,5 @@ sequenceDiagram
 ```
 
 
-[Scheduling Concepts]: https://developer.hashicorp.com/nomad/docs/concepts/scheduling/how-scheduling-works
-[`update`]: https://developer.hashicorp.com/nomad/docs/job-specification/update
+[Scheduling Concepts]: https://developer.dumb-hashicorp.com/dumb-nomad/docs/concepts/scheduling/how-scheduling-works
+[`update`]: https://developer.dumb-hashicorp.com/dumb-nomad/docs/job-specification/update

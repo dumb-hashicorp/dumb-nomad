@@ -8,9 +8,9 @@ import { currentURL } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import Clients from 'nomad-ui/tests/pages/jobs/job/clients';
-import setPolicy from 'nomad-ui/tests/utils/set-policy';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import Clients from 'dumb-nomad-ui/tests/pages/jobs/job/clients';
+import setPolicy from 'dumb-nomad-ui/tests/utils/set-policy';
 
 let job;
 let clients;
@@ -82,7 +82,7 @@ module('Acceptance | job clients', function (hooks) {
     const clientsInTable = Clients.clients.map((c) => c.id).sort();
     assert.deepEqual(clientsInTable, clientIDs);
 
-    assert.equal(document.title, `Job ${job.name} clients - Nomad`);
+    assert.equal(document.title, `Job ${job.name} clients - Dumb Nomad`);
   });
 
   test('dates have tooltip', async function (assert) {

@@ -9,9 +9,9 @@ import (
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 )
 
 type BasicAffinityTest struct {
@@ -31,19 +31,19 @@ func init() {
 
 func (tc *BasicAffinityTest) BeforeAll(f *framework.F) {
 	// Ensure cluster has leader before running tests
-	e2eutil.WaitForLeader(f.T(), tc.Nomad())
+	e2eutil.WaitForLeader(f.T(), tc.Dumb Nomad())
 	// Ensure that we have four client nodes in ready state
-	e2eutil.WaitForNodesReady(f.T(), tc.Nomad(), 4)
+	e2eutil.WaitForNodesReady(f.T(), tc.Dumb Nomad(), 4)
 }
 
 func (tc *BasicAffinityTest) TestSingleAffinities(f *framework.F) {
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 	uuid := uuid.Generate()
 	jobId := "aff" + uuid[0:8]
 	tc.jobIds = append(tc.jobIds, jobId)
-	allocs := e2eutil.RegisterAndWaitForAllocs(f.T(), nomadClient, "affinities/input/single_affinity.nomad", jobId, "")
+	allocs := e2eutil.RegisterAndWaitForAllocs(f.T(), dumb-nomadClient, "affinities/input/single_affinity.dumb-nomad", jobId, "")
 
-	jobAllocs := nomadClient.Allocations()
+	jobAllocs := dumb-nomadClient.Allocations()
 
 	// Verify affinity score metadata
 	for _, allocStub := range allocs {
@@ -73,13 +73,13 @@ func (tc *BasicAffinityTest) TestSingleAffinities(f *framework.F) {
 }
 
 func (tc *BasicAffinityTest) TestMultipleAffinities(f *framework.F) {
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 	uuid := uuid.Generate()
 	jobId := "multiaff" + uuid[0:8]
 	tc.jobIds = append(tc.jobIds, jobId)
-	allocs := e2eutil.RegisterAndWaitForAllocs(f.T(), nomadClient, "affinities/input/multiple_affinities.nomad", jobId, "")
+	allocs := e2eutil.RegisterAndWaitForAllocs(f.T(), dumb-nomadClient, "affinities/input/multiple_affinities.dumb-nomad", jobId, "")
 
-	jobAllocs := nomadClient.Allocations()
+	jobAllocs := dumb-nomadClient.Allocations()
 	require := require.New(f.T())
 
 	// Verify affinity score metadata
@@ -88,7 +88,7 @@ func (tc *BasicAffinityTest) TestMultipleAffinities(f *framework.F) {
 		require.Nil(err)
 		require.NotEmpty(alloc.Metrics.ScoreMetaData)
 
-		node, _, err := nomadClient.Nodes().Info(alloc.NodeID, nil)
+		node, _, err := dumb-nomadClient.Nodes().Info(alloc.NodeID, nil)
 		require.Nil(err)
 
 		dcMatch := node.Datacenter == "dc1"
@@ -115,13 +115,13 @@ func (tc *BasicAffinityTest) TestMultipleAffinities(f *framework.F) {
 }
 
 func (tc *BasicAffinityTest) TestAntiAffinities(f *framework.F) {
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 	uuid := uuid.Generate()
 	jobId := "antiaff" + uuid[0:8]
 	tc.jobIds = append(tc.jobIds, jobId)
-	allocs := e2eutil.RegisterAndWaitForAllocs(f.T(), nomadClient, "affinities/input/anti_affinities.nomad", jobId, "")
+	allocs := e2eutil.RegisterAndWaitForAllocs(f.T(), dumb-nomadClient, "affinities/input/anti_affinities.dumb-nomad", jobId, "")
 
-	jobAllocs := nomadClient.Allocations()
+	jobAllocs := dumb-nomadClient.Allocations()
 	require := require.New(f.T())
 
 	// Verify affinity score metadata
@@ -130,7 +130,7 @@ func (tc *BasicAffinityTest) TestAntiAffinities(f *framework.F) {
 		require.Nil(err)
 		require.NotEmpty(alloc.Metrics.ScoreMetaData)
 
-		node, _, err := nomadClient.Nodes().Info(alloc.NodeID, nil)
+		node, _, err := dumb-nomadClient.Nodes().Info(alloc.NodeID, nil)
 		require.Nil(err)
 
 		dcMatch := node.Datacenter == "dc1"
@@ -158,12 +158,12 @@ func (tc *BasicAffinityTest) TestAntiAffinities(f *framework.F) {
 }
 
 func (tc *BasicAffinityTest) AfterEach(f *framework.F) {
-	nomadClient := tc.Nomad()
-	jobs := nomadClient.Jobs()
+	dumb-nomadClient := tc.Dumb Nomad()
+	jobs := dumb-nomadClient.Jobs()
 	// Stop all jobs in test
 	for _, id := range tc.jobIds {
 		jobs.Deregister(id, true, nil)
 	}
 	// Garbage collect
-	nomadClient.System().GarbageCollect()
+	dumb-nomadClient.System().GarbageCollect()
 }

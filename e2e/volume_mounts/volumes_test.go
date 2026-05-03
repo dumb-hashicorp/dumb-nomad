@@ -10,8 +10,8 @@ import (
 
 	"github.com/shoenig/test/must"
 
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
 )
 
 // TestVolumeMounts exercises host volume and Docker volume functionality for
@@ -19,11 +19,11 @@ import (
 // within the container and how this is exposed to the user.
 func TestVolumeMounts(t *testing.T) {
 
-	nomad := e2eutil.NomadClient(t)
-	e2eutil.WaitForLeader(t, nomad)
-	e2eutil.WaitForNodesReady(t, nomad, 1)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
+	e2eutil.WaitForLeader(t, dumb-nomad)
+	e2eutil.WaitForNodesReady(t, dumb-nomad, 1)
 
-	sub, stop := jobs3.Submit(t, "./input/volumes.nomad",
+	sub, stop := jobs3.Submit(t, "./input/volumes.dumb-nomad",
 		jobs3.Verbose(true),
 		jobs3.Timeout(30*time.Second), // exec tasks take longer to start
 	)
@@ -42,7 +42,7 @@ func TestVolumeMounts(t *testing.T) {
 
 	stop()
 
-	sub, stop = jobs3.Submit(t, "./input/volumes.nomad",
+	sub, stop = jobs3.Submit(t, "./input/volumes.dumb-nomad",
 		jobs3.Verbose(true),
 		jobs3.Timeout(30*time.Second), // exec tasks take longer to start
 		jobs3.ReplaceInJobSpec("${attr.kernel.name}", "${node.unique.id}"),

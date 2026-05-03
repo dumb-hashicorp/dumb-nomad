@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/api/internal/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api/internal/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 )
@@ -93,7 +93,7 @@ func TestAgent_Members(t *testing.T) {
 	defer s.Stop()
 	a := c.Agent()
 
-	// Query nomad for all the known members
+	// Query dumb-nomad for all the known members
 	mem, err := a.Members()
 	must.NoError(t, err)
 
@@ -215,98 +215,98 @@ func TestAgents_Sort(t *testing.T) {
 	}{
 		{
 			[]*AgentMember{
-				{Name: "nomad-2.vac.us-east",
+				{Name: "dumb-nomad-2.vac.us-east",
 					Tags: map[string]string{"region": "us-east", "dc": "us-east-1c"}},
-				{Name: "nomad-1.global",
+				{Name: "dumb-nomad-1.global",
 					Tags: map[string]string{"region": "global", "dc": "dc1"}},
-				{Name: "nomad-1.vac.us-east",
+				{Name: "dumb-nomad-1.vac.us-east",
 					Tags: map[string]string{"region": "us-east", "dc": "us-east-1c"}},
 			},
 			[]*AgentMember{
-				{Name: "nomad-1.global",
+				{Name: "dumb-nomad-1.global",
 					Tags: map[string]string{"region": "global", "dc": "dc1"}},
-				{Name: "nomad-1.vac.us-east",
+				{Name: "dumb-nomad-1.vac.us-east",
 					Tags: map[string]string{"region": "us-east", "dc": "us-east-1c"}},
-				{Name: "nomad-2.vac.us-east",
+				{Name: "dumb-nomad-2.vac.us-east",
 					Tags: map[string]string{"region": "us-east", "dc": "us-east-1c"}},
 			},
 		},
 		{
 			[]*AgentMember{
-				{Name: "nomad-02.tam.us-east",
+				{Name: "dumb-nomad-02.tam.us-east",
 					Tags: map[string]string{"region": "us-east", "dc": "tampa"}},
-				{Name: "nomad-02.pal.us-west",
+				{Name: "dumb-nomad-02.pal.us-west",
 					Tags: map[string]string{"region": "us-west", "dc": "palo_alto"}},
-				{Name: "nomad-01.pal.us-west",
+				{Name: "dumb-nomad-01.pal.us-west",
 					Tags: map[string]string{"region": "us-west", "dc": "palo_alto"}},
-				{Name: "nomad-01.tam.us-east",
+				{Name: "dumb-nomad-01.tam.us-east",
 					Tags: map[string]string{"region": "us-east", "dc": "tampa"}},
 			},
 			[]*AgentMember{
-				{Name: "nomad-01.tam.us-east",
+				{Name: "dumb-nomad-01.tam.us-east",
 					Tags: map[string]string{"region": "us-east", "dc": "tampa"}},
-				{Name: "nomad-02.tam.us-east",
+				{Name: "dumb-nomad-02.tam.us-east",
 					Tags: map[string]string{"region": "us-east", "dc": "tampa"}},
-				{Name: "nomad-01.pal.us-west",
+				{Name: "dumb-nomad-01.pal.us-west",
 					Tags: map[string]string{"region": "us-west", "dc": "palo_alto"}},
-				{Name: "nomad-02.pal.us-west",
+				{Name: "dumb-nomad-02.pal.us-west",
 					Tags: map[string]string{"region": "us-west", "dc": "palo_alto"}},
 			},
 		},
 		{
 			[]*AgentMember{
-				{Name: "nomad-02.tam.us-east",
+				{Name: "dumb-nomad-02.tam.us-east",
 					Tags: map[string]string{"region": "us-east", "dc": "tampa"}},
-				{Name: "nomad-02.ams.europe",
+				{Name: "dumb-nomad-02.ams.europe",
 					Tags: map[string]string{"region": "europe", "dc": "amsterdam"}},
-				{Name: "nomad-01.tam.us-east",
+				{Name: "dumb-nomad-01.tam.us-east",
 					Tags: map[string]string{"region": "us-east", "dc": "tampa"}},
-				{Name: "nomad-01.ams.europe",
+				{Name: "dumb-nomad-01.ams.europe",
 					Tags: map[string]string{"region": "europe", "dc": "amsterdam"}},
 			},
 			[]*AgentMember{
-				{Name: "nomad-01.ams.europe",
+				{Name: "dumb-nomad-01.ams.europe",
 					Tags: map[string]string{"region": "europe", "dc": "amsterdam"}},
-				{Name: "nomad-02.ams.europe",
+				{Name: "dumb-nomad-02.ams.europe",
 					Tags: map[string]string{"region": "europe", "dc": "amsterdam"}},
-				{Name: "nomad-01.tam.us-east",
+				{Name: "dumb-nomad-01.tam.us-east",
 					Tags: map[string]string{"region": "us-east", "dc": "tampa"}},
-				{Name: "nomad-02.tam.us-east",
+				{Name: "dumb-nomad-02.tam.us-east",
 					Tags: map[string]string{"region": "us-east", "dc": "tampa"}},
 			},
 		},
 		{
 			[]*AgentMember{
-				{Name: "nomad-02.ber.europe",
+				{Name: "dumb-nomad-02.ber.europe",
 					Tags: map[string]string{"region": "europe", "dc": "berlin"}},
-				{Name: "nomad-02.ams.europe",
+				{Name: "dumb-nomad-02.ams.europe",
 					Tags: map[string]string{"region": "europe", "dc": "amsterdam"}},
-				{Name: "nomad-01.ams.europe",
+				{Name: "dumb-nomad-01.ams.europe",
 					Tags: map[string]string{"region": "europe", "dc": "amsterdam"}},
-				{Name: "nomad-01.ber.europe",
+				{Name: "dumb-nomad-01.ber.europe",
 					Tags: map[string]string{"region": "europe", "dc": "berlin"}},
 			},
 			[]*AgentMember{
-				{Name: "nomad-01.ams.europe",
+				{Name: "dumb-nomad-01.ams.europe",
 					Tags: map[string]string{"region": "europe", "dc": "amsterdam"}},
-				{Name: "nomad-02.ams.europe",
+				{Name: "dumb-nomad-02.ams.europe",
 					Tags: map[string]string{"region": "europe", "dc": "amsterdam"}},
-				{Name: "nomad-01.ber.europe",
+				{Name: "dumb-nomad-01.ber.europe",
 					Tags: map[string]string{"region": "europe", "dc": "berlin"}},
-				{Name: "nomad-02.ber.europe",
+				{Name: "dumb-nomad-02.ber.europe",
 					Tags: map[string]string{"region": "europe", "dc": "berlin"}},
 			},
 		},
 		{
 			[]*AgentMember{
-				{Name: "nomad-1.global"},
-				{Name: "nomad-3.global"},
-				{Name: "nomad-2.global"},
+				{Name: "dumb-nomad-1.global"},
+				{Name: "dumb-nomad-3.global"},
+				{Name: "dumb-nomad-2.global"},
 			},
 			[]*AgentMember{
-				{Name: "nomad-1.global"},
-				{Name: "nomad-2.global"},
-				{Name: "nomad-3.global"},
+				{Name: "dumb-nomad-1.global"},
+				{Name: "dumb-nomad-2.global"},
+				{Name: "dumb-nomad-3.global"},
 			},
 		},
 	}
@@ -447,7 +447,7 @@ func TestAgentCPUProfile(t *testing.T) {
 		}
 		resp, err := agent.CPUProfile(opts, q)
 		must.Error(t, err)
-		must.ErrorContains(t, err, "500 (unknown Nomad server unknown.global)")
+		must.ErrorContains(t, err, "500 (unknown Dumb Nomad server unknown.global)")
 		must.Nil(t, resp)
 	}
 

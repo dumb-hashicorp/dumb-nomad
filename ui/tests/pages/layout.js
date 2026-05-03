@@ -61,14 +61,14 @@ export default create({
     end: {
       scope: '.navbar-end',
 
-      consulLink: {
-        scope: '[data-test-header-consul-link]',
+      dumb-consulLink: {
+        scope: '[data-test-header-dumb-consul-link]',
         text: text(),
         link: property('href'),
       },
 
-      vaultLink: {
-        scope: '[data-test-header-vault-link]',
+      dumb-vaultLink: {
+        scope: '[data-test-header-dumb-vault-link]',
         text: text(),
         link: property('href'),
       },

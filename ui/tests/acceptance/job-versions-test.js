@@ -9,12 +9,12 @@ import { currentURL, click, typeIn } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import Versions from 'nomad-ui/tests/pages/jobs/job/versions';
-import Layout from 'nomad-ui/tests/pages/layout';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import Versions from 'dumb-nomad-ui/tests/pages/jobs/job/versions';
+import Layout from 'dumb-nomad-ui/tests/pages/layout';
 import moment from 'moment';
 import percySnapshot from '@percy/ember';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 let job;
 let namespace;
 let versions;
@@ -52,7 +52,7 @@ module('Acceptance | job versions', function (hooks) {
     versions = server.db.jobVersions.where({ jobId: job.id });
 
     const managementToken = server.create('token');
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
 
     await Versions.visit({ id: `${job.id}@${namespace.id}` });
   });
@@ -67,7 +67,7 @@ module('Acceptance | job versions', function (hooks) {
       versions.length,
       'Each version gets a row in the timeline'
     );
-    assert.equal(document.title, `Job ${job.name} versions - Nomad`);
+    assert.equal(document.title, `Job ${job.name} versions - Dumb Nomad`);
   });
 
   test('each version mentions the version number, the stability, and the submitted time', async function (assert) {
@@ -335,7 +335,7 @@ module('Acceptance | job versions (clone and edit)', function (hooks) {
     namespace = server.create('namespace');
 
     const managementToken = server.create('token');
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
 
     job = server.create('job', {
       createAllocations: false,
@@ -594,7 +594,7 @@ module('Acceptance | job versions (with client token)', function (hooks) {
     clientToken.policyIds = [policy.id];
     clientToken.save();
 
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     await Versions.visit({ id: `${job.id}@${namespace.id}` });
     Versions.versions.forEach((versionRow) => {
@@ -648,7 +648,7 @@ module('Acceptance | job versions (with client token)', function (hooks) {
     clientToken.policyIds = [policy.id];
     clientToken.save();
 
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     await Versions.visit({ id: `${job.id}@${namespace.id}` });
     assert
@@ -686,7 +686,7 @@ module('Acceptance | job versions (with client token)', function (hooks) {
     clientToken.policyIds = [policy.id];
     clientToken.save();
 
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     await Versions.visit({ id: `${job.id}@${namespace.id}` });
     assert
@@ -774,7 +774,7 @@ module('Acceptance | job versions (with client token)', function (hooks) {
     clientToken.policyIds = [policy.id];
     clientToken.save();
 
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     await Versions.visit({ id: `${job.id}@${namespace.id}` });
     assert.dom('[data-test-tagged-version="true"]').exists();

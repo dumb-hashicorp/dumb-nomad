@@ -16,8 +16,8 @@ import { setupApplicationTest } from 'ember-qunit';
 import { allScenarios } from '../../mirage/scenarios/default';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import percySnapshot from '@percy/ember';
-import faker from 'nomad-ui/mirage/faker';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import faker from 'dumb-nomad-ui/mirage/faker';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 
 module('Acceptance | policies', function (hooks) {
   setupApplicationTest(hooks);
@@ -30,7 +30,7 @@ module('Acceptance | policies', function (hooks) {
   test('Policies index route looks good', async function (assert) {
     assert.expect(4);
     allScenarios.policiesTestCluster(server);
-    window.localStorage.nomadTokenSecret = server.db.tokens[0].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[0].secretId;
     await visit('/administration/policies');
     assert.dom('[data-test-gutter-link="administration"]').exists();
     assert.equal(currentURL(), '/administration/policies');
@@ -40,22 +40,22 @@ module('Acceptance | policies', function (hooks) {
     await a11yAudit(assert);
     await percySnapshot(assert);
     // Reset Token
-    window.localStorage.nomadTokenSecret = null;
+    window.localStorage.dumb-nomadTokenSecret = null;
   });
 
   test('Prevents policies access if you lack a management token', async function (assert) {
     allScenarios.policiesTestCluster(server);
-    window.localStorage.nomadTokenSecret = server.db.tokens[1].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[1].secretId;
     await visit('/administration/policies');
     assert.equal(currentURL(), '/jobs');
     assert.dom('[data-test-gutter-link="administration"]').doesNotExist();
     // Reset Token
-    window.localStorage.nomadTokenSecret = null;
+    window.localStorage.dumb-nomadTokenSecret = null;
   });
 
   test('Modifying an existing policy', async function (assert) {
     allScenarios.policiesTestCluster(server);
-    window.localStorage.nomadTokenSecret = server.db.tokens[0].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[0].secretId;
     await visit('/administration/policies');
     await click('[data-test-policy-row]:first-child a');
     // Table sorts by name by default
@@ -73,12 +73,12 @@ module('Acceptance | policies', function (hooks) {
       'remain on page after save'
     );
     // Reset Token
-    window.localStorage.nomadTokenSecret = null;
+    window.localStorage.dumb-nomadTokenSecret = null;
   });
 
   test('Creating a test token', async function (assert) {
     allScenarios.policiesTestCluster(server);
-    window.localStorage.nomadTokenSecret = server.db.tokens[0].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[0].secretId;
     await visit('/administration/policies');
     await click('[data-test-policy-name="Variable-Maker"]');
     assert.equal(currentURL(), '/administration/policies/Variable-Maker');
@@ -98,13 +98,13 @@ module('Acceptance | policies', function (hooks) {
       .dom('[data-test-token-name="Example Token for Variable-Maker"]')
       .doesNotExist('Token is deleted');
     // Reset Token
-    window.localStorage.nomadTokenSecret = null;
+    window.localStorage.dumb-nomadTokenSecret = null;
   });
 
   test('Creating a new policy', async function (assert) {
     assert.expect(7);
     allScenarios.policiesTestCluster(server);
-    window.localStorage.nomadTokenSecret = server.db.tokens[0].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[0].secretId;
     await visit('/administration/policies');
     await click('[data-test-create-policy]');
     assert.equal(currentURL(), '/administration/policies/new');
@@ -132,12 +132,12 @@ module('Acceptance | policies', function (hooks) {
     assert.equal(currentURL(), '/administration/policies/My-Fun-Policy');
     await percySnapshot(assert);
     // Reset Token
-    window.localStorage.nomadTokenSecret = null;
+    window.localStorage.dumb-nomadTokenSecret = null;
   });
 
   test('Deleting a policy', async function (assert) {
     allScenarios.policiesTestCluster(server);
-    window.localStorage.nomadTokenSecret = server.db.tokens[0].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[0].secretId;
     await visit('/administration/policies');
     let firstPolicy = server.db.policies.sort((a, b) => {
       return a.name.localeCompare(b.name);
@@ -162,12 +162,12 @@ module('Acceptance | policies', function (hooks) {
     assert.equal(currentURL(), '/administration/policies');
     assert.dom(`[data-test-policy-name="${firstPolicyName}"]`).doesNotExist();
     // Reset Token
-    window.localStorage.nomadTokenSecret = null;
+    window.localStorage.dumb-nomadTokenSecret = null;
   });
 
   test('Policies Index', async function (assert) {
     allScenarios.policiesTestCluster(server);
-    window.localStorage.nomadTokenSecret = server.db.tokens[0].secretId;
+    window.localStorage.dumb-nomadTokenSecret = server.db.tokens[0].secretId;
     await visit('/administration/policies');
     // Table contains every policy in db
     assert
@@ -184,6 +184,6 @@ module('Acceptance | policies', function (hooks) {
     }
     assert.dom('[data-test-empty-policies-list-headline]').exists();
     // Reset Token
-    window.localStorage.nomadTokenSecret = null;
+    window.localStorage.dumb-nomadTokenSecret = null;
   });
 });

@@ -14,9 +14,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 )
@@ -25,22 +25,22 @@ func TestDockerDriver_authFromHelper(t *testing.T) {
 	testutil.DockerCompatible(t)
 
 	dir := t.TempDir()
-	helperPayload := "{\"Username\":\"hashi\",\"Secret\":\"nomad\"}"
+	helperPayload := "{\"Username\":\"hashi\",\"Secret\":\"dumb-nomad\"}"
 	helperContent := []byte(fmt.Sprintf("#!/bin/sh\ncat > %s/helper-$1.out;echo '%s'", dir, helperPayload))
 
-	helperFile := filepath.Join(dir, "docker-credential-testnomad")
+	helperFile := filepath.Join(dir, "docker-credential-testdumb-nomad")
 	err := os.WriteFile(helperFile, helperContent, 0777)
 	must.NoError(t, err)
 
 	path := os.Getenv("PATH")
 	t.Setenv("PATH", fmt.Sprintf("%s:%s", path, dir))
 
-	authHelper := authFromHelper("testnomad")
+	authHelper := authFromHelper("testdumb-nomad")
 	creds, err := authHelper("registry.local:5000/repo/image")
 	must.NoError(t, err)
 	must.NotNil(t, creds)
 	must.Eq(t, "hashi", creds.Username)
-	must.Eq(t, "nomad", creds.Password)
+	must.Eq(t, "dumb-nomad", creds.Password)
 
 	if _, err := os.Stat(filepath.Join(dir, "helper-get.out")); os.IsNotExist(err) {
 		t.Fatalf("Expected helper-get.out to exist")
@@ -64,7 +64,7 @@ func TestDockerDriver_PluginConfig_PidsLimit(t *testing.T) {
 	cfg.PidsLimit = 7
 	_, err := driver.createContainerConfig(task, cfg, "org/repo:0.1")
 	must.Error(t, err)
-	must.StrContains(t, err.Error(), `pids_limit cannot be greater than nomad plugin config pids_limit`)
+	must.StrContains(t, err.Error(), `pids_limit cannot be greater than dumb-nomad plugin config pids_limit`)
 
 	// Task PidsLimit should override plugin PidsLimit.
 	cfg.PidsLimit = 3

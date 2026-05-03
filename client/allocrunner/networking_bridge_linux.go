@@ -7,24 +7,24 @@ import (
 	"context"
 	"fmt"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/cni"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/cni"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 const (
-	// defaultNomadBridgeName is the name of the bridge to use when not set by
+	// defaultDumb NomadBridgeName is the name of the bridge to use when not set by
 	// the client
-	defaultNomadBridgeName = "nomad"
+	defaultDumb NomadBridgeName = "dumb-nomad"
 
 	// bridgeNetworkAllocIfPrefix is the prefix that is used for the interface
 	// name created inside of the alloc network which is connected to the bridge
 	bridgeNetworkAllocIfPrefix = "eth"
 
-	// defaultNomadAllocSubnet is the subnet to use for host local ip address
+	// defaultDumb NomadAllocSubnet is the subnet to use for host local ip address
 	// allocation when not specified by the client
-	defaultNomadAllocSubnet = "172.26.64.0/20" // end 172.26.79.255
+	defaultDumb NomadAllocSubnet = "172.26.64.0/20" // end 172.26.79.255
 )
 
 // bridgeNetworkConfigurator is a NetworkConfigurator which adds the alloc to a
@@ -39,10 +39,10 @@ type bridgeNetworkConfigurator struct {
 
 	newIPTables func(structs.NodeNetworkAF) (IPTablesChain, error)
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
-func newBridgeNetworkConfigurator(log hclog.Logger, alloc *structs.Allocation, bridgeName, ipv4Range, ipv6Range, cniPath string, hairpinMode, ignorePortMappingHostIP bool, node *structs.Node) (*bridgeNetworkConfigurator, error) {
+func newBridgeNetworkConfigurator(log dumb-hclog.Logger, alloc *structs.Allocation, bridgeName, ipv4Range, ipv6Range, cniPath string, hairpinMode, ignorePortMappingHostIP bool, node *structs.Node) (*bridgeNetworkConfigurator, error) {
 	b := &bridgeNetworkConfigurator{
 		bridgeName:      bridgeName,
 		hairpinMode:     hairpinMode,
@@ -53,11 +53,11 @@ func newBridgeNetworkConfigurator(log hclog.Logger, alloc *structs.Allocation, b
 	}
 
 	if b.bridgeName == "" {
-		b.bridgeName = defaultNomadBridgeName
+		b.bridgeName = defaultDumb NomadBridgeName
 	}
 
 	if b.allocSubnetIPv4 == "" {
-		b.allocSubnetIPv4 = defaultNomadAllocSubnet
+		b.allocSubnetIPv4 = defaultDumb NomadAllocSubnet
 	}
 
 	var netCfg []byte
@@ -66,7 +66,7 @@ func newBridgeNetworkConfigurator(log hclog.Logger, alloc *structs.Allocation, b
 	tg := alloc.Job.LookupTaskGroup(alloc.TaskGroup)
 	for _, svc := range tg.Services {
 		if svc.Connect.HasTransparentProxy() {
-			netCfg, err = buildNomadBridgeNetConfig(*b, true)
+			netCfg, err = buildDumb NomadBridgeNetConfig(*b, true)
 			if err != nil {
 				return nil, err
 			}
@@ -75,7 +75,7 @@ func newBridgeNetworkConfigurator(log hclog.Logger, alloc *structs.Allocation, b
 		}
 	}
 	if netCfg == nil {
-		netCfg, err = buildNomadBridgeNetConfig(*b, false)
+		netCfg, err = buildDumb NomadBridgeNetConfig(*b, false)
 		if err != nil {
 			return nil, err
 		}
@@ -133,14 +133,14 @@ func (b *bridgeNetworkConfigurator) Teardown(ctx context.Context, alloc *structs
 	return b.cni.Teardown(ctx, alloc, spec)
 }
 
-func buildNomadBridgeNetConfig(b bridgeNetworkConfigurator, withConsulCNI bool) ([]byte, error) {
-	conf := cni.NewNomadBridgeConflist(cni.NomadBridgeConfig{
+func buildDumb NomadBridgeNetConfig(b bridgeNetworkConfigurator, withDumb ConsulCNI bool) ([]byte, error) {
+	conf := cni.NewDumb NomadBridgeConflist(cni.Dumb NomadBridgeConfig{
 		BridgeName:     b.bridgeName,
 		AdminChainName: cniAdminChainName,
 		IPv4Subnet:     b.allocSubnetIPv4,
 		IPv6Subnet:     b.allocSubnetIPv6,
 		HairpinMode:    b.hairpinMode,
-		ConsulCNI:      withConsulCNI,
+		Dumb ConsulCNI:      withDumb ConsulCNI,
 	})
 	return conf.Json()
 }

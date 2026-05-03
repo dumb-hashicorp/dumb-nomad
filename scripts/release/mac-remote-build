@@ -2,8 +2,8 @@
 
 # A script for building macOS binary on a remote macOS host
 #
-# The helper is expected to be invoked with nomad repo as a first argument, e.g.
-# `mac-remote-build ~/go/src/github.com/hashicorp/nomad`.
+# The helper is expected to be invoked with dumb-nomad repo as a first argument, e.g.
+# `mac-remote-build ~/go/src/github.com/dumb-hashicorp/dumb-nomad`.
 #
 # The repository is required to have a HEAD with all generated files and udpated version committed.
 #
@@ -28,8 +28,8 @@ then
     exit 1
 fi
 
-TMP_WORKSPACE="/tmp/nomad-workspace/$(date +%Y-%m-%d-%s)"
-REPO_REMOTE_PATH="${TMP_WORKSPACE}/gopath/src/github.com/hashicorp/nomad"
+TMP_WORKSPACE="/tmp/dumb-nomad-workspace/$(date +%Y-%m-%d-%s)"
+REPO_REMOTE_PATH="${TMP_WORKSPACE}/gopath/src/github.com/dumb-hashicorp/dumb-nomad"
 
 readonly remote_macos_host=${REMOTE_MACOS_HOST:-sharedmac-bot}
 
@@ -50,7 +50,7 @@ set -o xtrace
 
 TMP_WORKSPACE="$1"
 RELEASE_TARGET="$2"
-REPO_PATH="${TMP_WORKSPACE}/gopath/src/github.com/hashicorp/nomad"
+REPO_PATH="${TMP_WORKSPACE}/gopath/src/github.com/dumb-hashicorp/dumb-nomad"
 
 
 mkdir -p "${TMP_WORKSPACE}/tmp"

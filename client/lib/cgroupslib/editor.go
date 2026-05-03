@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/go-set/v3"
 	"golang.org/x/sys/unix"
 )
 
@@ -90,7 +90,7 @@ func (e *editor) Write(filename, content string) error {
 
 // Factory creates a Lifecycle which is an abstraction over the setup and
 // teardown routines used for creating and destroying cgroups used for
-// constraining Nomad tasks.
+// constraining Dumb Nomad tasks.
 func Factory(allocID, task string, cores bool) Lifecycle {
 	switch GetMode() {
 	case CG1:
@@ -107,7 +107,7 @@ func Factory(allocID, task string, cores bool) Lifecycle {
 }
 
 // Lifecycle manages the lifecycle of the cgroup(s) of a task from the
-// perspective of the Nomad client. That is, it creates and deletes the cgroups
+// perspective of the Dumb Nomad client. That is, it creates and deletes the cgroups
 // for a task, as well as provides last effort kill semantics for ensuring a
 // process cannot stay alive beyond the intent of the client.
 type Lifecycle interface {
@@ -186,7 +186,7 @@ func (l *lifeCG1) Kill() error {
 func (l *lifeCG1) edit(iface string) *editor {
 	scope := ScopeCG1(l.allocID, l.task)
 	return &editor{
-		dpath: filepath.Join(root, iface, NomadCgroupParent, scope),
+		dpath: filepath.Join(root, iface, Dumb NomadCgroupParent, scope),
 	}
 }
 
@@ -211,15 +211,15 @@ func (l *lifeCG1) paths() []string {
 	paths := make([]string, 0, len(ifaces)+1)
 	for _, iface := range ifaces {
 		paths = append(paths, filepath.Join(
-			root, iface, NomadCgroupParent, scope,
+			root, iface, Dumb NomadCgroupParent, scope,
 		))
 	}
 
 	switch partition := GetPartitionFromBool(l.reservedCores); partition {
 	case "reserve":
-		paths = append(paths, filepath.Join(root, "cpuset", NomadCgroupParent, partition, scope))
+		paths = append(paths, filepath.Join(root, "cpuset", Dumb NomadCgroupParent, partition, scope))
 	case "share":
-		paths = append(paths, filepath.Join(root, "cpuset", NomadCgroupParent, partition))
+		paths = append(paths, filepath.Join(root, "cpuset", Dumb NomadCgroupParent, partition))
 	}
 
 	return paths
@@ -275,5 +275,5 @@ func scopeCG2(allocID, task string) string {
 
 func pathCG2(allocID, task string, cores bool) string {
 	partition := GetPartitionFromBool(cores)
-	return filepath.Join(root, NomadCgroupParent, partition, scopeCG2(allocID, task))
+	return filepath.Join(root, Dumb NomadCgroupParent, partition, scopeCG2(allocID, task))
 }

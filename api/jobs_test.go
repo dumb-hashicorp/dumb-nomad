@@ -12,7 +12,7 @@ import (
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 
-	"github.com/hashicorp/nomad/api/internal/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api/internal/testutil"
 )
 
 func TestJobs_Register(t *testing.T) {
@@ -398,9 +398,9 @@ func TestJobs_Canonicalize(t *testing.T) {
 				Priority:          pointerOf(JobDefaultPriority),
 				NodePool:          pointerOf(""),
 				AllAtOnce:         pointerOf(false),
-				ConsulNamespace:   pointerOf(""),
-				VaultNamespace:    pointerOf(""),
-				NomadTokenID:      pointerOf(""),
+				Dumb ConsulNamespace:   pointerOf(""),
+				Dumb VaultNamespace:    pointerOf(""),
+				Dumb NomadTokenID:      pointerOf(""),
 				Status:            pointerOf(""),
 				StatusDescription: pointerOf(""),
 				Stop:              pointerOf(false),
@@ -490,9 +490,9 @@ func TestJobs_Canonicalize(t *testing.T) {
 				Priority:          pointerOf(JobDefaultPriority),
 				NodePool:          pointerOf(""),
 				AllAtOnce:         pointerOf(false),
-				ConsulNamespace:   pointerOf(""),
-				VaultNamespace:    pointerOf(""),
-				NomadTokenID:      pointerOf(""),
+				Dumb ConsulNamespace:   pointerOf(""),
+				Dumb VaultNamespace:    pointerOf(""),
+				Dumb NomadTokenID:      pointerOf(""),
 				Status:            pointerOf(""),
 				StatusDescription: pointerOf(""),
 				Stop:              pointerOf(false),
@@ -565,9 +565,9 @@ func TestJobs_Canonicalize(t *testing.T) {
 				Priority:          pointerOf(JobDefaultPriority),
 				NodePool:          pointerOf(""),
 				AllAtOnce:         pointerOf(false),
-				ConsulNamespace:   pointerOf(""),
-				VaultNamespace:    pointerOf(""),
-				NomadTokenID:      pointerOf(""),
+				Dumb ConsulNamespace:   pointerOf(""),
+				Dumb VaultNamespace:    pointerOf(""),
+				Dumb NomadTokenID:      pointerOf(""),
 				Stop:              pointerOf(false),
 				Stable:            pointerOf(false),
 				Version:           pointerOf(uint64(0)),
@@ -733,9 +733,9 @@ func TestJobs_Canonicalize(t *testing.T) {
 				Region:            pointerOf("global"),
 				Type:              pointerOf("service"),
 				AllAtOnce:         pointerOf(false),
-				ConsulNamespace:   pointerOf(""),
-				VaultNamespace:    pointerOf(""),
-				NomadTokenID:      pointerOf(""),
+				Dumb ConsulNamespace:   pointerOf(""),
+				Dumb VaultNamespace:    pointerOf(""),
+				Dumb NomadTokenID:      pointerOf(""),
 				Stop:              pointerOf(false),
 				Stable:            pointerOf(false),
 				Version:           pointerOf(uint64(0)),
@@ -832,7 +832,7 @@ func TestJobs_Canonicalize(t *testing.T) {
 										PortLabel:   "db",
 										AddressMode: "auto",
 										OnUpdate:    "require_healthy",
-										Provider:    "consul",
+										Provider:    "dumb-consul",
 										Cluster:     "default",
 										Checks: []ServiceCheck{
 											{
@@ -859,7 +859,7 @@ func TestJobs_Canonicalize(t *testing.T) {
 										LeftDelim:     pointerOf("{{"),
 										RightDelim:    pointerOf("}}"),
 										Envvars:       pointerOf(false),
-										VaultGrace:    pointerOf(time.Duration(0)),
+										Dumb VaultGrace:    pointerOf(time.Duration(0)),
 										ErrMissingKey: pointerOf(false),
 										Once:          pointerOf(false),
 									},
@@ -874,7 +874,7 @@ func TestJobs_Canonicalize(t *testing.T) {
 										LeftDelim:     pointerOf("{{"),
 										RightDelim:    pointerOf("}}"),
 										Envvars:       pointerOf(true),
-										VaultGrace:    pointerOf(time.Duration(0)),
+										Dumb VaultGrace:    pointerOf(time.Duration(0)),
 										ErrMissingKey: pointerOf(false),
 										Once:          pointerOf(false),
 									},
@@ -901,9 +901,9 @@ func TestJobs_Canonicalize(t *testing.T) {
 				Priority:          pointerOf(JobDefaultPriority),
 				NodePool:          pointerOf(""),
 				AllAtOnce:         pointerOf(false),
-				ConsulNamespace:   pointerOf(""),
-				VaultNamespace:    pointerOf(""),
-				NomadTokenID:      pointerOf(""),
+				Dumb ConsulNamespace:   pointerOf(""),
+				Dumb VaultNamespace:    pointerOf(""),
+				Dumb NomadTokenID:      pointerOf(""),
 				Stop:              pointerOf(false),
 				Stable:            pointerOf(false),
 				Version:           pointerOf(uint64(0)),
@@ -953,7 +953,7 @@ func TestJobs_Canonicalize(t *testing.T) {
 				TaskGroups: []*TaskGroup{
 					{
 						Name: pointerOf("bar"),
-						Consul: &Consul{
+						Dumb Consul: &Dumb Consul{
 							Namespace: "",
 						},
 						Update: &UpdateStrategy{
@@ -991,9 +991,9 @@ func TestJobs_Canonicalize(t *testing.T) {
 				Priority:          pointerOf(JobDefaultPriority),
 				NodePool:          pointerOf(""),
 				AllAtOnce:         pointerOf(false),
-				ConsulNamespace:   pointerOf(""),
-				VaultNamespace:    pointerOf(""),
-				NomadTokenID:      pointerOf(""),
+				Dumb ConsulNamespace:   pointerOf(""),
+				Dumb VaultNamespace:    pointerOf(""),
+				Dumb NomadTokenID:      pointerOf(""),
 				Stop:              pointerOf(false),
 				Stable:            pointerOf(false),
 				Version:           pointerOf(uint64(0)),
@@ -1037,7 +1037,7 @@ func TestJobs_Canonicalize(t *testing.T) {
 							MaxDelay:      pointerOf(1 * time.Hour),
 							Unlimited:     pointerOf(true),
 						},
-						Consul: &Consul{
+						Dumb Consul: &Dumb Consul{
 							Namespace: "",
 							Cluster:   "default",
 						},
@@ -1139,9 +1139,9 @@ func TestJobs_Canonicalize(t *testing.T) {
 				Priority:          pointerOf(JobDefaultPriority),
 				NodePool:          pointerOf(""),
 				AllAtOnce:         pointerOf(false),
-				ConsulNamespace:   pointerOf(""),
-				VaultNamespace:    pointerOf(""),
-				NomadTokenID:      pointerOf(""),
+				Dumb ConsulNamespace:   pointerOf(""),
+				Dumb VaultNamespace:    pointerOf(""),
+				Dumb NomadTokenID:      pointerOf(""),
 				Stop:              pointerOf(false),
 				Stable:            pointerOf(false),
 				Version:           pointerOf(uint64(0)),
@@ -1209,7 +1209,7 @@ func TestJobs_Canonicalize(t *testing.T) {
 							Interval: pointerOf(30 * time.Minute),
 							Mode:     pointerOf("fail"),
 						},
-						Consul: &Consul{
+						Dumb Consul: &Dumb Consul{
 							Namespace: "",
 						},
 						Tasks: []*Task{
@@ -1230,9 +1230,9 @@ func TestJobs_Canonicalize(t *testing.T) {
 				NodePool:          pointerOf(""),
 				Priority:          pointerOf(JobDefaultPriority),
 				AllAtOnce:         pointerOf(false),
-				ConsulNamespace:   pointerOf(""),
-				VaultNamespace:    pointerOf(""),
-				NomadTokenID:      pointerOf(""),
+				Dumb ConsulNamespace:   pointerOf(""),
+				Dumb VaultNamespace:    pointerOf(""),
+				Dumb NomadTokenID:      pointerOf(""),
 				Stop:              pointerOf(false),
 				Stable:            pointerOf(false),
 				Version:           pointerOf(uint64(0)),
@@ -1327,7 +1327,7 @@ func TestJobs_Canonicalize(t *testing.T) {
 							MaxDelay:      pointerOf(1 * time.Hour),
 							Unlimited:     pointerOf(true),
 						},
-						Consul: &Consul{
+						Dumb Consul: &Dumb Consul{
 							Namespace: "",
 							Cluster:   "default",
 						},
@@ -1401,9 +1401,9 @@ func TestJobs_Canonicalize(t *testing.T) {
 				Priority:          pointerOf(JobDefaultPriority),
 				NodePool:          pointerOf(""),
 				AllAtOnce:         pointerOf(false),
-				ConsulNamespace:   pointerOf(""),
-				VaultNamespace:    pointerOf(""),
-				NomadTokenID:      pointerOf(""),
+				Dumb ConsulNamespace:   pointerOf(""),
+				Dumb VaultNamespace:    pointerOf(""),
+				Dumb NomadTokenID:      pointerOf(""),
 				Stop:              pointerOf(false),
 				Stable:            pointerOf(false),
 				Version:           pointerOf(uint64(0)),
@@ -1616,7 +1616,7 @@ func TestJobs_JobSubmission_Canonicalize(t *testing.T) {
 	t.Run("empty variable flags", func(t *testing.T) {
 		js := &JobSubmission{
 			Source:        "abc123",
-			Format:        "hcl2",
+			Format:        "dumb-hcl2",
 			VariableFlags: make(map[string]string),
 		}
 		js.Canonicalize()
@@ -1694,7 +1694,7 @@ func TestJobs_Submission_versions(t *testing.T) {
 	_, wm, regErr := jobs.RegisterOpts(job, &RegisterOptions{
 		Submission: &JobSubmission{
 			Source:        "the job source v0",
-			Format:        "hcl2",
+			Format:        "dumb-hcl2",
 			VariableFlags: map[string]string{"X": "x", "Y": "42", "Z": "true"},
 			Variables:     "var file content",
 		},
@@ -1713,14 +1713,14 @@ func TestJobs_Submission_versions(t *testing.T) {
 	// we should have a version 0 now
 	sub, _, err := jobs.Submission(jobID, 0, nil)
 	must.NoError(t, err)
-	expectSubmission(sub, "hcl2", "the job source v0", "var file content", map[string]string{"X": "x", "Y": "42", "Z": "true"})
+	expectSubmission(sub, "dumb-hcl2", "the job source v0", "var file content", map[string]string{"X": "x", "Y": "42", "Z": "true"})
 
 	// register our test job at version 1
 	job.Meta = map[string]string{"v": "1"}
 	_, wm, regErr = jobs.RegisterOpts(job, &RegisterOptions{
 		Submission: &JobSubmission{
 			Source:        "the job source v1",
-			Format:        "hcl2",
+			Format:        "dumb-hcl2",
 			VariableFlags: nil,
 			Variables:     "different var content",
 		},
@@ -1731,12 +1731,12 @@ func TestJobs_Submission_versions(t *testing.T) {
 	// we should have a version 1 now
 	sub, _, err = jobs.Submission(jobID, 1, nil)
 	must.NoError(t, err)
-	expectSubmission(sub, "hcl2", "the job source v1", "different var content", nil)
+	expectSubmission(sub, "dumb-hcl2", "the job source v1", "different var content", nil)
 
 	// if we query for version 0 we should still have it
 	sub, _, err = jobs.Submission(jobID, 0, nil)
 	must.NoError(t, err)
-	expectSubmission(sub, "hcl2", "the job source v0", "var file content", map[string]string{"X": "x", "Y": "42", "Z": "true"})
+	expectSubmission(sub, "dumb-hcl2", "the job source v0", "var file content", map[string]string{"X": "x", "Y": "42", "Z": "true"})
 
 	// deregister (and purge) the job
 	_, _, err = jobs.Deregister(jobID, true, &WriteOptions{Namespace: "default"})
@@ -1790,7 +1790,7 @@ func TestJobs_Submission_namespaces(t *testing.T) {
 	_, wm, err := jobs.RegisterOpts(job, &RegisterOptions{
 		Submission: &JobSubmission{
 			Source: "the job source",
-			Format: "hcl2",
+			Format: "dumb-hcl2",
 		},
 	}, &WriteOptions{Namespace: "first"})
 	must.NoError(t, err)
@@ -1821,7 +1821,7 @@ func TestJobs_Submission_namespaces(t *testing.T) {
 	_, wm, err = jobs.RegisterOpts(job2, &RegisterOptions{
 		Submission: &JobSubmission{
 			Source: "second job source",
-			Format: "hcl2",
+			Format: "dumb-hcl2",
 		},
 	}, &WriteOptions{Namespace: "second"})
 	must.NoError(t, err)
@@ -1878,7 +1878,7 @@ func TestJobs_Submission_delete(t *testing.T) {
 	_, wm, err := jobs.RegisterOpts(job, &RegisterOptions{
 		Submission: &JobSubmission{
 			Source: "the job source v0",
-			Format: "hcl2",
+			Format: "dumb-hcl2",
 		},
 	}, &WriteOptions{Namespace: "first"})
 	must.NoError(t, err)
@@ -1889,7 +1889,7 @@ func TestJobs_Submission_delete(t *testing.T) {
 	_, wm, err = jobs.RegisterOpts(job, &RegisterOptions{
 		Submission: &JobSubmission{
 			Source: "the job source v1",
-			Format: "hcl2",
+			Format: "dumb-hcl2",
 		},
 	}, &WriteOptions{Namespace: "first"})
 	must.NoError(t, err)
@@ -2679,53 +2679,53 @@ func TestJobs_Services(t *testing.T) {
 	// TODO(jrasell) add tests once registration process is in place.
 }
 
-// TestJobs_Parse asserts ParseHCL and ParseHCLOpts use the API to parse HCL.
+// TestJobs_Parse asserts ParseDUMB_HCL and ParseDUMB_HCLOpts use the API to parse DUMB_HCL.
 func TestJobs_Parse(t *testing.T) {
 	testutil.Parallel(t)
 
 	jobspec := `job "example" {}`
 
-	// Assert ParseHCL returns an error if Nomad is not running to ensure
+	// Assert ParseDUMB_HCL returns an error if Dumb Nomad is not running to ensure
 	// that parsing is done server-side and not via the jobspec package.
 	{
 		c, err := NewClient(DefaultConfig())
 		must.NoError(t, err)
 
-		_, err = c.Jobs().ParseHCL(jobspec, false)
+		_, err = c.Jobs().ParseDUMB_HCL(jobspec, false)
 		must.ErrorContains(t, err, "Put")
 	}
 
 	c, s := makeClient(t, nil, nil)
 	defer s.Stop()
 
-	// Test ParseHCL
-	job1, err := c.Jobs().ParseHCL(jobspec, false)
+	// Test ParseDUMB_HCL
+	job1, err := c.Jobs().ParseDUMB_HCL(jobspec, false)
 	must.NoError(t, err)
 	must.Eq(t, "example", *job1.Name)
 	must.Nil(t, job1.Namespace)
 
-	job1Canonicalized, err := c.Jobs().ParseHCL(jobspec, true)
+	job1Canonicalized, err := c.Jobs().ParseDUMB_HCL(jobspec, true)
 	must.NoError(t, err)
 	must.Eq(t, "example", *job1Canonicalized.Name)
 	must.Eq(t, "default", *job1Canonicalized.Namespace)
 	must.NotEq(t, job1, job1Canonicalized)
 
-	// Test ParseHCLOpts
+	// Test ParseDUMB_HCLOpts
 	req := &JobsParseRequest{
-		JobHCL:       jobspec,
+		JobDUMB_HCL:       jobspec,
 		Canonicalize: false,
 	}
 
-	job2, err := c.Jobs().ParseHCLOpts(req)
+	job2, err := c.Jobs().ParseDUMB_HCLOpts(req)
 	must.NoError(t, err)
 	must.Eq(t, job1, job2)
 
-	// Test ParseHCLOpts with Canonicalize=true
+	// Test ParseDUMB_HCLOpts with Canonicalize=true
 	req = &JobsParseRequest{
-		JobHCL:       jobspec,
+		JobDUMB_HCL:       jobspec,
 		Canonicalize: true,
 	}
-	job2Canonicalized, err := c.Jobs().ParseHCLOpts(req)
+	job2Canonicalized, err := c.Jobs().ParseDUMB_HCLOpts(req)
 	must.NoError(t, err)
 	must.Eq(t, job1Canonicalized, job2Canonicalized)
 }

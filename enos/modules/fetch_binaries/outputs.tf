@@ -3,7 +3,7 @@
 
 output "binary_path" {
   description = "Binary's local path per requested OS"
-  value       = { for os, res in module.fetch_artifact : os => res.nomad_local_binary }
+  value       = { for os, res in module.fetch_artifact : os => res.dumb-nomad_local_binary }
 }
 
 output "artifact_url" {

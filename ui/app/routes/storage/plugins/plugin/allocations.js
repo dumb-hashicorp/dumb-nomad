@@ -5,8 +5,8 @@
 
 import Route from '@ember/routing/route';
 import { collect } from '@ember/object/computed';
-import { watchRecord } from 'nomad-ui/utils/properties/watch';
-import WithWatchers from 'nomad-ui/mixins/with-watchers';
+import { watchRecord } from 'dumb-nomad-ui/utils/properties/watch';
+import WithWatchers from 'dumb-nomad-ui/mixins/with-watchers';
 import { inject as service } from '@ember/service';
 
 export default class AllocationsRoute extends Route.extend(WithWatchers) {

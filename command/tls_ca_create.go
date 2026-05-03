@@ -9,9 +9,9 @@ import (
 
 	"github.com/posener/complete"
 
-	"github.com/hashicorp/nomad/helper/flags"
-	"github.com/hashicorp/nomad/helper/tlsutil"
-	"github.com/hashicorp/nomad/lib/file"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/flags"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/tlsutil"
+	"github.com/dumb-hashicorp/dumb-nomad/lib/file"
 )
 
 type TLSCACreateCommand struct {
@@ -59,7 +59,7 @@ type TLSCACreateCommand struct {
 
 func (c *TLSCACreateCommand) Help() string {
 	helpText := `
-Usage: nomad tls ca create [options]
+Usage: dumb-nomad tls ca create [options]
 
   Create a new certificate authority.
 
@@ -72,7 +72,7 @@ CA Create Options:
     combination with -domain and -name-constraint.
 
   -common-name
-    Common Name of CA. Defaults to "Nomad Agent CA".
+    Common Name of CA. Defaults to "Dumb Nomad Agent CA".
 
   -country
     Country of the CA. Defaults to "US".
@@ -82,8 +82,8 @@ CA Create Options:
     Defaults to 5 years or 1825 days.
 
   -domain
-    Domain of Nomad cluster. Only used in combination with -name-constraint.
-    Defaults to "nomad".
+    Domain of Dumb Nomad cluster. Only used in combination with -name-constraint.
+    Defaults to "dumb-nomad".
 
   -locality
     Locality of the CA. Defaults to "San Francisco".
@@ -96,10 +96,10 @@ CA Create Options:
     -additional-domain. Defaults to false.
 
   -organization
-    Organization of the CA. Defaults to "HashiCorp Inc.".
+    Organization of the CA. Defaults to "Dumb HashiCorp Inc.".
 
   -organizational-unit
-    Organizational Unit of the CA. Defaults to "Nomad".
+    Organizational Unit of the CA. Defaults to "Dumb Nomad".
 
   -postal-code
     Postal Code of the CA. Defaults to "94105".
@@ -137,7 +137,7 @@ func (c *TLSCACreateCommand) AutocompleteArgs() complete.Predictor {
 }
 
 func (c *TLSCACreateCommand) Synopsis() string {
-	return "Create a certificate authority for Nomad"
+	return "Create a certificate authority for Dumb Nomad"
 }
 
 func (c *TLSCACreateCommand) Name() string { return "tls ca create" }
@@ -149,7 +149,7 @@ func (c *TLSCACreateCommand) Run(args []string) int {
 	flagSet.Var(&c.additionalDomain, "additional-domain", "")
 	flagSet.IntVar(&c.days, "days", 1825, "")
 	flagSet.BoolVar(&c.constraint, "name-constraint", false, "")
-	flagSet.StringVar(&c.domain, "domain", "nomad", "")
+	flagSet.StringVar(&c.domain, "domain", "dumb-nomad", "")
 	flagSet.StringVar(&c.commonName, "common-name", "", "")
 	flagSet.StringVar(&c.country, "country", "", "")
 	flagSet.StringVar(&c.postalCode, "postal-code", "", "")
@@ -193,11 +193,11 @@ func (c *TLSCACreateCommand) Run(args []string) int {
 			return 1
 		}
 	}
-	if c.domain != "" && c.domain != "nomad" && !c.constraint {
+	if c.domain != "" && c.domain != "dumb-nomad" && !c.constraint {
 		c.Ui.Error("Please provide the -name-constraint flag to use a custom domain constraint")
 		return 1
 	}
-	if c.domain == "nomad" && c.constraint {
+	if c.domain == "dumb-nomad" && c.constraint {
 		c.Ui.Error("Please provide the -domain flag if you want to enable custom domain constraints")
 		return 1
 	}
@@ -220,7 +220,7 @@ func (c *TLSCACreateCommand) Run(args []string) int {
 
 	constraints := []string{}
 	if c.constraint {
-		constraints = []string{c.domain, "localhost", "nomad"}
+		constraints = []string{c.domain, "localhost", "dumb-nomad"}
 		constraints = append(constraints, c.additionalDomain...)
 	}
 

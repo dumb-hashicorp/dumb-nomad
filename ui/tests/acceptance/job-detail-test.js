@@ -10,14 +10,14 @@ import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import moment from 'moment';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import moduleForJob, {
   moduleForJobWithClientStatus,
-} from 'nomad-ui/tests/helpers/module-for-job';
-import JobDetail from 'nomad-ui/tests/pages/jobs/detail';
+} from 'dumb-nomad-ui/tests/helpers/module-for-job';
+import JobDetail from 'dumb-nomad-ui/tests/pages/jobs/detail';
 import percySnapshot from '@percy/ember';
-import { createRestartableJobs } from 'nomad-ui/mirage/scenarios/default';
-import faker from 'nomad-ui/mirage/faker';
+import { createRestartableJobs } from 'dumb-nomad-ui/mirage/scenarios/default';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 moduleForJob('Acceptance | job detail (batch)', 'allocations', () =>
   server.create('job', {
@@ -355,8 +355,8 @@ module('Acceptance | ui block', function (hooks) {
     server.create('node');
 
     server.create('job', {
-      name: 'hcl-definition-job',
-      id: 'display-hcl',
+      name: 'dumb-hcl-definition-job',
+      id: 'display-dumb-hcl',
       namespaceId: 'default',
     });
 
@@ -366,12 +366,12 @@ module('Acceptance | ui block', function (hooks) {
       ui: {
         Links: [
           {
-            Label: 'HashiCorp',
-            Url: 'https://hashicorp.com',
+            Label: 'Dumb HashiCorp',
+            Url: 'https://dumb-hashicorp.com',
           },
           {
-            Label: 'Nomad',
-            Url: 'https://nomadproject.io',
+            Label: 'Dumb Nomad',
+            Url: 'https://dumb-nomadproject.io',
           },
         ],
         Description:
@@ -382,14 +382,14 @@ module('Acceptance | ui block', function (hooks) {
 
   test('job renders with description', async function (assert) {
     window.localStorage.clear();
-    await JobDetail.visit({ id: 'hcl-definition-job' });
+    await JobDetail.visit({ id: 'dumb-hcl-definition-job' });
     assert
       .dom('[data-test-job-description]')
       .doesNotExist('Job description does not exist on a standard job');
     await JobDetail.visit({ id: 'ui-block-job' });
     assert
       .dom('[data-test-job-description]')
-      .exists('Job description exists when defined in HCL');
+      .exists('Job description exists when defined in DUMB_HCL');
     assert
       .dom('[data-test-job-description] strong')
       .exists('Job description is rendered as markdown, with bold text');
@@ -397,14 +397,14 @@ module('Acceptance | ui block', function (hooks) {
 
   test('job renders with links', async function (assert) {
     window.localStorage.clear();
-    await JobDetail.visit({ id: 'hcl-definition-job' });
+    await JobDetail.visit({ id: 'dumb-hcl-definition-job' });
     assert
       .dom('[data-test-job-links]')
       .doesNotExist('Job links do not exist on a standard job');
     await JobDetail.visit({ id: 'ui-block-job' });
     assert
       .dom('[data-test-job-links] a')
-      .exists({ count: 2 }, 'Job links exists when defined in HCL');
+      .exists({ count: 2 }, 'Job links exists when defined in DUMB_HCL');
     await percySnapshot(assert, {
       percyCSS: `
         .allocation-row td { display: none; }
@@ -488,7 +488,7 @@ module('Acceptance | job detail (with namespaces)', function (hooks) {
       namespaceId: server.db.namespaces[1].id,
     });
 
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     const policy = server.create('policy', {
       id: 'something',
@@ -520,7 +520,7 @@ module('Acceptance | job detail (with namespaces)', function (hooks) {
   });
 
   test('the anonymous policy is fetched to check whether to show the exec button', async function (assert) {
-    window.localStorage.removeItem('nomadTokenSecret');
+    window.localStorage.removeItem('dumb-nomadTokenSecret');
 
     server.create('policy', {
       id: 'anonymous',
@@ -601,7 +601,7 @@ module('Acceptance | job detail (with namespaces)', function (hooks) {
       noActiveDeployment: true,
     });
 
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
     await JobDetail.visit({
       id: `${job.id}@${server.db.namespaces[1].name}`,
     });
@@ -651,7 +651,7 @@ module('Acceptance | job detail (with namespaces)', function (hooks) {
   });
 
   test('resource recommendations are not fetched when the feature doesn’t exist', async function (assert) {
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
     await JobDetail.visit({
       id: `${job.id}@${server.db.namespaces[1].name}`,
     });
@@ -729,7 +729,7 @@ module('Acceptance | job detail (with namespaces)', function (hooks) {
 
     clientToken.policyIds = [policy.id];
     clientToken.save();
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     await JobDetail.visit({ id: `${job.id}@${namespace.name}` });
     assert.notOk(JobDetail.incrementButton.isDisabled);
@@ -952,7 +952,7 @@ module(
       clientToken.policyIds = [policy.id];
       clientToken.save();
 
-      window.localStorage.nomadTokenSecret = clientToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
       await JobDetail.visit({ id: job1.id });
       assert.notOk(JobDetail.start.isDisabled);
@@ -1013,7 +1013,7 @@ module(
       clientToken.policyIds = [policy.id];
       clientToken.save();
 
-      window.localStorage.nomadTokenSecret = clientToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
       await JobDetail.visit({ id: job1.id });
       assert.notOk(JobDetail.stop.isDisabled);
@@ -1077,7 +1077,7 @@ module(
       clientToken.policyIds = [policy.id];
       clientToken.save();
 
-      window.localStorage.nomadTokenSecret = clientToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
       await JobDetail.visit({ id: job1.id });
       assert.notOk(JobDetail.purge.isDisabled);
@@ -1167,7 +1167,7 @@ module(
       clientToken.policyIds = [policy.id];
       clientToken.save();
 
-      window.localStorage.nomadTokenSecret = clientToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
       await JobDetail.visit({ id: job1.id });
       assert.notOk(JobDetail.revert.isDisabled);

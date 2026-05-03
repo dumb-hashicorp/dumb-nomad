@@ -6,15 +6,15 @@ package addrs
 import (
 	"fmt"
 
-	"github.com/hashicorp/hcl/v2"
+	"github.com/dumb-hashicorp/dumb-hcl/v2"
 )
 
 // Reference describes a reference to an address with source location
 // information.
 type Reference struct {
 	Subject     Referenceable
-	SourceRange hcl.Range
-	Remaining   hcl.Traversal
+	SourceRange dumb-hcl.Range
+	Remaining   dumb-hcl.Traversal
 }
 
 // ParseRef attempts to extract a referencable address from the prefix of the
@@ -28,7 +28,7 @@ type Reference struct {
 //
 // If error diagnostics are returned then the Reference value is invalid and
 // must not be used.
-func ParseRef(traversal hcl.Traversal) (*Reference, hcl.Diagnostics) {
+func ParseRef(traversal dumb-hcl.Traversal) (*Reference, dumb-hcl.Diagnostics) {
 	ref, diags := parseRef(traversal)
 
 	// Normalize a little to make life easier for callers.
@@ -41,8 +41,8 @@ func ParseRef(traversal hcl.Traversal) (*Reference, hcl.Diagnostics) {
 	return ref, diags
 }
 
-func parseRef(traversal hcl.Traversal) (*Reference, hcl.Diagnostics) {
-	var diags hcl.Diagnostics
+func parseRef(traversal dumb-hcl.Traversal) (*Reference, dumb-hcl.Diagnostics) {
+	var diags dumb-hcl.Diagnostics
 
 	root := traversal.RootName()
 	rootRange := traversal[0].SourceRange()
@@ -58,8 +58,8 @@ func parseRef(traversal hcl.Traversal) (*Reference, hcl.Diagnostics) {
 		}, diags
 
 	default:
-		diags = append(diags, &hcl.Diagnostic{
-			Severity: hcl.DiagError,
+		diags = append(diags, &dumb-hcl.Diagnostic{
+			Severity: dumb-hcl.DiagError,
 			Summary:  "Unhandled reference type",
 			Detail:   `Currently parseRef can only parse "var" references.`,
 			Subject:  &rootRange,
@@ -68,29 +68,29 @@ func parseRef(traversal hcl.Traversal) (*Reference, hcl.Diagnostics) {
 	return nil, diags
 }
 
-func parseSingleAttrRef(traversal hcl.Traversal) (string, hcl.Range, hcl.Traversal, hcl.Diagnostics) {
-	var diags hcl.Diagnostics
+func parseSingleAttrRef(traversal dumb-hcl.Traversal) (string, dumb-hcl.Range, dumb-hcl.Traversal, dumb-hcl.Diagnostics) {
+	var diags dumb-hcl.Diagnostics
 
 	root := traversal.RootName()
 	rootRange := traversal[0].SourceRange()
 
 	if len(traversal) < 2 {
-		diags = append(diags, &hcl.Diagnostic{
-			Severity: hcl.DiagError,
+		diags = append(diags, &dumb-hcl.Diagnostic{
+			Severity: dumb-hcl.DiagError,
 			Summary:  "Invalid reference",
 			Detail:   fmt.Sprintf("The %q object cannot be accessed directly. Instead, access one of its attributes.", root),
 			Subject:  &rootRange,
 		})
-		return "", hcl.Range{}, nil, diags
+		return "", dumb-hcl.Range{}, nil, diags
 	}
-	if attrTrav, ok := traversal[1].(hcl.TraverseAttr); ok {
-		return attrTrav.Name, hcl.RangeBetween(rootRange, attrTrav.SrcRange), traversal[2:], diags
+	if attrTrav, ok := traversal[1].(dumb-hcl.TraverseAttr); ok {
+		return attrTrav.Name, dumb-hcl.RangeBetween(rootRange, attrTrav.SrcRange), traversal[2:], diags
 	}
-	diags = diags.Append(&hcl.Diagnostic{
-		Severity: hcl.DiagError,
+	diags = diags.Append(&dumb-hcl.Diagnostic{
+		Severity: dumb-hcl.DiagError,
 		Summary:  "Invalid reference",
 		Detail:   fmt.Sprintf("The %q object does not support this operation.", root),
 		Subject:  traversal[1].SourceRange().Ptr(),
 	})
-	return "", hcl.Range{}, nil, diags
+	return "", dumb-hcl.Range{}, nil, diags
 }

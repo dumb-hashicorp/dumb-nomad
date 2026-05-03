@@ -7,8 +7,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
 	"github.com/shirou/gopsutil/v3/cpu"
 )
 

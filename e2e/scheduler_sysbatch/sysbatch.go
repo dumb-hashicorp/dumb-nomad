@@ -7,10 +7,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -32,21 +32,21 @@ func init() {
 
 func (tc *SysBatchSchedulerTest) BeforeAll(f *framework.F) {
 	// Ensure cluster has leader before running tests
-	e2eutil.WaitForLeader(f.T(), tc.Nomad())
-	e2eutil.WaitForNodesReady(f.T(), tc.Nomad(), 4)
+	e2eutil.WaitForLeader(f.T(), tc.Dumb Nomad())
+	e2eutil.WaitForNodesReady(f.T(), tc.Dumb Nomad(), 4)
 }
 
 func (tc *SysBatchSchedulerTest) TestJobRunBasic(f *framework.F) {
 	t := f.T()
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 
 	// submit a fast sysbatch job
 	jobID := "sysbatch_run_basic"
 	tc.jobIDs = append(tc.jobIDs, jobID)
-	e2eutil.RegisterAndWaitForAllocs(t, nomadClient, "scheduler_sysbatch/input/sysbatch_job_fast.nomad", jobID, "")
+	e2eutil.RegisterAndWaitForAllocs(t, dumb-nomadClient, "scheduler_sysbatch/input/sysbatch_job_fast.dumb-nomad", jobID, "")
 
 	// get our allocations for this sysbatch job
-	jobs := nomadClient.Jobs()
+	jobs := dumb-nomadClient.Jobs()
 	allocs, _, err := jobs.Allocations(jobID, true, nil)
 	require.NoError(t, err)
 
@@ -55,20 +55,20 @@ func (tc *SysBatchSchedulerTest) TestJobRunBasic(f *framework.F) {
 
 	// wait for every alloc to reach completion
 	allocIDs := e2eutil.AllocIDsFromAllocationListStubs(allocs)
-	e2eutil.WaitForAllocsStatus(t, nomadClient, allocIDs, structs.AllocClientStatusComplete)
+	e2eutil.WaitForAllocsStatus(t, dumb-nomadClient, allocIDs, structs.AllocClientStatusComplete)
 }
 
 func (tc *SysBatchSchedulerTest) TestJobStopEarly(f *framework.F) {
 	t := f.T()
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 
 	// submit a slow sysbatch job
 	jobID := "sysbatch_stop_early"
 	tc.jobIDs = append(tc.jobIDs, jobID)
-	e2eutil.RegisterAndWaitForAllocs(t, nomadClient, "scheduler_sysbatch/input/sysbatch_job_slow.nomad", jobID, "")
+	e2eutil.RegisterAndWaitForAllocs(t, dumb-nomadClient, "scheduler_sysbatch/input/sysbatch_job_slow.dumb-nomad", jobID, "")
 
 	// get our allocations for this sysbatch job
-	jobs := nomadClient.Jobs()
+	jobs := dumb-nomadClient.Jobs()
 	allocs, _, err := jobs.Allocations(jobID, true, nil)
 	require.NoError(t, err)
 
@@ -77,7 +77,7 @@ func (tc *SysBatchSchedulerTest) TestJobStopEarly(f *framework.F) {
 
 	// wait for every alloc to reach running status
 	allocIDs := e2eutil.AllocIDsFromAllocationListStubs(allocs)
-	e2eutil.WaitForAllocsStatus(t, nomadClient, allocIDs, structs.AllocClientStatusRunning)
+	e2eutil.WaitForAllocsStatus(t, dumb-nomadClient, allocIDs, structs.AllocClientStatusRunning)
 
 	// stop the job before allocs reach completion
 	_, _, err = jobs.Deregister(jobID, false, nil)
@@ -86,15 +86,15 @@ func (tc *SysBatchSchedulerTest) TestJobStopEarly(f *framework.F) {
 
 func (tc *SysBatchSchedulerTest) TestJobReplaceRunning(f *framework.F) {
 	t := f.T()
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 
 	// submit a slow sysbatch job
 	jobID := "sysbatch_replace_running"
 	tc.jobIDs = append(tc.jobIDs, jobID)
-	e2eutil.RegisterAndWaitForAllocs(t, nomadClient, "scheduler_sysbatch/input/sysbatch_job_slow.nomad", jobID, "")
+	e2eutil.RegisterAndWaitForAllocs(t, dumb-nomadClient, "scheduler_sysbatch/input/sysbatch_job_slow.dumb-nomad", jobID, "")
 
 	// get out allocations for this sysbatch job
-	jobs := nomadClient.Jobs()
+	jobs := dumb-nomadClient.Jobs()
 	allocs, _, err := jobs.Allocations(jobID, true, nil)
 	require.NoError(t, err)
 
@@ -103,10 +103,10 @@ func (tc *SysBatchSchedulerTest) TestJobReplaceRunning(f *framework.F) {
 
 	// wait for every alloc to reach running status
 	allocIDs := e2eutil.AllocIDsFromAllocationListStubs(allocs)
-	e2eutil.WaitForAllocsStatus(t, nomadClient, allocIDs, structs.AllocClientStatusRunning)
+	e2eutil.WaitForAllocsStatus(t, dumb-nomadClient, allocIDs, structs.AllocClientStatusRunning)
 
 	// replace the slow job with the fast job
-	intermediate := e2eutil.RegisterAndWaitForAllocs(t, nomadClient, "scheduler_sysbatch/input/sysbatch_job_fast.nomad", jobID, "")
+	intermediate := e2eutil.RegisterAndWaitForAllocs(t, dumb-nomadClient, "scheduler_sysbatch/input/sysbatch_job_fast.dumb-nomad", jobID, "")
 
 	// get the allocs for the new updated job
 	var updated []*api.AllocationListStub
@@ -123,20 +123,20 @@ func (tc *SysBatchSchedulerTest) TestJobReplaceRunning(f *framework.F) {
 	require.True(t, len(updated) >= 3)
 
 	// wait for the allocs of the fast job to complete
-	e2eutil.WaitForAllocsStatus(t, nomadClient, newAllocIDs, structs.AllocClientStatusComplete)
+	e2eutil.WaitForAllocsStatus(t, dumb-nomadClient, newAllocIDs, structs.AllocClientStatusComplete)
 }
 
 func (tc *SysBatchSchedulerTest) TestJobReplaceDead(f *framework.F) {
 	t := f.T()
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 
 	// submit a fast sysbatch job
 	jobID := "sysbatch_replace_dead"
 	tc.jobIDs = append(tc.jobIDs, jobID)
-	e2eutil.RegisterAndWaitForAllocs(t, nomadClient, "scheduler_sysbatch/input/sysbatch_job_fast.nomad", jobID, "")
+	e2eutil.RegisterAndWaitForAllocs(t, dumb-nomadClient, "scheduler_sysbatch/input/sysbatch_job_fast.dumb-nomad", jobID, "")
 
 	// get the allocations for this sysbatch job
-	jobs := nomadClient.Jobs()
+	jobs := dumb-nomadClient.Jobs()
 	allocs, _, err := jobs.Allocations(jobID, true, nil)
 	require.NoError(t, err)
 
@@ -145,10 +145,10 @@ func (tc *SysBatchSchedulerTest) TestJobReplaceDead(f *framework.F) {
 
 	// wait for every alloc to reach complete status
 	allocIDs := e2eutil.AllocIDsFromAllocationListStubs(allocs)
-	e2eutil.WaitForAllocsStatus(t, nomadClient, allocIDs, structs.AllocClientStatusComplete)
+	e2eutil.WaitForAllocsStatus(t, dumb-nomadClient, allocIDs, structs.AllocClientStatusComplete)
 
 	// replace the fast job with the slow job
-	intermediate := e2eutil.RegisterAndWaitForAllocs(t, nomadClient, "scheduler_sysbatch/input/sysbatch_job_slow.nomad", jobID, "")
+	intermediate := e2eutil.RegisterAndWaitForAllocs(t, dumb-nomadClient, "scheduler_sysbatch/input/sysbatch_job_slow.dumb-nomad", jobID, "")
 
 	// get the allocs for the new updated job
 	var updated []*api.AllocationListStub
@@ -165,21 +165,21 @@ func (tc *SysBatchSchedulerTest) TestJobReplaceDead(f *framework.F) {
 	require.True(t, len(updated) >= 3)
 
 	// wait for the allocs of the slow job to be running
-	e2eutil.WaitForAllocsStatus(t, nomadClient, upAllocIDs, structs.AllocClientStatusRunning)
+	e2eutil.WaitForAllocsStatus(t, dumb-nomadClient, upAllocIDs, structs.AllocClientStatusRunning)
 }
 
 func (tc *SysBatchSchedulerTest) TestJobRunPeriodic(f *framework.F) {
 	t := f.T()
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 
 	// submit a fast sysbatch job
 	jobID := "sysbatch_job_periodic"
 	tc.jobIDs = append(tc.jobIDs, jobID)
-	err := e2eutil.Register(jobID, "scheduler_sysbatch/input/sysbatch_periodic.nomad")
+	err := e2eutil.Register(jobID, "scheduler_sysbatch/input/sysbatch_periodic.dumb-nomad")
 	require.NoError(t, err)
 
 	// force the cron job to run
-	jobs := nomadClient.Jobs()
+	jobs := dumb-nomadClient.Jobs()
 	_, _, err = jobs.PeriodicForce(jobID, nil)
 	require.NoError(t, err)
 
@@ -207,21 +207,21 @@ func (tc *SysBatchSchedulerTest) TestJobRunPeriodic(f *framework.F) {
 
 	// wait for every cron job alloc to reach completion
 	allocIDs := e2eutil.AllocIDsFromAllocationListStubs(allocs)
-	e2eutil.WaitForAllocsStatus(t, nomadClient, allocIDs, structs.AllocClientStatusComplete)
+	e2eutil.WaitForAllocsStatus(t, dumb-nomadClient, allocIDs, structs.AllocClientStatusComplete)
 }
 
 func (tc *SysBatchSchedulerTest) TestJobRunDispatch(f *framework.F) {
 	t := f.T()
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 
 	// submit a fast sysbatch dispatch job
 	jobID := "sysbatch_job_dispatch"
 	tc.jobIDs = append(tc.jobIDs, jobID)
-	err := e2eutil.Register(jobID, "scheduler_sysbatch/input/sysbatch_dispatch.nomad")
+	err := e2eutil.Register(jobID, "scheduler_sysbatch/input/sysbatch_dispatch.dumb-nomad")
 	require.NoError(t, err)
 
 	// dispatch the sysbatch job
-	jobs := nomadClient.Jobs()
+	jobs := dumb-nomadClient.Jobs()
 	result, _, err := jobs.Dispatch(jobID, map[string]string{
 		"KEY": "value",
 	}, nil, "", nil)
@@ -242,20 +242,20 @@ func (tc *SysBatchSchedulerTest) TestJobRunDispatch(f *framework.F) {
 
 	// wait for every dispatch alloc to reach completion
 	allocIDs := e2eutil.AllocIDsFromAllocationListStubs(allocs)
-	e2eutil.WaitForAllocsStatus(t, nomadClient, allocIDs, structs.AllocClientStatusComplete)
+	e2eutil.WaitForAllocsStatus(t, dumb-nomadClient, allocIDs, structs.AllocClientStatusComplete)
 }
 
 func (tc *SysBatchSchedulerTest) AfterEach(f *framework.F) {
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 
 	// Mark all nodes eligible
-	nodesAPI := tc.Nomad().Nodes()
+	nodesAPI := tc.Dumb Nomad().Nodes()
 	nodes, _, _ := nodesAPI.List(nil)
 	for _, node := range nodes {
 		_, _ = nodesAPI.ToggleEligibility(node.ID, true, nil)
 	}
 
-	jobs := nomadClient.Jobs()
+	jobs := dumb-nomadClient.Jobs()
 
 	// Stop all jobs in test
 	for _, id := range tc.jobIDs {
@@ -264,5 +264,5 @@ func (tc *SysBatchSchedulerTest) AfterEach(f *framework.F) {
 	tc.jobIDs = []string{}
 
 	// Garbage collect
-	_ = nomadClient.System().GarbageCollect()
+	_ = dumb-nomadClient.System().GarbageCollect()
 }

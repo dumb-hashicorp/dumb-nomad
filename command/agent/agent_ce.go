@@ -7,15 +7,15 @@
 package agent
 
 import (
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/nomad/structs/config"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
 )
 
 // EnterpriseAgent holds information and methods for enterprise functionality
 // in OSS it is an empty struct.
 type EnterpriseAgent struct{}
 
-func (a *Agent) setupEnterpriseAgent(log hclog.Logger) error {
+func (a *Agent) setupEnterpriseAgent(log dumb-hclog.Logger) error {
 	// configure eventer
 	a.auditor = &noOpAuditor{}
 

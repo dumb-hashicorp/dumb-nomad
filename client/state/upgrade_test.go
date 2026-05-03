@@ -8,10 +8,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/boltdd"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/boltdd"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/stretchr/testify/require"
 	"go.etcd.io/bbolt"
 )
@@ -72,7 +72,7 @@ func TestUpgrade_NeedsUpgrade_Old(t *testing.T) {
 
 // TestUpgrade_NeedsUpgrade_Error asserts that an error is returned from
 // NeedsUpgrade if an invalid db version is found. This is a safety measure to
-// prevent invalid and unintentional upgrades when downgrading Nomad.
+// prevent invalid and unintentional upgrades when downgrading Dumb Nomad.
 func TestUpgrade_NeedsUpgrade_Error(t *testing.T) {
 	ci.Parallel(t)
 
@@ -126,7 +126,7 @@ func TestUpgrade_DeleteInvalidAllocs_NoAlloc(t *testing.T) {
 
 	// Perform the Upgrade
 	require.NoError(t, db.Update(func(tx *boltdd.Tx) error {
-		return UpgradeAllocs(testlog.HCLogger(t), tx)
+		return UpgradeAllocs(testlog.DUMB_HCLogger(t), tx)
 	}))
 
 	// Assert invalid allocation bucket was removed
@@ -172,7 +172,7 @@ func TestUpgrade_upgradeTaskBucket_InvalidEntries(t *testing.T) {
 		bkt := tx.Bucket(taskName)
 
 		// upgradeTaskBucket should fail
-		state, err := upgradeTaskBucket(testlog.HCLogger(t), bkt)
+		state, err := upgradeTaskBucket(testlog.DUMB_HCLogger(t), bkt)
 		require.Nil(t, state)
 		require.Error(t, err)
 

@@ -9,22 +9,22 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
-const jobBasic = "./input/basic.nomad"
+const jobBasic = "./input/basic.dumb-nomad"
 
-// TestOperatorScheduler runs the Nomad Operator Scheduler suit of tests which
+// TestOperatorScheduler runs the Dumb Nomad Operator Scheduler suit of tests which
 // focus on the behaviour of the /v1/operator/scheduler API.
 func TestOperatorScheduler(t *testing.T) {
 
 	// Wait until we have a usable cluster before running the tests.
-	nomadClient := e2eutil.NomadClient(t)
-	e2eutil.WaitForLeader(t, nomadClient)
-	e2eutil.WaitForNodesReady(t, nomadClient, 1)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
+	e2eutil.WaitForLeader(t, dumb-nomadClient)
+	e2eutil.WaitForNodesReady(t, dumb-nomadClient, 1)
 
 	// Run our test cases.
 	t.Run("TestOperatorScheduler_ConfigPauseEvalBroker", testConfigPauseEvalBroker)
@@ -34,7 +34,7 @@ func TestOperatorScheduler(t *testing.T) {
 // correct behaviour is observed at each stage.
 func testConfigPauseEvalBroker(t *testing.T) {
 
-	nomadClient := e2eutil.NomadClient(t)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
 
 	// Generate our job ID which will be used for the entire test.
 	jobID := "operator-scheduler-config-pause-eval-broker-" + uuid.Generate()[:8]
@@ -47,20 +47,20 @@ func testConfigPauseEvalBroker(t *testing.T) {
 
 	// Register the job and ensure the alloc reaches the running state before
 	// moving safely on.
-	allocStubs := e2eutil.RegisterAndWaitForAllocs(t, nomadClient, jobBasic, jobID, "")
+	allocStubs := e2eutil.RegisterAndWaitForAllocs(t, dumb-nomadClient, jobBasic, jobID, "")
 	require.Len(t, allocStubs, 1)
-	e2eutil.WaitForAllocRunning(t, nomadClient, allocStubs[0].ID)
+	e2eutil.WaitForAllocRunning(t, dumb-nomadClient, allocStubs[0].ID)
 
 	// Get the current scheduler config object.
-	schedulerConfig, _, err := nomadClient.Operator().SchedulerGetConfiguration(nil)
+	schedulerConfig, _, err := dumb-nomadClient.Operator().SchedulerGetConfiguration(nil)
 	require.NoError(t, err)
 	require.NotNil(t, schedulerConfig.SchedulerConfig)
 
 	// Set the eval broker to be paused.
 	schedulerConfig.SchedulerConfig.PauseEvalBroker = true
 
-	// Write the config back to Nomad.
-	schedulerConfigUpdate, _, err := nomadClient.Operator().SchedulerSetConfiguration(
+	// Write the config back to Dumb Nomad.
+	schedulerConfigUpdate, _, err := dumb-nomadClient.Operator().SchedulerSetConfiguration(
 		schedulerConfig.SchedulerConfig, nil)
 	require.NoError(t, err)
 	require.True(t, schedulerConfigUpdate.Updated)
@@ -68,7 +68,7 @@ func testConfigPauseEvalBroker(t *testing.T) {
 	// Perform a deregister call. The call will succeed and create an
 	// evaluation. Do not use purge, so we can check the job status when
 	// dereigster happens.
-	evalID, _, err := nomadClient.Jobs().Deregister(jobID, false, nil)
+	evalID, _, err := dumb-nomadClient.Jobs().Deregister(jobID, false, nil)
 	require.NoError(t, err)
 	require.NotEmpty(t, evalID)
 
@@ -87,7 +87,7 @@ func testConfigPauseEvalBroker(t *testing.T) {
 			case <-timer.C:
 				return nil
 			default:
-				evalInfo, _, err := nomadClient.Evaluations().Info(evalID, nil)
+				evalInfo, _, err := dumb-nomadClient.Evaluations().Info(evalID, nil)
 				if err != nil {
 					return err
 				}
@@ -103,16 +103,16 @@ func testConfigPauseEvalBroker(t *testing.T) {
 	// Set the eval broker to be un-paused.
 	schedulerConfig.SchedulerConfig.PauseEvalBroker = false
 
-	// Write the config back to Nomad.
-	schedulerConfigUpdate, _, err = nomadClient.Operator().SchedulerSetConfiguration(
+	// Write the config back to Dumb Nomad.
+	schedulerConfigUpdate, _, err = dumb-nomadClient.Operator().SchedulerSetConfiguration(
 		schedulerConfig.SchedulerConfig, nil)
 	require.NoError(t, err)
 	require.True(t, schedulerConfigUpdate.Updated)
 
 	// Ensure the job is stopped, then run the garbage collection to clear out
 	// all resources.
-	e2eutil.WaitForJobStopped(t, nomadClient, jobID)
-	_, err = e2eutil.Command("nomad", "system", "gc")
+	e2eutil.WaitForJobStopped(t, dumb-nomadClient, jobID)
+	_, err = e2eutil.Command("dumb-nomad", "system", "gc")
 	require.NoError(t, err)
 
 	// If we have reached this far, we do not need to run the cleanup function.

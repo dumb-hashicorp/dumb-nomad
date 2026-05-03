@@ -117,11 +117,11 @@ func (n *NodePools) ListNodes(poolName string, q *QueryOptions) ([]*NodeListStub
 
 // NodePool is used to serialize a node pool.
 type NodePool struct {
-	Name                   string                          `hcl:"name,label"`
-	Description            string                          `hcl:"description,optional"`
-	Meta                   map[string]string               `hcl:"meta,block"`
-	NodeIdentityTTL        time.Duration                   `hcl:"node_identity_ttl,optional"`
-	SchedulerConfiguration *NodePoolSchedulerConfiguration `hcl:"scheduler_config,block"`
+	Name                   string                          `dumb-hcl:"name,label"`
+	Description            string                          `dumb-hcl:"description,optional"`
+	Meta                   map[string]string               `dumb-hcl:"meta,block"`
+	NodeIdentityTTL        time.Duration                   `dumb-hcl:"node_identity_ttl,optional"`
+	SchedulerConfiguration *NodePoolSchedulerConfiguration `dumb-hcl:"scheduler_config,block"`
 	CreateIndex            uint64
 	ModifyIndex            uint64
 }
@@ -176,6 +176,6 @@ func (n *NodePool) UnmarshalJSON(data []byte) (err error) {
 // NodePoolSchedulerConfiguration is used to serialize the scheduler
 // configuration of a node pool.
 type NodePoolSchedulerConfiguration struct {
-	SchedulerAlgorithm            SchedulerAlgorithm `hcl:"scheduler_algorithm,optional"`
-	MemoryOversubscriptionEnabled *bool              `hcl:"memory_oversubscription_enabled,optional"`
+	SchedulerAlgorithm            SchedulerAlgorithm `dumb-hcl:"scheduler_algorithm,optional"`
+	MemoryOversubscriptionEnabled *bool              `dumb-hcl:"memory_oversubscription_enabled,optional"`
 }

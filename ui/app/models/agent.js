@@ -9,7 +9,7 @@ import Model from '@ember-data/model';
 import { attr } from '@ember-data/model';
 import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
-import formatHost from 'nomad-ui/utils/format-host';
+import formatHost from 'dumb-nomad-ui/utils/format-host';
 
 export default class Agent extends Model {
   @service system;

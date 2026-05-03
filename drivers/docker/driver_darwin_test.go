@@ -19,7 +19,7 @@ import (
 // macOS sets tempdir as `/var`, which Docker does not allowlist as a path that
 // can be bind-mounted.
 func TestMain(m *testing.M) {
-	tmpdir := fmt.Sprintf("/tmp/nomad-docker-tests-%d", time.Now().Unix())
+	tmpdir := fmt.Sprintf("/tmp/dumb-nomad-docker-tests-%d", time.Now().Unix())
 
 	os.Setenv("TMPDIR", os.Getenv("TMPDIR"))
 	os.Setenv("TMPDIR", tmpdir)

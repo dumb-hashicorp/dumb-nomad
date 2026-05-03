@@ -9,15 +9,15 @@ import (
 	"os"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/shoenig/test/must"
 )
 
 func newTaskConfig(command []string) TaskConfig {
-	busyboxImageID := testRemoteDockerImage("hashicorpdev/busybox-windows", "server2016-0.1")
+	busyboxImageID := testRemoteDockerImage("dumb-hashicorpdev/busybox-windows", "server2016-0.1")
 
 	// BUSYBOX_IMAGE environment variable overrides the busybox image name
 	if img, ok := os.LookupEnv("BUSYBOX_IMAGE"); ok {
@@ -42,7 +42,7 @@ func Test_validateImageUser(t *testing.T) {
 	taskCfg := &drivers.TaskConfig{
 		ID:   uuid.Generate(),
 		Name: "busybox-demo",
-		User: "nomadUser",
+		User: "dumb-nomadUser",
 	}
 	taskDriverCfg := newTaskConfig([]string{"sh", "-c", "sleep 1"})
 
@@ -58,8 +58,8 @@ func Test_validateImageUser(t *testing.T) {
 	}{
 		{
 			"normal user",
-			"nomadUser",
-			"nomadUser",
+			"dumb-nomadUser",
+			"dumb-nomadUser",
 			false,
 			"process",
 			&DriverConfig{},

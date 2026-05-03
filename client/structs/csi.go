@@ -6,8 +6,8 @@ package structs
 import (
 	"errors"
 
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/csi"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi"
 )
 
 // CSIVolumeMountOptions contains the mount options that should be provided when
@@ -163,15 +163,15 @@ func (c *ClientCSIControllerAttachVolumeRequest) ToCSIRequest() (*csi.Controller
 }
 
 // ClientCSIControllerDetachVolumeRequest is the RPC made from the server to
-// a Nomad client to tell a CSI controller plugin on that client to perform
+// a Dumb Nomad client to tell a CSI controller plugin on that client to perform
 // ControllerUnpublish for a volume on a specific client.
 type ClientCSIControllerAttachVolumeResponse struct {
 	// Opaque static publish properties of the volume. SP MAY use this
 	// field to ensure subsequent `NodeStageVolume` or `NodePublishVolume`
 	// calls calls have contextual information.
-	// The contents of this field SHALL be opaque to nomad.
+	// The contents of this field SHALL be opaque to dumb-nomad.
 	// The contents of this field SHALL NOT be mutable.
-	// The contents of this field SHALL be safe for the nomad to cache.
+	// The contents of this field SHALL be safe for the dumb-nomad to cache.
 	// The contents of this field SHOULD NOT contain sensitive
 	// information.
 	// The contents of this field SHOULD NOT be used for uniquely
@@ -213,7 +213,7 @@ func (c *ClientCSIControllerDetachVolumeRequest) ToCSIRequest() *csi.ControllerU
 type ClientCSIControllerDetachVolumeResponse struct{}
 
 // ClientCSIControllerCreateVolumeRequest the RPC made from the server to a
-// Nomad client to tell a CSI controller plugin on that client to perform
+// Dumb Nomad client to tell a CSI controller plugin on that client to perform
 // CreateVolume
 type ClientCSIControllerCreateVolumeRequest struct {
 	Name                string
@@ -290,7 +290,7 @@ type ClientCSIControllerCreateVolumeResponse struct {
 }
 
 // ClientCSIControllerExpandVolumeRequest is the RPC made from the server to a
-// Nomad client to tell a CSI controller plugin on that client to perform
+// Dumb Nomad client to tell a CSI controller plugin on that client to perform
 // ControllerExpandVolume
 type ClientCSIControllerExpandVolumeRequest struct {
 	ExternalVolumeID string
@@ -320,7 +320,7 @@ type ClientCSIControllerExpandVolumeResponse struct {
 }
 
 // ClientCSIControllerDeleteVolumeRequest the RPC made from the server to a
-// Nomad client to tell a CSI controller plugin on that client to perform
+// Dumb Nomad client to tell a CSI controller plugin on that client to perform
 // DeleteVolume
 type ClientCSIControllerDeleteVolumeRequest struct {
 	ExternalVolumeID string
@@ -339,11 +339,11 @@ func (req *ClientCSIControllerDeleteVolumeRequest) ToCSIRequest() *csi.Controlle
 type ClientCSIControllerDeleteVolumeResponse struct{}
 
 // ClientCSIControllerListVolumesVolumeRequest the RPC made from the server to
-// a Nomad client to tell a CSI controller plugin on that client to perform
+// a Dumb Nomad client to tell a CSI controller plugin on that client to perform
 // ListVolumes
 type ClientCSIControllerListVolumesRequest struct {
 	// these pagination fields match the pagination fields of the plugins and
-	// not Nomad's own fields, for clarity when mapping between the two RPCs
+	// not Dumb Nomad's own fields, for clarity when mapping between the two RPCs
 	MaxEntries    int32
 	StartingToken string
 
@@ -363,7 +363,7 @@ type ClientCSIControllerListVolumesResponse struct {
 }
 
 // ClientCSIControllerCreateSnapshotRequest the RPC made from the server to a
-// Nomad client to tell a CSI controller plugin on that client to perform
+// Dumb Nomad client to tell a CSI controller plugin on that client to perform
 // CreateSnapshot
 type ClientCSIControllerCreateSnapshotRequest struct {
 	ExternalSourceVolumeID string
@@ -392,7 +392,7 @@ type ClientCSIControllerCreateSnapshotResponse struct {
 }
 
 // ClientCSIControllerDeleteSnapshotRequest the RPC made from the server to a
-// Nomad client to tell a CSI controller plugin on that client to perform
+// Dumb Nomad client to tell a CSI controller plugin on that client to perform
 // DeleteSnapshot
 type ClientCSIControllerDeleteSnapshotRequest struct {
 	ID      string
@@ -411,11 +411,11 @@ func (req *ClientCSIControllerDeleteSnapshotRequest) ToCSIRequest() *csi.Control
 type ClientCSIControllerDeleteSnapshotResponse struct{}
 
 // ClientCSIControllerListSnapshotsRequest is the RPC made from the server to
-// a Nomad client to tell a CSI controller plugin on that client to perform
+// a Dumb Nomad client to tell a CSI controller plugin on that client to perform
 // ListSnapshots
 type ClientCSIControllerListSnapshotsRequest struct {
 	// these pagination fields match the pagination fields of the plugins and
-	// not Nomad's own fields, for clarity when mapping between the two RPCs
+	// not Dumb Nomad's own fields, for clarity when mapping between the two RPCs
 	MaxEntries    int32
 	StartingToken string
 	Secrets       structs.CSISecrets
@@ -437,14 +437,14 @@ type ClientCSIControllerListSnapshotsResponse struct {
 }
 
 // ClientCSINodeDetachVolumeRequest is the RPC made from the server to
-// a Nomad client to tell a CSI node plugin on that client to perform
+// a Dumb Nomad client to tell a CSI node plugin on that client to perform
 // NodeUnpublish and NodeUnstage.
 type ClientCSINodeDetachVolumeRequest struct {
 	PluginID        string // ID of the plugin that manages the volume (required)
 	VolumeID        string // ID of the volume to be unpublished (required)
 	VolumeNamespace string // Namespace of the volume to be unpublished (required)
 	AllocID         string // ID of the allocation we're unpublishing for (required)
-	NodeID          string // ID of the Nomad client targeted
+	NodeID          string // ID of the Dumb Nomad client targeted
 	ExternalID      string // External ID of the volume to be unpublished (required)
 
 	// These fields should match the original volume request so that
@@ -457,7 +457,7 @@ type ClientCSINodeDetachVolumeRequest struct {
 type ClientCSINodeDetachVolumeResponse struct{}
 
 // ClientCSINodeExpandVolumeRequest is the RPC made from the server to
-// a Nomad client to tell a CSI node plugin on that client to perform
+// a Dumb Nomad client to tell a CSI node plugin on that client to perform
 // NodeExpandVolume.
 type ClientCSINodeExpandVolumeRequest struct {
 	PluginID        string // ID of the plugin that manages the volume (required)

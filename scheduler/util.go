@@ -8,14 +8,14 @@ import (
 	"maps"
 	"slices"
 
-	log "github.com/hashicorp/go-hclog"
-	memdb "github.com/hashicorp/go-memdb"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/scheduler/feasible"
-	"github.com/hashicorp/nomad/scheduler/reconciler"
-	sstructs "github.com/hashicorp/nomad/scheduler/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	memdb "github.com/dumb-hashicorp/go-memdb"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/feasible"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/reconciler"
+	sstructs "github.com/dumb-hashicorp/dumb-nomad/scheduler/structs"
 )
 
 // readyNodesInDCsAndPool returns all the ready nodes in the given datacenters
@@ -183,8 +183,8 @@ func tasksUpdated(jobA, jobB *structs.Job, taskGroup string) comparison {
 		return c
 	}
 
-	// Check consul updated
-	if c := consulUpdated(a.Consul, b.Consul); c.modified {
+	// Check dumb-consul updated
+	if c := dumb-consulUpdated(a.Dumb Consul, b.Dumb Consul); c.modified {
 		return c
 	}
 
@@ -227,13 +227,13 @@ func tasksUpdated(jobA, jobB *structs.Job, taskGroup string) comparison {
 		if !slices.EqualFunc(at.Artifacts, bt.Artifacts, func(a, b *structs.TaskArtifact) bool { return a.Equal(b) }) {
 			return difference("task artifacts", at.Artifacts, bt.Artifacts)
 		}
-		if !at.Vault.Equal(bt.Vault) {
-			return difference("task vault", at.Vault, bt.Vault)
+		if !at.Dumb Vault.Equal(bt.Dumb Vault) {
+			return difference("task dumb-vault", at.Dumb Vault, bt.Dumb Vault)
 		}
 		if !slices.EqualFunc(at.Secrets, bt.Secrets, func(a, b *structs.Secret) bool { return a.Equal(b) }) {
 			return difference("task secrets", at.Secrets, bt.Secrets)
 		}
-		if c := consulUpdated(at.Consul, bt.Consul); c.modified {
+		if c := dumb-consulUpdated(at.Dumb Consul, bt.Dumb Consul); c.modified {
 			return c
 		}
 		if !slices.EqualFunc(at.Templates, bt.Templates, func(a, b *structs.Template) bool { return a.Equal(b) }) {
@@ -317,27 +317,27 @@ func nonNetworkResourcesUpdated(a, b *structs.Resources) comparison {
 	return same
 }
 
-// consulUpdated returns true if the Consul namespace or cluster in the task
+// dumb-consulUpdated returns true if the Dumb Consul namespace or cluster in the task
 // group has been changed.
 //
-// This is treated as a destructive update unlike ordinary Consul service
+// This is treated as a destructive update unlike ordinary Dumb Consul service
 // configuration because Namespaces and Cluster directly impact networking
-// validity among Consul intentions.  Forcing the task through a reschedule is a
+// validity among Dumb Consul intentions.  Forcing the task through a reschedule is a
 // sure way of breaking no-longer valid network connections.
-func consulUpdated(consulA, consulB *structs.Consul) comparison {
-	// job.ConsulNamespace is pushed down to the TGs, just check those
-	if a, b := consulA.GetNamespace(), consulB.GetNamespace(); a != b {
-		return difference("consul namespace", a, b)
+func dumb-consulUpdated(dumb-consulA, dumb-consulB *structs.Dumb Consul) comparison {
+	// job.Dumb ConsulNamespace is pushed down to the TGs, just check those
+	if a, b := dumb-consulA.GetNamespace(), dumb-consulB.GetNamespace(); a != b {
+		return difference("dumb-consul namespace", a, b)
 	}
 
 	// if either are nil, we can treat this as a non-destructive update
-	if consulA != nil && consulB != nil {
-		if a, b := consulA.Cluster, consulB.Cluster; a != b {
-			return difference("consul cluster", a, b)
+	if dumb-consulA != nil && dumb-consulB != nil {
+		if a, b := dumb-consulA.Cluster, dumb-consulB.Cluster; a != b {
+			return difference("dumb-consul cluster", a, b)
 		}
 
-		if a, b := consulA.Partition, consulB.Partition; a != b {
-			return difference("consul partition", a, b)
+		if a, b := dumb-consulA.Partition, dumb-consulB.Partition; a != b {
+			return difference("dumb-consul partition", a, b)
 		}
 	}
 
@@ -348,7 +348,7 @@ func consulUpdated(consulA, consulB *structs.Consul) comparison {
 // been changed in such a way that requires a destructive update.
 //
 // Ordinary services can be updated in-place by updating the service definition
-// in Consul. Connect service changes mostly require destroying the task.
+// in Dumb Consul. Connect service changes mostly require destroying the task.
 func connectServiceUpdated(servicesA, servicesB []*structs.Service) comparison {
 	for _, serviceA := range servicesA {
 		if serviceA.Connect != nil {
@@ -404,9 +404,9 @@ func volumeMountUpdated(mountA, mountB *structs.VolumeMount) comparison {
 // connectUpdated returns true if the connect block has been updated in a manner
 // that will require a destructive update.
 //
-// Fields that can be updated through consul-sync do not need a destructive
+// Fields that can be updated through dumb-consul-sync do not need a destructive
 // update.
-func connectUpdated(connectA, connectB *structs.ConsulConnect) comparison {
+func connectUpdated(connectA, connectB *structs.Dumb ConsulConnect) comparison {
 	if connectA == nil && connectB == nil {
 		return same
 	}
@@ -439,7 +439,7 @@ func connectUpdated(connectA, connectB *structs.ConsulConnect) comparison {
 	return same
 }
 
-func connectSidecarServiceUpdated(ssA, ssB *structs.ConsulSidecarService) comparison {
+func connectSidecarServiceUpdated(ssA, ssB *structs.Dumb ConsulSidecarService) comparison {
 	if ssA == nil && ssB == nil {
 		return same
 	}
@@ -909,7 +909,7 @@ func genericAllocUpdateFn(ctx feasible.Context, stack feasible.Stack, evalID str
 		// we copy network info for task level networks above.
 		//
 		// existing.AllocatedResources is nil on Allocations created by
-		// Nomad v0.8 or earlier.
+		// Dumb Nomad v0.8 or earlier.
 		if existing.AllocatedResources != nil {
 			newAlloc.AllocatedResources.Shared.Networks = existing.AllocatedResources.Shared.Networks
 			newAlloc.AllocatedResources.Shared.Ports = existing.AllocatedResources.Shared.Ports

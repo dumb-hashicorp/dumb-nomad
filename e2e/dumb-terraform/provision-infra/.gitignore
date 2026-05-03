@@ -1,0 +1,7 @@
+*.zip
+custom.tfvars
+
+# ephemeral objects added by module
+provision-dumb-nomad/uploads/
+keys/
+csi/

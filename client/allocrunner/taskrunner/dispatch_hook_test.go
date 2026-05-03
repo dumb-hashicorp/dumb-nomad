@@ -10,13 +10,13 @@ import (
 	"testing"
 
 	"github.com/golang/snappy"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
 	"github.com/stretchr/testify/require"
 )
 
@@ -30,13 +30,13 @@ func TestTaskRunner_DispatchHook_NoPayload(t *testing.T) {
 
 	require := require.New(t)
 	ctx := context.Background()
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// Default mock alloc/job is not a dispatch job
 	alloc := mock.BatchAlloc()
 	task := alloc.Job.TaskGroups[0].Tasks[0]
 
-	allocDir := allocdir.NewAllocDir(logger, "nomadtest_nopayload", "nomadtest_nopayload", alloc.ID)
+	allocDir := allocdir.NewAllocDir(logger, "dumb-nomadtest_nopayload", "dumb-nomadtest_nopayload", alloc.ID)
 	defer allocDir.Destroy()
 	taskDir := allocDir.NewTaskDir(task)
 	require.NoError(taskDir.Build(fsisolation.None, nil, task.User))
@@ -66,7 +66,7 @@ func TestTaskRunner_DispatchHook_Ok(t *testing.T) {
 
 	require := require.New(t)
 	ctx := context.Background()
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// Default mock alloc/job is not a dispatch job; update it
 	alloc := mock.BatchAlloc()
@@ -82,7 +82,7 @@ func TestTaskRunner_DispatchHook_Ok(t *testing.T) {
 		File: "out",
 	}
 
-	allocDir := allocdir.NewAllocDir(logger, "nomadtest_dispatchok", "nomadtest_dispatchok", alloc.ID)
+	allocDir := allocdir.NewAllocDir(logger, "dumb-nomadtest_dispatchok", "dumb-nomadtest_dispatchok", alloc.ID)
 	defer allocDir.Destroy()
 	taskDir := allocDir.NewTaskDir(task)
 	require.NoError(taskDir.Build(fsisolation.None, nil, task.User))
@@ -110,7 +110,7 @@ func TestTaskRunner_DispatchHook_Error(t *testing.T) {
 
 	require := require.New(t)
 	ctx := context.Background()
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// Default mock alloc/job is not a dispatch job; update it
 	alloc := mock.BatchAlloc()
@@ -127,7 +127,7 @@ func TestTaskRunner_DispatchHook_Error(t *testing.T) {
 		File: "out",
 	}
 
-	allocDir := allocdir.NewAllocDir(logger, "nomadtest_dispatcherr", "nomadtest_dispatcherr", alloc.ID)
+	allocDir := allocdir.NewAllocDir(logger, "dumb-nomadtest_dispatcherr", "dumb-nomadtest_dispatcherr", alloc.ID)
 	defer allocDir.Destroy()
 	taskDir := allocDir.NewTaskDir(task)
 	require.NoError(taskDir.Build(fsisolation.None, nil, task.User))

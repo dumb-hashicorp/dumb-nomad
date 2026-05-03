@@ -22,7 +22,7 @@ type ClientHostVolumeCreateRequest struct {
 	// built-in plugin.
 	PluginID string
 
-	// Namespace is the Nomad namespace for the volume.
+	// Namespace is the Dumb Nomad namespace for the volume.
 	// It's in the client RPC to be included in plugin execution environment.
 	Namespace string
 
@@ -92,7 +92,7 @@ type ClientHostVolumeDeleteRequest struct {
 	// built-in plugin.
 	PluginID string
 
-	// Namespace is the Nomad namespace for the volume.
+	// Namespace is the Dumb Nomad namespace for the volume.
 	// It's in the client RPC to be included in plugin execution environment.
 	Namespace string
 

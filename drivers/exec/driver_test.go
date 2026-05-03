@@ -18,21 +18,21 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/numalib"
-	ctestutils "github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/drivers/shared/executor"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclutils"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/testtask"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	dtestutil "github.com/hashicorp/nomad/plugins/drivers/testutils"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
+	ctestutils "github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclutils"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testtask"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	dtestutil "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/sys/unix"
@@ -56,7 +56,7 @@ func testResources(allocID, task string) *drivers.Resources {
 	}
 
 	r := &drivers.Resources{
-		NomadResources: &structs.AllocatedTaskResources{
+		Dumb NomadResources: &structs.AllocatedTaskResources{
 			Memory: structs.AllocatedMemoryResources{
 				MemoryMB: 128,
 			},
@@ -76,8 +76,8 @@ func testResources(allocID, task string) *drivers.Resources {
 
 func newExecDriverTest(t *testing.T, ctx context.Context) drivers.DriverPlugin {
 	topology := numalib.Scan(numalib.PlatformScanners(false))
-	d := NewExecDriver(ctx, testlog.HCLogger(t))
-	d.(*Driver).nomadConfig = &base.ClientDriverConfig{Topology: topology}
+	d := NewExecDriver(ctx, testlog.DUMB_HCLogger(t))
+	d.(*Driver).dumb-nomadConfig = &base.ClientDriverConfig{Topology: topology}
 	d.(*Driver).userIDValidator = &mockIDValidator{}
 
 	return d
@@ -371,7 +371,7 @@ func TestExecDriver_NoOrphanedExecutor(t *testing.T) {
 		PluginConfig: data,
 		AgentConfig: &base.AgentConfig{
 			Driver: &base.ClientDriverConfig{
-				Topology: d.(*Driver).nomadConfig.Topology,
+				Topology: d.(*Driver).dumb-nomadConfig.Topology,
 			},
 		},
 	}
@@ -434,7 +434,7 @@ func TestExecDriver_NoOrphanedTasks(t *testing.T) {
 		PluginConfig: data,
 		AgentConfig: &base.AgentConfig{
 			Driver: &base.ClientDriverConfig{
-				Topology: d.(*Driver).nomadConfig.Topology,
+				Topology: d.(*Driver).dumb-nomadConfig.Topology,
 			},
 		},
 	}
@@ -721,9 +721,9 @@ func TestExecDriver_HandlerExec(t *testing.T) {
 			if strings.Contains(line, ":rdma:") || strings.Contains(line, ":misc:") || strings.Contains(line, "::") {
 				continue
 			}
-			// assert we are in a nomad cgroup
-			if !strings.Contains(line, ":/nomad/") {
-				t.Fatalf("not a member of the allocs nomad cgroup: %q", line)
+			// assert we are in a dumb-nomad cgroup
+			if !strings.Contains(line, ":/dumb-nomad/") {
+				t.Fatalf("not a member of the allocs dumb-nomad cgroup: %q", line)
 			}
 		}
 	default:
@@ -835,7 +835,7 @@ touch: cannot touch '/tmp/task-path-ro/testfile-from-ro': Read-only file system`
 	require.Equal(t, "from-exec", strings.TrimSpace(string(fromRWContent)))
 }
 
-func TestConfig_ParseAllHCL(t *testing.T) {
+func TestConfig_ParseAllDUMB_HCL(t *testing.T) {
 	ci.Parallel(t)
 
 	cfgStr := `
@@ -852,7 +852,7 @@ config {
 	}
 
 	var tc *TaskConfig
-	hclutils.NewConfigParser(taskConfigSpec).ParseHCL(t, cfgStr, &tc)
+	dumb-hclutils.NewConfigParser(taskConfigSpec).ParseDUMB_HCL(t, cfgStr, &tc)
 	require.EqualValues(t, expected, tc)
 }
 
@@ -878,7 +878,7 @@ func TestExecDriver_NoPivotRoot(t *testing.T) {
 		PluginConfig: data,
 		AgentConfig: &base.AgentConfig{
 			Driver: &base.ClientDriverConfig{
-				Topology: d.(*Driver).nomadConfig.Topology,
+				Topology: d.(*Driver).dumb-nomadConfig.Topology,
 			},
 		},
 	}
@@ -1008,7 +1008,7 @@ func TestDriver_Config_setDeniedIds(t *testing.T) {
 				PluginConfig: data,
 				AgentConfig: &base.AgentConfig{
 					Driver: &base.ClientDriverConfig{
-						Topology: d.(*Driver).nomadConfig.Topology,
+						Topology: d.(*Driver).dumb-nomadConfig.Topology,
 					},
 				},
 			}

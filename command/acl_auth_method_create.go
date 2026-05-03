@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -39,7 +39,7 @@ type ACLAuthMethodCreateCommand struct {
 // Help satisfies the cli.Command Help function.
 func (a *ACLAuthMethodCreateCommand) Help() string {
 	helpText := `
-Usage: nomad acl auth-method create [options]
+Usage: dumb-nomad acl auth-method create [options]
 
   Create is used to create new ACL auth methods. Use requires a management token.
 

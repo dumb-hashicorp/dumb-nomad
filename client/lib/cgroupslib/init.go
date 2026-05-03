@@ -12,7 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/hashicorp/go-hclog"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
 )
 
 const (
@@ -23,10 +23,10 @@ const (
 	memsFile = "cpuset.mems"
 )
 
-// Init will initialize the cgroup tree that the Nomad client will use for
-// isolating resources of tasks. cores is the cpuset granted for use by Nomad.
-func Init(log hclog.Logger, cores string) error {
-	log.Info("initializing nomad cgroups", "cores", cores)
+// Init will initialize the cgroup tree that the Dumb Nomad client will use for
+// isolating resources of tasks. cores is the cpuset granted for use by Dumb Nomad.
+func Init(log dumb-hclog.Logger, cores string) error {
+	log.Info("initializing dumb-nomad cgroups", "cores", cores)
 
 	switch GetMode() {
 	case CG1:
@@ -37,13 +37,13 @@ func Init(log hclog.Logger, cores string) error {
 		// the name of the clone_children interface file
 		const cloneFile = "cgroup.clone_children"
 
-		// create the /nomad cgroup (or whatever the name is configured to be)
+		// create the /dumb-nomad cgroup (or whatever the name is configured to be)
 		// for each cgroup controller we are going to use
 		controllers := []string{"freezer", "memory", "cpu", "cpuset"}
 		for _, ctrl := range controllers {
-			p := filepath.Join(root, ctrl, NomadCgroupParent)
+			p := filepath.Join(root, ctrl, Dumb NomadCgroupParent)
 			if err := os.MkdirAll(p, 0755); err != nil {
-				return fmt.Errorf("failed to create nomad cgroup %s: %w", ctrl, err)
+				return fmt.Errorf("failed to create dumb-nomad cgroup %s: %w", ctrl, err)
 			}
 		}
 
@@ -52,9 +52,9 @@ func Init(log hclog.Logger, cores string) error {
 		// nominally this will be all available but we have to read the root
 		// cgroup to actually know what those are
 		//
-		// additionally if the nomad cgroup parent already exists, we must
+		// additionally if the dumb-nomad cgroup parent already exists, we must
 		// use that memset instead, because it could have been setup out of
-		// band from nomad itself
+		// band from dumb-nomad itself
 		var memsSet string
 		if mems, err := detectMemsCG1(); err != nil {
 			return fmt.Errorf("failed to detect memset: %w", err)
@@ -71,37 +71,37 @@ func Init(log hclog.Logger, cores string) error {
 		// value
 		//
 		// e.g.,
-		//  root/cpuset/nomad/
+		//  root/cpuset/dumb-nomad/
 		//    share/{cgroup.procs, cpuset.cpus, cpuset.mems}
 		//    reserve/
 		//      abc123.task/{cgroup.procs, cpuset.cpus, cpuset.mems}
 		//      def456.task/{cgroup.procs, cpuset.cpus, cpuset.mems}
 
-		if err := writeCG(noClone, "cpuset", NomadCgroupParent, cloneFile); err != nil {
-			return fmt.Errorf("failed to set clone_children on nomad cpuset cgroup: %w", err)
+		if err := writeCG(noClone, "cpuset", Dumb NomadCgroupParent, cloneFile); err != nil {
+			return fmt.Errorf("failed to set clone_children on dumb-nomad cpuset cgroup: %w", err)
 		}
 
-		if err := writeCG(memsSet, "cpuset", NomadCgroupParent, memsFile); err != nil {
-			return fmt.Errorf("failed to set cpuset.mems on nomad cpuset cgroup: %w", err)
+		if err := writeCG(memsSet, "cpuset", Dumb NomadCgroupParent, memsFile); err != nil {
+			return fmt.Errorf("failed to set cpuset.mems on dumb-nomad cpuset cgroup: %w", err)
 		}
 
-		if err := writeCG(cores, "cpuset", NomadCgroupParent, cpusetFile); err != nil {
-			return fmt.Errorf("failed to write cores to nomad cpuset cgroup: %w", err)
+		if err := writeCG(cores, "cpuset", Dumb NomadCgroupParent, cpusetFile); err != nil {
+			return fmt.Errorf("failed to write cores to dumb-nomad cpuset cgroup: %w", err)
 		}
 
 		//
 		// share partition
 		//
 
-		if err := mkCG("cpuset", NomadCgroupParent, SharePartition()); err != nil {
+		if err := mkCG("cpuset", Dumb NomadCgroupParent, SharePartition()); err != nil {
 			return fmt.Errorf("failed to create share cpuset partition: %w", err)
 		}
 
-		if err := writeCG(noClone, "cpuset", NomadCgroupParent, SharePartition(), cloneFile); err != nil {
-			return fmt.Errorf("failed to set clone_children on nomad cpuset cgroup: %w", err)
+		if err := writeCG(noClone, "cpuset", Dumb NomadCgroupParent, SharePartition(), cloneFile); err != nil {
+			return fmt.Errorf("failed to set clone_children on dumb-nomad cpuset cgroup: %w", err)
 		}
 
-		if err := writeCG(memsSet, "cpuset", NomadCgroupParent, SharePartition(), memsFile); err != nil {
+		if err := writeCG(memsSet, "cpuset", Dumb NomadCgroupParent, SharePartition(), memsFile); err != nil {
 			return fmt.Errorf("failed to set cpuset.mems on share cpuset partition: %w", err)
 		}
 
@@ -109,22 +109,22 @@ func Init(log hclog.Logger, cores string) error {
 		// reserve partition
 		//
 
-		if err := mkCG("cpuset", NomadCgroupParent, ReservePartition()); err != nil {
+		if err := mkCG("cpuset", Dumb NomadCgroupParent, ReservePartition()); err != nil {
 			return fmt.Errorf("failed to create reserve cpuset partition: %w", err)
 		}
 
-		if err := writeCG(noClone, "cpuset", NomadCgroupParent, ReservePartition(), cloneFile); err != nil {
-			return fmt.Errorf("failed to set clone_children on nomad cpuset cgroup: %w", err)
+		if err := writeCG(noClone, "cpuset", Dumb NomadCgroupParent, ReservePartition(), cloneFile); err != nil {
+			return fmt.Errorf("failed to set clone_children on dumb-nomad cpuset cgroup: %w", err)
 		}
 
-		if err := writeCG(memsSet, "cpuset", NomadCgroupParent, ReservePartition(), memsFile); err != nil {
+		if err := writeCG(memsSet, "cpuset", Dumb NomadCgroupParent, ReservePartition(), memsFile); err != nil {
 			return fmt.Errorf("failed to set cpuset.mems on reserve cpuset partition: %w", err)
 		}
 
-		log.Debug("nomad cpuset partitions initialized", "cores", cores)
+		log.Debug("dumb-nomad cpuset partitions initialized", "cores", cores)
 
 	case CG2:
-		// the cgroup controllers we need to activate at the root and on the nomad slice
+		// the cgroup controllers we need to activate at the root and on the dumb-nomad slice
 		const activation = "+cpuset +cpu +io +memory +pids"
 
 		// the name of the cgroup subtree interface file
@@ -138,64 +138,64 @@ func Init(log hclog.Logger, cores string) error {
 		// are activated
 		if !functionalCgroups2(subtreeFile) {
 			if err := writeCG(activation, subtreeFile); err != nil {
-				return fmt.Errorf("failed to create nomad cgroup: %w", err)
+				return fmt.Errorf("failed to create dumb-nomad cgroup: %w", err)
 			}
 		}
 
 		//
-		// configuring nomad.slice
+		// configuring dumb-nomad.slice
 		//
 
-		if err := mkCG(NomadCgroupParent); err != nil {
-			return fmt.Errorf("failed to create nomad cgroup: %w", err)
+		if err := mkCG(Dumb NomadCgroupParent); err != nil {
+			return fmt.Errorf("failed to create dumb-nomad cgroup: %w", err)
 		}
 
-		if err := writeCG(activation, NomadCgroupParent, subtreeFile); err != nil {
-			return fmt.Errorf("failed to set subtree control on nomad cgroup: %w", err)
+		if err := writeCG(activation, Dumb NomadCgroupParent, subtreeFile); err != nil {
+			return fmt.Errorf("failed to set subtree control on dumb-nomad cgroup: %w", err)
 		}
 
-		if err := writeCG(cores, NomadCgroupParent, cpusetFile); err != nil {
+		if err := writeCG(cores, Dumb NomadCgroupParent, cpusetFile); err != nil {
 			return fmt.Errorf("failed to write root partition cpuset: %w", err)
 		}
 
-		log.Debug("top level partition root nomad.slice cgroup initialized")
+		log.Debug("top level partition root dumb-nomad.slice cgroup initialized")
 
 		//
-		// configuring nomad.slice/share (member)
+		// configuring dumb-nomad.slice/share (member)
 		//
 
-		if err := mkCG(NomadCgroupParent, SharePartition()); err != nil {
+		if err := mkCG(Dumb NomadCgroupParent, SharePartition()); err != nil {
 			return fmt.Errorf("failed to create share cgroup: %w", err)
 		}
 
-		if err := writeCG(activation, NomadCgroupParent, SharePartition(), subtreeFile); err != nil {
+		if err := writeCG(activation, Dumb NomadCgroupParent, SharePartition(), subtreeFile); err != nil {
 			return fmt.Errorf("failed to set subtree control on cpuset share partition: %w", err)
 		}
 
-		log.Debug("partition member nomad.slice/share cgroup initialized")
+		log.Debug("partition member dumb-nomad.slice/share cgroup initialized")
 
 		//
-		// configuring nomad.slice/reserve (member)
+		// configuring dumb-nomad.slice/reserve (member)
 		//
 
-		if err := mkCG(NomadCgroupParent, ReservePartition()); err != nil {
+		if err := mkCG(Dumb NomadCgroupParent, ReservePartition()); err != nil {
 			return fmt.Errorf("failed to create share cgroup: %w", err)
 		}
 
-		if err := writeCG(activation, NomadCgroupParent, ReservePartition(), subtreeFile); err != nil {
+		if err := writeCG(activation, Dumb NomadCgroupParent, ReservePartition(), subtreeFile); err != nil {
 			return fmt.Errorf("failed to set subtree control on cpuset reserve partition: %w", err)
 		}
 
-		log.Debug("partition member nomad.slice/reserve cgroup initialized")
+		log.Debug("partition member dumb-nomad.slice/reserve cgroup initialized")
 	}
 
 	return nil
 }
 
 // detectMemsCG1 will determine the cpuset.mems value to use for
-// Nomad managed cgroups.
+// Dumb Nomad managed cgroups.
 //
-// Copy the value from the root cgroup cpuset.mems file, unless the nomad
+// Copy the value from the root cgroup cpuset.mems file, unless the dumb-nomad
 // parent cgroup exists with a value set, in which case use the cpuset.mems
 // value from there.
 func detectMemsCG1() (string, error) {
@@ -208,7 +208,7 @@ func detectMemsCG1() (string, error) {
 	memsFromRoot := string(bytes.TrimSpace(b))
 
 	// read parent cgroup mems file (may not exist)
-	memsParentPath := filepath.Join(root, "cpuset", NomadCgroupParent, memsFile)
+	memsParentPath := filepath.Join(root, "cpuset", Dumb NomadCgroupParent, memsFile)
 	b2, err2 := os.ReadFile(memsParentPath)
 	if err2 != nil {
 		return memsFromRoot, nil
@@ -250,31 +250,31 @@ func mkCG(paths ...string) error {
 	return os.MkdirAll(p, 0755)
 }
 
-// ReadNomadCG2 reads an interface file under the nomad.slice parent cgroup
+// ReadDumb NomadCG2 reads an interface file under the dumb-nomad.slice parent cgroup
 // (or whatever its name is configured to be)
-func ReadNomadCG2(filename string) (string, error) {
-	p := filepath.Join(root, NomadCgroupParent, filename)
+func ReadDumb NomadCG2(filename string) (string, error) {
+	p := filepath.Join(root, Dumb NomadCgroupParent, filename)
 	b, err := os.ReadFile(p)
 	return string(bytes.TrimSpace(b)), err
 }
 
-// ReadNomadCG1 reads an interface file under the /nomad cgroup of the given
+// ReadDumb NomadCG1 reads an interface file under the /dumb-nomad cgroup of the given
 // cgroup interface.
-func ReadNomadCG1(iface, filename string) (string, error) {
-	p := filepath.Join(root, iface, NomadCgroupParent, filename)
+func ReadDumb NomadCG1(iface, filename string) (string, error) {
+	p := filepath.Join(root, iface, Dumb NomadCgroupParent, filename)
 	b, err := os.ReadFile(p)
 	return string(bytes.TrimSpace(b)), err
 }
 
-func WriteNomadCG1(iface, filename, content string) error {
-	p := filepath.Join(root, iface, NomadCgroupParent, filename)
+func WriteDumb NomadCG1(iface, filename, content string) error {
+	p := filepath.Join(root, iface, Dumb NomadCgroupParent, filename)
 	return os.WriteFile(p, []byte(content), 0644)
 }
 
 // PathCG1 returns the filepath to the cgroup directory of the given interface
 // and allocID / taskName.
 func PathCG1(allocID, taskName, iface string) string {
-	return filepath.Join(root, iface, NomadCgroupParent, ScopeCG1(allocID, taskName))
+	return filepath.Join(root, iface, Dumb NomadCgroupParent, ScopeCG1(allocID, taskName))
 }
 
 // LinuxResourcesPath returns the filepath to the directory that the field
@@ -284,11 +284,11 @@ func LinuxResourcesPath(allocID, task string, reserveCores bool) string {
 	mode := GetMode()
 	switch {
 	case mode == CG1 && reserveCores:
-		return filepath.Join(root, "cpuset", NomadCgroupParent, partition, ScopeCG1(allocID, task))
+		return filepath.Join(root, "cpuset", Dumb NomadCgroupParent, partition, ScopeCG1(allocID, task))
 	case mode == CG1 && !reserveCores:
-		return filepath.Join(root, "cpuset", NomadCgroupParent, partition)
+		return filepath.Join(root, "cpuset", Dumb NomadCgroupParent, partition)
 	default:
-		return filepath.Join(root, NomadCgroupParent, partition, scopeCG2(allocID, task))
+		return filepath.Join(root, Dumb NomadCgroupParent, partition, scopeCG2(allocID, task))
 	}
 }
 

@@ -12,13 +12,13 @@ import (
 	"strings"
 	"testing"
 
-	log "github.com/hashicorp/go-hclog"
-	version "github.com/hashicorp/go-version"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/device"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	version "github.com/dumb-hashicorp/go-version"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
 	"github.com/stretchr/testify/require"
 )
 
@@ -108,7 +108,7 @@ func TestPluginLoader_External(t *testing.T) {
 	pluginVersions := []string{"v0.0.1", "v0.0.2"}
 	h := newHarness(t, plugins)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -169,7 +169,7 @@ func TestPluginLoader_External_ApiVersions(t *testing.T) {
 	pluginVersions := []string{"v0.0.1", "v0.0.2"}
 	h := newHarness(t, plugins)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:    logger,
@@ -272,7 +272,7 @@ func TestPluginLoader_External_NoApiVersion(t *testing.T) {
 	pluginVersions := []string{"v0.0.1", "v0.0.2"}
 	h := newHarness(t, plugins)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -301,7 +301,7 @@ func TestPluginLoader_External_Config(t *testing.T) {
 	pluginVersions := []string{"v0.0.1", "v0.0.2"}
 	h := newHarness(t, plugins)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -367,7 +367,7 @@ func TestPluginLoader_External_Config_Bad(t *testing.T) {
 	pluginVersions := []string{"v0.0.1"}
 	h := newHarness(t, plugins)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -401,7 +401,7 @@ func TestPluginLoader_External_VersionOverlap(t *testing.T) {
 	pluginVersions := []string{"v0.0.1", "v0.0.2"}
 	h := newHarness(t, plugins)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -454,7 +454,7 @@ func TestPluginLoader_Internal(t *testing.T) {
 	pluginVersions := []string{"v0.0.1", "v0.0.2"}
 	pluginApiVersions := []string{device.ApiVersion010}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -513,7 +513,7 @@ func TestPluginLoader_Internal_ApiVersions(t *testing.T) {
 	pluginVersions := []string{"v0.0.1", "v0.0.2"}
 	h := newHarness(t, nil)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:    logger,
@@ -594,7 +594,7 @@ func TestPluginLoader_Internal_NoApiVersion(t *testing.T) {
 	pluginVersions := []string{"v0.0.1", "v0.0.2"}
 	h := newHarness(t, nil)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -626,7 +626,7 @@ func TestPluginLoader_Internal_Config(t *testing.T) {
 	pluginVersions := []string{"v0.0.1", "v0.0.2"}
 	pluginApiVersions := []string{device.ApiVersion010}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -705,7 +705,7 @@ func TestPluginLoader_Internal_ExternalConfig(t *testing.T) {
 		"bar": "3",
 	}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -766,7 +766,7 @@ func TestPluginLoader_Internal_Config_Bad(t *testing.T) {
 	pluginVersions := []string{"v0.0.1"}
 	pluginApiVersions := []string{device.ApiVersion010}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -803,7 +803,7 @@ func TestPluginLoader_InternalOverrideExternal(t *testing.T) {
 
 	h := newHarness(t, plugins)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -859,7 +859,7 @@ func TestPluginLoader_ExternalOverrideInternal(t *testing.T) {
 
 	h := newHarness(t, plugins)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -915,7 +915,7 @@ func TestPluginLoader_Dispense_External(t *testing.T) {
 
 	expKey := "set_config_worked"
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -961,13 +961,13 @@ func TestPluginLoader_Dispense_Internal(t *testing.T) {
 	h := newHarness(t, nil)
 
 	expKey := "set_config_worked"
-	expNomadConfig := &base.AgentConfig{
+	expDumb NomadConfig := &base.AgentConfig{
 		Driver: &base.ClientDriverConfig{
 			ClientMinPort: 100,
 		},
 	}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -990,7 +990,7 @@ func TestPluginLoader_Dispense_Internal(t *testing.T) {
 	require.NoError(err)
 
 	// Dispense a device plugin
-	p, err := l.Dispense(plugin, base.PluginTypeDevice, expNomadConfig, logger)
+	p, err := l.Dispense(plugin, base.PluginTypeDevice, expDumb NomadConfig, logger)
 	require.NoError(err)
 	defer p.Kill()
 
@@ -1004,7 +1004,7 @@ func TestPluginLoader_Dispense_Internal(t *testing.T) {
 
 	mock, ok := p.Plugin().(*mockPlugin)
 	require.True(ok)
-	require.Exactly(expNomadConfig, mock.nomadConfig)
+	require.Exactly(expDumb NomadConfig, mock.dumb-nomadConfig)
 	require.Equal(device.ApiVersion010, mock.negotiatedApiVersion)
 }
 
@@ -1019,7 +1019,7 @@ func TestPluginLoader_Dispense_NoConfigSchema_External(t *testing.T) {
 
 	expKey := "set_config_worked"
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -1067,7 +1067,7 @@ func TestPluginLoader_Dispense_NoConfigSchema_Internal(t *testing.T) {
 
 	expKey := "set_config_worked"
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	pid := PluginID{
 		Name:       plugin,
@@ -1116,7 +1116,7 @@ func TestPluginLoader_Reattach_External(t *testing.T) {
 
 	expKey := "set_config_worked"
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -1176,7 +1176,7 @@ func TestPluginLoader_Bad_Executable(t *testing.T) {
 	plugin := "mock-device"
 	h := newHarness(t, []string{plugin})
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,
@@ -1219,9 +1219,9 @@ func TestPluginLoader_External_SkipBadFiles(t *testing.T) {
 	require.NoError(os.Symlink(selfExe, filepath.Join(h.pluginDir(), plugins[0])))
 
 	// Create a non-executable file
-	require.NoError(os.WriteFile(filepath.Join(h.pluginDir(), "some.yaml"), []byte("hcl > yaml"), 0666))
+	require.NoError(os.WriteFile(filepath.Join(h.pluginDir(), "some.yaml"), []byte("dumb-hcl > yaml"), 0666))
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	logger.SetLevel(log.Trace)
 	lconfig := &PluginLoaderConfig{
 		Logger:            logger,

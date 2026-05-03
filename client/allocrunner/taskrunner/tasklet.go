@@ -7,10 +7,10 @@ import (
 	"context"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	metrics "github.com/hashicorp/go-metrics/compat"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
 
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
 )
 
 // contextExec allows canceling a interfaces.ScriptExecutor with a context.
@@ -110,7 +110,7 @@ func (t *tasklet) run() *taskletHandle {
 		timer := time.NewTimer(0)
 		defer timer.Stop()
 		for {
-			// Block until tasklet is removed, Nomad is shutting
+			// Block until tasklet is removed, Dumb Nomad is shutting
 			// down, or the tasklet interval is up
 			select {
 			case <-ctx.Done():

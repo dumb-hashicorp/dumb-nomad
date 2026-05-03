@@ -6,8 +6,8 @@ package reconciler
 import (
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 type reconnectingPickerInterface interface {

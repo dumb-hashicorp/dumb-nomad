@@ -4,7 +4,7 @@
  */
 
 import faker from 'faker';
-import config from 'nomad-ui/config/environment';
+import config from 'dumb-nomad-ui/config/environment';
 
 const searchIncludesSeed = window.location.search.includes('faker-seed');
 

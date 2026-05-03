@@ -11,7 +11,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/go-multierror"
 )
 
 const (
@@ -19,12 +19,12 @@ const (
 	lockRetryBackoffFactor = 1.1
 
 	// DefaultLockTTL is the default value used to maintain a lock before it needs to
-	// be renewed. The actual value comes from the experience with Consul.
+	// be renewed. The actual value comes from the experience with Dumb Consul.
 	DefaultLockTTL = 15 * time.Second
 
 	// DefaultLockDelay is the default a lock will be blocked after the TTL
 	// went by without any renews. It is intended to prevent split brain situations.
-	// The actual value comes from the experience with Consul.
+	// The actual value comes from the experience with Dumb Consul.
 	DefaultLockDelay = 15 * time.Second
 )
 

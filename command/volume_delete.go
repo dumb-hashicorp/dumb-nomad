@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
-	"github.com/hashicorp/nomad/helper"
-	flaghelper "github.com/hashicorp/nomad/helper/flags"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	flaghelper "github.com/dumb-hashicorp/dumb-nomad/helper/flags"
 	"github.com/posener/complete"
 )
 
@@ -21,10 +21,10 @@ type VolumeDeleteCommand struct {
 
 func (c *VolumeDeleteCommand) Help() string {
 	helpText := `
-Usage: nomad volume delete [options] <vol id>
+Usage: dumb-nomad volume delete [options] <vol id>
 
   Delete a volume from an external storage provider. The volume must still be
-  registered with Nomad in order to be deleted. Deleting will fail if the
+  registered with Dumb Nomad in order to be deleted. Deleting will fail if the
   volume is still in use by an allocation or in the process of being
   unpublished.
 
@@ -39,7 +39,7 @@ General Options:
 Delete Options:
 
   -force
-    Delete the volume from the Nomad state store if the node has been garbage
+    Delete the volume from the Dumb Nomad state store if the node has been garbage
     collected. You should only use -force if the node will never rejoin the
     cluster. Only available for dynamic host volumes.
 

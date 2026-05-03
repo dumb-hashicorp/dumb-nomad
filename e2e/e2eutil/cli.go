@@ -13,13 +13,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/e2e/v3/util3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/util3"
 
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
 
-// Command sends a command line argument to Nomad and returns the unbuffered
+// Command sends a command line argument to Dumb Nomad and returns the unbuffered
 // stdout as a string (or, if there's an error, the stderr).
 // If the timeout expires, exec.CommandContext will send a kill signal to the process,
 // so the error will contain the string "signal: killed".
@@ -51,7 +51,7 @@ func MustCommand(t *testing.T, format string, args ...any) {
 
 // CleanupCommand adds a Commandf to t.Cleanup
 func CleanupCommand(t *testing.T, format string, args ...any) {
-	if os.Getenv("NOMAD_TEST_SKIPCLEANUP") == "1" {
+	if os.Getenv("DUMB_NOMAD_TEST_SKIPCLEANUP") == "1" {
 		return
 	}
 	t.Helper()
@@ -64,7 +64,7 @@ func CleanupCommand(t *testing.T, format string, args ...any) {
 }
 
 // GetField returns the value of an output field (ex. the "Submit Date" field
-// of `nomad job status :id`)
+// of `dumb-nomad job status :id`)
 func GetField(output, key string) (string, error) {
 	re := regexp.MustCompile(`(?m)^` + key + ` += (.*)$`)
 	match := re.FindStringSubmatch(output)
@@ -75,7 +75,7 @@ func GetField(output, key string) (string, error) {
 }
 
 // GetSection returns a section, with its field header but without its title.
-// (ex. the Allocations section of `nomad job status :id`)
+// (ex. the Allocations section of `dumb-nomad job status :id`)
 func GetSection(output, key string) (string, error) {
 
 	// golang's regex engine doesn't support negative lookahead, so
@@ -93,7 +93,7 @@ func GetSection(output, key string) (string, error) {
 
 // ParseColumns maps the CLI output for a columized section (without title) to
 // a slice of key->value pairs for each row in that section.
-// (ex. the Allocations section of `nomad job status :id`)
+// (ex. the Allocations section of `dumb-nomad job status :id`)
 func ParseColumns(section string) ([]map[string]string, error) {
 	parsed := []map[string]string{}
 
@@ -130,7 +130,7 @@ func ParseColumns(section string) ([]map[string]string, error) {
 
 // ParseFields maps the CLI output for a key-value section (without title) to
 // map of the key->value pairs in that section
-// (ex. the Latest Deployment section of `nomad job status :id`)
+// (ex. the Latest Deployment section of `dumb-nomad job status :id`)
 func ParseFields(section string) (map[string]string, error) {
 	parsed := map[string]string{}
 	rows := strings.Split(strings.TrimSpace(section), "\n")

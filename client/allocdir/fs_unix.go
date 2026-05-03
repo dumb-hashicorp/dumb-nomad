@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"syscall"
 
-	"github.com/hashicorp/nomad/helper/users"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users"
 	"golang.org/x/sys/unix"
 )
 

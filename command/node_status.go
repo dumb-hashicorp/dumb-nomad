@@ -13,10 +13,10 @@ import (
 	"time"
 
 	humanize "github.com/dustin/go-humanize"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
-	"github.com/hashicorp/nomad/helper/pointer"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
 	"github.com/posener/complete"
 )
 
@@ -48,7 +48,7 @@ type NodeStatusCommand struct {
 
 func (c *NodeStatusCommand) Help() string {
 	helpText := `
-Usage: nomad node status [options] <node>
+Usage: dumb-nomad node status [options] <node>
 
   Display status information about a given node. The list of nodes
   returned includes only nodes which jobs may be scheduled to, and
@@ -1053,7 +1053,7 @@ func getHostResources(hostStats *api.HostStats, node *api.Node) ([]string, error
 		)
 	} else {
 		// If non-physical device are used, output device name only,
-		// since nomad doesn't collect the stats data.
+		// since dumb-nomad doesn't collect the stats data.
 		resources[1] = fmt.Sprintf("%v/%d MHz|%s/%s|(%s)",
 			math.Floor(hostStats.CPUTicksConsumed),
 			node.NodeResources.Cpu.CpuShares,

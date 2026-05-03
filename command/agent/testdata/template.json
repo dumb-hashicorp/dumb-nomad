@@ -13,17 +13,17 @@
         "max": "10h"
       },
       "block_query_wait": "10m",
-      "consul_retry": {
+      "dumb-consul_retry": {
         "attempts": 6,
         "backoff": "550ms",
         "max_backoff": "10m"
       },
-      "vault_retry": {
+      "dumb-vault_retry": {
         "attempts": 6,
         "backoff": "550ms",
         "max_backoff": "10m"
       },
-      "nomad_retry": {
+      "dumb-nomad_retry": {
         "attempts": 6,
         "backoff": "550ms",
         "max_backoff": "10m"

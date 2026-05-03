@@ -7,13 +7,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	cstate "github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/client/widmgr"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	cstate "github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/client/widmgr"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -24,7 +24,7 @@ func TestIdentityHook_Prerun(t *testing.T) {
 
 	wid := &structs.WorkloadIdentity{
 		Name:     "testing",
-		Audience: []string{"consul.io"},
+		Audience: []string{"dumb-consul.io"},
 		Env:      true,
 		File:     true,
 		TTL:      ttl,
@@ -38,7 +38,7 @@ func TestIdentityHook_Prerun(t *testing.T) {
 	allocrunner, stopAR := TestAllocRunnerFromAlloc(t, alloc)
 	defer stopAR()
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	db := cstate.NewMemDB(logger)
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, "global").Build()
 

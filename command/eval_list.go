@@ -8,8 +8,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 	"github.com/posener/complete"
 )
 
@@ -19,9 +19,9 @@ type EvalListCommand struct {
 
 func (c *EvalListCommand) Help() string {
 	helpText := `
-Usage: nomad eval list [options]
+Usage: dumb-nomad eval list [options]
 
-  List is used to list the set of evaluations processed by Nomad.
+  List is used to list the set of evaluations processed by Dumb Nomad.
 
 General Options:
 
@@ -61,7 +61,7 @@ Eval List Options:
 }
 
 func (c *EvalListCommand) Synopsis() string {
-	return "List the set of evaluations processed by Nomad"
+	return "List the set of evaluations processed by Dumb Nomad"
 }
 
 func (c *EvalListCommand) AutocompleteFlags() complete.Flags {

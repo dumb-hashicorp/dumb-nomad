@@ -8,8 +8,8 @@ import (
 
 	"github.com/shoenig/test/must"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 func Test_NewIdentity(t *testing.T) {
@@ -24,8 +24,8 @@ func Test_NewIdentity(t *testing.T) {
 		{
 			name: "identity with claims",
 			inputAuthMethodConfig: &structs.ACLAuthMethodConfig{
-				ClaimMappings:     map[string]string{"http://nomad.internal/username": "username"},
-				ListClaimMappings: map[string]string{"http://nomad.internal/roles": "roles"},
+				ClaimMappings:     map[string]string{"http://dumb-nomad.internal/username": "username"},
+				ListClaimMappings: map[string]string{"http://dumb-nomad.internal/roles": "roles"},
 			},
 			inputAuthClaims: &structs.ACLAuthClaims{
 				Value: map[string]string{"username": "jrasell"},
@@ -42,8 +42,8 @@ func Test_NewIdentity(t *testing.T) {
 		{
 			name: "identity without claims",
 			inputAuthMethodConfig: &structs.ACLAuthMethodConfig{
-				ClaimMappings:     map[string]string{"http://nomad.internal/username": "username"},
-				ListClaimMappings: map[string]string{"http://nomad.internal/roles": "roles"},
+				ClaimMappings:     map[string]string{"http://dumb-nomad.internal/username": "username"},
+				ListClaimMappings: map[string]string{"http://dumb-nomad.internal/roles": "roles"},
 			},
 			inputAuthClaims: &structs.ACLAuthClaims{
 				Value: map[string]string{"username": ""},

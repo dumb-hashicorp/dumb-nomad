@@ -16,15 +16,15 @@ type OperatorRaftRemoveCommand struct {
 
 func (c *OperatorRaftRemoveCommand) Help() string {
 	helpText := `
-Usage: nomad operator raft remove-peer [options]
+Usage: dumb-nomad operator raft remove-peer [options]
 
-  Remove the Nomad server with given -peer-id from the Raft configuration.
+  Remove the Dumb Nomad server with given -peer-id from the Raft configuration.
 
   There are rare cases where a peer may be left behind in the Raft quorum even
   though the server is no longer present and known to the cluster. This command
   can be used to remove the failed server so that it is no longer affects the
-  Raft quorum. If the server still shows in the output of the "nomad
-  server-members" command, it is preferable to clean up by simply running "nomad
+  Raft quorum. If the server still shows in the output of the "dumb-nomad
+  server-members" command, it is preferable to clean up by simply running "dumb-nomad
   server-force-leave" instead of this command.
 
   If ACLs are enabled, this command requires a management token.
@@ -36,7 +36,7 @@ General Options:
 Remove Peer Options:
 
   -peer-id="id"
-	Remove a Nomad server with the given ID from the Raft configuration.
+	Remove a Dumb Nomad server with the given ID from the Raft configuration.
 `
 	return strings.TrimSpace(helpText)
 }
@@ -53,7 +53,7 @@ func (c *OperatorRaftRemoveCommand) AutocompleteArgs() complete.Predictor {
 }
 
 func (c *OperatorRaftRemoveCommand) Synopsis() string {
-	return "Remove a Nomad server from the Raft configuration"
+	return "Remove a Dumb Nomad server from the Raft configuration"
 }
 
 func (c *OperatorRaftRemoveCommand) Name() string { return "operator raft remove-peer" }

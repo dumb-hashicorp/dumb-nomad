@@ -6,7 +6,7 @@
 
 package raftutil
 
-import "github.com/hashicorp/nomad/nomad/state"
+import "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/state"
 
 func insertEnterpriseState(m map[string][]interface{}, state *state.StateStore) {
 }

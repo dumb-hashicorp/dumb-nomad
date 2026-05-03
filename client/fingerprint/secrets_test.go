@@ -9,14 +9,14 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
 func TestPluginsSecretsFingerprint(t *testing.T) {
-	fp := NewPluginsSecretsFingerprint(testlog.HCLogger(t))
+	fp := NewPluginsSecretsFingerprint(testlog.DUMB_HCLogger(t))
 
 	node := &structs.Node{Attributes: map[string]string{}}
 	cfg := &config.Config{CommonPluginDir: ""}
@@ -69,8 +69,8 @@ func TestPluginsSecretsFingerprint(t *testing.T) {
 	must.NoError(t, err)
 	must.Eq(t, map[string]string{
 		"plugins.secrets.happy-plugin.version": "0.0.1",
-		"plugins.secrets.nomad.version":        "1.0.0",
-		"plugins.secrets.vault.version":        "1.0.0",
+		"plugins.secrets.dumb-nomad.version":        "1.0.0",
+		"plugins.secrets.dumb-vault.version":        "1.0.0",
 	}, resp.Attributes)
 
 	// do it again after deleting our one good plugin.
@@ -83,7 +83,7 @@ func TestPluginsSecretsFingerprint(t *testing.T) {
 	must.NoError(t, err)
 	must.Eq(t, map[string]string{
 		"plugins.secrets.happy-plugin.version": "", // empty value means removed
-		"plugins.secrets.nomad.version":        "1.0.0",
-		"plugins.secrets.vault.version":        "1.0.0",
+		"plugins.secrets.dumb-nomad.version":        "1.0.0",
+		"plugins.secrets.dumb-vault.version":        "1.0.0",
 	}, resp.Attributes)
 }

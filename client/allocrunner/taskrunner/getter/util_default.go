@@ -8,7 +8,7 @@ package getter
 import (
 	"path/filepath"
 
-	log "github.com/hashicorp/go-hclog"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
 )
 
 // lockdown is not available by default

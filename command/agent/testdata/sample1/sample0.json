@@ -3,20 +3,20 @@
     "enabled": true
   },
   "bind_addr": "0.0.0.0",
-  "consul": {
+  "dumb-consul": {
     "ssl": true,
     "server_auto_join": false,
     "client_auto_join": false,
     "token": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"
   },
-  "data_dir": "/opt/data/nomad/data",
+  "data_dir": "/opt/data/dumb-nomad/data",
   "datacenter": "dc1",
   "enable_syslog": true,
   "keyring": {
     "awskms": {
       "active": true,
       "region": "us-east-1",
-      "kms_key_id": "alias/kms-nomad-keyring"
+      "kms_key_id": "alias/kms-dumb-nomad-keyring"
     }
   },
   "rpc": {
@@ -48,11 +48,11 @@
   },
   "syslog_facility": "LOCAL0",
   "tls": {
-    "ca_file": "/opt/data/nomad/certs/nomad-ca.pem",
-    "cert_file": "/opt/data/nomad/certs/server.pem",
+    "ca_file": "/opt/data/dumb-nomad/certs/dumb-nomad-ca.pem",
+    "cert_file": "/opt/data/dumb-nomad/certs/server.pem",
     "http": true,
   },
-  "vault": {
+  "dumb-vault": {
     "address": "http://host.example.com:8200",
   }
 }

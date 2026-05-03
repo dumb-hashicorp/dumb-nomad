@@ -15,12 +15,12 @@ import (
 	"testing"
 	"time"
 
-	api "github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/helper/discover"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	api "github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/discover"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -38,8 +38,8 @@ func (j *e2eJob) Name() string {
 // Ensure cluster has leader and at least 1 client node
 // in a ready state before running tests
 func (j *e2eJob) BeforeAll(f *framework.F) {
-	WaitForLeader(f.T(), j.Nomad())
-	WaitForNodesReady(f.T(), j.Nomad(), 1)
+	WaitForLeader(f.T(), j.Dumb Nomad())
+	WaitForNodesReady(f.T(), j.Dumb Nomad(), 1)
 	j.jobID = "e2eutil-" + uuid.Generate()[0:8]
 }
 
@@ -76,15 +76,15 @@ type e2eBatchJob struct {
 func (j *e2eBatchJob) Run(f *framework.F) {
 	t := f.T()
 	require := require.New(t)
-	nomadClient := j.Nomad()
+	dumb-nomadClient := j.Dumb Nomad()
 
-	allocs := RegisterAndWaitForAllocs(f.T(), nomadClient, j.jobfile, j.jobID, "")
+	allocs := RegisterAndWaitForAllocs(f.T(), dumb-nomadClient, j.jobfile, j.jobID, "")
 	require.Equal(1, len(allocs))
 	allocID := allocs[0].ID
 
 	// wait for the job to stop
-	WaitForAllocStopped(t, nomadClient, allocID)
-	alloc, _, err := nomadClient.Allocations().Info(allocID, nil)
+	WaitForAllocStopped(t, dumb-nomadClient, allocID)
+	alloc, _, err := dumb-nomadClient.Allocations().Info(allocID, nil)
 	require.NoError(err)
 	if j.shouldFail {
 		require.NotEqual(structs.AllocClientStatusComplete, alloc.ClientStatus)
@@ -102,17 +102,17 @@ type e2eServiceJob struct {
 
 func (j *e2eServiceJob) Run(f *framework.F) {
 	t := f.T()
-	nomadClient := j.Nomad()
+	dumb-nomadClient := j.Dumb Nomad()
 
-	allocs := RegisterAndWaitForAllocs(f.T(), nomadClient, j.jobfile, j.jobID, "")
+	allocs := RegisterAndWaitForAllocs(f.T(), dumb-nomadClient, j.jobfile, j.jobID, "")
 	require.Equal(t, 1, len(allocs))
 	allocID := allocs[0].ID
 
 	var alloc *api.Allocation
-	WaitForAllocRunning(t, nomadClient, allocID)
+	WaitForAllocRunning(t, dumb-nomadClient, allocID)
 	testutil.AssertUntil(j.runningDuration, func() (bool, error) {
 		var err error
-		alloc, _, err = nomadClient.Allocations().Info(allocID, nil)
+		alloc, _, err = dumb-nomadClient.Allocations().Info(allocID, nil)
 		if err != nil {
 			return false, err
 		}
@@ -126,12 +126,12 @@ func (j *e2eServiceJob) Run(f *framework.F) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, scriptPath)
-	nmdBin, err := discover.NomadExecutable()
+	nmdBin, err := discover.Dumb NomadExecutable()
 	assert.NoError(t, err)
 	cmd.Env = append(os.Environ(),
-		"NOMAD_BIN="+nmdBin,
-		"NOMAD_ALLOC_ID="+allocID,
-		"NOMAD_ADDR="+nomadClient.Address(),
+		"DUMB_NOMAD_BIN="+nmdBin,
+		"DUMB_NOMAD_ALLOC_ID="+allocID,
+		"DUMB_NOMAD_ADDR="+dumb-nomadClient.Address(),
 	)
 
 	assert.NoError(t, cmd.Start())
@@ -151,9 +151,9 @@ func (j *e2eServiceJob) Run(f *framework.F) {
 	}
 
 	// stop the job
-	_, _, err = nomadClient.Jobs().Deregister(j.jobID, false, nil)
+	_, _, err = dumb-nomadClient.Jobs().Deregister(j.jobID, false, nil)
 	require.NoError(t, err)
-	WaitForAllocStopped(t, nomadClient, allocID)
+	WaitForAllocStopped(t, dumb-nomadClient, allocID)
 }
 
 //e2e:batch fail=false

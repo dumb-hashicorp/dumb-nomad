@@ -7,5 +7,5 @@ import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 
 export default class ActionsFlyoutGlobalButtonComponent extends Component {
-  @service nomadActions;
+  @service dumb-nomadActions;
 }

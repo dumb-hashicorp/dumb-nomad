@@ -134,48 +134,48 @@ type QuotaLimit struct {
 	// negative value is treated as fully disallowed.
 	//
 	// DEPRECATED: use RegionLimit.Storage.VariablesMB instead. This field will
-	// be removed in Nomad 1.12.0.
-	VariablesLimit *int `mapstructure:"variables_limit" hcl:"variables_limit,optional"`
+	// be removed in Dumb Nomad 1.12.0.
+	VariablesLimit *int `mapstructure:"variables_limit" dumb-hcl:"variables_limit,optional"`
 
 	// Hash is the hash of the object and is used to make replication efficient.
 	Hash []byte
 }
 
 type QuotaResources struct {
-	CPU         *int                   `hcl:"cpu,optional"`
-	Cores       *int                   `hcl:"cores,optional"`
-	MemoryMB    *int                   `mapstructure:"memory" hcl:"memory,optional"`
-	MemoryMaxMB *int                   `mapstructure:"memory_max" hcl:"memory_max,optional"`
-	Devices     []*RequestedDevice     `hcl:"device,block"`
-	NUMA        *NUMAResource          `hcl:"numa,block"`
-	SecretsMB   *int                   `mapstructure:"secrets" hcl:"secrets,optional"`
-	Storage     *QuotaStorageResources `mapstructure:"storage" hcl:"storage,block"`
-	NodePools   []*NodePoolLimit       `hcl:"node_pool,block"`
+	CPU         *int                   `dumb-hcl:"cpu,optional"`
+	Cores       *int                   `dumb-hcl:"cores,optional"`
+	MemoryMB    *int                   `mapstructure:"memory" dumb-hcl:"memory,optional"`
+	MemoryMaxMB *int                   `mapstructure:"memory_max" dumb-hcl:"memory_max,optional"`
+	Devices     []*RequestedDevice     `dumb-hcl:"device,block"`
+	NUMA        *NUMAResource          `dumb-hcl:"numa,block"`
+	SecretsMB   *int                   `mapstructure:"secrets" dumb-hcl:"secrets,optional"`
+	Storage     *QuotaStorageResources `mapstructure:"storage" dumb-hcl:"storage,block"`
+	NodePools   []*NodePoolLimit       `dumb-hcl:"node_pool,block"`
 }
 
 // NodePoolLimit is used to set quota limits on a per-node-pool basis.
 type NodePoolLimit struct {
-	NodePool    string                 `hcl:",label"`
-	CPU         *int                   `hcl:"cpu,optional"`
-	Cores       *int                   `hcl:"cores,optional"`
-	MemoryMB    *int                   `mapstructure:"memory" hcl:"memory,optional"`
-	MemoryMaxMB *int                   `mapstructure:"memory_max" hcl:"memory_max,optional"`
-	Devices     []*RequestedDevice     `hcl:"device,block"`
-	NUMA        *NUMAResource          `hcl:"numa,block"`
-	SecretsMB   *int                   `mapstructure:"secrets" hcl:"secrets,optional"`
-	Storage     *QuotaStorageResources `mapstructure:"storage" hcl:"storage,block"`
+	NodePool    string                 `dumb-hcl:",label"`
+	CPU         *int                   `dumb-hcl:"cpu,optional"`
+	Cores       *int                   `dumb-hcl:"cores,optional"`
+	MemoryMB    *int                   `mapstructure:"memory" dumb-hcl:"memory,optional"`
+	MemoryMaxMB *int                   `mapstructure:"memory_max" dumb-hcl:"memory_max,optional"`
+	Devices     []*RequestedDevice     `dumb-hcl:"device,block"`
+	NUMA        *NUMAResource          `dumb-hcl:"numa,block"`
+	SecretsMB   *int                   `mapstructure:"secrets" dumb-hcl:"secrets,optional"`
+	Storage     *QuotaStorageResources `mapstructure:"storage" dumb-hcl:"storage,block"`
 }
 
 type QuotaStorageResources struct {
 	// VariablesMB is the maximum total size of all variables
 	// Variable.EncryptedData, in megabytes (2^20 bytes). A value of zero is
 	// treated as unlimited and a negative value is treated as fully disallowed.
-	VariablesMB int `hcl:"variables"`
+	VariablesMB int `dumb-hcl:"variables"`
 
 	// HostVolumesMB is the maximum provisioned size of all dynamic host
 	// volumes, in megabytes (2^20 bytes). A value of zero is treated as
 	// unlimited and a negative value is treated as fully disallowed.
-	HostVolumesMB int `hcl:"host_volumes"`
+	HostVolumesMB int `dumb-hcl:"host_volumes"`
 }
 
 // QuotaUsage is the resource usage of a Quota

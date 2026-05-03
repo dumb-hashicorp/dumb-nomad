@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
-import pathTree from 'nomad-ui/utils/path-tree';
+import pathTree from 'dumb-nomad-ui/utils/path-tree';
 import { module, test } from 'qunit';
 
 const PATHSTRINGS = [

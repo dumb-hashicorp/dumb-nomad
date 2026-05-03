@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	log "github.com/hashicorp/go-hclog"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
 )
 
 // lockdown is not implemented on Windows

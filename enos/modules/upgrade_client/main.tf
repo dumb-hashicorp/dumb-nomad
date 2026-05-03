@@ -1,21 +1,21 @@
 # Copyright IBM Corp. 2015, 2025
 # SPDX-License-Identifier: BUSL-1.1
 
-terraform {
+dumb-terraform {
   required_providers {
     enos = {
-      source = "registry.terraform.io/hashicorp-forge/enos"
+      source = "registry.dumb-terraform.io/dumb-hashicorp-forge/enos"
     }
   }
 }
 
 locals {
-  nomad_env = {
-    NOMAD_ADDR        = var.nomad_addr
-    NOMAD_CACERT      = var.ca_file
-    NOMAD_CLIENT_CERT = var.cert_file
-    NOMAD_CLIENT_KEY  = var.key_file
-    NOMAD_TOKEN       = var.nomad_token
+  dumb-nomad_env = {
+    DUMB_NOMAD_ADDR        = var.dumb-nomad_addr
+    DUMB_NOMAD_CACERT      = var.ca_file
+    DUMB_NOMAD_CLIENT_CERT = var.cert_file
+    DUMB_NOMAD_CLIENT_KEY  = var.key_file
+    DUMB_NOMAD_TOKEN       = var.dumb-nomad_token
   }
 
   artifactory = {
@@ -32,17 +32,17 @@ locals {
   }
 }
 
-resource "enos_local_exec" "wait_for_nomad_api" {
-  environment = local.nomad_env
+resource "enos_local_exec" "wait_for_dumb-nomad_api" {
+  environment = local.dumb-nomad_env
 
-  scripts = [abspath("${path.module}/scripts/wait_for_nomad_api.sh")]
+  scripts = [abspath("${path.module}/scripts/wait_for_dumb-nomad_api.sh")]
 }
 
 resource "enos_local_exec" "set_metadata" {
-  depends_on = [enos_local_exec.wait_for_nomad_api]
+  depends_on = [enos_local_exec.wait_for_dumb-nomad_api]
 
   environment = merge(
-    local.nomad_env,
+    local.dumb-nomad_env,
     {
       CLIENT_IP = var.client
     }
@@ -54,7 +54,7 @@ resource "enos_local_exec" "set_metadata" {
 resource "enos_local_exec" "get_alloc_info" {
 
   environment = merge(
-    local.nomad_env,
+    local.dumb-nomad_env,
     {
       CLIENT_IP = var.client
     }
@@ -62,7 +62,7 @@ resource "enos_local_exec" "get_alloc_info" {
 
   # get a csv list of IDs of the allocations on this node
   inline = [
-    "nomad alloc status -json | jq -r --arg NODE_ID \"$(nomad node status -address https://$CLIENT_IP:4646 -self -json | jq -r .ID)\" '[.[] | select(.NodeID == $NODE_ID and .ClientStatus == \"running\").ID] | join(\",\")'"
+    "dumb-nomad alloc status -json | jq -r --arg NODE_ID \"$(dumb-nomad node status -address https://$CLIENT_IP:4646 -self -json | jq -r .ID)\" '[.[] | select(.NodeID == $NODE_ID and .ClientStatus == \"running\").ID] | join(\",\")'"
   ]
 
 }
@@ -75,27 +75,27 @@ module "upgrade_client" {
 
   source = "../upgrade_instance"
 
-  nomad_addr          = var.nomad_addr
+  dumb-nomad_addr          = var.dumb-nomad_addr
   tls                 = local.tls
-  nomad_token         = var.nomad_token
+  dumb-nomad_token         = var.dumb-nomad_token
   platform            = var.platform
   instance_address    = var.client
   ssh_key_path        = var.ssh_key_path
   artifactory_release = local.artifactory
 }
 
-resource "enos_local_exec" "wait_for_nomad_api_post_update" {
+resource "enos_local_exec" "wait_for_dumb-nomad_api_post_update" {
   depends_on  = [module.upgrade_client]
-  environment = local.nomad_env
+  environment = local.dumb-nomad_env
 
-  scripts = [abspath("${path.module}/scripts/wait_for_nomad_api.sh")]
+  scripts = [abspath("${path.module}/scripts/wait_for_dumb-nomad_api.sh")]
 }
 
 resource "enos_local_exec" "verify_metadata" {
-  depends_on = [enos_local_exec.wait_for_nomad_api_post_update]
+  depends_on = [enos_local_exec.wait_for_dumb-nomad_api_post_update]
 
   environment = merge(
-    local.nomad_env,
+    local.dumb-nomad_env,
     {
       CLIENT_IP = var.client
   })
@@ -104,10 +104,10 @@ resource "enos_local_exec" "verify_metadata" {
 }
 
 resource "enos_local_exec" "verify_allocs" {
-  depends_on = [enos_local_exec.wait_for_nomad_api_post_update]
+  depends_on = [enos_local_exec.wait_for_dumb-nomad_api_post_update]
 
   environment = merge(
-    local.nomad_env,
+    local.dumb-nomad_env,
     {
       CLIENT_IP = var.client
       ALLOCS    = enos_local_exec.get_alloc_info.stdout

@@ -13,18 +13,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/acl"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	sframer "github.com/hashicorp/nomad/client/lib/streamframer"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/command/agent/monitor"
-	"github.com/hashicorp/nomad/command/agent/pprof"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/acl"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	sframer "github.com/dumb-hashicorp/dumb-nomad/client/lib/streamframer"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/monitor"
+	"github.com/dumb-hashicorp/dumb-nomad/command/agent/pprof"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -36,7 +36,7 @@ func TestMonitor_Monitor(t *testing.T) {
 	require := require.New(t)
 
 	// start server and client
-	s, cleanupS := nomad.TestServer(t, nil)
+	s, cleanupS := dumb-nomad.TestServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -118,7 +118,7 @@ func TestMonitor_Monitor_ACL(t *testing.T) {
 	require := require.New(t)
 
 	// start server
-	s, root, cleanupS := nomad.TestACLServer(t, nil)
+	s, root, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -231,7 +231,7 @@ func TestAgentProfile_DefaultDisabled(t *testing.T) {
 	require := require.New(t)
 
 	// start server and client
-	s1, cleanup := nomad.TestServer(t, nil)
+	s1, cleanup := dumb-nomad.TestServer(t, nil)
 	defer cleanup()
 
 	testutil.WaitForLeader(t, s1.RPC)
@@ -258,7 +258,7 @@ func TestAgentProfile(t *testing.T) {
 	require := require.New(t)
 
 	// start server and client
-	s1, cleanup := nomad.TestServer(t, nil)
+	s1, cleanup := dumb-nomad.TestServer(t, nil)
 	defer cleanup()
 
 	testutil.WaitForLeader(t, s1.RPC)
@@ -306,7 +306,7 @@ func TestAgentProfile_ACL(t *testing.T) {
 	require := require.New(t)
 
 	// start server
-	s, root, cleanupS := nomad.TestACLServer(t, nil)
+	s, root, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -370,7 +370,7 @@ func TestAgentHost(t *testing.T) {
 	ci.Parallel(t)
 
 	// start server and client
-	s1, cleanup := nomad.TestServer(t, nil)
+	s1, cleanup := dumb-nomad.TestServer(t, nil)
 	defer cleanup()
 
 	testutil.WaitForLeader(t, s1.RPC)
@@ -394,7 +394,7 @@ func TestAgentHost(t *testing.T) {
 func TestAgentHost_ACL(t *testing.T) {
 	ci.Parallel(t)
 
-	s, root, cleanupS := nomad.TestACLServer(t, nil)
+	s, root, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 
@@ -459,7 +459,7 @@ func TestMonitor_MonitorExport(t *testing.T) {
 	must.NoError(t, err)
 
 	// start server
-	s, root, cleanupS := nomad.TestACLServer(t, nil)
+	s, root, cleanupS := dumb-nomad.TestACLServer(t, nil)
 	defer cleanupS()
 	testutil.WaitForLeader(t, s.RPC)
 	defer cleanupS()

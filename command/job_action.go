@@ -13,8 +13,8 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper/escapingio"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/escapingio"
 	"github.com/posener/complete"
 )
 
@@ -28,7 +28,7 @@ type JobActionCommand struct {
 
 func (c *JobActionCommand) Help() string {
 	helpText := `
-Usage: nomad job action [options] <action>
+Usage: dumb-nomad job action [options] <action>
 
   Perform a predefined command inside the environment of the given allocation
   and job, or given task, group and job.
@@ -36,8 +36,8 @@ Usage: nomad job action [options] <action>
   Either an allocation or a task and group must be provided; for example, either
   of the following will work:
 
-    nomad job action -alloc=<alloc-id> -job=<job-name> <action>
-    nomad job action -task=<task-name> -group=<group-name> -job=<job-name> <action>
+    dumb-nomad job action -alloc=<alloc-id> -job=<job-name> <action>
+    dumb-nomad job action -task=<task-name> -group=<group-name> -job=<job-name> <action>
 
   The latter will select a random allocation from the provided group.
 
@@ -86,7 +86,7 @@ Action Specific Options:
 }
 
 func (c *JobActionCommand) Synopsis() string {
-	return "Run a pre-defined action from a Nomad task"
+	return "Run a pre-defined action from a Dumb Nomad task"
 }
 
 func (c *JobActionCommand) AutocompleteFlags() complete.Flags {

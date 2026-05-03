@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type SystemReconcileCommand struct {
@@ -15,13 +15,13 @@ type SystemReconcileCommand struct {
 
 func (s *SystemReconcileCommand) Help() string {
 	helpText := `
-Usage: nomad system reconcile <subcommand> [options]
+Usage: dumb-nomad system reconcile <subcommand> [options]
 
   This command groups subcommands for interacting with the system reconcile API.
 
   Reconcile the summaries of all registered jobs:
 
-      $ nomad system reconcile summaries
+      $ dumb-nomad system reconcile summaries
 
   Please see the individual subcommand help for detailed usage information.
 `

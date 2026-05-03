@@ -10,12 +10,12 @@ import (
 	"strings"
 	"syscall"
 
-	hclog "github.com/hashicorp/go-hclog"
-	clientconfig "github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/lib/nsutil"
-	"github.com/hashicorp/nomad/client/pluginmanager/drivermanager"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	clientconfig "github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/nsutil"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/drivermanager"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 func newNetworkManager(alloc *structs.Allocation, driverManager drivermanager.Manager) (nm drivers.DriverNetworkManager, err error) {
@@ -99,7 +99,7 @@ func newNetworkManager(alloc *structs.Allocation, driverManager drivermanager.Ma
 			//  indicates only Docker supports this, which is true unless a
 			//  custom driver can which means this check still holds as true as
 			//  we can tell.
-			//  Please see: https://github.com/hashicorp/nomad/issues/11180
+			//  Please see: https://github.com/dumb-hashicorp/dumb-nomad/issues/11180
 			return nil, fmt.Errorf("hostname is not currently supported on driver %s", task.Driver)
 		}
 
@@ -175,7 +175,7 @@ func netModeToIsolationMode(netMode string) drivers.NetIsolationMode {
 	}
 }
 
-func newNetworkConfigurator(log hclog.Logger, alloc *structs.Allocation, config *clientconfig.Config) (NetworkConfigurator, error) {
+func newNetworkConfigurator(log dumb-hclog.Logger, alloc *structs.Allocation, config *clientconfig.Config) (NetworkConfigurator, error) {
 	tg := alloc.Job.LookupTaskGroup(alloc.TaskGroup)
 
 	// Check if network block is given

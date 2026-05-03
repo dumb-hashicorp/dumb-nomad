@@ -6,9 +6,9 @@ package catalog
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
 )
 
 // TestPluginLoader returns a plugin loader populated only with internal plugins
@@ -31,7 +31,7 @@ func TestPluginLoaderWithOptions(t testing.TB,
 	configs []*config.PluginConfig) loader.PluginCatalog {
 
 	// Get a logger
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// Get the registered plugins
 	catalog := Catalog()

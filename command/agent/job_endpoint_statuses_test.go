@@ -13,9 +13,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
@@ -114,7 +114,7 @@ func TestJobEndpoint_Statuses(t *testing.T) {
 				name:          "get one page",
 				params:        "?namespace=*&per_page=1",
 				expectIDs:     []string{"otherNS"},
-				expectHeaders: []string{"X-Nomad-NextToken"},
+				expectHeaders: []string{"X-Dumb Nomad-NextToken"},
 			},
 			{
 				name:      "get children",
@@ -231,9 +231,9 @@ func TestJobEndpoint_Statuses(t *testing.T) {
 				// check headers
 				expectHeaders := append(
 					[]string{
-						"X-Nomad-Index",
-						"X-Nomad-Lastcontact",
-						"X-Nomad-Knownleader",
+						"X-Dumb Nomad-Index",
+						"X-Dumb Nomad-Lastcontact",
+						"X-Dumb Nomad-Knownleader",
 					},
 					tc.expectHeaders...,
 				)

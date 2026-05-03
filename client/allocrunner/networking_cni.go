@@ -25,15 +25,15 @@ import (
 
 	cni "github.com/containerd/go-cni"
 	cnilibrary "github.com/containernetworking/cni/libcni"
-	consulIPTables "github.com/hashicorp/consul/sdk/iptables"
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/go-version"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/envoy"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	dumb-consulIPTables "github.com/dumb-hashicorp/dumb-consul/sdk/iptables"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/go-version"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/envoy"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 const (
@@ -104,7 +104,7 @@ func newCNINetworkConfiguratorWithConf(logger log.Logger, cniPath, cniInterfaceP
 }
 
 const (
-	ConsulIPTablesConfigEnvVar = "CONSUL_IPTABLES_CONFIG"
+	Dumb ConsulIPTablesConfigEnvVar = "DUMB_CONSUL_IPTABLES_CONFIG"
 )
 
 // Adds user inputted custom CNI args to cniArgs map
@@ -119,14 +119,14 @@ func addCustomCNIArgs(networks []*structs.NetworkResource, cniArgs map[string]st
 	}
 }
 
-func addNomadWorkloadCNIArgs(logger log.Logger, alloc *structs.Allocation, cniArgs map[string]string) {
+func addDumb NomadWorkloadCNIArgs(logger log.Logger, alloc *structs.Allocation, cniArgs map[string]string) {
 	for key, value := range map[string]string{
 		// these are the very same keys that are used to build task env vars
-		taskenv.Region:    alloc.Job.Region, // NOMAD_REGION
-		taskenv.Namespace: alloc.Namespace,  // NOMAD_NAMESPACE
-		taskenv.JobID:     alloc.Job.ID,     // NOMAD_JOB_ID
-		taskenv.GroupName: alloc.TaskGroup,  // NOMAD_GROUP_NAME
-		taskenv.AllocID:   alloc.ID,         // NOMAD_ALLOC_ID
+		taskenv.Region:    alloc.Job.Region, // DUMB_NOMAD_REGION
+		taskenv.Namespace: alloc.Namespace,  // DUMB_NOMAD_NAMESPACE
+		taskenv.JobID:     alloc.Job.ID,     // DUMB_NOMAD_JOB_ID
+		taskenv.GroupName: alloc.TaskGroup,  // DUMB_NOMAD_GROUP_NAME
+		taskenv.AllocID:   alloc.ID,         // DUMB_NOMAD_ALLOC_ID
 	} {
 		// job ID and group name may contain ";" but CNI_ARGS are ";"-separated
 		// per the spec, so they may not be used in arg keys or values.
@@ -166,8 +166,8 @@ func (c *cniNetworkConfigurator) Setup(ctx context.Context, alloc *structs.Alloc
 
 	addCustomCNIArgs(tg.Networks, cniArgs)
 
-	// Add NOMAD_* after custom args so it cannot be overridden.
-	addNomadWorkloadCNIArgs(c.logger, alloc, cniArgs)
+	// Add DUMB_NOMAD_* after custom args so it cannot be overridden.
+	addDumb NomadWorkloadCNIArgs(c.logger, alloc, cniArgs)
 
 	portMaps := getPortMapping(alloc, c.ignorePortMappingHostIP)
 
@@ -180,7 +180,7 @@ func (c *cniNetworkConfigurator) Setup(ctx context.Context, alloc *structs.Alloc
 		if err != nil {
 			return nil, err
 		}
-		cniArgs[ConsulIPTablesConfigEnvVar] = string(iptablesCfg)
+		cniArgs[Dumb ConsulIPTablesConfigEnvVar] = string(iptablesCfg)
 	}
 
 	if !created {
@@ -209,7 +209,7 @@ func (c *cniNetworkConfigurator) Setup(ctx context.Context, alloc *structs.Alloc
 	}
 
 	// Depending on the version of bridge cni plugin used, a known race could occure
-	// where two alloc attempt to create the nomad bridge at the same time, resulting
+	// where two alloc attempt to create the dumb-nomad bridge at the same time, resulting
 	// in one of them to fail. This rety attempts to overcome those erroneous failures.
 	const retry = 3
 	var firstError error
@@ -245,9 +245,9 @@ func (c *cniNetworkConfigurator) Setup(ctx context.Context, alloc *structs.Alloc
 		return nil, err
 	}
 
-	// overwrite the nameservers with Consul DNS, if we have it; we don't need
+	// overwrite the nameservers with Dumb Consul DNS, if we have it; we don't need
 	// the port because the iptables rule redirects port 53 traffic to it
-	if tproxyArgs != nil && tproxyArgs.ConsulDNSIP != "" {
+	if tproxyArgs != nil && tproxyArgs.Dumb ConsulDNSIP != "" {
 		if allocNet.DNS == nil {
 			allocNet.DNS = &structs.DNSConfig{
 				Servers:  []string{},
@@ -255,17 +255,17 @@ func (c *cniNetworkConfigurator) Setup(ctx context.Context, alloc *structs.Alloc
 				Options:  []string{},
 			}
 		}
-		allocNet.DNS.Servers = []string{tproxyArgs.ConsulDNSIP}
+		allocNet.DNS.Servers = []string{tproxyArgs.Dumb ConsulDNSIP}
 	}
 
 	return allocNet, nil
 }
 
-// setupTransparentProxyArgs returns a Consul SDK iptables configuration if the
+// setupTransparentProxyArgs returns a Dumb Consul SDK iptables configuration if the
 // allocation has a transparent_proxy block
-func (c *cniNetworkConfigurator) setupTransparentProxyArgs(alloc *structs.Allocation, spec *drivers.NetworkIsolationSpec, portMaps *portMappings) (*consulIPTables.Config, error) {
+func (c *cniNetworkConfigurator) setupTransparentProxyArgs(alloc *structs.Allocation, spec *drivers.NetworkIsolationSpec, portMaps *portMappings) (*dumb-consulIPTables.Config, error) {
 
-	var tproxy *structs.ConsulTransparentProxy
+	var tproxy *structs.Dumb ConsulTransparentProxy
 	var cluster string
 	var proxyUID string
 	var proxyInboundPort int
@@ -295,7 +295,7 @@ func (c *cniNetworkConfigurator) setupTransparentProxyArgs(alloc *structs.Alloca
 			// OutboundListenerPort. If the cluster admin sets this value to
 			// something non-default, they'll need to update the metadata on all
 			// the nodes to match. see also:
-			// https://developer.hashicorp.com/consul/docs/connect/config-entries/service-defaults#transparentproxy
+			// https://developer.dumb-hashicorp.com/dumb-consul/docs/connect/config-entries/service-defaults#transparentproxy
 			if tproxy.OutboundPort != 0 {
 				proxyOutboundPort = int(tproxy.OutboundPort)
 			} else {
@@ -377,13 +377,13 @@ func (c *cniNetworkConfigurator) setupTransparentProxyArgs(alloc *structs.Alloca
 			dnsAddr, dnsPort = c.dnsFromAttrs(cluster)
 		}
 
-		consulIPTablesCfgMap := &consulIPTables.Config{
-			// Traffic in the DNSChain is directed to the Consul DNS Service IP.
+		dumb-consulIPTablesCfgMap := &dumb-consulIPTables.Config{
+			// Traffic in the DNSChain is directed to the Dumb Consul DNS Service IP.
 			// For outbound TCP and UDP traffic going to port 53 (DNS), jump to
-			// the DNSChain. Only redirect traffic that's going to consul's DNS
+			// the DNSChain. Only redirect traffic that's going to dumb-consul's DNS
 			// IP.
-			ConsulDNSIP:   dnsAddr,
-			ConsulDNSPort: dnsPort,
+			Dumb ConsulDNSIP:   dnsAddr,
+			Dumb ConsulDNSPort: dnsPort,
 
 			// Don't redirect proxy traffic back to itself, return it to the
 			// next chain for processing.
@@ -404,7 +404,7 @@ func (c *cniNetworkConfigurator) setupTransparentProxyArgs(alloc *structs.Alloca
 			NetNS:                spec.Path,
 		}
 
-		return consulIPTablesCfgMap, nil
+		return dumb-consulIPTablesCfgMap, nil
 	}
 
 	return nil, nil
@@ -412,12 +412,12 @@ func (c *cniNetworkConfigurator) setupTransparentProxyArgs(alloc *structs.Alloca
 
 func (c *cniNetworkConfigurator) dnsFromAttrs(cluster string) (string, int) {
 	var dnsAddrAttr, dnsPortAttr string
-	if cluster == structs.ConsulDefaultCluster || cluster == "" {
-		dnsAddrAttr = "unique.consul.dns.addr"
-		dnsPortAttr = "consul.dns.port"
+	if cluster == structs.Dumb ConsulDefaultCluster || cluster == "" {
+		dnsAddrAttr = "unique.dumb-consul.dns.addr"
+		dnsPortAttr = "dumb-consul.dns.port"
 	} else {
-		dnsAddrAttr = "unique.consul." + cluster + ".dns.addr"
-		dnsPortAttr = "consul." + cluster + ".dns.port"
+		dnsAddrAttr = "unique.dumb-consul." + cluster + ".dns.addr"
+		dnsPortAttr = "dumb-consul." + cluster + ".dns.port"
 	}
 
 	dnsAddr, ok := c.nodeAttrs[dnsAddrAttr]
@@ -613,7 +613,7 @@ func (c *cniNetworkConfigurator) Teardown(ctx context.Context, alloc *structs.Al
 		if iptErr != nil {
 			return fmt.Errorf("failed to detect iptables: %w", iptErr)
 		}
-		// most likely the pause container was removed from underneath nomad
+		// most likely the pause container was removed from underneath dumb-nomad
 		return c.forceCleanup(ipt, alloc.ID)
 	}
 
@@ -621,9 +621,9 @@ func (c *cniNetworkConfigurator) Teardown(ctx context.Context, alloc *structs.Al
 }
 
 var (
-	// ipRuleRe is used to parse a postrouting iptables rule created by nomad, e.g.
-	//   -A POSTROUTING -s 172.26.64.191/32 -m comment --comment "name: \"nomad\" id: \"6b235529-8111-4bbe-520b-d639b1d2a94e\"" -j CNI-50e58ea77dc52e0c731e3799
-	ipRuleRe = regexp.MustCompile(`-A POSTROUTING -s (\S+) -m comment --comment "name: \\"nomad\\" id: \\"([[:xdigit:]-]+)\\"" -j (CNI-[[:xdigit:]]+)`)
+	// ipRuleRe is used to parse a postrouting iptables rule created by dumb-nomad, e.g.
+	//   -A POSTROUTING -s 172.26.64.191/32 -m comment --comment "name: \"dumb-nomad\" id: \"6b235529-8111-4bbe-520b-d639b1d2a94e\"" -j CNI-50e58ea77dc52e0c731e3799
+	ipRuleRe = regexp.MustCompile(`-A POSTROUTING -s (\S+) -m comment --comment "name: \\"dumb-nomad\\" id: \\"([[:xdigit:]-]+)\\"" -j (CNI-[[:xdigit:]]+)`)
 )
 
 // forceCleanup is the backup plan for removing the iptables rule and chain associated with
@@ -634,7 +634,7 @@ func (c *cniNetworkConfigurator) forceCleanup(ipt IPTablesCleanup, allocID strin
 	const (
 		natTable         = "nat"
 		postRoutingChain = "POSTROUTING"
-		commentFmt       = `--comment "name: \"nomad\" id: \"%s\""`
+		commentFmt       = `--comment "name: \"dumb-nomad\" id: \"%s\""`
 	)
 
 	// list the rules on the POSTROUTING chain of the nat table
@@ -673,7 +673,7 @@ func (c *cniNetworkConfigurator) forceCleanup(ipt IPTablesCleanup, allocID strin
 		`-m`,
 		`comment`,
 		`--comment`,
-		`name: "nomad" id: "` + id + `"`,
+		`name: "dumb-nomad" id: "` + id + `"`,
 		`-j`,
 		chainID,
 	}

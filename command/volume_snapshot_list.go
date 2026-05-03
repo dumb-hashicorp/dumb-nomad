@@ -12,9 +12,9 @@ import (
 	"strings"
 
 	"github.com/dustin/go-humanize"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
-	flaghelper "github.com/hashicorp/nomad/helper/flags"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
+	flaghelper "github.com/dumb-hashicorp/dumb-nomad/helper/flags"
 	"github.com/posener/complete"
 )
 
@@ -24,7 +24,7 @@ type VolumeSnapshotListCommand struct {
 
 func (c *VolumeSnapshotListCommand) Help() string {
 	helpText := `
-Usage: nomad volume snapshot list [-plugin plugin_id]
+Usage: dumb-nomad volume snapshot list [-plugin plugin_id]
 
   Display a list of CSI volume snapshots for a plugin along
   with their source volume ID as known to the external
@@ -203,7 +203,7 @@ func csiFormatSnapshots(snapshots []*api.CSISnapshot, verbose bool) string {
 }
 
 func (c *VolumeSnapshotListCommand) csiFormatPlugins(plugs []*api.CSIPluginListStub) (string, error) {
-	// TODO: this has a lot of overlap with 'nomad plugin status', so we
+	// TODO: this has a lot of overlap with 'dumb-nomad plugin status', so we
 	// should factor out some shared formatting helpers.
 	sort.Slice(plugs, func(i, j int) bool { return plugs[i].ID < plugs[j].ID })
 	length := 30

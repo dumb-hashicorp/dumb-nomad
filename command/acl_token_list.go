@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -18,7 +18,7 @@ type ACLTokenListCommand struct {
 
 func (c *ACLTokenListCommand) Help() string {
 	helpText := `
-Usage: nomad acl token list
+Usage: dumb-nomad acl token list
 
   List is used to list existing ACL tokens.
 

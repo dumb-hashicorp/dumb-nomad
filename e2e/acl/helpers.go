@@ -6,8 +6,8 @@ package acl
 import (
 	"testing"
 
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
@@ -23,7 +23,7 @@ const (
 	ACLTokenTestResourceType
 )
 
-// Cleanup stores Nomad resources that have been created by a test which will
+// Cleanup stores Dumb Nomad resources that have been created by a test which will
 // need to be deleted once the test exits. This ensures other tests can run in
 // a clean environment and reduces the potential for conflicts.
 type Cleanup struct {
@@ -47,28 +47,28 @@ func NewCleanup() *Cleanup {
 // called via defer, so it will always Run no matter if the test fails or not.
 // Any failure will ultimately fail the test, but will not stop the attempts to
 // delete all the resources.
-func (c *Cleanup) Run(t *testing.T, nomadClient *api.Client) {
+func (c *Cleanup) Run(t *testing.T, dumb-nomadClient *api.Client) {
 	for namespace := range c.namespaces.Items() {
-		_, err := nomadClient.Namespaces().Delete(namespace, nil)
+		_, err := dumb-nomadClient.Namespaces().Delete(namespace, nil)
 		test.NoError(t, err)
 	}
 
 	for policy := range c.aclPolicies.Items() {
-		_, err := nomadClient.ACLPolicies().Delete(policy, nil)
+		_, err := dumb-nomadClient.ACLPolicies().Delete(policy, nil)
 		test.NoError(t, err)
 	}
 
 	for role := range c.aclRoles.Items() {
-		_, err := nomadClient.ACLRoles().Delete(role, nil)
+		_, err := dumb-nomadClient.ACLRoles().Delete(role, nil)
 		test.NoError(t, err)
 	}
 
 	for token := range c.aclTokens.Items() {
-		_, err := nomadClient.ACLTokens().Delete(token, nil)
+		_, err := dumb-nomadClient.ACLTokens().Delete(token, nil)
 		test.NoError(t, err)
 	}
 
-	must.NoError(t, nomadClient.System().GarbageCollect())
+	must.NoError(t, dumb-nomadClient.System().GarbageCollect())
 }
 
 // Add the resource identifier to the resource tracker. It will be removed by

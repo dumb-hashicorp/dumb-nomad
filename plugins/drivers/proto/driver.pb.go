@@ -9,8 +9,8 @@ import (
 	proto "github.com/golang/protobuf/proto"
 	duration "github.com/golang/protobuf/ptypes/duration"
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
-	hclspec "github.com/hashicorp/nomad/plugins/shared/hclspec"
-	proto1 "github.com/hashicorp/nomad/plugins/shared/structs/proto"
+	dumb-hclspec "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
+	proto1 "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -312,7 +312,7 @@ var xxx_messageInfo_TaskConfigSchemaRequest proto.InternalMessageInfo
 
 type TaskConfigSchemaResponse struct {
 	// Spec is the configuration schema for the job driver config block
-	Spec                 *hclspec.Spec `protobuf:"bytes,1,opt,name=spec,proto3" json:"spec,omitempty"`
+	Spec                 *dumb-hclspec.Spec `protobuf:"bytes,1,opt,name=spec,proto3" json:"spec,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
 	XXX_unrecognized     []byte        `json:"-"`
 	XXX_sizecache        int32         `json:"-"`
@@ -343,7 +343,7 @@ func (m *TaskConfigSchemaResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_TaskConfigSchemaResponse proto.InternalMessageInfo
 
-func (m *TaskConfigSchemaResponse) GetSpec() *hclspec.Spec {
+func (m *TaskConfigSchemaResponse) GetSpec() *dumb-hclspec.Spec {
 	if m != nil {
 		return m.Spec
 	}
@@ -456,7 +456,7 @@ func (m *FingerprintRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_FingerprintRequest proto.InternalMessageInfo
 
 type FingerprintResponse struct {
-	// Attributes are key/value pairs that annotate the nomad client and can be
+	// Attributes are key/value pairs that annotate the dumb-nomad client and can be
 	// used in scheduling constraints and affinities.
 	Attributes map[string]*proto1.Attribute `protobuf:"bytes,1,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// Health is used to determine the state of the health the driver is in.
@@ -465,7 +465,7 @@ type FingerprintResponse struct {
 	//   - UNHEALTHY: driver dependencies are met but the driver is unable to
 	//     perform operations due to some other problem
 	//   - HEALTHY: driver is able to perform all operations
-	Health FingerprintResponse_HealthState `protobuf:"varint,2,opt,name=health,proto3,enum=hashicorp.nomad.plugins.drivers.proto.FingerprintResponse_HealthState" json:"health,omitempty"`
+	Health FingerprintResponse_HealthState `protobuf:"varint,2,opt,name=health,proto3,enum=dumb-hashicorp.dumb-nomad.plugins.drivers.proto.FingerprintResponse_HealthState" json:"health,omitempty"`
 	// HealthDescription is a human readable message describing the current
 	// state of driver health
 	HealthDescription string `protobuf:"bytes,3,opt,name=health_description,json=healthDescription,proto3" json:"health_description,omitempty"`
@@ -658,7 +658,7 @@ type StartTaskResponse struct {
 	//   - FATAL: A fatal error occurred and is not likely to succeed if retried
 	//
 	// If Result is not successful, the DriverErrorMsg will be set.
-	Result StartTaskResponse_Result `protobuf:"varint,1,opt,name=result,proto3,enum=hashicorp.nomad.plugins.drivers.proto.StartTaskResponse_Result" json:"result,omitempty"`
+	Result StartTaskResponse_Result `protobuf:"varint,1,opt,name=result,proto3,enum=dumb-hashicorp.dumb-nomad.plugins.drivers.proto.StartTaskResponse_Result" json:"result,omitempty"`
 	// DriverErrorMsg is set if an error occurred
 	DriverErrorMsg string `protobuf:"bytes,2,opt,name=driver_error_msg,json=driverErrorMsg,proto3" json:"driver_error_msg,omitempty"`
 	// Handle is opaque to the client, but must be stored in order to recover
@@ -1853,16 +1853,16 @@ type DriverCapabilities struct {
 	// in the task's execution environment.
 	Exec bool `protobuf:"varint,2,opt,name=exec,proto3" json:"exec,omitempty"`
 	// FsIsolation indicates what kind of filesystem isolation a driver supports.
-	FsIsolation           DriverCapabilities_FSIsolation              `protobuf:"varint,3,opt,name=fs_isolation,json=fsIsolation,proto3,enum=hashicorp.nomad.plugins.drivers.proto.DriverCapabilities_FSIsolation" json:"fs_isolation,omitempty"`
-	NetworkIsolationModes []NetworkIsolationSpec_NetworkIsolationMode `protobuf:"varint,4,rep,packed,name=network_isolation_modes,json=networkIsolationModes,proto3,enum=hashicorp.nomad.plugins.drivers.proto.NetworkIsolationSpec_NetworkIsolationMode" json:"network_isolation_modes,omitempty"`
+	FsIsolation           DriverCapabilities_FSIsolation              `protobuf:"varint,3,opt,name=fs_isolation,json=fsIsolation,proto3,enum=dumb-hashicorp.dumb-nomad.plugins.drivers.proto.DriverCapabilities_FSIsolation" json:"fs_isolation,omitempty"`
+	NetworkIsolationModes []NetworkIsolationSpec_NetworkIsolationMode `protobuf:"varint,4,rep,packed,name=network_isolation_modes,json=networkIsolationModes,proto3,enum=dumb-hashicorp.dumb-nomad.plugins.drivers.proto.NetworkIsolationSpec_NetworkIsolationMode" json:"network_isolation_modes,omitempty"`
 	MustCreateNetwork     bool                                        `protobuf:"varint,5,opt,name=must_create_network,json=mustCreateNetwork,proto3" json:"must_create_network,omitempty"`
 	// MountConfigs indicates whether the driver supports mount configurations.
-	MountConfigs DriverCapabilities_MountConfigs `protobuf:"varint,6,opt,name=mount_configs,json=mountConfigs,proto3,enum=hashicorp.nomad.plugins.drivers.proto.DriverCapabilities_MountConfigs" json:"mount_configs,omitempty"`
+	MountConfigs DriverCapabilities_MountConfigs `protobuf:"varint,6,opt,name=mount_configs,json=mountConfigs,proto3,enum=dumb-hashicorp.dumb-nomad.plugins.drivers.proto.DriverCapabilities_MountConfigs" json:"mount_configs,omitempty"`
 	// disable_log_collection indicates whether the driver has the capability of
 	// disabling log collection
 	DisableLogCollection bool `protobuf:"varint,8,opt,name=disable_log_collection,json=disableLogCollection,proto3" json:"disable_log_collection,omitempty"`
 	// dynamic_workload_users indicates the task is capable of using UID/GID
-	// assigned from the Nomad client as user credentials for the task.
+	// assigned from the Dumb Nomad client as user credentials for the task.
 	DynamicWorkloadUsers bool     `protobuf:"varint,9,opt,name=dynamic_workload_users,json=dynamicWorkloadUsers,proto3" json:"dynamic_workload_users,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -1951,7 +1951,7 @@ func (m *DriverCapabilities) GetDynamicWorkloadUsers() bool {
 }
 
 type NetworkIsolationSpec struct {
-	Mode                 NetworkIsolationSpec_NetworkIsolationMode `protobuf:"varint,1,opt,name=mode,proto3,enum=hashicorp.nomad.plugins.drivers.proto.NetworkIsolationSpec_NetworkIsolationMode" json:"mode,omitempty"`
+	Mode                 NetworkIsolationSpec_NetworkIsolationMode `protobuf:"varint,1,opt,name=mode,proto3,enum=dumb-hashicorp.dumb-nomad.plugins.drivers.proto.NetworkIsolationSpec_NetworkIsolationMode" json:"mode,omitempty"`
 	Path                 string                                    `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
 	Labels               map[string]string                         `protobuf:"bytes,3,rep,name=labels,proto3" json:"labels,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	HostsConfig          *HostsConfig                              `protobuf:"bytes,4,opt,name=hostsConfig,proto3" json:"hostsConfig,omitempty"`
@@ -2987,12 +2987,12 @@ func (m *Device) GetCgroupPermissions() string {
 // TaskHandle is created when starting a task and is used to recover task
 type TaskHandle struct {
 	// Version is used by the driver to version the DriverState schema.
-	// Version 0 is reserved by Nomad and should not be used.
+	// Version 0 is reserved by Dumb Nomad and should not be used.
 	Version int32 `protobuf:"varint,1,opt,name=version,proto3" json:"version,omitempty"`
 	// Config is the TaskConfig for the task
 	Config *TaskConfig `protobuf:"bytes,2,opt,name=config,proto3" json:"config,omitempty"`
 	// State is the state of the task's execution
-	State TaskState `protobuf:"varint,3,opt,name=state,proto3,enum=hashicorp.nomad.plugins.drivers.proto.TaskState" json:"state,omitempty"`
+	State TaskState `protobuf:"varint,3,opt,name=state,proto3,enum=dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskState" json:"state,omitempty"`
 	// DriverState is the encoded state for the specific driver
 	DriverState          []byte   `protobuf:"bytes,4,opt,name=driver_state,json=driverState,proto3" json:"driver_state,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
@@ -3178,7 +3178,7 @@ type TaskStatus struct {
 	Id   string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// State is the state of the task's execution
-	State TaskState `protobuf:"varint,3,opt,name=state,proto3,enum=hashicorp.nomad.plugins.drivers.proto.TaskState" json:"state,omitempty"`
+	State TaskState `protobuf:"varint,3,opt,name=state,proto3,enum=dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskState" json:"state,omitempty"`
 	// StartedAt is the timestamp when the task was started
 	StartedAt *timestamp.Timestamp `protobuf:"bytes,4,opt,name=started_at,json=startedAt,proto3" json:"started_at,omitempty"`
 	// CompletedAt is the timestamp when the task exited.
@@ -3423,7 +3423,7 @@ type CPUUsage struct {
 	ThrottledTime    uint64  `protobuf:"varint,5,opt,name=throttled_time,json=throttledTime,proto3" json:"throttled_time,omitempty"`
 	Percent          float64 `protobuf:"fixed64,6,opt,name=percent,proto3" json:"percent,omitempty"`
 	// MeasuredFields indicates which fields were actually sampled
-	MeasuredFields       []CPUUsage_Fields `protobuf:"varint,7,rep,packed,name=measured_fields,json=measuredFields,proto3,enum=hashicorp.nomad.plugins.drivers.proto.CPUUsage_Fields" json:"measured_fields,omitempty"`
+	MeasuredFields       []CPUUsage_Fields `protobuf:"varint,7,rep,packed,name=measured_fields,json=measuredFields,proto3,enum=dumb-hashicorp.dumb-nomad.plugins.drivers.proto.CPUUsage_Fields" json:"measured_fields,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
 	XXX_unrecognized     []byte            `json:"-"`
 	XXX_sizecache        int32             `json:"-"`
@@ -3512,7 +3512,7 @@ type MemoryUsage struct {
 	Usage          uint64 `protobuf:"varint,7,opt,name=usage,proto3" json:"usage,omitempty"`
 	Swap           uint64 `protobuf:"varint,8,opt,name=swap,proto3" json:"swap,omitempty"`
 	// MeasuredFields indicates which fields were actually sampled
-	MeasuredFields       []MemoryUsage_Fields `protobuf:"varint,6,rep,packed,name=measured_fields,json=measuredFields,proto3,enum=hashicorp.nomad.plugins.drivers.proto.MemoryUsage_Fields" json:"measured_fields,omitempty"`
+	MeasuredFields       []MemoryUsage_Fields `protobuf:"varint,6,rep,packed,name=measured_fields,json=measuredFields,proto3,enum=dumb-hashicorp.dumb-nomad.plugins.drivers.proto.MemoryUsage_Fields" json:"measured_fields,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
 	XXX_unrecognized     []byte               `json:"-"`
 	XXX_sizecache        int32                `json:"-"`
@@ -3685,81 +3685,81 @@ func (m *DriverTaskEvent) GetAnnotations() map[string]string {
 }
 
 func init() {
-	proto.RegisterEnum("hashicorp.nomad.plugins.drivers.proto.TaskState", TaskState_name, TaskState_value)
-	proto.RegisterEnum("hashicorp.nomad.plugins.drivers.proto.FingerprintResponse_HealthState", FingerprintResponse_HealthState_name, FingerprintResponse_HealthState_value)
-	proto.RegisterEnum("hashicorp.nomad.plugins.drivers.proto.StartTaskResponse_Result", StartTaskResponse_Result_name, StartTaskResponse_Result_value)
-	proto.RegisterEnum("hashicorp.nomad.plugins.drivers.proto.DriverCapabilities_FSIsolation", DriverCapabilities_FSIsolation_name, DriverCapabilities_FSIsolation_value)
-	proto.RegisterEnum("hashicorp.nomad.plugins.drivers.proto.DriverCapabilities_MountConfigs", DriverCapabilities_MountConfigs_name, DriverCapabilities_MountConfigs_value)
-	proto.RegisterEnum("hashicorp.nomad.plugins.drivers.proto.NetworkIsolationSpec_NetworkIsolationMode", NetworkIsolationSpec_NetworkIsolationMode_name, NetworkIsolationSpec_NetworkIsolationMode_value)
-	proto.RegisterEnum("hashicorp.nomad.plugins.drivers.proto.CPUUsage_Fields", CPUUsage_Fields_name, CPUUsage_Fields_value)
-	proto.RegisterEnum("hashicorp.nomad.plugins.drivers.proto.MemoryUsage_Fields", MemoryUsage_Fields_name, MemoryUsage_Fields_value)
-	proto.RegisterType((*TaskConfigSchemaRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskConfigSchemaRequest")
-	proto.RegisterType((*TaskConfigSchemaResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskConfigSchemaResponse")
-	proto.RegisterType((*CapabilitiesRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.CapabilitiesRequest")
-	proto.RegisterType((*CapabilitiesResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.CapabilitiesResponse")
-	proto.RegisterType((*FingerprintRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.FingerprintRequest")
-	proto.RegisterType((*FingerprintResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.FingerprintResponse")
-	proto.RegisterMapType((map[string]*proto1.Attribute)(nil), "hashicorp.nomad.plugins.drivers.proto.FingerprintResponse.AttributesEntry")
-	proto.RegisterType((*RecoverTaskRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.RecoverTaskRequest")
-	proto.RegisterType((*RecoverTaskResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.RecoverTaskResponse")
-	proto.RegisterType((*StartTaskRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.StartTaskRequest")
-	proto.RegisterType((*StartTaskResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.StartTaskResponse")
-	proto.RegisterType((*WaitTaskRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.WaitTaskRequest")
-	proto.RegisterType((*WaitTaskResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.WaitTaskResponse")
-	proto.RegisterType((*StopTaskRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.StopTaskRequest")
-	proto.RegisterType((*StopTaskResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.StopTaskResponse")
-	proto.RegisterType((*DestroyTaskRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.DestroyTaskRequest")
-	proto.RegisterType((*DestroyTaskResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.DestroyTaskResponse")
-	proto.RegisterType((*InspectTaskRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.InspectTaskRequest")
-	proto.RegisterType((*InspectTaskResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.InspectTaskResponse")
-	proto.RegisterType((*TaskStatsRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskStatsRequest")
-	proto.RegisterType((*TaskStatsResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskStatsResponse")
-	proto.RegisterType((*TaskEventsRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskEventsRequest")
-	proto.RegisterType((*SignalTaskRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.SignalTaskRequest")
-	proto.RegisterType((*SignalTaskResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.SignalTaskResponse")
-	proto.RegisterType((*ExecTaskRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.ExecTaskRequest")
-	proto.RegisterType((*ExecTaskResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.ExecTaskResponse")
-	proto.RegisterType((*ExecTaskStreamingIOOperation)(nil), "hashicorp.nomad.plugins.drivers.proto.ExecTaskStreamingIOOperation")
-	proto.RegisterType((*ExecTaskStreamingRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.ExecTaskStreamingRequest")
-	proto.RegisterType((*ExecTaskStreamingRequest_Setup)(nil), "hashicorp.nomad.plugins.drivers.proto.ExecTaskStreamingRequest.Setup")
-	proto.RegisterType((*ExecTaskStreamingRequest_TerminalSize)(nil), "hashicorp.nomad.plugins.drivers.proto.ExecTaskStreamingRequest.TerminalSize")
-	proto.RegisterType((*ExecTaskStreamingResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.ExecTaskStreamingResponse")
-	proto.RegisterType((*CreateNetworkRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.CreateNetworkRequest")
-	proto.RegisterType((*CreateNetworkResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.CreateNetworkResponse")
-	proto.RegisterType((*DestroyNetworkRequest)(nil), "hashicorp.nomad.plugins.drivers.proto.DestroyNetworkRequest")
-	proto.RegisterType((*DestroyNetworkResponse)(nil), "hashicorp.nomad.plugins.drivers.proto.DestroyNetworkResponse")
-	proto.RegisterType((*DriverCapabilities)(nil), "hashicorp.nomad.plugins.drivers.proto.DriverCapabilities")
-	proto.RegisterType((*NetworkIsolationSpec)(nil), "hashicorp.nomad.plugins.drivers.proto.NetworkIsolationSpec")
-	proto.RegisterMapType((map[string]string)(nil), "hashicorp.nomad.plugins.drivers.proto.NetworkIsolationSpec.LabelsEntry")
-	proto.RegisterType((*HostsConfig)(nil), "hashicorp.nomad.plugins.drivers.proto.HostsConfig")
-	proto.RegisterType((*DNSConfig)(nil), "hashicorp.nomad.plugins.drivers.proto.DNSConfig")
-	proto.RegisterType((*TaskConfig)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskConfig")
-	proto.RegisterMapType((map[string]string)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskConfig.DeviceEnvEntry")
-	proto.RegisterMapType((map[string]string)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskConfig.EnvEntry")
-	proto.RegisterType((*Resources)(nil), "hashicorp.nomad.plugins.drivers.proto.Resources")
-	proto.RegisterType((*AllocatedTaskResources)(nil), "hashicorp.nomad.plugins.drivers.proto.AllocatedTaskResources")
-	proto.RegisterType((*AllocatedCpuResources)(nil), "hashicorp.nomad.plugins.drivers.proto.AllocatedCpuResources")
-	proto.RegisterType((*AllocatedMemoryResources)(nil), "hashicorp.nomad.plugins.drivers.proto.AllocatedMemoryResources")
-	proto.RegisterType((*NetworkResource)(nil), "hashicorp.nomad.plugins.drivers.proto.NetworkResource")
-	proto.RegisterType((*NetworkPort)(nil), "hashicorp.nomad.plugins.drivers.proto.NetworkPort")
-	proto.RegisterType((*PortMapping)(nil), "hashicorp.nomad.plugins.drivers.proto.PortMapping")
-	proto.RegisterType((*LinuxResources)(nil), "hashicorp.nomad.plugins.drivers.proto.LinuxResources")
-	proto.RegisterType((*Mount)(nil), "hashicorp.nomad.plugins.drivers.proto.Mount")
-	proto.RegisterType((*Device)(nil), "hashicorp.nomad.plugins.drivers.proto.Device")
-	proto.RegisterType((*TaskHandle)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskHandle")
-	proto.RegisterType((*NetworkOverride)(nil), "hashicorp.nomad.plugins.drivers.proto.NetworkOverride")
-	proto.RegisterMapType((map[string]int32)(nil), "hashicorp.nomad.plugins.drivers.proto.NetworkOverride.PortMapEntry")
-	proto.RegisterType((*ExitResult)(nil), "hashicorp.nomad.plugins.drivers.proto.ExitResult")
-	proto.RegisterType((*TaskStatus)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskStatus")
-	proto.RegisterType((*TaskDriverStatus)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskDriverStatus")
-	proto.RegisterMapType((map[string]string)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskDriverStatus.AttributesEntry")
-	proto.RegisterType((*TaskStats)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskStats")
-	proto.RegisterMapType((map[string]*TaskResourceUsage)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskStats.ResourceUsageByPidEntry")
-	proto.RegisterType((*TaskResourceUsage)(nil), "hashicorp.nomad.plugins.drivers.proto.TaskResourceUsage")
-	proto.RegisterType((*CPUUsage)(nil), "hashicorp.nomad.plugins.drivers.proto.CPUUsage")
-	proto.RegisterType((*MemoryUsage)(nil), "hashicorp.nomad.plugins.drivers.proto.MemoryUsage")
-	proto.RegisterType((*DriverTaskEvent)(nil), "hashicorp.nomad.plugins.drivers.proto.DriverTaskEvent")
-	proto.RegisterMapType((map[string]string)(nil), "hashicorp.nomad.plugins.drivers.proto.DriverTaskEvent.AnnotationsEntry")
+	proto.RegisterEnum("dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskState", TaskState_name, TaskState_value)
+	proto.RegisterEnum("dumb-hashicorp.dumb-nomad.plugins.drivers.proto.FingerprintResponse_HealthState", FingerprintResponse_HealthState_name, FingerprintResponse_HealthState_value)
+	proto.RegisterEnum("dumb-hashicorp.dumb-nomad.plugins.drivers.proto.StartTaskResponse_Result", StartTaskResponse_Result_name, StartTaskResponse_Result_value)
+	proto.RegisterEnum("dumb-hashicorp.dumb-nomad.plugins.drivers.proto.DriverCapabilities_FSIsolation", DriverCapabilities_FSIsolation_name, DriverCapabilities_FSIsolation_value)
+	proto.RegisterEnum("dumb-hashicorp.dumb-nomad.plugins.drivers.proto.DriverCapabilities_MountConfigs", DriverCapabilities_MountConfigs_name, DriverCapabilities_MountConfigs_value)
+	proto.RegisterEnum("dumb-hashicorp.dumb-nomad.plugins.drivers.proto.NetworkIsolationSpec_NetworkIsolationMode", NetworkIsolationSpec_NetworkIsolationMode_name, NetworkIsolationSpec_NetworkIsolationMode_value)
+	proto.RegisterEnum("dumb-hashicorp.dumb-nomad.plugins.drivers.proto.CPUUsage_Fields", CPUUsage_Fields_name, CPUUsage_Fields_value)
+	proto.RegisterEnum("dumb-hashicorp.dumb-nomad.plugins.drivers.proto.MemoryUsage_Fields", MemoryUsage_Fields_name, MemoryUsage_Fields_value)
+	proto.RegisterType((*TaskConfigSchemaRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskConfigSchemaRequest")
+	proto.RegisterType((*TaskConfigSchemaResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskConfigSchemaResponse")
+	proto.RegisterType((*CapabilitiesRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.CapabilitiesRequest")
+	proto.RegisterType((*CapabilitiesResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.CapabilitiesResponse")
+	proto.RegisterType((*FingerprintRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.FingerprintRequest")
+	proto.RegisterType((*FingerprintResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.FingerprintResponse")
+	proto.RegisterMapType((map[string]*proto1.Attribute)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.FingerprintResponse.AttributesEntry")
+	proto.RegisterType((*RecoverTaskRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.RecoverTaskRequest")
+	proto.RegisterType((*RecoverTaskResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.RecoverTaskResponse")
+	proto.RegisterType((*StartTaskRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.StartTaskRequest")
+	proto.RegisterType((*StartTaskResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.StartTaskResponse")
+	proto.RegisterType((*WaitTaskRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.WaitTaskRequest")
+	proto.RegisterType((*WaitTaskResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.WaitTaskResponse")
+	proto.RegisterType((*StopTaskRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.StopTaskRequest")
+	proto.RegisterType((*StopTaskResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.StopTaskResponse")
+	proto.RegisterType((*DestroyTaskRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.DestroyTaskRequest")
+	proto.RegisterType((*DestroyTaskResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.DestroyTaskResponse")
+	proto.RegisterType((*InspectTaskRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.InspectTaskRequest")
+	proto.RegisterType((*InspectTaskResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.InspectTaskResponse")
+	proto.RegisterType((*TaskStatsRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskStatsRequest")
+	proto.RegisterType((*TaskStatsResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskStatsResponse")
+	proto.RegisterType((*TaskEventsRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskEventsRequest")
+	proto.RegisterType((*SignalTaskRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.SignalTaskRequest")
+	proto.RegisterType((*SignalTaskResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.SignalTaskResponse")
+	proto.RegisterType((*ExecTaskRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.ExecTaskRequest")
+	proto.RegisterType((*ExecTaskResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.ExecTaskResponse")
+	proto.RegisterType((*ExecTaskStreamingIOOperation)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.ExecTaskStreamingIOOperation")
+	proto.RegisterType((*ExecTaskStreamingRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.ExecTaskStreamingRequest")
+	proto.RegisterType((*ExecTaskStreamingRequest_Setup)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.ExecTaskStreamingRequest.Setup")
+	proto.RegisterType((*ExecTaskStreamingRequest_TerminalSize)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.ExecTaskStreamingRequest.TerminalSize")
+	proto.RegisterType((*ExecTaskStreamingResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.ExecTaskStreamingResponse")
+	proto.RegisterType((*CreateNetworkRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.CreateNetworkRequest")
+	proto.RegisterType((*CreateNetworkResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.CreateNetworkResponse")
+	proto.RegisterType((*DestroyNetworkRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.DestroyNetworkRequest")
+	proto.RegisterType((*DestroyNetworkResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.DestroyNetworkResponse")
+	proto.RegisterType((*DriverCapabilities)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.DriverCapabilities")
+	proto.RegisterType((*NetworkIsolationSpec)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.NetworkIsolationSpec")
+	proto.RegisterMapType((map[string]string)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.NetworkIsolationSpec.LabelsEntry")
+	proto.RegisterType((*HostsConfig)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.HostsConfig")
+	proto.RegisterType((*DNSConfig)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.DNSConfig")
+	proto.RegisterType((*TaskConfig)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskConfig")
+	proto.RegisterMapType((map[string]string)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskConfig.DeviceEnvEntry")
+	proto.RegisterMapType((map[string]string)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskConfig.EnvEntry")
+	proto.RegisterType((*Resources)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Resources")
+	proto.RegisterType((*AllocatedTaskResources)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.AllocatedTaskResources")
+	proto.RegisterType((*AllocatedCpuResources)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.AllocatedCpuResources")
+	proto.RegisterType((*AllocatedMemoryResources)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.AllocatedMemoryResources")
+	proto.RegisterType((*NetworkResource)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.NetworkResource")
+	proto.RegisterType((*NetworkPort)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.NetworkPort")
+	proto.RegisterType((*PortMapping)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.PortMapping")
+	proto.RegisterType((*LinuxResources)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.LinuxResources")
+	proto.RegisterType((*Mount)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Mount")
+	proto.RegisterType((*Device)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Device")
+	proto.RegisterType((*TaskHandle)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskHandle")
+	proto.RegisterType((*NetworkOverride)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.NetworkOverride")
+	proto.RegisterMapType((map[string]int32)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.NetworkOverride.PortMapEntry")
+	proto.RegisterType((*ExitResult)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.ExitResult")
+	proto.RegisterType((*TaskStatus)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskStatus")
+	proto.RegisterType((*TaskDriverStatus)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskDriverStatus")
+	proto.RegisterMapType((map[string]string)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskDriverStatus.AttributesEntry")
+	proto.RegisterType((*TaskStats)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskStats")
+	proto.RegisterMapType((map[string]*TaskResourceUsage)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskStats.ResourceUsageByPidEntry")
+	proto.RegisterType((*TaskResourceUsage)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.TaskResourceUsage")
+	proto.RegisterType((*CPUUsage)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.CPUUsage")
+	proto.RegisterType((*MemoryUsage)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.MemoryUsage")
+	proto.RegisterType((*DriverTaskEvent)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.DriverTaskEvent")
+	proto.RegisterMapType((map[string]string)(nil), "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.DriverTaskEvent.AnnotationsEntry")
 }
 
 func init() {
@@ -4077,7 +4077,7 @@ type DriverClient interface {
 	// buf:lint:ignore RPC_REQUEST_RESPONSE_UNIQUE
 	ExecTaskStreaming(ctx context.Context, opts ...grpc.CallOption) (Driver_ExecTaskStreamingClient, error)
 	// CreateNetwork is implemented when the driver needs to create the network
-	// namespace instead of allowing the Nomad client to do.
+	// namespace instead of allowing the Dumb Nomad client to do.
 	CreateNetwork(ctx context.Context, in *CreateNetworkRequest, opts ...grpc.CallOption) (*CreateNetworkResponse, error)
 	// DestroyNetwork destroys a previously created network. This rpc is only
 	// implemented if the driver needs to manage network namespace creation.
@@ -4094,7 +4094,7 @@ func NewDriverClient(cc grpc.ClientConnInterface) DriverClient {
 
 func (c *driverClient) TaskConfigSchema(ctx context.Context, in *TaskConfigSchemaRequest, opts ...grpc.CallOption) (*TaskConfigSchemaResponse, error) {
 	out := new(TaskConfigSchemaResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.drivers.proto.Driver/TaskConfigSchema", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/TaskConfigSchema", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4103,7 +4103,7 @@ func (c *driverClient) TaskConfigSchema(ctx context.Context, in *TaskConfigSchem
 
 func (c *driverClient) Capabilities(ctx context.Context, in *CapabilitiesRequest, opts ...grpc.CallOption) (*CapabilitiesResponse, error) {
 	out := new(CapabilitiesResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.drivers.proto.Driver/Capabilities", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/Capabilities", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4111,7 +4111,7 @@ func (c *driverClient) Capabilities(ctx context.Context, in *CapabilitiesRequest
 }
 
 func (c *driverClient) Fingerprint(ctx context.Context, in *FingerprintRequest, opts ...grpc.CallOption) (Driver_FingerprintClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Driver_serviceDesc.Streams[0], "/hashicorp.nomad.plugins.drivers.proto.Driver/Fingerprint", opts...)
+	stream, err := c.cc.NewStream(ctx, &_Driver_serviceDesc.Streams[0], "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/Fingerprint", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4144,7 +4144,7 @@ func (x *driverFingerprintClient) Recv() (*FingerprintResponse, error) {
 
 func (c *driverClient) RecoverTask(ctx context.Context, in *RecoverTaskRequest, opts ...grpc.CallOption) (*RecoverTaskResponse, error) {
 	out := new(RecoverTaskResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.drivers.proto.Driver/RecoverTask", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/RecoverTask", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4153,7 +4153,7 @@ func (c *driverClient) RecoverTask(ctx context.Context, in *RecoverTaskRequest, 
 
 func (c *driverClient) StartTask(ctx context.Context, in *StartTaskRequest, opts ...grpc.CallOption) (*StartTaskResponse, error) {
 	out := new(StartTaskResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.drivers.proto.Driver/StartTask", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/StartTask", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4162,7 +4162,7 @@ func (c *driverClient) StartTask(ctx context.Context, in *StartTaskRequest, opts
 
 func (c *driverClient) WaitTask(ctx context.Context, in *WaitTaskRequest, opts ...grpc.CallOption) (*WaitTaskResponse, error) {
 	out := new(WaitTaskResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.drivers.proto.Driver/WaitTask", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/WaitTask", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4171,7 +4171,7 @@ func (c *driverClient) WaitTask(ctx context.Context, in *WaitTaskRequest, opts .
 
 func (c *driverClient) StopTask(ctx context.Context, in *StopTaskRequest, opts ...grpc.CallOption) (*StopTaskResponse, error) {
 	out := new(StopTaskResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.drivers.proto.Driver/StopTask", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/StopTask", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4180,7 +4180,7 @@ func (c *driverClient) StopTask(ctx context.Context, in *StopTaskRequest, opts .
 
 func (c *driverClient) DestroyTask(ctx context.Context, in *DestroyTaskRequest, opts ...grpc.CallOption) (*DestroyTaskResponse, error) {
 	out := new(DestroyTaskResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.drivers.proto.Driver/DestroyTask", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/DestroyTask", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4189,7 +4189,7 @@ func (c *driverClient) DestroyTask(ctx context.Context, in *DestroyTaskRequest, 
 
 func (c *driverClient) InspectTask(ctx context.Context, in *InspectTaskRequest, opts ...grpc.CallOption) (*InspectTaskResponse, error) {
 	out := new(InspectTaskResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.drivers.proto.Driver/InspectTask", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/InspectTask", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4197,7 +4197,7 @@ func (c *driverClient) InspectTask(ctx context.Context, in *InspectTaskRequest, 
 }
 
 func (c *driverClient) TaskStats(ctx context.Context, in *TaskStatsRequest, opts ...grpc.CallOption) (Driver_TaskStatsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Driver_serviceDesc.Streams[1], "/hashicorp.nomad.plugins.drivers.proto.Driver/TaskStats", opts...)
+	stream, err := c.cc.NewStream(ctx, &_Driver_serviceDesc.Streams[1], "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/TaskStats", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4229,7 +4229,7 @@ func (x *driverTaskStatsClient) Recv() (*TaskStatsResponse, error) {
 }
 
 func (c *driverClient) TaskEvents(ctx context.Context, in *TaskEventsRequest, opts ...grpc.CallOption) (Driver_TaskEventsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Driver_serviceDesc.Streams[2], "/hashicorp.nomad.plugins.drivers.proto.Driver/TaskEvents", opts...)
+	stream, err := c.cc.NewStream(ctx, &_Driver_serviceDesc.Streams[2], "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/TaskEvents", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4262,7 +4262,7 @@ func (x *driverTaskEventsClient) Recv() (*DriverTaskEvent, error) {
 
 func (c *driverClient) SignalTask(ctx context.Context, in *SignalTaskRequest, opts ...grpc.CallOption) (*SignalTaskResponse, error) {
 	out := new(SignalTaskResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.drivers.proto.Driver/SignalTask", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/SignalTask", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4271,7 +4271,7 @@ func (c *driverClient) SignalTask(ctx context.Context, in *SignalTaskRequest, op
 
 func (c *driverClient) ExecTask(ctx context.Context, in *ExecTaskRequest, opts ...grpc.CallOption) (*ExecTaskResponse, error) {
 	out := new(ExecTaskResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.drivers.proto.Driver/ExecTask", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/ExecTask", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4279,7 +4279,7 @@ func (c *driverClient) ExecTask(ctx context.Context, in *ExecTaskRequest, opts .
 }
 
 func (c *driverClient) ExecTaskStreaming(ctx context.Context, opts ...grpc.CallOption) (Driver_ExecTaskStreamingClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Driver_serviceDesc.Streams[3], "/hashicorp.nomad.plugins.drivers.proto.Driver/ExecTaskStreaming", opts...)
+	stream, err := c.cc.NewStream(ctx, &_Driver_serviceDesc.Streams[3], "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/ExecTaskStreaming", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4311,7 +4311,7 @@ func (x *driverExecTaskStreamingClient) Recv() (*ExecTaskStreamingResponse, erro
 
 func (c *driverClient) CreateNetwork(ctx context.Context, in *CreateNetworkRequest, opts ...grpc.CallOption) (*CreateNetworkResponse, error) {
 	out := new(CreateNetworkResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.drivers.proto.Driver/CreateNetwork", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/CreateNetwork", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4320,7 +4320,7 @@ func (c *driverClient) CreateNetwork(ctx context.Context, in *CreateNetworkReque
 
 func (c *driverClient) DestroyNetwork(ctx context.Context, in *DestroyNetworkRequest, opts ...grpc.CallOption) (*DestroyNetworkResponse, error) {
 	out := new(DestroyNetworkResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.drivers.proto.Driver/DestroyNetwork", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/DestroyNetwork", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -4377,7 +4377,7 @@ type DriverServer interface {
 	// buf:lint:ignore RPC_REQUEST_RESPONSE_UNIQUE
 	ExecTaskStreaming(Driver_ExecTaskStreamingServer) error
 	// CreateNetwork is implemented when the driver needs to create the network
-	// namespace instead of allowing the Nomad client to do.
+	// namespace instead of allowing the Dumb Nomad client to do.
 	CreateNetwork(context.Context, *CreateNetworkRequest) (*CreateNetworkResponse, error)
 	// DestroyNetwork destroys a previously created network. This rpc is only
 	// implemented if the driver needs to manage network namespace creation.
@@ -4451,7 +4451,7 @@ func _Driver_TaskConfigSchema_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.drivers.proto.Driver/TaskConfigSchema",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/TaskConfigSchema",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DriverServer).TaskConfigSchema(ctx, req.(*TaskConfigSchemaRequest))
@@ -4469,7 +4469,7 @@ func _Driver_Capabilities_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.drivers.proto.Driver/Capabilities",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/Capabilities",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DriverServer).Capabilities(ctx, req.(*CapabilitiesRequest))
@@ -4508,7 +4508,7 @@ func _Driver_RecoverTask_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.drivers.proto.Driver/RecoverTask",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/RecoverTask",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DriverServer).RecoverTask(ctx, req.(*RecoverTaskRequest))
@@ -4526,7 +4526,7 @@ func _Driver_StartTask_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.drivers.proto.Driver/StartTask",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/StartTask",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DriverServer).StartTask(ctx, req.(*StartTaskRequest))
@@ -4544,7 +4544,7 @@ func _Driver_WaitTask_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.drivers.proto.Driver/WaitTask",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/WaitTask",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DriverServer).WaitTask(ctx, req.(*WaitTaskRequest))
@@ -4562,7 +4562,7 @@ func _Driver_StopTask_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.drivers.proto.Driver/StopTask",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/StopTask",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DriverServer).StopTask(ctx, req.(*StopTaskRequest))
@@ -4580,7 +4580,7 @@ func _Driver_DestroyTask_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.drivers.proto.Driver/DestroyTask",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/DestroyTask",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DriverServer).DestroyTask(ctx, req.(*DestroyTaskRequest))
@@ -4598,7 +4598,7 @@ func _Driver_InspectTask_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.drivers.proto.Driver/InspectTask",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/InspectTask",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DriverServer).InspectTask(ctx, req.(*InspectTaskRequest))
@@ -4658,7 +4658,7 @@ func _Driver_SignalTask_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.drivers.proto.Driver/SignalTask",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/SignalTask",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DriverServer).SignalTask(ctx, req.(*SignalTaskRequest))
@@ -4676,7 +4676,7 @@ func _Driver_ExecTask_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.drivers.proto.Driver/ExecTask",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/ExecTask",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DriverServer).ExecTask(ctx, req.(*ExecTaskRequest))
@@ -4720,7 +4720,7 @@ func _Driver_CreateNetwork_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.drivers.proto.Driver/CreateNetwork",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/CreateNetwork",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DriverServer).CreateNetwork(ctx, req.(*CreateNetworkRequest))
@@ -4738,7 +4738,7 @@ func _Driver_DestroyNetwork_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.drivers.proto.Driver/DestroyNetwork",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver/DestroyNetwork",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DriverServer).DestroyNetwork(ctx, req.(*DestroyNetworkRequest))
@@ -4747,7 +4747,7 @@ func _Driver_DestroyNetwork_Handler(srv interface{}, ctx context.Context, dec fu
 }
 
 var _Driver_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "hashicorp.nomad.plugins.drivers.proto.Driver",
+	ServiceName: "dumb-hashicorp.dumb-nomad.plugins.drivers.proto.Driver",
 	HandlerType: (*DriverServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

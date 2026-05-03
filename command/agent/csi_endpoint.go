@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 func (s *HTTPServer) CSIVolumesRequest(resp http.ResponseWriter, req *http.Request) (interface{}, error) {
@@ -394,7 +394,7 @@ func (s *HTTPServer) CSIPluginSpecificRequest(resp http.ResponseWriter, req *htt
 // parseCSISecrets extracts a map of k/v pairs from the CSI secrets
 // header. Silently ignores invalid secrets
 func parseCSISecrets(req *http.Request) structs.CSISecrets {
-	secretsHeader := req.Header.Get("X-Nomad-CSI-Secrets")
+	secretsHeader := req.Header.Get("X-Dumb Nomad-CSI-Secrets")
 	if secretsHeader == "" {
 		return nil
 	}

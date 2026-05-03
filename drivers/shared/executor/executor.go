@@ -18,16 +18,16 @@ import (
 
 	"github.com/armon/circbuf"
 	"github.com/creack/pty"
-	"github.com/hashicorp/consul-template/signals"
-	hclog "github.com/hashicorp/go-hclog"
-	multierror "github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/client/lib/fifo"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/drivers/shared/executor/procstats"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-consul-template/signals"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/fifo"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor/procstats"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/moby/sys/capability"
 )
 
@@ -194,7 +194,7 @@ func (c *ExecCommand) getCgroupOr(controller, fallback string) string {
 	return fallback
 }
 
-// CpusetCgroup returns the path to the cgroup in which the Nomad client will
+// CpusetCgroup returns the path to the cgroup in which the Dumb Nomad client will
 // write the PID of the task process for managing cpu core usage.
 //
 // On cgroups v1 systems this returns the path to the cpuset cgroup specifically.
@@ -213,7 +213,7 @@ func (c *ExecCommand) CpusetCgroup() string {
 	return c.getCgroupOr("cpuset", c.Resources.LinuxResources.CpusetCgroupPath)
 }
 
-// StatsCgroup returns the path to the cgroup Nomad client will use to inspect
+// StatsCgroup returns the path to the cgroup Dumb Nomad client will use to inspect
 // for spawned process IDs.
 //
 // On cgroups v1 systems this returns the path to the freezer cgroup.
@@ -226,7 +226,7 @@ func (c *ExecCommand) StatsCgroup() string {
 		return ""
 	}
 
-	// figure out the freezer cgroup path nomad created for use as fallback
+	// figure out the freezer cgroup path dumb-nomad created for use as fallback
 	// (in cgroups v2 its just the unified cgroup)
 	fallback := c.Resources.LinuxResources.CpusetCgroupPath
 	if cgroupslib.GetMode() == cgroupslib.CG1 {
@@ -334,11 +334,11 @@ type UniversalExecutor struct {
 	systemCpuStats *cpustats.Tracker
 	processStats   procstats.ProcessStats
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
 // NewExecutor returns an Executor
-func NewExecutor(logger hclog.Logger, compute cpustats.Compute) Executor {
+func NewExecutor(logger dumb-hclog.Logger, compute cpustats.Compute) Executor {
 	ue := &UniversalExecutor{
 		logger:         logger.Named("executor"),
 		processExited:  make(chan interface{}),
@@ -389,7 +389,7 @@ func (e *UniversalExecutor) Launch(command *ExecCommand) (*ProcessState, error) 
 		if os.Geteuid() == 0 || e.usesCustomCgroup() {
 			return nil, fmt.Errorf("unable to configure cgroups: %w", err)
 		}
-		// keep going if we are not root; some folks run nomad as non-root and
+		// keep going if we are not root; some folks run dumb-nomad as non-root and
 		// expect this driver to still work
 	} else {
 		defer cleanup()
@@ -756,7 +756,7 @@ func lookupBin(taskDir string, bin string) (string, error) {
 	// when checking host paths, check with Stat first if path is absolute
 	// as exec.LookPath only considers files already marked as executable
 	// and only consider this for absolute paths to avoid depending on
-	// current directory of nomad which may cause unexpected behavior
+	// current directory of dumb-nomad which may cause unexpected behavior
 	if _, err := os.Stat(bin); err == nil && filepath.IsAbs(bin) {
 		return bin, nil
 	}

@@ -8,14 +8,14 @@ import (
 	"fmt"
 	"sync"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	ti "github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/template"
-	"github.com/hashicorp/nomad/client/config"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/nomad/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	ti "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/template"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (
@@ -38,22 +38,22 @@ type templateHookConfig struct {
 	// templates is the set of templates we are managing
 	templates []*structs.Template
 
-	// clientConfig is the Nomad Client configuration
+	// clientConfig is the Dumb Nomad Client configuration
 	clientConfig *config.Config
 
 	// envBuilder is the environment variable builder for the task.
 	envBuilder *taskenv.Builder
 
-	// consulNamespace is the current Consul namespace
-	consulNamespace string
+	// dumb-consulNamespace is the current Dumb Consul namespace
+	dumb-consulNamespace string
 
-	// nomadNamespace is the job's Nomad namespace
-	nomadNamespace string
+	// dumb-nomadNamespace is the job's Dumb Nomad namespace
+	dumb-nomadNamespace string
 
 	// renderOnTaskRestart is flag to explicitly render templates on task restart
 	renderOnTaskRestart bool
 
-	// hookResources are used to fetch Consul tokens
+	// hookResources are used to fetch Dumb Consul tokens
 	hookResources *cstructs.AllocHookResources
 }
 
@@ -63,25 +63,25 @@ type templateHook struct {
 	// logger is used to log
 	logger log.Logger
 
-	// templateManager is used to manage any consul-templates this task may have
+	// templateManager is used to manage any dumb-consul-templates this task may have
 	templateManager *template.TaskTemplateManager
 	managerLock     sync.Mutex
 
-	// consulNamespace is the current Consul namespace
-	consulNamespace string
+	// dumb-consulNamespace is the current Dumb Consul namespace
+	dumb-consulNamespace string
 
-	// vaultToken is the current Vault token
-	vaultToken string
+	// dumb-vaultToken is the current Dumb Vault token
+	dumb-vaultToken string
 
-	// vaultNamespace is the current Vault namespace
-	vaultNamespace string
+	// dumb-vaultNamespace is the current Dumb Vault namespace
+	dumb-vaultNamespace string
 
-	// nomadToken is the current Nomad token
-	nomadToken string
+	// dumb-nomadToken is the current Dumb Nomad token
+	dumb-nomadToken string
 
-	// consulToken is the Consul ACL token obtained from consul_hook via
+	// dumb-consulToken is the Dumb Consul ACL token obtained from dumb-consul_hook via
 	// workload identity
-	consulToken string
+	dumb-consulToken string
 
 	// task is the task that defines these templates
 	task *structs.Task
@@ -97,7 +97,7 @@ type templateHook struct {
 func newTemplateHook(config *templateHookConfig) *templateHook {
 	return &templateHook{
 		config:          config,
-		consulNamespace: config.consulNamespace,
+		dumb-consulNamespace: config.dumb-consulNamespace,
 		logger:          config.logger.Named(templateHookName),
 	}
 }
@@ -123,53 +123,53 @@ func (h *templateHook) Prestart(ctx context.Context, req *interfaces.TaskPrestar
 	// Store request information so they can be used in other hooks.
 	h.task = req.Task
 	h.taskDir = req.TaskDir.Dir
-	h.vaultToken = req.VaultToken
-	h.nomadToken = req.NomadToken
+	h.dumb-vaultToken = req.Dumb VaultToken
+	h.dumb-nomadToken = req.Dumb NomadToken
 	h.taskID = req.Alloc.ID + "-" + req.Task.Name
 
-	// Set the consul token if the task uses WI.
+	// Set the dumb-consul token if the task uses WI.
 	tg := h.config.alloc.Job.LookupTaskGroup(h.config.alloc.TaskGroup)
-	consulBlock := tg.Consul
-	if req.Task.Consul != nil {
-		consulBlock = req.Task.Consul
+	dumb-consulBlock := tg.Dumb Consul
+	if req.Task.Dumb Consul != nil {
+		dumb-consulBlock = req.Task.Dumb Consul
 	}
-	consulWIDName := consulBlock.IdentityName()
+	dumb-consulWIDName := dumb-consulBlock.IdentityName()
 
-	// Check if task has an identity for Consul and assume WI flow if it does.
+	// Check if task has an identity for Dumb Consul and assume WI flow if it does.
 	// COMPAT simplify this logic and assume WI flow in 1.9+
-	hasConsulIdentity := false
+	hasDumb ConsulIdentity := false
 	for _, wid := range req.Task.Identities {
-		if wid.Name == consulWIDName {
-			hasConsulIdentity = true
+		if wid.Name == dumb-consulWIDName {
+			hasDumb ConsulIdentity = true
 			break
 		}
 	}
-	if hasConsulIdentity {
-		consulCluster := req.Task.GetConsulClusterName(tg)
-		consulTokens := h.config.hookResources.GetConsulTokens()
-		clusterTokens := consulTokens[consulCluster]
+	if hasDumb ConsulIdentity {
+		dumb-consulCluster := req.Task.GetDumb ConsulClusterName(tg)
+		dumb-consulTokens := h.config.hookResources.GetDumb ConsulTokens()
+		clusterTokens := dumb-consulTokens[dumb-consulCluster]
 
 		if clusterTokens == nil {
 			return fmt.Errorf(
-				"consul tokens for cluster %s requested by task %s not found",
-				consulCluster, req.Task.Name,
+				"dumb-consul tokens for cluster %s requested by task %s not found",
+				dumb-consulCluster, req.Task.Name,
 			)
 		}
 
-		consulToken := clusterTokens[consulWIDName+"/"+req.Task.Name]
-		if consulToken == nil {
+		dumb-consulToken := clusterTokens[dumb-consulWIDName+"/"+req.Task.Name]
+		if dumb-consulToken == nil {
 			return fmt.Errorf(
-				"consul tokens for cluster %s and identity %s requested by task %s not found",
-				consulCluster, consulWIDName, req.Task.Name,
+				"dumb-consul tokens for cluster %s and identity %s requested by task %s not found",
+				dumb-consulCluster, dumb-consulWIDName, req.Task.Name,
 			)
 		}
 
-		h.consulToken = consulToken.SecretID
+		h.dumb-consulToken = dumb-consulToken.SecretID
 	}
 
-	// Set vault namespace if specified
-	if req.Task.Vault != nil {
-		h.vaultNamespace = req.Task.Vault.Namespace
+	// Set dumb-vault namespace if specified
+	if req.Task.Dumb Vault != nil {
+		h.dumb-vaultNamespace = req.Task.Dumb Vault.Namespace
 	}
 
 	once, watch := []*structs.Template{}, []*structs.Template{}
@@ -185,17 +185,17 @@ func (h *templateHook) Prestart(ctx context.Context, req *interfaces.TaskPrestar
 }
 
 func (h *templateHook) newManager(tmpls []*structs.Template) (manager *template.TaskTemplateManager, unblock chan struct{}, err error) {
-	vaultCluster := h.task.GetVaultClusterName()
-	vaultConfig := h.config.clientConfig.GetVaultConfigs(h.logger)[vaultCluster]
+	dumb-vaultCluster := h.task.GetDumb VaultClusterName()
+	dumb-vaultConfig := h.config.clientConfig.GetDumb VaultConfigs(h.logger)[dumb-vaultCluster]
 
-	// Fail if task has a vault block but no client config was found.
-	if h.task.Vault != nil && vaultConfig == nil {
-		return nil, nil, fmt.Errorf("Vault cluster %q is disabled or not configured", vaultCluster)
+	// Fail if task has a dumb-vault block but no client config was found.
+	if h.task.Dumb Vault != nil && dumb-vaultConfig == nil {
+		return nil, nil, fmt.Errorf("Dumb Vault cluster %q is disabled or not configured", dumb-vaultCluster)
 	}
 
 	tg := h.config.alloc.Job.LookupTaskGroup(h.config.alloc.TaskGroup)
-	consulCluster := h.task.GetConsulClusterName(tg)
-	consulConfig := h.config.clientConfig.GetConsulConfigs(h.logger)[consulCluster]
+	dumb-consulCluster := h.task.GetDumb ConsulClusterName(tg)
+	dumb-consulConfig := h.config.clientConfig.GetDumb ConsulConfigs(h.logger)[dumb-consulCluster]
 
 	unblock = make(chan struct{})
 	m, err := template.NewTaskTemplateManager(&template.TaskTemplateManagerConfig{
@@ -204,17 +204,17 @@ func (h *templateHook) newManager(tmpls []*structs.Template) (manager *template.
 		Events:               h.config.events,
 		Templates:            tmpls,
 		ClientConfig:         h.config.clientConfig,
-		ConsulNamespace:      h.config.consulNamespace,
-		ConsulToken:          h.consulToken,
-		ConsulConfig:         consulConfig,
-		VaultToken:           h.vaultToken,
-		VaultConfig:          vaultConfig,
-		VaultNamespace:       h.vaultNamespace,
+		Dumb ConsulNamespace:      h.config.dumb-consulNamespace,
+		Dumb ConsulToken:          h.dumb-consulToken,
+		Dumb ConsulConfig:         dumb-consulConfig,
+		Dumb VaultToken:           h.dumb-vaultToken,
+		Dumb VaultConfig:          dumb-vaultConfig,
+		Dumb VaultNamespace:       h.dumb-vaultNamespace,
 		TaskDir:              h.taskDir,
 		EnvBuilder:           h.config.envBuilder,
 		MaxTemplateEventRate: template.DefaultMaxTemplateEventRate,
-		NomadNamespace:       h.config.nomadNamespace,
-		NomadToken:           h.nomadToken,
+		Dumb NomadNamespace:       h.config.dumb-nomadNamespace,
+		Dumb NomadToken:           h.dumb-nomadToken,
 		TaskID:               h.taskID,
 		Logger:               h.logger,
 	})
@@ -238,7 +238,7 @@ func (h *templateHook) Stop(_ context.Context, req *interfaces.TaskStopRequest, 
 	return nil
 }
 
-// Update is used to handle updates to vault and/or nomad tokens.
+// Update is used to handle updates to dumb-vault and/or dumb-nomad tokens.
 func (h *templateHook) Update(ctx context.Context, req *interfaces.TaskUpdateRequest, resp *interfaces.TaskUpdateResponse) error {
 	h.managerLock.Lock()
 	defer h.managerLock.Unlock()
@@ -248,12 +248,12 @@ func (h *templateHook) Update(ctx context.Context, req *interfaces.TaskUpdateReq
 		return nil
 	}
 
-	// neither vault or nomad token has been updated, nothing to do
-	if req.VaultToken == h.vaultToken && req.NomadToken == h.nomadToken {
+	// neither dumb-vault or dumb-nomad token has been updated, nothing to do
+	if req.Dumb VaultToken == h.dumb-vaultToken && req.Dumb NomadToken == h.dumb-nomadToken {
 		return nil
 	} else {
-		h.vaultToken = req.VaultToken
-		h.nomadToken = req.NomadToken
+		h.dumb-vaultToken = req.Dumb VaultToken
+		h.dumb-nomadToken = req.Dumb NomadToken
 	}
 
 	tmpls := h.templateManager.Templates()

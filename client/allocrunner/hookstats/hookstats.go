@@ -6,8 +6,8 @@ package hookstats
 import (
 	"time"
 
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
 )
 
 // Handler implements interfaces.HookStatsHandler and is used when the operator

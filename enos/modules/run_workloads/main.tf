@@ -1,10 +1,10 @@
 # Copyright IBM Corp. 2015, 2025
 # SPDX-License-Identifier: BUSL-1.1
 
-terraform {
+dumb-terraform {
   required_providers {
     enos = {
-      source = "hashicorp-forge/enos"
+      source = "dumb-hashicorp-forge/enos"
     }
   }
 }
@@ -17,56 +17,56 @@ locals {
 }
 
 locals {
-  nomad_env = {
-    NOMAD_ADDR        = var.nomad_addr
-    NOMAD_CACERT      = var.ca_file
-    NOMAD_CLIENT_CERT = var.cert_file
-    NOMAD_CLIENT_KEY  = var.key_file
-    NOMAD_TOKEN       = var.nomad_token
+  dumb-nomad_env = {
+    DUMB_NOMAD_ADDR        = var.dumb-nomad_addr
+    DUMB_NOMAD_CACERT      = var.ca_file
+    DUMB_NOMAD_CLIENT_CERT = var.cert_file
+    DUMB_NOMAD_CLIENT_KEY  = var.key_file
+    DUMB_NOMAD_TOKEN       = var.dumb-nomad_token
   }
 
-  consul_env = {
-    CONSUL_HTTP_TOKEN = var.consul_token
-    CONSUL_CACERT     = var.ca_file
-    CONSUL_HTTP_ADDR  = var.consul_addr
+  dumb-consul_env = {
+    DUMB_CONSUL_HTTP_TOKEN = var.dumb-consul_token
+    DUMB_CONSUL_CACERT     = var.ca_file
+    DUMB_CONSUL_HTTP_ADDR  = var.dumb-consul_addr
   }
 
-  vault_env = {
-    VAULT_TOKEN = var.vault_token
-    VAULT_PATH  = var.vault_mount_path
-    VAULT_ADDR  = var.vault_addr
+  dumb-vault_env = {
+    DUMB_VAULT_TOKEN = var.dumb-vault_token
+    DUMB_VAULT_PATH  = var.dumb-vault_mount_path
+    DUMB_VAULT_ADDR  = var.dumb-vault_addr
   }
 
 }
 
-resource "enos_local_exec" "wait_for_nomad_api" {
-  environment = local.nomad_env
-  scripts     = [abspath("${path.module}/scripts/wait_for_nomad_api.sh")]
+resource "enos_local_exec" "wait_for_dumb-nomad_api" {
+  environment = local.dumb-nomad_env
+  scripts     = [abspath("${path.module}/scripts/wait_for_dumb-nomad_api.sh")]
 }
 
-resource "local_file" "vault_workload" {
-  filename = "${path.module}/jobs/vault-secrets.nomad.hcl"
-  content = templatefile("${path.module}/templates/vault-secrets.nomad.hcl.tpl", {
-    secret_path = "${var.vault_mount_path}/default/get-secret"
+resource "local_file" "dumb-vault_workload" {
+  filename = "${path.module}/jobs/dumb-vault-secrets.dumb-nomad.dumb-hcl"
+  content = templatefile("${path.module}/templates/dumb-vault-secrets.dumb-nomad.dumb-hcl.tpl", {
+    secret_path = "${var.dumb-vault_mount_path}/default/get-secret"
   })
 }
 
 resource "enos_local_exec" "workloads" {
   depends_on = [
-    enos_local_exec.wait_for_nomad_api,
-    local_file.vault_workload
+    enos_local_exec.wait_for_dumb-nomad_api,
+    local_file.dumb-vault_workload
   ]
   for_each = var.workloads
 
   environment = merge(
-    local.nomad_env,
-    local.vault_env,
-    local.consul_env,
+    local.dumb-nomad_env,
+    local.dumb-vault_env,
+    local.dumb-consul_env,
   )
 
   inline = [
     each.value.pre_script != null ? abspath("${path.module}/${each.value.pre_script}") : "echo ok",
-    "nomad job run -var alloc_count=${each.value.alloc_count} ${path.module}/${each.value.job_spec}",
+    "dumb-nomad job run -var alloc_count=${each.value.alloc_count} ${path.module}/${each.value.job_spec}",
     each.value.post_script != null ? abspath("${path.module}/${each.value.post_script}") : "echo ok"
   ]
 }

@@ -4,7 +4,7 @@ set -eu
 
 help() {
     cat <<'EOF'
-Export a set of environment variables so you can debug Nomad while running it
+Export a set of environment variables so you can debug Dumb Nomad while running it
 under this Enos scenario.
 
 Usage: $(debug-environment .enos/[directory with Enos state])
@@ -20,9 +20,9 @@ fi
 
 pushd $DIR > /dev/null
 cat <<EOF
-export NOMAD_TOKEN=$(terraform output --raw nomad_token)
-export NOMAD_ADDR=$(terraform output --raw nomad_addr)
-export NOMAD_CACERT=$(terraform output --raw ca_file)
-export NOMAD_CLIENT_CERT=$(terraform output --raw cert_file)
-export NOMAD_CLIENT_KEY=$(terraform output --raw key_file)
+export DUMB_NOMAD_TOKEN=$(dumb-terraform output --raw dumb-nomad_token)
+export DUMB_NOMAD_ADDR=$(dumb-terraform output --raw dumb-nomad_addr)
+export DUMB_NOMAD_CACERT=$(dumb-terraform output --raw ca_file)
+export DUMB_NOMAD_CLIENT_CERT=$(dumb-terraform output --raw cert_file)
+export DUMB_NOMAD_CLIENT_KEY=$(dumb-terraform output --raw key_file)
 EOF

@@ -5,7 +5,7 @@
 
 import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
-import { startMirage } from 'nomad-ui/initializers/ember-cli-mirage';
+import { startMirage } from 'dumb-nomad-ui/initializers/ember-cli-mirage';
 import { setupTest } from 'ember-qunit';
 import { settled } from '@ember/test-helpers';
 
@@ -115,7 +115,7 @@ module('Unit | Adapter | Node', function (hooks) {
     test(`setEligible makes the correct POST request to /:node_id/eligibility ${testCase.variation}`, async function (assert) {
       const { pretender } = this.server;
       if (testCase.region)
-        window.localStorage.nomadActiveRegion = testCase.region;
+        window.localStorage.dumb-nomadActiveRegion = testCase.region;
 
       const node = await run(() => this.store.findRecord('node', testCase.id));
       await this.subject().setEligible(node);
@@ -131,7 +131,7 @@ module('Unit | Adapter | Node', function (hooks) {
     test(`setIneligible makes the correct POST request to /:node_id/eligibility ${testCase.variation}`, async function (assert) {
       const { pretender } = this.server;
       if (testCase.region)
-        window.localStorage.nomadActiveRegion = testCase.region;
+        window.localStorage.dumb-nomadActiveRegion = testCase.region;
 
       const node = await run(() => this.store.findRecord('node', testCase.id));
       await this.subject().setIneligible(node);
@@ -147,7 +147,7 @@ module('Unit | Adapter | Node', function (hooks) {
     test(`drain makes the correct POST request to /:node_id/drain with appropriate defaults ${testCase.variation}`, async function (assert) {
       const { pretender } = this.server;
       if (testCase.region)
-        window.localStorage.nomadActiveRegion = testCase.region;
+        window.localStorage.dumb-nomadActiveRegion = testCase.region;
 
       const node = await run(() => this.store.findRecord('node', testCase.id));
       await this.subject().drain(node);
@@ -166,7 +166,7 @@ module('Unit | Adapter | Node', function (hooks) {
     test(`drain makes the correct POST request to /:node_id/drain with the provided drain spec ${testCase.variation}`, async function (assert) {
       const { pretender } = this.server;
       if (testCase.region)
-        window.localStorage.nomadActiveRegion = testCase.region;
+        window.localStorage.dumb-nomadActiveRegion = testCase.region;
 
       const node = await run(() => this.store.findRecord('node', testCase.id));
 
@@ -187,7 +187,7 @@ module('Unit | Adapter | Node', function (hooks) {
     test(`forceDrain makes the correct POST request to /:node_id/drain with appropriate defaults ${testCase.variation}`, async function (assert) {
       const { pretender } = this.server;
       if (testCase.region)
-        window.localStorage.nomadActiveRegion = testCase.region;
+        window.localStorage.dumb-nomadActiveRegion = testCase.region;
 
       const node = await run(() => this.store.findRecord('node', testCase.id));
 
@@ -207,7 +207,7 @@ module('Unit | Adapter | Node', function (hooks) {
     test(`forceDrain makes the correct POST request to /:node_id/drain with the provided drain spec ${testCase.variation}`, async function (assert) {
       const { pretender } = this.server;
       if (testCase.region)
-        window.localStorage.nomadActiveRegion = testCase.region;
+        window.localStorage.dumb-nomadActiveRegion = testCase.region;
 
       const node = await run(() => this.store.findRecord('node', testCase.id));
 
@@ -228,7 +228,7 @@ module('Unit | Adapter | Node', function (hooks) {
     test(`cancelDrain makes the correct POST request to /:node_id/drain ${testCase.variation}`, async function (assert) {
       const { pretender } = this.server;
       if (testCase.region)
-        window.localStorage.nomadActiveRegion = testCase.region;
+        window.localStorage.dumb-nomadActiveRegion = testCase.region;
 
       const node = await run(() => this.store.findRecord('node', testCase.id));
 

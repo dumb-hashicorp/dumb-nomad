@@ -11,13 +11,13 @@ import (
 	"path/filepath"
 	"sort"
 
-	multierror "github.com/hashicorp/go-multierror"
-	plugin "github.com/hashicorp/go-plugin"
-	version "github.com/hashicorp/go-version"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclspecutils"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclutils"
-	"github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/plugins/base"
+	multierror "github.com/dumb-hashicorp/go-multierror"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	version "github.com/dumb-hashicorp/go-version"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclspecutils"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclutils"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
 	"github.com/zclconf/go-cty/cty/msgpack"
 )
 
@@ -136,7 +136,7 @@ func (l *PluginLoader) initInternal(plugins map[PluginID]*InternalPluginConfig, 
 			continue
 		}
 		if av == "" {
-			l.logger.Warn("skipping plugin because supported API versions for plugin and Nomad do not overlap", "plugin", k)
+			l.logger.Warn("skipping plugin because supported API versions for plugin and Dumb Nomad do not overlap", "plugin", k)
 			continue
 		}
 		info.apiVersion = av
@@ -383,7 +383,7 @@ func (l *PluginLoader) fingerprintPlugin(pluginExe os.FileInfo, config *config.P
 		return nil, fmt.Errorf("failed to validate API versions %v for plugin %s (%v): %v", i.PluginApiVersions, i.Name, info.exePath, err)
 	}
 	if av == "" {
-		l.logger.Warn("skipping plugin because supported API versions for plugin and Nomad do not overlap", "plugin", i.Name, "path", info.exePath)
+		l.logger.Warn("skipping plugin because supported API versions for plugin and Dumb Nomad do not overlap", "plugin", i.Name, "path", info.exePath)
 		return nil, nil
 	}
 	info.apiVersion = av
@@ -459,8 +459,8 @@ func (l *PluginLoader) validatePluginConfig(id PluginID, info *pluginInfo) error
 		return nil
 	}
 
-	// Convert the schema to hcl
-	spec, diag := hclspecutils.Convert(info.configSchema)
+	// Convert the schema to dumb-hcl
+	spec, diag := dumb-hclspecutils.Convert(info.configSchema)
 	if diag.HasErrors() {
 		_ = multierror.Append(&mErr, diag.Errs()...)
 		return multierror.Prefix(&mErr, "failed converting config schema:")
@@ -473,7 +473,7 @@ func (l *PluginLoader) validatePluginConfig(id PluginID, info *pluginInfo) error
 	}
 
 	// Parse the config using the spec
-	val, diag, diagErrs := hclutils.ParseHclInterface(info.config, spec, nil)
+	val, diag, diagErrs := dumb-hclutils.ParseDumb HclInterface(info.config, spec, nil)
 	if diag.HasErrors() {
 		_ = multierror.Append(&mErr, diagErrs...)
 		return multierror.Prefix(&mErr, "failed to parse config: ")

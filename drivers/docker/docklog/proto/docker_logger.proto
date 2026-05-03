@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 syntax = "proto3";
-package hashicorp.nomad.drivers.docker.docklog.proto;
+package dumb-hashicorp.dumb-nomad.drivers.docker.docklog.proto;
 option go_package = "proto";
 
 service DockerLogger {

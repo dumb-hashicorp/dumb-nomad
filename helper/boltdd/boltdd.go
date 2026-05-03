@@ -11,8 +11,8 @@ import (
 	"os"
 	"sync"
 
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"go.etcd.io/bbolt"
 	"golang.org/x/crypto/blake2b"
 )

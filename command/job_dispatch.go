@@ -11,8 +11,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
-	flaghelper "github.com/hashicorp/nomad/helper/flags"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	flaghelper "github.com/dumb-hashicorp/dumb-nomad/helper/flags"
 	"github.com/posener/complete"
 )
 
@@ -22,7 +22,7 @@ type JobDispatchCommand struct {
 
 func (c *JobDispatchCommand) Help() string {
 	helpText := `
-Usage: nomad job dispatch [options] <parameterized job> [input source]
+Usage: dumb-nomad job dispatch [options] <parameterized job> [input source]
 
   Dispatch creates an instance of a parameterized job. A data payload to the
   dispatched instance can be provided via stdin by using "-" or by specifying a

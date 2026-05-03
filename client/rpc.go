@@ -11,13 +11,13 @@ import (
 	"strings"
 	"time"
 
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/client/servers"
-	"github.com/hashicorp/nomad/helper"
-	inmem "github.com/hashicorp/nomad/helper/codec"
-	"github.com/hashicorp/nomad/helper/pool"
-	"github.com/hashicorp/nomad/nomad/structs"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/client/servers"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	inmem "github.com/dumb-hashicorp/dumb-nomad/helper/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pool"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // rpcEndpoints holds the RPC endpoints
@@ -51,7 +51,7 @@ func (c *Client) StreamingRpcHandler(method string) (structs.StreamingRpcHandler
 	return c.streamingRpcs.GetHandler(method)
 }
 
-// RPC is used to forward an RPC call to a nomad server, or fail if no servers.
+// RPC is used to forward an RPC call to a dumb-nomad server, or fail if no servers.
 func (c *Client) RPC(method string, args any, reply any) error {
 	// Block if we have not yet registered the node, to enforce that we only
 	// send authenticated calls after the node has been registered
@@ -64,12 +64,12 @@ func (c *Client) RPC(method string, args any, reply any) error {
 }
 
 // UnauthenticatedRPC special-cases the Node.Register RPC call, forwarding the
-// call to a nomad server without blocking on the initial node registration.
+// call to a dumb-nomad server without blocking on the initial node registration.
 func (c *Client) UnauthenticatedRPC(method string, args any, reply any) error {
 	return c.rpc(method, args, reply)
 }
 
-// rpc implements the forwarding of a RPC call to a nomad server, or fail if
+// rpc implements the forwarding of a RPC call to a dumb-nomad server, or fail if
 // no servers.
 func (c *Client) rpc(method string, args any, reply any) error {
 
@@ -380,8 +380,8 @@ func (c *Client) handleConn(conn net.Conn) {
 
 	// Switch on the byte
 	switch pool.RPCType(buf[0]) {
-	case pool.RpcNomad:
-		c.handleNomadConn(conn)
+	case pool.RpcDumb Nomad:
+		c.handleDumb NomadConn(conn)
 
 	case pool.RpcStreaming:
 		c.handleStreamingConn(conn)
@@ -393,8 +393,8 @@ func (c *Client) handleConn(conn net.Conn) {
 	}
 }
 
-// handleNomadConn is used to handle a single Nomad RPC connection.
-func (c *Client) handleNomadConn(conn net.Conn) {
+// handleDumb NomadConn is used to handle a single Dumb Nomad RPC connection.
+func (c *Client) handleDumb NomadConn(conn net.Conn) {
 	defer conn.Close()
 	rpcCodec := pool.NewServerCodec(conn)
 	for {
@@ -415,7 +415,7 @@ func (c *Client) handleNomadConn(conn net.Conn) {
 	}
 }
 
-// handleStreamingConn is used to handle a single Streaming Nomad RPC connection.
+// handleStreamingConn is used to handle a single Streaming Dumb Nomad RPC connection.
 func (c *Client) handleStreamingConn(conn net.Conn) {
 	defer conn.Close()
 

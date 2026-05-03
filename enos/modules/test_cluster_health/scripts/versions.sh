@@ -10,7 +10,7 @@ error_exit() {
 }
 
 # Servers version
-server_versions=$(nomad server members -json | jq -r '[.[] | select(.Status == "alive") | .Tags.build] | unique')
+server_versions=$(dumb-nomad server members -json | jq -r '[.[] | select(.Status == "alive") | .Tags.build] | unique')
 
 if [ "$(echo "$server_versions" | jq 'length')" -eq 0 ]; then
     error_exit "Unable to get servers version"
@@ -27,10 +27,10 @@ if [ "$final_version" != "$SERVERS_VERSION" ]; then
     error_exit "Servers are not running the correct version. Found: $final_version, Expected: $SERVERS_VERSION"
 fi
 
-echo "All servers are running Nomad version $SERVERS_VERSION"
+echo "All servers are running Dumb Nomad version $SERVERS_VERSION"
 
 # Clients version
-clients_versions=$(nomad node status -json | jq -r '[.[] | select(.Status == "ready") | .Version] | unique')
+clients_versions=$(dumb-nomad node status -json | jq -r '[.[] | select(.Status == "ready") | .Version] | unique')
 
 if [ "$(echo "$clients_versions" | jq 'length')" -eq 0 ]; then
     error_exit "Unable to get clients version"
@@ -48,4 +48,4 @@ if [ "$final_version" != "$CLIENTS_VERSION" ]; then
     error_exit "Clients are not running the correct version. Found: $final_version, Expected: $CLIENTS_VERSION"
 fi
 
-echo "All clients are running Nomad version $CLIENTS_VERSION"
+echo "All clients are running Dumb Nomad version $CLIENTS_VERSION"

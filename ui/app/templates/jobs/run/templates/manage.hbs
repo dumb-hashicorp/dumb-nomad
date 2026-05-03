@@ -22,7 +22,7 @@
                     <B.Td>
                         {{#if (or
                           B.data.isDefaultJobTemplate
-                          (not (can "write variable" path="nomad/job-templates/*" namespace="*"))
+                          (not (can "write variable" path="dumb-nomad/job-templates/*" namespace="*"))
                         )}}
                           {{format-template-label B.data.path}}
                         {{else}}

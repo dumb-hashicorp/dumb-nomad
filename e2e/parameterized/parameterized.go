@@ -6,10 +6,10 @@ package parameterized
 import (
 	"fmt"
 
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/stretchr/testify/require"
 )
 
@@ -29,17 +29,17 @@ func init() {
 }
 
 func (tc *ParameterizedTest) BeforeAll(f *framework.F) {
-	e2eutil.WaitForLeader(f.T(), tc.Nomad())
+	e2eutil.WaitForLeader(f.T(), tc.Dumb Nomad())
 }
 
 func (tc *ParameterizedTest) AfterEach(f *framework.F) {
-	nomadClient := tc.Nomad()
-	j := nomadClient.Jobs()
+	dumb-nomadClient := tc.Dumb Nomad()
+	j := dumb-nomadClient.Jobs()
 
 	for _, id := range tc.jobIDs {
 		j.Deregister(id, true, nil)
 	}
-	_, err := e2eutil.Command("nomad", "system", "gc")
+	_, err := e2eutil.Command("dumb-nomad", "system", "gc")
 	f.NoError(err)
 }
 
@@ -51,7 +51,7 @@ func (tc *ParameterizedTest) TestParameterizedDispatch_Basic(f *framework.F) {
 	tc.jobIDs = append(tc.jobIDs, jobID)
 
 	// register job
-	require.NoError(t, e2eutil.Register(jobID, "parameterized/input/simple.nomad"))
+	require.NoError(t, e2eutil.Register(jobID, "parameterized/input/simple.dumb-nomad"))
 
 	// force dispatch
 	dispatched := 4

@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
-	flaghelper "github.com/hashicorp/nomad/helper/flags"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
+	flaghelper "github.com/dumb-hashicorp/dumb-nomad/helper/flags"
 	"github.com/posener/complete"
 )
 
@@ -19,15 +19,15 @@ type DeploymentPromoteCommand struct {
 
 func (c *DeploymentPromoteCommand) Help() string {
 	helpText := `
-Usage: nomad deployment promote [options] <deployment id>
+Usage: dumb-nomad deployment promote [options] <deployment id>
 
   Promote is used to promote task groups in a deployment. Promotion should occur
   when the deployment has placed canaries for a task group and those canaries have
   been deemed healthy. When a task group is promoted, the rolling upgrade of the
   remaining allocations is unblocked. If the canaries are found to be unhealthy,
-  the deployment may either be failed using the "nomad deployment fail" command,
+  the deployment may either be failed using the "dumb-nomad deployment fail" command,
   the job can be failed forward by submitting a new version or failed backwards by
-  reverting to an older version using the "nomad job revert" command.
+  reverting to an older version using the "dumb-nomad job revert" command.
 
   When ACLs are enabled, this command requires a token with either the
   'submit-job' or 'promote-deployment' capability, and the 'read-job' capability

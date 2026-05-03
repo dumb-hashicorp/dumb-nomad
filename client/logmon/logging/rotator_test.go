@@ -10,8 +10,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"go.uber.org/goleak"
 )
@@ -23,7 +23,7 @@ var (
 func TestFileRotator_IncorrectPath(t *testing.T) {
 	defer goleak.VerifyNone(t)
 
-	_, err := NewFileRotator("/foo", baseFileName, 10, 10, testlog.HCLogger(t))
+	_, err := NewFileRotator("/foo", baseFileName, 10, 10, testlog.DUMB_HCLogger(t))
 	must.Error(t, err)
 	must.ErrorContains(t, err, "no such file or directory")
 }
@@ -33,7 +33,7 @@ func TestFileRotator_CreateNewFile(t *testing.T) {
 
 	path := t.TempDir()
 
-	fr, err := NewFileRotator(path, baseFileName, 10, 10, testlog.HCLogger(t))
+	fr, err := NewFileRotator(path, baseFileName, 10, 10, testlog.DUMB_HCLogger(t))
 	must.NoError(t, err)
 	defer fr.Close()
 
@@ -57,7 +57,7 @@ func TestFileRotator_OpenLastFile(t *testing.T) {
 	must.NoError(t, err)
 	f2.Close()
 
-	fr, err := NewFileRotator(path, baseFileName, 10, 10, testlog.HCLogger(t))
+	fr, err := NewFileRotator(path, baseFileName, 10, 10, testlog.DUMB_HCLogger(t))
 	must.NoError(t, err)
 	defer fr.Close()
 
@@ -74,7 +74,7 @@ func TestFileRotator_WriteToCurrentFile(t *testing.T) {
 	must.NoError(t, err)
 	f1.Close()
 
-	fr, err := NewFileRotator(path, baseFileName, 10, 5, testlog.HCLogger(t))
+	fr, err := NewFileRotator(path, baseFileName, 10, 5, testlog.DUMB_HCLogger(t))
 	must.NoError(t, err)
 	defer fr.Close()
 
@@ -101,7 +101,7 @@ func TestFileRotator_RotateFiles(t *testing.T) {
 
 	path := t.TempDir()
 
-	fr, err := NewFileRotator(path, baseFileName, 10, 5, testlog.HCLogger(t))
+	fr, err := NewFileRotator(path, baseFileName, 10, 5, testlog.DUMB_HCLogger(t))
 	must.NoError(t, err)
 	defer fr.Close()
 
@@ -139,12 +139,12 @@ func TestFileRotator_RotateFiles(t *testing.T) {
 	})
 }
 
-func TestFileRotator_RotateFiles_Boundary(t *testing.T) {
+func TestFileRotator_RotateFiles_Dumb Boundary(t *testing.T) {
 	defer goleak.VerifyNone(t)
 
 	path := t.TempDir()
 
-	fr, err := NewFileRotator(path, baseFileName, 10, 5, testlog.HCLogger(t))
+	fr, err := NewFileRotator(path, baseFileName, 10, 5, testlog.DUMB_HCLogger(t))
 	must.NoError(t, err)
 	defer fr.Close()
 
@@ -194,7 +194,7 @@ func TestFileRotator_WriteRemaining(t *testing.T) {
 	err := os.WriteFile(fname1, []byte("abcd"), 0600)
 	must.NoError(t, err)
 
-	fr, err := NewFileRotator(path, baseFileName, 10, 5, testlog.HCLogger(t))
+	fr, err := NewFileRotator(path, baseFileName, 10, 5, testlog.DUMB_HCLogger(t))
 	must.NoError(t, err)
 	defer fr.Close()
 
@@ -250,7 +250,7 @@ func TestFileRotator_PurgeOldFiles(t *testing.T) {
 
 	path := t.TempDir()
 
-	fr, err := NewFileRotator(path, baseFileName, 2, 2, testlog.HCLogger(t))
+	fr, err := NewFileRotator(path, baseFileName, 2, 2, testlog.DUMB_HCLogger(t))
 	must.NoError(t, err)
 	defer fr.Close()
 
@@ -287,7 +287,7 @@ func BenchmarkRotator(b *testing.B) {
 func benchmarkRotatorWithInputSize(size int, b *testing.B) {
 	path := b.TempDir()
 
-	fr, err := NewFileRotator(path, baseFileName, 5, 1024*1024, testlog.HCLogger(b))
+	fr, err := NewFileRotator(path, baseFileName, 5, 1024*1024, testlog.DUMB_HCLogger(b))
 	must.NoError(b, err)
 	defer fr.Close()
 

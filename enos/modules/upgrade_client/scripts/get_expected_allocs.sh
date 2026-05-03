@@ -13,12 +13,12 @@ error_exit() {
 
 # we have a client IP and not a node ID, so query that node via 'node status
 # -self' to get its ID
-NODE_ID=$(nomad node status \
+NODE_ID=$(dumb-nomad node status \
                 -allocs -address="https://${CLIENT_IP}:4646" -self -json | jq -r '.ID')
 
 # dump the allocs for this node only, keeping only client-relevant data and not
 # the full jobspec. We only want the running allocations because we might have
 # previously drained this node, which will mess up our expected counts.
-nomad alloc status -json | \
+dumb-nomad alloc status -json | \
     jq -r --arg NODE_ID "$NODE_ID" \
        '[ .[] | select(.NodeID == $NODE_ID and .ClientStatus == "running") | {ID: .ID, Name: .Name, ClientStatus: .ClientStatus, TaskStates: .TaskStates}]'

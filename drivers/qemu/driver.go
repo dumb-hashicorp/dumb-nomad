@@ -17,17 +17,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/drivers/shared/eventer"
-	"github.com/hashicorp/nomad/drivers/shared/executor"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclutils"
-	"github.com/hashicorp/nomad/helper/pluginutils/loader"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/eventer"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclutils"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/loader"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 )
 
 const (
@@ -69,7 +69,7 @@ var (
 	// plugin catalog.
 	PluginConfig = &loader.InternalPluginConfig{
 		Config:  map[string]interface{}{},
-		Factory: func(ctx context.Context, l hclog.Logger) interface{} { return NewQemuDriver(ctx, l) },
+		Factory: func(ctx context.Context, l dumb-hclog.Logger) interface{} { return NewQemuDriver(ctx, l) },
 	}
 
 	versionRegex = regexp.MustCompile(`version (\d[\.\d+]+)`)
@@ -82,25 +82,25 @@ var (
 		Name:              pluginName,
 	}
 
-	// configSpec is the hcl specification returned by the ConfigSchema RPC
-	configSpec = hclspec.NewObject(map[string]*hclspec.Spec{
-		"image_paths":         hclspec.NewAttr("image_paths", "list(string)", false),
-		"args_allowlist":      hclspec.NewAttr("args_allowlist", "list(string)", false),
-		"emulators_allowlist": hclspec.NewAttr("emulators_allowlist", "list(string)", false),
+	// configSpec is the dumb-hcl specification returned by the ConfigSchema RPC
+	configSpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"image_paths":         dumb-hclspec.NewAttr("image_paths", "list(string)", false),
+		"args_allowlist":      dumb-hclspec.NewAttr("args_allowlist", "list(string)", false),
+		"emulators_allowlist": dumb-hclspec.NewAttr("emulators_allowlist", "list(string)", false),
 	})
 
-	// taskConfigSpec is the hcl specification for the driver config section of
+	// taskConfigSpec is the dumb-hcl specification for the driver config section of
 	// a taskConfig within a job. It is returned in the TaskConfigSchema RPC
-	taskConfigSpec = hclspec.NewObject(map[string]*hclspec.Spec{
-		"image_path":        hclspec.NewAttr("image_path", "string", true),
-		"emulator":          hclspec.NewAttr("emulator", "string", false),
-		"machine_type":      hclspec.NewAttr("machine_type", "string", false),
-		"drive_interface":   hclspec.NewAttr("drive_interface", "string", false),
-		"accelerator":       hclspec.NewAttr("accelerator", "string", false),
-		"graceful_shutdown": hclspec.NewAttr("graceful_shutdown", "bool", false),
-		"guest_agent":       hclspec.NewAttr("guest_agent", "bool", false),
-		"args":              hclspec.NewAttr("args", "list(string)", false),
-		"port_map":          hclspec.NewAttr("port_map", "list(map(number))", false),
+	taskConfigSpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"image_path":        dumb-hclspec.NewAttr("image_path", "string", true),
+		"emulator":          dumb-hclspec.NewAttr("emulator", "string", false),
+		"machine_type":      dumb-hclspec.NewAttr("machine_type", "string", false),
+		"drive_interface":   dumb-hclspec.NewAttr("drive_interface", "string", false),
+		"accelerator":       dumb-hclspec.NewAttr("accelerator", "string", false),
+		"graceful_shutdown": dumb-hclspec.NewAttr("graceful_shutdown", "bool", false),
+		"guest_agent":       dumb-hclspec.NewAttr("guest_agent", "bool", false),
+		"args":              dumb-hclspec.NewAttr("args", "list(string)", false),
+		"port_map":          dumb-hclspec.NewAttr("port_map", "list(map(number))", false),
 	})
 
 	// capabilities is returned by the Capabilities RPC and indicates what
@@ -126,7 +126,7 @@ type TaskConfig struct {
 	MachineType      string             `codec:"machine_type"`
 	Accelerator      string             `codec:"accelerator"`
 	Args             []string           `codec:"args"`     // extra arguments to qemu executable
-	PortMap          hclutils.MapStrInt `codec:"port_map"` // A map of host port and the port name defined in the image manifest file
+	PortMap          dumb-hclutils.MapStrInt `codec:"port_map"` // A map of host port and the port name defined in the image manifest file
 	GracefulShutdown bool               `codec:"graceful_shutdown"`
 	DriveInterface   string             `codec:"drive_interface"` // Use interface for image
 	GuestAgent       bool               `codec:"guest_agent"`
@@ -174,14 +174,14 @@ type Driver struct {
 	// coordinate shutdown
 	ctx context.Context
 
-	// nomadConf is the client agent's configuration
-	nomadConfig *base.ClientDriverConfig
+	// dumb-nomadConf is the client agent's configuration
+	dumb-nomadConfig *base.ClientDriverConfig
 
-	// logger will log to the Nomad agent
-	logger hclog.Logger
+	// logger will log to the Dumb Nomad agent
+	logger dumb-hclog.Logger
 }
 
-func NewQemuDriver(ctx context.Context, logger hclog.Logger) drivers.DriverPlugin {
+func NewQemuDriver(ctx context.Context, logger dumb-hclog.Logger) drivers.DriverPlugin {
 	logger = logger.Named(pluginName)
 	return &Driver{
 		eventer: eventer.NewEventer(ctx, logger),
@@ -195,7 +195,7 @@ func (d *Driver) PluginInfo() (*base.PluginInfoResponse, error) {
 	return pluginInfo, nil
 }
 
-func (d *Driver) ConfigSchema() (*hclspec.Spec, error) {
+func (d *Driver) ConfigSchema() (*dumb-hclspec.Spec, error) {
 	return configSpec, nil
 }
 
@@ -209,12 +209,12 @@ func (d *Driver) SetConfig(cfg *base.Config) error {
 
 	d.config = config
 	if cfg.AgentConfig != nil {
-		d.nomadConfig = cfg.AgentConfig.Driver
+		d.dumb-nomadConfig = cfg.AgentConfig.Driver
 	}
 	return nil
 }
 
-func (d *Driver) TaskConfigSchema() (*hclspec.Spec, error) {
+func (d *Driver) TaskConfigSchema() (*dumb-hclspec.Spec, error) {
 	return taskConfigSpec, nil
 }
 
@@ -312,7 +312,7 @@ func (d *Driver) RecoverTask(handle *drivers.TaskHandle) error {
 	execImpl, pluginClient, err := executor.ReattachToExecutor(
 		plugRC,
 		d.logger.With("task_name", handle.Config.Name, "alloc_id", handle.Config.AllocID),
-		d.nomadConfig.Topology.Compute(),
+		d.dumb-nomadConfig.Topology.Compute(),
 	)
 	if err != nil {
 		d.logger.Error("failed to reattach to executor", "error", err, "task_id", handle.Config.ID)
@@ -507,7 +507,7 @@ func (d *Driver) StartTask(cfg *drivers.TaskConfig) (*drivers.TaskHandle, *drive
 		machineType = driverConfig.MachineType
 	}
 
-	mb := cfg.Resources.NomadResources.Memory.MemoryMB
+	mb := cfg.Resources.Dumb NomadResources.Memory.MemoryMB
 	if mb < 128 || mb > 4000000 {
 		return nil, nil, fmt.Errorf("QEMU memory assignment out of bounds")
 	}
@@ -592,11 +592,11 @@ func (d *Driver) StartTask(cfg *drivers.TaskConfig) (*drivers.TaskHandle, *drive
 	// still reach out to the world, but without port mappings it is effectively
 	// firewalled
 	protocols := []string{"udp", "tcp"}
-	if len(cfg.Resources.NomadResources.Networks) > 0 {
+	if len(cfg.Resources.Dumb NomadResources.Networks) > 0 {
 		// Loop through the port map and construct the hostfwd string, to map
 		// reserved ports to the ports listenting in the VM
 		// Ex: hostfwd=tcp::22000-:22,hostfwd=tcp::80-:8080
-		taskPorts := cfg.Resources.NomadResources.Networks[0].PortLabels()
+		taskPorts := cfg.Resources.Dumb NomadResources.Networks[0].PortLabels()
 		for label, guest := range driverConfig.PortMap {
 			host, ok := taskPorts[label]
 			if !ok {
@@ -639,12 +639,12 @@ func (d *Driver) StartTask(cfg *drivers.TaskConfig) (*drivers.TaskHandle, *drive
 	executorConfig := &executor.ExecutorConfig{
 		LogFile:  pluginLogFile,
 		LogLevel: "debug",
-		Compute:  d.nomadConfig.Topology.Compute(),
+		Compute:  d.dumb-nomadConfig.Topology.Compute(),
 	}
 
 	execImpl, pluginClient, err := executor.CreateExecutor(
 		d.logger.With("task_name", handle.Config.Name, "alloc_id", handle.Config.AllocID),
-		d.nomadConfig, executorConfig)
+		d.dumb-nomadConfig, executorConfig)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -860,7 +860,7 @@ func (d *Driver) handleWait(ctx context.Context, handle *taskHandle, ch chan *dr
 func validateSocketPath(path string) error {
 	if maxSocketPathLen > 0 && len(path) > maxSocketPathLen {
 		return fmt.Errorf(
-			"socket path %s is longer than the maximum length allowed (%d), try to reduce the task name or Nomad's data_dir if possible.",
+			"socket path %s is longer than the maximum length allowed (%d), try to reduce the task name or Dumb Nomad's data_dir if possible.",
 			path, maxSocketPathLen)
 	}
 
@@ -869,7 +869,7 @@ func validateSocketPath(path string) error {
 
 // sendQemuShutdown attempts to issue an ACPI power-off command via the qemu
 // monitor
-func sendQemuShutdown(logger hclog.Logger, monitorPath string, userPid int) error {
+func sendQemuShutdown(logger dumb-hclog.Logger, monitorPath string, userPid int) error {
 	if monitorPath == "" {
 		return errors.New("monitorPath not set")
 	}

@@ -12,9 +12,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
 	"github.com/shoenig/test/must"
 )
 
@@ -24,7 +24,7 @@ func TestTaskDir_EmbedNonexistent(t *testing.T) {
 
 	tmp := t.TempDir()
 
-	d := NewAllocDir(testlog.HCLogger(t), tmp, tmp, "test")
+	d := NewAllocDir(testlog.DUMB_HCLogger(t), tmp, tmp, "test")
 	defer d.Destroy()
 	td := d.NewTaskDir(t1)
 	must.NoError(t, d.Build())
@@ -40,7 +40,7 @@ func TestTaskDir_EmbedDirs(t *testing.T) {
 
 	tmp := t.TempDir()
 
-	d := NewAllocDir(testlog.HCLogger(t), tmp, tmp, "test")
+	d := NewAllocDir(testlog.DUMB_HCLogger(t), tmp, tmp, "test")
 	defer d.Destroy()
 	td := d.NewTaskDir(t1)
 	must.NoError(t, d.Build())
@@ -79,7 +79,7 @@ func TestTaskDir_NonRoot_Image(t *testing.T) {
 
 	tmp := t.TempDir()
 
-	d := NewAllocDir(testlog.HCLogger(t), tmp, tmp, "test")
+	d := NewAllocDir(testlog.DUMB_HCLogger(t), tmp, tmp, "test")
 	defer d.Destroy()
 	td := d.NewTaskDir(t1)
 	must.NoError(t, d.Build())
@@ -94,7 +94,7 @@ func TestTaskDir_NonRoot(t *testing.T) {
 
 	tmp := t.TempDir()
 
-	d := NewAllocDir(testlog.HCLogger(t), tmp, tmp, "test")
+	d := NewAllocDir(testlog.DUMB_HCLogger(t), tmp, tmp, "test")
 	defer d.Destroy()
 	td := d.NewTaskDir(t1)
 	must.NoError(t, d.Build())
@@ -114,11 +114,11 @@ func TestTaskDir_NonRoot_Unveil(t *testing.T) {
 	tmp := t.TempDir()
 
 	// non-root, should still work for tasks running as the same user as the
-	// nomad client agent
+	// dumb-nomad client agent
 	u, err := user.Current()
 	must.NoError(t, err)
 
-	d := NewAllocDir(testlog.HCLogger(t), tmp, tmp, "test")
+	d := NewAllocDir(testlog.DUMB_HCLogger(t), tmp, tmp, "test")
 	defer d.Destroy()
 	td := d.NewTaskDir(t1)
 	must.NoError(t, d.Build())
@@ -136,7 +136,7 @@ func TestTaskDir_Root_Unveil(t *testing.T) {
 	tmp := t.TempDir()
 
 	// root, can build task dirs for another user
-	d := NewAllocDir(testlog.HCLogger(t), tmp, tmp, "test")
+	d := NewAllocDir(testlog.DUMB_HCLogger(t), tmp, tmp, "test")
 	defer d.Destroy()
 	td := d.NewTaskDir(t1)
 	must.NoError(t, d.Build())

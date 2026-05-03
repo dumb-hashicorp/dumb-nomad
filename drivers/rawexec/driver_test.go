@@ -16,22 +16,22 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/numalib"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib"
 
-	ctestutil "github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/pluginutils/hclutils"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/testtask"
-	"github.com/hashicorp/nomad/helper/uuid"
-	nstructs "github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/base"
-	basePlug "github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/drivers"
-	dtestutil "github.com/hashicorp/nomad/plugins/drivers/testutils"
-	pstructs "github.com/hashicorp/nomad/plugins/shared/structs"
-	"github.com/hashicorp/nomad/testutil"
+	ctestutil "github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pluginutils/dumb-hclutils"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testtask"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	nstructs "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	basePlug "github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
+	dtestutil "github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/testutils"
+	pstructs "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 	"github.com/stretchr/testify/require"
@@ -46,10 +46,10 @@ func defaultEnv() map[string]string {
 // genEnv returns a populated map of environment variables
 func genEnv() map[string]string {
 	return map[string]string{
-		"NOMAD_TOKEN":    "abcd",
+		"DUMB_NOMAD_TOKEN":    "abcd",
 		"GITHUB_TOKEN":   "efg",
 		"AWS_SECRET_KEY": "hij",
-		"NOMAD_ADDR":     "klm",
+		"DUMB_NOMAD_ADDR":     "klm",
 		"TEST_TOKEN":     "nop",
 		"TEST_AWS_VAR":   "qrs",
 		"VAR_TEST_AWS":   "tuv",
@@ -63,7 +63,7 @@ func testResources(allocID, task string) *drivers.Resources {
 	}
 
 	r := &drivers.Resources{
-		NomadResources: &nstructs.AllocatedTaskResources{
+		Dumb NomadResources: &nstructs.AllocatedTaskResources{
 			Memory: nstructs.AllocatedMemoryResources{
 				MemoryMB: 128,
 			},
@@ -101,10 +101,10 @@ func newEnabledRawExecDriver(t *testing.T) *Driver {
 	ctx, cancel := context.WithCancel(context.Background())
 	t.Cleanup(cancel)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	d := NewRawExecDriver(ctx, logger).(*Driver)
 	d.config.Enabled = true
-	d.nomadConfig = &base.ClientDriverConfig{
+	d.dumb-nomadConfig = &base.ClientDriverConfig{
 		Topology: topology,
 	}
 	d.userIDValidator = &mockIDValidator{}
@@ -118,7 +118,7 @@ func TestRawExecDriver_SetConfig(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	d := NewRawExecDriver(ctx, logger)
 	harness := dtestutil.NewDriverHarness(t, d)
@@ -440,7 +440,7 @@ func TestRawExecDriver_ParentCgroup(t *testing.T) {
 		ID:      uuid.Generate(),
 		Name:    taskName,
 		Env: map[string]string{
-			"NOMAD_PARENT_CGROUP": "custom.slice",
+			"DUMB_NOMAD_PARENT_CGROUP": "custom.slice",
 		},
 	}
 
@@ -591,7 +591,7 @@ func TestRawExecDriver_WorkDir(t *testing.T) {
 	must.NoError(t, harness.DestroyTask(task.ID, true))
 }
 
-func TestConfig_ParseAllHCL(t *testing.T) {
+func TestConfig_ParseAllDUMB_HCL(t *testing.T) {
 	ci.Parallel(t)
 
 	cfgStr := `
@@ -606,7 +606,7 @@ config {
 	}
 
 	var tc *TaskConfig
-	hclutils.NewConfigParser(taskConfigSpec).ParseHCL(t, cfgStr, &tc)
+	dumb-hclutils.NewConfigParser(taskConfigSpec).ParseDUMB_HCL(t, cfgStr, &tc)
 
 	require.EqualValues(t, expected, tc)
 }
@@ -695,10 +695,10 @@ func TestRawExecDriver_buildEnvList(t *testing.T) {
 				Env: defaultEnvironment,
 			},
 			driverConfig: &Config{
-				DeniedEnvvars: []string{"NOMAD_TOKEN", "GITHUB_TOKEN"},
+				DeniedEnvvars: []string{"DUMB_NOMAD_TOKEN", "GITHUB_TOKEN"},
 			},
 			expectedVars: []string{
-				"NOMAD_ADDR=klm",
+				"DUMB_NOMAD_ADDR=klm",
 				"PORT=wxyz",
 				"TEST_AWS_VAR=qrs",
 				"TEST_TOKEN=nop",
@@ -716,7 +716,7 @@ func TestRawExecDriver_buildEnvList(t *testing.T) {
 				DeniedEnvvars: []string{"*_TOKEN"},
 			},
 			expectedVars: []string{
-				"NOMAD_ADDR=klm",
+				"DUMB_NOMAD_ADDR=klm",
 				"PORT=wxyz",
 				"TEST_AWS_VAR=qrs",
 				"VAR_TEST_AWS=tuv",
@@ -733,8 +733,8 @@ func TestRawExecDriver_buildEnvList(t *testing.T) {
 			},
 			expectedVars: []string{
 				"GITHUB_TOKEN=efg",
-				"NOMAD_ADDR=klm",
-				"NOMAD_TOKEN=abcd",
+				"DUMB_NOMAD_ADDR=klm",
+				"DUMB_NOMAD_TOKEN=abcd",
 				"PORT=wxyz",
 				"TEST_TOKEN=nop",
 			},
@@ -788,23 +788,23 @@ func TestRawExecDriver_Env(t *testing.T) {
 			driver: d,
 			driverConfig: &Config{
 				Enabled:       true,
-				DeniedEnvvars: []string{"NOMAD_ADDR"},
+				DeniedEnvvars: []string{"DUMB_NOMAD_ADDR"},
 			},
 			taskConfig: &TaskConfig{
 				Command:       testtask.Path(),
 				Args:          []string{"sleep", "10ms"},
-				DeniedEnvvars: []string{"NOMAD_TOKEN"},
+				DeniedEnvvars: []string{"DUMB_NOMAD_TOKEN"},
 			},
 			deniedVars: []string{
-				"NOMAD_ADDR=klm",
-				"NOMAD_TOKEN=abcd",
+				"DUMB_NOMAD_ADDR=klm",
+				"DUMB_NOMAD_TOKEN=abcd",
 			},
 			varsExpected: false,
 		}, {name: "driver level, glob suffix vars",
 			driver: d,
 			driverConfig: &Config{
 				Enabled:       true,
-				DeniedEnvvars: []string{"NOMAD_*"},
+				DeniedEnvvars: []string{"DUMB_NOMAD_*"},
 			},
 			taskConfig: &TaskConfig{
 				Command: testtask.Path(),
@@ -812,8 +812,8 @@ func TestRawExecDriver_Env(t *testing.T) {
 			},
 			varsExpected: false,
 			deniedVars: []string{
-				"NOMAD_ADDR=klm",
-				"NOMAD_TOKEN=abcd",
+				"DUMB_NOMAD_ADDR=klm",
+				"DUMB_NOMAD_TOKEN=abcd",
 			},
 		}, {name: "driver level, glob prefix vars",
 			driver: d,
@@ -827,7 +827,7 @@ func TestRawExecDriver_Env(t *testing.T) {
 			},
 			deniedVars: []string{
 				"GITHUB_TOKEN=efg",
-				"NOMAD_TOKEN=abcd",
+				"DUMB_NOMAD_TOKEN=abcd",
 				"TEST_TOKEN=nop",
 			},
 			varsExpected: false,
@@ -854,12 +854,12 @@ func TestRawExecDriver_Env(t *testing.T) {
 			taskConfig: &TaskConfig{
 				Command:       testtask.Path(),
 				Args:          []string{"sleep", "10ms"},
-				DeniedEnvvars: []string{"NOMAD_*"},
+				DeniedEnvvars: []string{"DUMB_NOMAD_*"},
 			},
 			varsExpected: false,
 			deniedVars: []string{
-				"NOMAD_ADDR=klm",
-				"NOMAD_TOKEN=abcd",
+				"DUMB_NOMAD_ADDR=klm",
+				"DUMB_NOMAD_TOKEN=abcd",
 			},
 		}, {name: "task level, glob prefix vars",
 			driver:       d,
@@ -871,7 +871,7 @@ func TestRawExecDriver_Env(t *testing.T) {
 			},
 			deniedVars: []string{
 				"GITHUB_TOKEN=efg",
-				"NOMAD_TOKEN=abcd",
+				"DUMB_NOMAD_TOKEN=abcd",
 				"TEST_TOKEN=nop",
 			},
 			varsExpected: false,

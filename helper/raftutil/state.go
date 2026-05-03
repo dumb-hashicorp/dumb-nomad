@@ -12,11 +12,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/go-msgpack/v2/codec"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/raft"
-	raftboltdb "github.com/hashicorp/raft-boltdb/v2"
-	raftwal "github.com/hashicorp/raft-wal"
+	"github.com/dumb-hashicorp/go-msgpack/v2/codec"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/raft"
+	raftboltdb "github.com/dumb-hashicorp/raft-boltdb/v2"
+	raftwal "github.com/dumb-hashicorp/raft-wal"
 	"go.etcd.io/bbolt"
 )
 

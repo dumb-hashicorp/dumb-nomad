@@ -8,9 +8,9 @@ import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
-import ClientMonitor from 'nomad-ui/tests/pages/clients/monitor';
-import Layout from 'nomad-ui/tests/pages/layout';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
+import ClientMonitor from 'dumb-nomad-ui/tests/pages/clients/monitor';
+import Layout from 'dumb-nomad-ui/tests/pages/layout';
 
 let node;
 let managementToken;
@@ -27,7 +27,7 @@ module('Acceptance | client monitor', function (hooks) {
     managementToken = server.create('token');
     clientToken = server.create('token');
 
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
 
     server.create('agent');
     run.later(run, run.cancelTimers, 500);
@@ -71,7 +71,7 @@ module('Acceptance | client monitor', function (hooks) {
   });
 
   test('when the current access token does not include the agent:read rule, a descriptive error message is shown', async function (assert) {
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     await ClientMonitor.visit({ id: node.id });
     assert.notOk(ClientMonitor.logsArePresent);

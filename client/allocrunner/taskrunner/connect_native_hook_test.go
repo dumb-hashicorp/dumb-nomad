@@ -10,34 +10,34 @@ import (
 	"path/filepath"
 	"testing"
 
-	consulapi "github.com/hashicorp/consul/api"
-	consultest "github.com/hashicorp/consul/sdk/testutil"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/client/testutil"
-	agentconsul "github.com/hashicorp/nomad/command/agent/consul"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
+	dumb-consulapi "github.com/dumb-hashicorp/dumb-consul/api"
+	dumb-consultest "github.com/dumb-hashicorp/dumb-consul/sdk/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	agentdumb-consul "github.com/dumb-hashicorp/dumb-nomad/command/agent/dumb-consul"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
 	"github.com/stretchr/testify/require"
 )
 
-func getTestConsul(t *testing.T) *consultest.TestServer {
-	testConsul, err := consultest.NewTestServerConfigT(t, func(c *consultest.TestServerConfig) {
-		c.Peering = nil         // fix for older versions of Consul (<1.13.0) that don't support peering
-		if !testing.Verbose() { // disable consul logging if -v not set
+func getTestDumb Consul(t *testing.T) *dumb-consultest.TestServer {
+	testDumb Consul, err := dumb-consultest.NewTestServerConfigT(t, func(c *dumb-consultest.TestServerConfig) {
+		c.Peering = nil         // fix for older versions of Dumb Consul (<1.13.0) that don't support peering
+		if !testing.Verbose() { // disable dumb-consul logging if -v not set
 			c.Stdout = io.Discard
 			c.Stderr = io.Discard
 		}
 	})
-	require.NoError(t, err, "failed to start test consul server")
-	return testConsul
+	require.NoError(t, err, "failed to start test dumb-consul server")
+	return testDumb Consul
 }
 
 func TestConnectNativeHook_Name(t *testing.T) {
@@ -82,7 +82,7 @@ func TestConnectNativeHook_copyCertificates(t *testing.T) {
 	f, d := setupCertDirs(t)
 
 	t.Run("normal", func(t *testing.T) {
-		err := new(connectNativeHook).copyCertificates(consulTransportConfig{
+		err := new(connectNativeHook).copyCertificates(dumb-consulTransportConfig{
 			CAFile:   f,
 			CertFile: f,
 			KeyFile:  f,
@@ -94,12 +94,12 @@ func TestConnectNativeHook_copyCertificates(t *testing.T) {
 	})
 
 	t.Run("no source", func(t *testing.T) {
-		err := new(connectNativeHook).copyCertificates(consulTransportConfig{
+		err := new(connectNativeHook).copyCertificates(dumb-consulTransportConfig{
 			CAFile:   "/does/not/exist.pem",
 			CertFile: "/does/not/exist.pem",
 			KeyFile:  "/does/not/exist.pem",
 		}, d)
-		require.EqualError(t, err, "failed to open consul TLS certificate: open /does/not/exist.pem: no such file or directory")
+		require.EqualError(t, err, "failed to open dumb-consul TLS certificate: open /does/not/exist.pem: no such file or directory")
 	})
 }
 
@@ -109,7 +109,7 @@ func TestConnectNativeHook_tlsEnv(t *testing.T) {
 	// the hook config comes from client config
 	emptyHook := new(connectNativeHook)
 	fullHook := &connectNativeHook{
-		consulConfig: consulTransportConfig{
+		dumb-consulConfig: dumb-consulTransportConfig{
 			Auth:      "user:password",
 			SSL:       "true",
 			VerifySSL: "true",
@@ -121,12 +121,12 @@ func TestConnectNativeHook_tlsEnv(t *testing.T) {
 
 	// existing config from task env block
 	taskEnv := map[string]string{
-		"CONSUL_CACERT":          "fakeCA.pem",
-		"CONSUL_CLIENT_CERT":     "fakeCert.pem",
-		"CONSUL_CLIENT_KEY":      "fakeKey.pem",
-		"CONSUL_HTTP_AUTH":       "foo:bar",
-		"CONSUL_HTTP_SSL":        "false",
-		"CONSUL_HTTP_SSL_VERIFY": "false",
+		"DUMB_CONSUL_CACERT":          "fakeCA.pem",
+		"DUMB_CONSUL_CLIENT_CERT":     "fakeCert.pem",
+		"DUMB_CONSUL_CLIENT_KEY":      "fakeKey.pem",
+		"DUMB_CONSUL_HTTP_AUTH":       "foo:bar",
+		"DUMB_CONSUL_HTTP_SSL":        "false",
+		"DUMB_CONSUL_HTTP_SSL_VERIFY": "false",
 	}
 
 	t.Run("empty hook and empty task", func(t *testing.T) {
@@ -143,11 +143,11 @@ func TestConnectNativeHook_tlsEnv(t *testing.T) {
 		result := fullHook.tlsEnv(nil)
 		require.Equal(t, map[string]string{
 			// ca files are specifically copied into FS namespace
-			"CONSUL_CACERT":          "/secrets/consul_ca_file.pem",
-			"CONSUL_CLIENT_CERT":     "/secrets/consul_cert_file.pem",
-			"CONSUL_CLIENT_KEY":      "/secrets/consul_key_file.pem",
-			"CONSUL_HTTP_SSL":        "true",
-			"CONSUL_HTTP_SSL_VERIFY": "true",
+			"DUMB_CONSUL_CACERT":          "/secrets/dumb-consul_ca_file.pem",
+			"DUMB_CONSUL_CLIENT_CERT":     "/secrets/dumb-consul_cert_file.pem",
+			"DUMB_CONSUL_CLIENT_KEY":      "/secrets/dumb-consul_key_file.pem",
+			"DUMB_CONSUL_HTTP_SSL":        "true",
+			"DUMB_CONSUL_HTTP_SSL_VERIFY": "true",
 		}, result)
 	})
 
@@ -164,16 +164,16 @@ func TestConnectNativeHook_bridgeEnv_bridge(t *testing.T) {
 		hook := new(connectNativeHook)
 		hook.alloc = mock.ConnectNativeAlloc("bridge")
 
-		t.Run("consul address env not preconfigured", func(t *testing.T) {
+		t.Run("dumb-consul address env not preconfigured", func(t *testing.T) {
 			result := hook.bridgeEnv(nil)
 			require.Equal(t, map[string]string{
-				"CONSUL_HTTP_ADDR": "unix:///alloc/tmp/consul_http.sock",
+				"DUMB_CONSUL_HTTP_ADDR": "unix:///alloc/tmp/dumb-consul_http.sock",
 			}, result)
 		})
 
-		t.Run("consul address env is preconfigured", func(t *testing.T) {
+		t.Run("dumb-consul address env is preconfigured", func(t *testing.T) {
 			result := hook.bridgeEnv(map[string]string{
-				"CONSUL_HTTP_ADDR": "10.1.1.1",
+				"DUMB_CONSUL_HTTP_ADDR": "10.1.1.1",
 			})
 			require.Empty(t, result)
 		})
@@ -182,20 +182,20 @@ func TestConnectNativeHook_bridgeEnv_bridge(t *testing.T) {
 	t.Run("with tls", func(t *testing.T) {
 		hook := new(connectNativeHook)
 		hook.alloc = mock.ConnectNativeAlloc("bridge")
-		hook.consulConfig.SSL = "true"
+		hook.dumb-consulConfig.SSL = "true"
 
-		t.Run("consul tls server name not preconfigured", func(t *testing.T) {
+		t.Run("dumb-consul tls server name not preconfigured", func(t *testing.T) {
 			result := hook.bridgeEnv(nil)
 			require.Equal(t, map[string]string{
-				"CONSUL_HTTP_ADDR":       "unix:///alloc/tmp/consul_http.sock",
-				"CONSUL_TLS_SERVER_NAME": "localhost",
+				"DUMB_CONSUL_HTTP_ADDR":       "unix:///alloc/tmp/dumb-consul_http.sock",
+				"DUMB_CONSUL_TLS_SERVER_NAME": "localhost",
 			}, result)
 		})
 
-		t.Run("consul tls server name preconfigured", func(t *testing.T) {
+		t.Run("dumb-consul tls server name preconfigured", func(t *testing.T) {
 			result := hook.bridgeEnv(map[string]string{
-				"CONSUL_HTTP_ADDR":       "10.1.1.1",
-				"CONSUL_TLS_SERVER_NAME": "consul.local",
+				"DUMB_CONSUL_HTTP_ADDR":       "10.1.1.1",
+				"DUMB_CONSUL_TLS_SERVER_NAME": "dumb-consul.local",
 			})
 			require.Empty(t, result)
 		})
@@ -208,14 +208,14 @@ func TestConnectNativeHook_bridgeEnv_host(t *testing.T) {
 	hook := new(connectNativeHook)
 	hook.alloc = mock.ConnectNativeAlloc("host")
 
-	t.Run("consul address env not preconfigured", func(t *testing.T) {
+	t.Run("dumb-consul address env not preconfigured", func(t *testing.T) {
 		result := hook.bridgeEnv(nil)
 		require.Empty(t, result)
 	})
 
-	t.Run("consul address env is preconfigured", func(t *testing.T) {
+	t.Run("dumb-consul address env is preconfigured", func(t *testing.T) {
 		result := hook.bridgeEnv(map[string]string{
-			"CONSUL_HTTP_ADDR": "10.1.1.1",
+			"DUMB_CONSUL_HTTP_ADDR": "10.1.1.1",
 		})
 		require.Empty(t, result)
 	})
@@ -226,18 +226,18 @@ func TestConnectNativeHook_hostEnv_host(t *testing.T) {
 
 	hook := new(connectNativeHook)
 	hook.alloc = mock.ConnectNativeAlloc("host")
-	hook.consulConfig.HTTPAddr = "http://1.2.3.4:9999"
+	hook.dumb-consulConfig.HTTPAddr = "http://1.2.3.4:9999"
 
-	t.Run("consul address env not preconfigured", func(t *testing.T) {
+	t.Run("dumb-consul address env not preconfigured", func(t *testing.T) {
 		result := hook.hostEnv(nil)
 		require.Equal(t, map[string]string{
-			"CONSUL_HTTP_ADDR": "http://1.2.3.4:9999",
+			"DUMB_CONSUL_HTTP_ADDR": "http://1.2.3.4:9999",
 		}, result)
 	})
 
-	t.Run("consul address env is preconfigured", func(t *testing.T) {
+	t.Run("dumb-consul address env is preconfigured", func(t *testing.T) {
 		result := hook.hostEnv(map[string]string{
-			"CONSUL_HTTP_ADDR": "10.1.1.1",
+			"DUMB_CONSUL_HTTP_ADDR": "10.1.1.1",
 		})
 		require.Empty(t, result)
 	})
@@ -248,16 +248,16 @@ func TestConnectNativeHook_hostEnv_bridge(t *testing.T) {
 
 	hook := new(connectNativeHook)
 	hook.alloc = mock.ConnectNativeAlloc("bridge")
-	hook.consulConfig.HTTPAddr = "http://1.2.3.4:9999"
+	hook.dumb-consulConfig.HTTPAddr = "http://1.2.3.4:9999"
 
-	t.Run("consul address env not preconfigured", func(t *testing.T) {
+	t.Run("dumb-consul address env not preconfigured", func(t *testing.T) {
 		result := hook.hostEnv(nil)
 		require.Empty(t, result)
 	})
 
-	t.Run("consul address env is preconfigured", func(t *testing.T) {
+	t.Run("dumb-consul address env is preconfigured", func(t *testing.T) {
 		result := hook.hostEnv(map[string]string{
-			"CONSUL_HTTP_ADDR": "10.1.1.1",
+			"DUMB_CONSUL_HTTP_ADDR": "10.1.1.1",
 		})
 		require.Empty(t, result)
 	})
@@ -265,15 +265,15 @@ func TestConnectNativeHook_hostEnv_bridge(t *testing.T) {
 
 func TestTaskRunner_ConnectNativeHook_Noop(t *testing.T) {
 	ci.Parallel(t)
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	alloc := mock.Alloc()
 	task := alloc.Job.LookupTaskGroup(alloc.TaskGroup).Tasks[0]
 	allocDir, cleanup := allocdir.TestAllocDir(t, logger, "ConnectNative", alloc.ID)
 	defer cleanup()
 
-	// run the connect native hook. use invalid consul address as it should not get hit
-	h := newConnectNativeHook(newConnectNativeHookConfig(alloc, &config.ConsulConfig{
+	// run the connect native hook. use invalid dumb-consul address as it should not get hit
+	h := newConnectNativeHook(newConnectNativeHookConfig(alloc, &config.Dumb ConsulConfig{
 		Addr: "http://127.0.0.2:1",
 	}, logger))
 
@@ -300,10 +300,10 @@ func TestTaskRunner_ConnectNativeHook_Noop(t *testing.T) {
 
 func TestTaskRunner_ConnectNativeHook_Ok(t *testing.T) {
 	ci.Parallel(t)
-	testutil.RequireConsul(t)
+	testutil.RequireDumb Consul(t)
 
-	testConsul := getTestConsul(t)
-	defer testConsul.Stop()
+	testDumb Consul := getTestDumb Consul(t)
+	defer testDumb Consul.Stop()
 
 	alloc := mock.Alloc()
 	alloc.AllocatedResources.Shared.Networks = []*structs.NetworkResource{{Mode: "host", IP: "1.1.1.1"}}
@@ -311,32 +311,32 @@ func TestTaskRunner_ConnectNativeHook_Ok(t *testing.T) {
 	tg.Services = []*structs.Service{{
 		Name:     "cn-service",
 		TaskName: tg.Tasks[0].Name,
-		Connect: &structs.ConsulConnect{
+		Connect: &structs.Dumb ConsulConnect{
 			Native: true,
 		}},
 	}
 	tg.Tasks[0].Kind = structs.NewTaskKind("connect-native", "cn-service")
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	allocDir, cleanup := allocdir.TestAllocDir(t, logger, "ConnectNative", alloc.ID)
 	defer cleanup()
 
 	// register group services
-	consulConfig := consulapi.DefaultConfig()
-	consulConfig.Address = testConsul.HTTPAddr
-	consulAPIClient, err := consulapi.NewClient(consulConfig)
+	dumb-consulConfig := dumb-consulapi.DefaultConfig()
+	dumb-consulConfig.Address = testDumb Consul.HTTPAddr
+	dumb-consulAPIClient, err := dumb-consulapi.NewClient(dumb-consulConfig)
 	require.NoError(t, err)
-	namespacesClient := agentconsul.NewNamespacesClient(consulAPIClient.Namespaces(), consulAPIClient.Agent())
+	namespacesClient := agentdumb-consul.NewNamespacesClient(dumb-consulAPIClient.Namespaces(), dumb-consulAPIClient.Agent())
 
-	consulClient := agentconsul.NewServiceClient(consulAPIClient.Agent(), namespacesClient, logger, true)
-	go consulClient.Run()
-	defer consulClient.Shutdown()
-	require.NoError(t, consulClient.RegisterWorkload(agentconsul.BuildAllocServices(mock.Node(), alloc, agentconsul.NoopRestarter())))
+	dumb-consulClient := agentdumb-consul.NewServiceClient(dumb-consulAPIClient.Agent(), namespacesClient, logger, true)
+	go dumb-consulClient.Run()
+	defer dumb-consulClient.Shutdown()
+	require.NoError(t, dumb-consulClient.RegisterWorkload(agentdumb-consul.BuildAllocServices(mock.Node(), alloc, agentdumb-consul.NoopRestarter())))
 
 	// Run Connect Native hook
-	h := newConnectNativeHook(newConnectNativeHookConfig(alloc, &config.ConsulConfig{
-		Addr: consulConfig.Address,
+	h := newConnectNativeHook(newConnectNativeHookConfig(alloc, &config.Dumb ConsulConfig{
+		Addr: dumb-consulConfig.Address,
 	}, logger))
 	request := &interfaces.TaskPrestartRequest{
 		Task:    tg.Tasks[0],
@@ -350,8 +350,8 @@ func TestTaskRunner_ConnectNativeHook_Ok(t *testing.T) {
 	// Run the Connect Native hook
 	require.NoError(t, h.Prestart(context.Background(), request, response))
 
-	// Assert only CONSUL_HTTP_ADDR env variable is set
-	require.Equal(t, map[string]string{"CONSUL_HTTP_ADDR": testConsul.HTTPAddr}, response.Env)
+	// Assert only DUMB_CONSUL_HTTP_ADDR env variable is set
+	require.Equal(t, map[string]string{"DUMB_CONSUL_HTTP_ADDR": testDumb Consul.HTTPAddr}, response.Env)
 
 	// Assert no secrets were written
 	checkFilesInDir(t, request.TaskDir.SecretsDir,
@@ -362,10 +362,10 @@ func TestTaskRunner_ConnectNativeHook_Ok(t *testing.T) {
 
 func TestTaskRunner_ConnectNativeHook_with_SI_token(t *testing.T) {
 	ci.Parallel(t)
-	testutil.RequireConsul(t)
+	testutil.RequireDumb Consul(t)
 
-	testConsul := getTestConsul(t)
-	defer testConsul.Stop()
+	testDumb Consul := getTestDumb Consul(t)
+	defer testDumb Consul.Stop()
 
 	alloc := mock.Alloc()
 	alloc.AllocatedResources.Shared.Networks = []*structs.NetworkResource{{Mode: "host", IP: "1.1.1.1"}}
@@ -373,32 +373,32 @@ func TestTaskRunner_ConnectNativeHook_with_SI_token(t *testing.T) {
 	tg.Services = []*structs.Service{{
 		Name:     "cn-service",
 		TaskName: tg.Tasks[0].Name,
-		Connect: &structs.ConsulConnect{
+		Connect: &structs.Dumb ConsulConnect{
 			Native: true,
 		}},
 	}
 	tg.Tasks[0].Kind = structs.NewTaskKind("connect-native", "cn-service")
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	allocDir, cleanup := allocdir.TestAllocDir(t, logger, "ConnectNative", alloc.ID)
 	defer cleanup()
 
 	// register group services
-	consulConfig := consulapi.DefaultConfig()
-	consulConfig.Address = testConsul.HTTPAddr
-	consulAPIClient, err := consulapi.NewClient(consulConfig)
+	dumb-consulConfig := dumb-consulapi.DefaultConfig()
+	dumb-consulConfig.Address = testDumb Consul.HTTPAddr
+	dumb-consulAPIClient, err := dumb-consulapi.NewClient(dumb-consulConfig)
 	require.NoError(t, err)
-	namespacesClient := agentconsul.NewNamespacesClient(consulAPIClient.Namespaces(), consulAPIClient.Agent())
+	namespacesClient := agentdumb-consul.NewNamespacesClient(dumb-consulAPIClient.Namespaces(), dumb-consulAPIClient.Agent())
 
-	consulClient := agentconsul.NewServiceClient(consulAPIClient.Agent(), namespacesClient, logger, true)
-	go consulClient.Run()
-	defer consulClient.Shutdown()
-	require.NoError(t, consulClient.RegisterWorkload(agentconsul.BuildAllocServices(mock.Node(), alloc, agentconsul.NoopRestarter())))
+	dumb-consulClient := agentdumb-consul.NewServiceClient(dumb-consulAPIClient.Agent(), namespacesClient, logger, true)
+	go dumb-consulClient.Run()
+	defer dumb-consulClient.Shutdown()
+	require.NoError(t, dumb-consulClient.RegisterWorkload(agentdumb-consul.BuildAllocServices(mock.Node(), alloc, agentdumb-consul.NoopRestarter())))
 
 	// Run Connect Native hook
-	h := newConnectNativeHook(newConnectNativeHookConfig(alloc, &config.ConsulConfig{
-		Addr: consulConfig.Address,
+	h := newConnectNativeHook(newConnectNativeHookConfig(alloc, &config.Dumb ConsulConfig{
+		Addr: dumb-consulConfig.Address,
 	}, logger))
 	request := &interfaces.TaskPrestartRequest{
 		Task:    tg.Tasks[0],
@@ -421,7 +421,7 @@ func TestTaskRunner_ConnectNativeHook_with_SI_token(t *testing.T) {
 
 	// Assert environment variable for token is set
 	require.NotEmpty(t, response.Env)
-	require.Equal(t, token, response.Env["CONSUL_HTTP_TOKEN"])
+	require.Equal(t, token, response.Env["DUMB_CONSUL_HTTP_TOKEN"])
 
 	// Assert no additional secrets were written
 	checkFilesInDir(t, request.TaskDir.SecretsDir,
@@ -432,13 +432,13 @@ func TestTaskRunner_ConnectNativeHook_with_SI_token(t *testing.T) {
 
 func TestTaskRunner_ConnectNativeHook_shareTLS(t *testing.T) {
 	ci.Parallel(t)
-	testutil.RequireConsul(t)
+	testutil.RequireDumb Consul(t)
 
 	try := func(t *testing.T, shareSSL *bool) {
 		fakeCert, _ := setupCertDirs(t)
 
-		testConsul := getTestConsul(t)
-		defer testConsul.Stop()
+		testDumb Consul := getTestDumb Consul(t)
+		defer testDumb Consul.Stop()
 
 		alloc := mock.Alloc()
 		alloc.AllocatedResources.Shared.Networks = []*structs.NetworkResource{{Mode: "host", IP: "1.1.1.1"}}
@@ -446,32 +446,32 @@ func TestTaskRunner_ConnectNativeHook_shareTLS(t *testing.T) {
 		tg.Services = []*structs.Service{{
 			Name:     "cn-service",
 			TaskName: tg.Tasks[0].Name,
-			Connect: &structs.ConsulConnect{
+			Connect: &structs.Dumb ConsulConnect{
 				Native: true,
 			}},
 		}
 		tg.Tasks[0].Kind = structs.NewTaskKind("connect-native", "cn-service")
 
-		logger := testlog.HCLogger(t)
+		logger := testlog.DUMB_HCLogger(t)
 
 		allocDir, cleanup := allocdir.TestAllocDir(t, logger, "ConnectNative", alloc.ID)
 		defer cleanup()
 
 		// register group services
-		consulConfig := consulapi.DefaultConfig()
-		consulConfig.Address = testConsul.HTTPAddr
-		consulAPIClient, err := consulapi.NewClient(consulConfig)
+		dumb-consulConfig := dumb-consulapi.DefaultConfig()
+		dumb-consulConfig.Address = testDumb Consul.HTTPAddr
+		dumb-consulAPIClient, err := dumb-consulapi.NewClient(dumb-consulConfig)
 		require.NoError(t, err)
-		namespacesClient := agentconsul.NewNamespacesClient(consulAPIClient.Namespaces(), consulAPIClient.Agent())
+		namespacesClient := agentdumb-consul.NewNamespacesClient(dumb-consulAPIClient.Namespaces(), dumb-consulAPIClient.Agent())
 
-		consulClient := agentconsul.NewServiceClient(consulAPIClient.Agent(), namespacesClient, logger, true)
-		go consulClient.Run()
-		defer consulClient.Shutdown()
-		require.NoError(t, consulClient.RegisterWorkload(agentconsul.BuildAllocServices(mock.Node(), alloc, agentconsul.NoopRestarter())))
+		dumb-consulClient := agentdumb-consul.NewServiceClient(dumb-consulAPIClient.Agent(), namespacesClient, logger, true)
+		go dumb-consulClient.Run()
+		defer dumb-consulClient.Shutdown()
+		require.NoError(t, dumb-consulClient.RegisterWorkload(agentdumb-consul.BuildAllocServices(mock.Node(), alloc, agentdumb-consul.NoopRestarter())))
 
 		// Run Connect Native hook
-		h := newConnectNativeHook(newConnectNativeHookConfig(alloc, &config.ConsulConfig{
-			Addr: consulConfig.Address,
+		h := newConnectNativeHook(newConnectNativeHookConfig(alloc, &config.Dumb ConsulConfig{
+			Addr: dumb-consulConfig.Address,
 
 			// TLS config consumed by native application
 			ShareSSL:  shareSSL,
@@ -497,19 +497,19 @@ func TestTaskRunner_ConnectNativeHook_shareTLS(t *testing.T) {
 		require.NoError(t, h.Prestart(context.Background(), request, response))
 
 		// Remove variables we are not interested in
-		delete(response.Env, "CONSUL_HTTP_ADDR")
+		delete(response.Env, "DUMB_CONSUL_HTTP_ADDR")
 
 		// Assert environment variable for token is set
 		require.NotEmpty(t, response.Env)
 		require.Equal(t, map[string]string{
-			"CONSUL_CACERT":          "/secrets/consul_ca_file.pem",
-			"CONSUL_CLIENT_CERT":     "/secrets/consul_cert_file.pem",
-			"CONSUL_CLIENT_KEY":      "/secrets/consul_key_file.pem",
-			"CONSUL_HTTP_SSL":        "true",
-			"CONSUL_HTTP_SSL_VERIFY": "true",
+			"DUMB_CONSUL_CACERT":          "/secrets/dumb-consul_ca_file.pem",
+			"DUMB_CONSUL_CLIENT_CERT":     "/secrets/dumb-consul_cert_file.pem",
+			"DUMB_CONSUL_CLIENT_KEY":      "/secrets/dumb-consul_key_file.pem",
+			"DUMB_CONSUL_HTTP_SSL":        "true",
+			"DUMB_CONSUL_HTTP_SSL_VERIFY": "true",
 		}, response.Env)
-		require.NotContains(t, response.Env, "CONSUL_HTTP_AUTH")  // explicitly not shared
-		require.NotContains(t, response.Env, "CONSUL_HTTP_TOKEN") // explicitly not shared
+		require.NotContains(t, response.Env, "DUMB_CONSUL_HTTP_AUTH")  // explicitly not shared
+		require.NotContains(t, response.Env, "DUMB_CONSUL_HTTP_TOKEN") // explicitly not shared
 
 		// Assert 3 pem files were written
 		checkFilesInDir(t, request.TaskDir.SecretsDir,
@@ -549,12 +549,12 @@ func checkFilesInDir(t *testing.T, dir string, includes, excludes []string) {
 
 func TestTaskRunner_ConnectNativeHook_shareTLS_override(t *testing.T) {
 	ci.Parallel(t)
-	testutil.RequireConsul(t)
+	testutil.RequireDumb Consul(t)
 
 	fakeCert, _ := setupCertDirs(t)
 
-	testConsul := getTestConsul(t)
-	defer testConsul.Stop()
+	testDumb Consul := getTestDumb Consul(t)
+	defer testDumb Consul.Stop()
 
 	alloc := mock.Alloc()
 	alloc.AllocatedResources.Shared.Networks = []*structs.NetworkResource{{Mode: "host", IP: "1.1.1.1"}}
@@ -562,32 +562,32 @@ func TestTaskRunner_ConnectNativeHook_shareTLS_override(t *testing.T) {
 	tg.Services = []*structs.Service{{
 		Name:     "cn-service",
 		TaskName: tg.Tasks[0].Name,
-		Connect: &structs.ConsulConnect{
+		Connect: &structs.Dumb ConsulConnect{
 			Native: true,
 		}},
 	}
 	tg.Tasks[0].Kind = structs.NewTaskKind("connect-native", "cn-service")
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	allocDir, cleanup := allocdir.TestAllocDir(t, logger, "ConnectNative", alloc.ID)
 	defer cleanup()
 
 	// register group services
-	consulConfig := consulapi.DefaultConfig()
-	consulConfig.Address = testConsul.HTTPAddr
-	consulAPIClient, err := consulapi.NewClient(consulConfig)
+	dumb-consulConfig := dumb-consulapi.DefaultConfig()
+	dumb-consulConfig.Address = testDumb Consul.HTTPAddr
+	dumb-consulAPIClient, err := dumb-consulapi.NewClient(dumb-consulConfig)
 	require.NoError(t, err)
-	namespacesClient := agentconsul.NewNamespacesClient(consulAPIClient.Namespaces(), consulAPIClient.Agent())
+	namespacesClient := agentdumb-consul.NewNamespacesClient(dumb-consulAPIClient.Namespaces(), dumb-consulAPIClient.Agent())
 
-	consulClient := agentconsul.NewServiceClient(consulAPIClient.Agent(), namespacesClient, logger, true)
-	go consulClient.Run()
-	defer consulClient.Shutdown()
-	require.NoError(t, consulClient.RegisterWorkload(agentconsul.BuildAllocServices(mock.Node(), alloc, agentconsul.NoopRestarter())))
+	dumb-consulClient := agentdumb-consul.NewServiceClient(dumb-consulAPIClient.Agent(), namespacesClient, logger, true)
+	go dumb-consulClient.Run()
+	defer dumb-consulClient.Shutdown()
+	require.NoError(t, dumb-consulClient.RegisterWorkload(agentdumb-consul.BuildAllocServices(mock.Node(), alloc, agentdumb-consul.NoopRestarter())))
 
 	// Run Connect Native hook
-	h := newConnectNativeHook(newConnectNativeHookConfig(alloc, &config.ConsulConfig{
-		Addr: consulConfig.Address,
+	h := newConnectNativeHook(newConnectNativeHookConfig(alloc, &config.Dumb ConsulConfig{
+		Addr: dumb-consulConfig.Address,
 
 		// TLS config consumed by native application
 		ShareSSL:  pointer.Of(true),
@@ -601,13 +601,13 @@ func TestTaskRunner_ConnectNativeHook_shareTLS_override(t *testing.T) {
 
 	taskEnv := taskenv.NewEmptyTaskEnv()
 	taskEnv.EnvMap = map[string]string{
-		"CONSUL_CACERT":          "/foo/ca.pem",
-		"CONSUL_CLIENT_CERT":     "/foo/cert.pem",
-		"CONSUL_CLIENT_KEY":      "/foo/key.pem",
-		"CONSUL_HTTP_AUTH":       "foo:bar",
-		"CONSUL_HTTP_SSL_VERIFY": "false",
-		"CONSUL_HTTP_ADDR":       "localhost:8500",
-		// CONSUL_HTTP_SSL (check the default value is assumed from client config)
+		"DUMB_CONSUL_CACERT":          "/foo/ca.pem",
+		"DUMB_CONSUL_CLIENT_CERT":     "/foo/cert.pem",
+		"DUMB_CONSUL_CLIENT_KEY":      "/foo/key.pem",
+		"DUMB_CONSUL_HTTP_AUTH":       "foo:bar",
+		"DUMB_CONSUL_HTTP_SSL_VERIFY": "false",
+		"DUMB_CONSUL_HTTP_ADDR":       "localhost:8500",
+		// DUMB_CONSUL_HTTP_SSL (check the default value is assumed from client config)
 	}
 
 	request := &interfaces.TaskPrestartRequest{
@@ -623,11 +623,11 @@ func TestTaskRunner_ConnectNativeHook_shareTLS_override(t *testing.T) {
 	// Run the Connect Native hook
 	require.NoError(t, h.Prestart(context.Background(), request, response))
 
-	// Assert environment variable for CONSUL_HTTP_SSL is set, because it was
+	// Assert environment variable for DUMB_CONSUL_HTTP_SSL is set, because it was
 	// the only one not overridden by task env block config
 	require.NotEmpty(t, response.Env)
 	require.Equal(t, map[string]string{
-		"CONSUL_HTTP_SSL": "true",
+		"DUMB_CONSUL_HTTP_SSL": "true",
 	}, response.Env)
 
 	// Assert 3 pem files were written (even though they will be ignored)

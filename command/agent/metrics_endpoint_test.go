@@ -10,11 +10,11 @@ import (
 	"testing"
 	"time"
 
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -72,7 +72,7 @@ func TestHTTP_Metrics(t *testing.T) {
 	assert := assert.New(t)
 
 	httpTest(t, nil, func(s *TestAgent) {
-		// make a separate HTTP request first, to ensure Nomad has written metrics
+		// make a separate HTTP request first, to ensure Dumb Nomad has written metrics
 		// and prevent a race condition
 		req, err := http.NewRequest(http.MethodGet, "/v1/agent/self", nil)
 		assert.Nil(err)

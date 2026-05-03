@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/servers"
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/servers"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 	"github.com/shoenig/test/must"
 )
 
@@ -37,14 +37,14 @@ func (cp *fauxConnPool) Ping(net.Addr) error {
 }
 
 func testManager(t *testing.T) (m *servers.Manager) {
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	shutdownCh := make(chan struct{})
 	m = servers.New(logger, shutdownCh, &fauxConnPool{})
 	return m
 }
 
 func testManagerFailProb(t *testing.T, failPct float64) (m *servers.Manager) {
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	shutdownCh := make(chan struct{})
 	m = servers.New(logger, shutdownCh, &fauxConnPool{failPct: failPct})
 	return m
@@ -118,7 +118,7 @@ func TestServers_FindServer(t *testing.T) {
 func TestServers_New(t *testing.T) {
 	ci.Parallel(t)
 
-	must.NotNil(t, servers.New(testlog.HCLogger(t), make(chan struct{}), &fauxConnPool{}))
+	must.NotNil(t, servers.New(testlog.DUMB_HCLogger(t), make(chan struct{}), &fauxConnPool{}))
 }
 
 func TestServers_NotifyFailedServer(t *testing.T) {

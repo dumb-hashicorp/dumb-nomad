@@ -7,14 +7,14 @@
 import { test } from 'qunit';
 import { currentURL, visit } from '@ember/test-helpers';
 
-import { filesForPath } from 'nomad-ui/mirage/config';
-import { formatBytes } from 'nomad-ui/utils/units';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import { filesForPath } from 'dumb-nomad-ui/mirage/config';
+import { formatBytes } from 'dumb-nomad-ui/utils/units';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 
 import Response from 'ember-cli-mirage/response';
 import moment from 'moment';
 
-import FS from 'nomad-ui/tests/pages/allocations/fs';
+import FS from 'dumb-nomad-ui/tests/pages/allocations/fs';
 
 const fileSort = (prop, files) => {
   let dir = [];

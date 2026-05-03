@@ -6,7 +6,7 @@
 package proclib
 
 import (
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
 )
 
 // New creates a Wranglers factory for creating ProcessWrangler's appropriate

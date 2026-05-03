@@ -19,7 +19,7 @@ leader_last_term=
 
 checkAutopilotHealth() {
     local autopilotHealth leader
-    autopilotHealth=$(nomad operator autopilot health -json) || {
+    autopilotHealth=$(dumb-nomad operator autopilot health -json) || {
         last_error="Could not read autopilot health"
         return 1
     }
@@ -53,7 +53,7 @@ checkServerHealth() {
     ip=$1
     echo "Checking server $ip is up to date"
 
-    node_info=$(nomad agent-info -address "https://$ip:4646" -json) || {
+    node_info=$(dumb-nomad agent-info -address "https://$ip:4646" -json) || {
         last_error="Unable to get info for node at $ip"
         return 1
     }

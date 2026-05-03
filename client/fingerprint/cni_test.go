@@ -6,10 +6,10 @@ package fingerprint
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/require"
 )
 
@@ -73,7 +73,7 @@ func TestCNIFingerprint(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
 			r := require.New(t)
-			fp := NewCNIFingerprint(testlog.HCLogger(t))
+			fp := NewCNIFingerprint(testlog.DUMB_HCLogger(t))
 			resp := &FingerprintResponse{}
 			err := fp.Fingerprint(c.req, resp)
 			if c.err {

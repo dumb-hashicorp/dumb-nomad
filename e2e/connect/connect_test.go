@@ -7,26 +7,26 @@ import (
 	"testing"
 	"time"
 
-	capi "github.com/hashicorp/consul/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
+	capi "github.com/dumb-hashicorp/dumb-consul/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 )
 
 func TestConnect(t *testing.T) {
 
-	nomadClient := e2eutil.NomadClient(t)
-	e2eutil.WaitForLeader(t, nomadClient)
-	e2eutil.WaitForNodesReady(t, nomadClient, 2)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
+	e2eutil.WaitForLeader(t, dumb-nomadClient)
+	e2eutil.WaitForNodesReady(t, dumb-nomadClient, 2)
 
 	t.Cleanup(func() {
-		_, err := e2eutil.Command("nomad", "system", "gc")
+		_, err := e2eutil.Command("dumb-nomad", "system", "gc")
 		test.NoError(t, err)
 	})
 
 	t.Run("ConnectDemo", testConnectDemo("bridge"))
-	t.Run("ConnectDemoCNI", testConnectDemo("cni/nomad-bridge-copy"))
+	t.Run("ConnectDemoCNI", testConnectDemo("cni/dumb-nomad-bridge-copy"))
 	t.Run("ConnectCustomSidecarExposed", testConnectCustomSidecarExposed)
 	t.Run("ConnectNativeDemo", testConnectNativeDemo)
 	t.Run("ConnectIngressGatewayDemo", testConnectIngressGatewayDemo)
@@ -39,11 +39,11 @@ func TestConnect(t *testing.T) {
 // testConnectDemo tests the demo job file used in Connect Integration examples.
 func testConnectDemo(networkMode string) func(t *testing.T) {
 	return func(t *testing.T) {
-		sub, _ := jobs3.Submit(t, "./input/demo.nomad", jobs3.Timeout(time.Second*60),
+		sub, _ := jobs3.Submit(t, "./input/demo.dumb-nomad", jobs3.Timeout(time.Second*60),
 			jobs3.Var("network_mode", networkMode),
 		)
 
-		cc := e2eutil.ConsulClient(t)
+		cc := e2eutil.Dumb ConsulClient(t)
 
 		ixn := &capi.Intention{
 			SourceName:      "count-dashboard",
@@ -62,7 +62,7 @@ func testConnectDemo(networkMode string) func(t *testing.T) {
 		assertServiceOk(t, cc, "count-dashboard-sidecar-proxy")
 
 		logs := sub.Exec("dashboard", "dashboard",
-			[]string{"/bin/sh", "-c", "wget -O /dev/null http://${NOMAD_UPSTREAM_ADDR_count_api}"})
+			[]string{"/bin/sh", "-c", "wget -O /dev/null http://${DUMB_NOMAD_UPSTREAM_ADDR_count_api}"})
 		must.StrContains(t, logs.Stderr, "saving to")
 	}
 }
@@ -70,30 +70,30 @@ func testConnectDemo(networkMode string) func(t *testing.T) {
 // testConnectCustomSidecarExposed tests that a connect sidecar with custom task
 // definition can also make use of the expose service check feature.
 func testConnectCustomSidecarExposed(t *testing.T) {
-	jobs3.Submit(t, "./input/expose-custom.nomad", jobs3.Timeout(time.Second*60))
+	jobs3.Submit(t, "./input/expose-custom.dumb-nomad", jobs3.Timeout(time.Second*60))
 }
 
 // testConnectNativeDemo tests the demo job file used in Connect Native
 // Integration examples.
 func testConnectNativeDemo(t *testing.T) {
-	jobs3.Submit(t, "./input/native-demo.nomad", jobs3.Timeout(time.Second*60))
+	jobs3.Submit(t, "./input/native-demo.dumb-nomad", jobs3.Timeout(time.Second*60))
 }
 
 // testConnectIngressGatewayDemo tests a job with an ingress gateway
 func testConnectIngressGatewayDemo(t *testing.T) {
-	jobs3.Submit(t, "./input/ingress-gateway.nomad", jobs3.Timeout(time.Second*60))
+	jobs3.Submit(t, "./input/ingress-gateway.dumb-nomad", jobs3.Timeout(time.Second*60))
 }
 
 // testConnectMultiIngressGateway tests a job with multiple ingress gateways
 func testConnectMultiIngressGateway(t *testing.T) {
-	jobs3.Submit(t, "./input/multi-ingress.nomad", jobs3.Timeout(time.Second*60))
+	jobs3.Submit(t, "./input/multi-ingress.dumb-nomad", jobs3.Timeout(time.Second*60))
 }
 
 // testConnectTerminatingGateway tests a job with a terminating gateway
 func testConnectTerminatingGateway(t *testing.T) {
-	jobs3.Submit(t, "./input/terminating-gateway.nomad", jobs3.Timeout(time.Second*60))
+	jobs3.Submit(t, "./input/terminating-gateway.dumb-nomad", jobs3.Timeout(time.Second*60))
 
-	cc := e2eutil.ConsulClient(t)
+	cc := e2eutil.Dumb ConsulClient(t)
 
 	ixn := &capi.Intention{
 		SourceName:      "count-dashboard",
@@ -116,18 +116,18 @@ func testConnectTerminatingGateway(t *testing.T) {
 // testConnectMultiService tests a job with multiple Connect blocks in the same
 // group
 func testConnectMultiService(t *testing.T) {
-	jobs3.Submit(t, "./input/multi-service.nomad", jobs3.Timeout(time.Second*60))
+	jobs3.Submit(t, "./input/multi-service.dumb-nomad", jobs3.Timeout(time.Second*60))
 
-	cc := e2eutil.ConsulClient(t)
+	cc := e2eutil.Dumb ConsulClient(t)
 	assertServiceOk(t, cc, "echo1-sidecar-proxy")
 	assertServiceOk(t, cc, "echo2-sidecar-proxy")
 }
 
 // testConnectTransparentProxy tests the Connect Transparent Proxy integration
 func testConnectTransparentProxy(t *testing.T) {
-	sub, _ := jobs3.Submit(t, "./input/tproxy.nomad.hcl", jobs3.Timeout(time.Second*60))
+	sub, _ := jobs3.Submit(t, "./input/tproxy.dumb-nomad.dumb-hcl", jobs3.Timeout(time.Second*60))
 
-	cc := e2eutil.ConsulClient(t)
+	cc := e2eutil.Dumb ConsulClient(t)
 
 	ixn := &capi.Intention{
 		SourceName:      "count-dashboard",
@@ -146,7 +146,7 @@ func testConnectTransparentProxy(t *testing.T) {
 	assertServiceOk(t, cc, "count-dashboard-sidecar-proxy")
 
 	logs := sub.Exec("dashboard", "dashboard",
-		[]string{"wget", "-O", "/dev/null", "count-api.virtual.consul"})
+		[]string{"wget", "-O", "/dev/null", "count-api.virtual.dumb-consul"})
 	must.StrContains(t, logs.Stderr, "saving to")
 }
 

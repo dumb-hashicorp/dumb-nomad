@@ -10,13 +10,13 @@ import (
 	"time"
 
 	grpc_retry "github.com/grpc-ecosystem/go-grpc-middleware/retry"
-	metrics "github.com/hashicorp/go-metrics/compat"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
 
-	"github.com/hashicorp/nomad/client/dynamicplugins"
-	"github.com/hashicorp/nomad/client/pluginmanager/csimanager"
-	"github.com/hashicorp/nomad/client/structs"
-	nstructs "github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/csi"
+	"github.com/dumb-hashicorp/dumb-nomad/client/dynamicplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/client/pluginmanager/csimanager"
+	"github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	nstructs "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/csi"
 )
 
 // CSI endpoint is used for interacting with CSI plugins on a client.
@@ -99,7 +99,7 @@ func (c *CSI) ControllerAttachVolume(req *structs.ClientCSIControllerAttachVolum
 	defer plugin.Close()
 
 	// The following block of validation checks should not be reached on a
-	// real Nomad cluster as all of this data should be validated when registering
+	// real Dumb Nomad cluster as all of this data should be validated when registering
 	// volumes with the cluster. They serve as a defensive check before forwarding
 	// requests to plugins, and to aid with development.
 
@@ -147,7 +147,7 @@ func (c *CSI) ControllerDetachVolume(req *structs.ClientCSIControllerDetachVolum
 	defer plugin.Close()
 
 	// The following block of validation checks should not be reached on a
-	// real Nomad cluster as all of this data should be validated when registering
+	// real Dumb Nomad cluster as all of this data should be validated when registering
 	// volumes with the cluster. They serve as a defensive check before forwarding
 	// requests to plugins, and to aid with development.
 
@@ -501,7 +501,7 @@ func (c *CSI) NodeDetachVolume(req *structs.ClientCSINodeDetachVolumeRequest, re
 	defer metrics.MeasureSince([]string{"client", "csi_node", "detach_volume"}, time.Now())
 
 	// The following block of validation checks should not be reached on a
-	// real Nomad cluster. They serve as a defensive check before forwarding
+	// real Dumb Nomad cluster. They serve as a defensive check before forwarding
 	// requests to plugins, and to aid with development.
 	if req.PluginID == "" {
 		return errors.New("CSI.NodeDetachVolume: PluginID is required")

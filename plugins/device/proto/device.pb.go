@@ -9,7 +9,7 @@ import (
 	proto "github.com/golang/protobuf/proto"
 	duration "github.com/golang/protobuf/ptypes/duration"
 	timestamp "github.com/golang/protobuf/ptypes/timestamp"
-	proto1 "github.com/hashicorp/nomad/plugins/shared/structs/proto"
+	proto1 "github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs/proto"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -255,7 +255,7 @@ func (m *DetectedDevice) GetHwLocality() *DeviceLocality {
 // DeviceLocality is used to expose HW locality information about a device.
 type DeviceLocality struct {
 	// pci_bus_id is the PCI bus ID for the device. If reported, it
-	// allows Nomad to make NUMA aware optimizations.
+	// allows Dumb Nomad to make NUMA aware optimizations.
 	PciBusId             string   `protobuf:"bytes,1,opt,name=pci_bus_id,json=pciBusId,proto3" json:"pci_bus_id,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -336,7 +336,7 @@ func (m *ReserveRequest) GetDeviceIds() []string {
 	return nil
 }
 
-// ReserveResponse informs Nomad how to expose the requested devices
+// ReserveResponse informs Dumb Nomad how to expose the requested devices
 // to the task.
 type ReserveResponse struct {
 	// container_res contains information on how to mount the device
@@ -771,23 +771,23 @@ func (m *DeviceStats) GetTimestamp() *timestamp.Timestamp {
 }
 
 func init() {
-	proto.RegisterType((*FingerprintRequest)(nil), "hashicorp.nomad.plugins.device.FingerprintRequest")
-	proto.RegisterType((*FingerprintResponse)(nil), "hashicorp.nomad.plugins.device.FingerprintResponse")
-	proto.RegisterType((*DeviceGroup)(nil), "hashicorp.nomad.plugins.device.DeviceGroup")
-	proto.RegisterMapType((map[string]*proto1.Attribute)(nil), "hashicorp.nomad.plugins.device.DeviceGroup.AttributesEntry")
-	proto.RegisterType((*DetectedDevice)(nil), "hashicorp.nomad.plugins.device.DetectedDevice")
-	proto.RegisterType((*DeviceLocality)(nil), "hashicorp.nomad.plugins.device.DeviceLocality")
-	proto.RegisterType((*ReserveRequest)(nil), "hashicorp.nomad.plugins.device.ReserveRequest")
-	proto.RegisterType((*ReserveResponse)(nil), "hashicorp.nomad.plugins.device.ReserveResponse")
-	proto.RegisterType((*ContainerReservation)(nil), "hashicorp.nomad.plugins.device.ContainerReservation")
-	proto.RegisterMapType((map[string]string)(nil), "hashicorp.nomad.plugins.device.ContainerReservation.EnvsEntry")
-	proto.RegisterType((*Mount)(nil), "hashicorp.nomad.plugins.device.Mount")
-	proto.RegisterType((*DeviceSpec)(nil), "hashicorp.nomad.plugins.device.DeviceSpec")
-	proto.RegisterType((*StatsRequest)(nil), "hashicorp.nomad.plugins.device.StatsRequest")
-	proto.RegisterType((*StatsResponse)(nil), "hashicorp.nomad.plugins.device.StatsResponse")
-	proto.RegisterType((*DeviceGroupStats)(nil), "hashicorp.nomad.plugins.device.DeviceGroupStats")
-	proto.RegisterMapType((map[string]*DeviceStats)(nil), "hashicorp.nomad.plugins.device.DeviceGroupStats.InstanceStatsEntry")
-	proto.RegisterType((*DeviceStats)(nil), "hashicorp.nomad.plugins.device.DeviceStats")
+	proto.RegisterType((*FingerprintRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.FingerprintRequest")
+	proto.RegisterType((*FingerprintResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.FingerprintResponse")
+	proto.RegisterType((*DeviceGroup)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.DeviceGroup")
+	proto.RegisterMapType((map[string]*proto1.Attribute)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.DeviceGroup.AttributesEntry")
+	proto.RegisterType((*DetectedDevice)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.DetectedDevice")
+	proto.RegisterType((*DeviceLocality)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.DeviceLocality")
+	proto.RegisterType((*ReserveRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.ReserveRequest")
+	proto.RegisterType((*ReserveResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.ReserveResponse")
+	proto.RegisterType((*ContainerReservation)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.ContainerReservation")
+	proto.RegisterMapType((map[string]string)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.ContainerReservation.EnvsEntry")
+	proto.RegisterType((*Mount)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.Mount")
+	proto.RegisterType((*DeviceSpec)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.DeviceSpec")
+	proto.RegisterType((*StatsRequest)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.StatsRequest")
+	proto.RegisterType((*StatsResponse)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.StatsResponse")
+	proto.RegisterType((*DeviceGroupStats)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.DeviceGroupStats")
+	proto.RegisterMapType((map[string]*DeviceStats)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.DeviceGroupStats.InstanceStatsEntry")
+	proto.RegisterType((*DeviceStats)(nil), "dumb-hashicorp.dumb-nomad.plugins.device.DeviceStats")
 }
 
 func init() {
@@ -878,7 +878,7 @@ type DevicePluginClient interface {
 	// Reserve is called by the client before starting an allocation
 	// that requires access to the plugin’s devices. The plugin can use
 	// this to run any setup steps and provides the mounting details to
-	// the Nomad client
+	// the Dumb Nomad client
 	Reserve(ctx context.Context, in *ReserveRequest, opts ...grpc.CallOption) (*ReserveResponse, error)
 	// Stats returns a stream of device statistics.
 	Stats(ctx context.Context, in *StatsRequest, opts ...grpc.CallOption) (DevicePlugin_StatsClient, error)
@@ -893,7 +893,7 @@ func NewDevicePluginClient(cc grpc.ClientConnInterface) DevicePluginClient {
 }
 
 func (c *devicePluginClient) Fingerprint(ctx context.Context, in *FingerprintRequest, opts ...grpc.CallOption) (DevicePlugin_FingerprintClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_DevicePlugin_serviceDesc.Streams[0], "/hashicorp.nomad.plugins.device.DevicePlugin/Fingerprint", opts...)
+	stream, err := c.cc.NewStream(ctx, &_DevicePlugin_serviceDesc.Streams[0], "/dumb-hashicorp.dumb-nomad.plugins.device.DevicePlugin/Fingerprint", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -926,7 +926,7 @@ func (x *devicePluginFingerprintClient) Recv() (*FingerprintResponse, error) {
 
 func (c *devicePluginClient) Reserve(ctx context.Context, in *ReserveRequest, opts ...grpc.CallOption) (*ReserveResponse, error) {
 	out := new(ReserveResponse)
-	err := c.cc.Invoke(ctx, "/hashicorp.nomad.plugins.device.DevicePlugin/Reserve", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dumb-hashicorp.dumb-nomad.plugins.device.DevicePlugin/Reserve", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -934,7 +934,7 @@ func (c *devicePluginClient) Reserve(ctx context.Context, in *ReserveRequest, op
 }
 
 func (c *devicePluginClient) Stats(ctx context.Context, in *StatsRequest, opts ...grpc.CallOption) (DevicePlugin_StatsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_DevicePlugin_serviceDesc.Streams[1], "/hashicorp.nomad.plugins.device.DevicePlugin/Stats", opts...)
+	stream, err := c.cc.NewStream(ctx, &_DevicePlugin_serviceDesc.Streams[1], "/dumb-hashicorp.dumb-nomad.plugins.device.DevicePlugin/Stats", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -974,7 +974,7 @@ type DevicePluginServer interface {
 	// Reserve is called by the client before starting an allocation
 	// that requires access to the plugin’s devices. The plugin can use
 	// this to run any setup steps and provides the mounting details to
-	// the Nomad client
+	// the Dumb Nomad client
 	Reserve(context.Context, *ReserveRequest) (*ReserveResponse, error)
 	// Stats returns a stream of device statistics.
 	Stats(*StatsRequest, DevicePlugin_StatsServer) error
@@ -1029,7 +1029,7 @@ func _DevicePlugin_Reserve_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/hashicorp.nomad.plugins.device.DevicePlugin/Reserve",
+		FullMethod: "/dumb-hashicorp.dumb-nomad.plugins.device.DevicePlugin/Reserve",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DevicePluginServer).Reserve(ctx, req.(*ReserveRequest))
@@ -1059,7 +1059,7 @@ func (x *devicePluginStatsServer) Send(m *StatsResponse) error {
 }
 
 var _DevicePlugin_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "hashicorp.nomad.plugins.device.DevicePlugin",
+	ServiceName: "dumb-hashicorp.dumb-nomad.plugins.device.DevicePlugin",
 	HandlerType: (*DevicePluginServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

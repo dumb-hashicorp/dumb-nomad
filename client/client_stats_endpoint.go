@@ -6,9 +6,9 @@ package client
 import (
 	"time"
 
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/nomad/client/structs"
-	nstructs "github.com/hashicorp/nomad/nomad/structs"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	nstructs "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // ClientStats endpoint is used for retrieving stats about a client

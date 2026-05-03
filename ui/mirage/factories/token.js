@@ -4,7 +4,7 @@
  */
 
 import { Factory } from 'ember-cli-mirage';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 
 export default Factory.extend({
   id: () => faker.random.uuid(),
@@ -115,7 +115,7 @@ export default Factory.extend({
       path "blue/*" {
         capabilities = ["list", "read", "destroy", "create"]
       }
-      path "nomad/jobs/*" {
+      path "dumb-nomad/jobs/*" {
         capabilities = ["list", "read", "create"]
       }
     }
@@ -163,7 +163,7 @@ export default Factory.extend({
                     },
                     {
                       Capabilities: ['list', 'read', 'create'],
-                      PathSpec: 'nomad/jobs/*',
+                      PathSpec: 'dumb-nomad/jobs/*',
                     },
                   ],
                 },

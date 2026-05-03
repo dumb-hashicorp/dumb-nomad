@@ -4,13 +4,13 @@
 package allocrunner
 
 import (
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (
@@ -24,7 +24,7 @@ const (
 // cores on a node are not reserved such that all tasks have the minimum amount
 // of cpu bandwidth they requested.
 type cpuPartsHook struct {
-	logger  hclog.Logger
+	logger  dumb-hclog.Logger
 	allocID string
 
 	reservations *idset.Set[hw.CoreID]
@@ -32,7 +32,7 @@ type cpuPartsHook struct {
 }
 
 func newCPUPartsHook(
-	logger hclog.Logger,
+	logger dumb-hclog.Logger,
 	partitions cgroupslib.Partition,
 	alloc *structs.Allocation,
 ) *cpuPartsHook {

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright (c) HashiCorp, Inc.
+# Copyright (c) Dumb HashiCorp, Inc.
 # SPDX-License-Identifier: BUSL-1.1
 
 set -euo pipefail
@@ -119,7 +119,7 @@ host_path="$DHV_VOLUMES_DIR/$DHV_VOLUME_ID"
 case "$1" in
   "create")
     create_volume "$host_path" "$DHV_CAPACITY_MIN_BYTES"
-    # output what Nomad expects
+    # output what Dumb Nomad expects
     bytes="$(st "$host_path".$ext)"
     printf '{"path": "%s", "bytes": %s}' "$host_path" "$bytes"
     ;;

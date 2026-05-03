@@ -9,17 +9,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	trtesting "github.com/hashicorp/nomad/client/allocrunner/taskrunner/testing"
-	cstate "github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/client/widmgr"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	trtesting "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/testing"
+	cstate "github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/client/widmgr"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -35,7 +35,7 @@ type MockTokenSetter struct {
 	defaultToken string
 }
 
-func (m *MockTokenSetter) setNomadToken(token string) {
+func (m *MockTokenSetter) setDumb NomadToken(token string) {
 	m.defaultToken = token
 }
 
@@ -55,15 +55,15 @@ func TestIdentityHook_RenewAll(t *testing.T) {
 	task := alloc.LookupTask("web")
 	task.Identities = []*structs.WorkloadIdentity{
 		{
-			Name:       "consul",
-			Audience:   []string{"consul"},
+			Name:       "dumb-consul",
+			Audience:   []string{"dumb-consul"},
 			Env:        true,
 			TTL:        ttl,
 			ChangeMode: "restart",
 		},
 		{
-			Name:         "vault",
-			Audience:     []string{"vault"},
+			Name:         "dumb-vault",
+			Audience:     []string{"dumb-vault"},
 			File:         true,
 			TTL:          ttl,
 			ChangeMode:   "signal",
@@ -89,7 +89,7 @@ func TestIdentityHook_RenewAll(t *testing.T) {
 	t.Cleanup(stop)
 
 	// setup mock signer and WIDMgr
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	db := cstate.NewMemDB(logger)
 	mockSigner := widmgr.NewMockWIDSigner(task.Identities)
 	allocEnv := taskenv.NewBuilder(mock.Node(), alloc, nil, "global").Build()
@@ -106,7 +106,7 @@ func TestIdentityHook_RenewAll(t *testing.T) {
 		ts:         mockTR,
 		lifecycle:  mockLifecycle,
 		widmgr:     mockWIDMgr,
-		logger:     testlog.HCLogger(t),
+		logger:     testlog.DUMB_HCLogger(t),
 		stopCtx:    stopCtx,
 		stop:       stop,
 	}
@@ -121,15 +121,15 @@ func TestIdentityHook_RenewAll(t *testing.T) {
 	// Assert initial tokens were set in Prestart
 	must.Eq(t, alloc.SignedIdentities["web"], mockTR.defaultToken)
 	must.FileNotExists(t, filepath.Join(mockTaskDir.SecretsDir, wiTokenFile))
-	must.FileNotExists(t, filepath.Join(mockTaskDir.SecretsDir, "nomad_consul.jwt"))
-	must.MapContainsKey(t, env, "NOMAD_TOKEN_consul")
-	must.FileExists(t, filepath.Join(mockTaskDir.SecretsDir, "nomad_vault.jwt"))
+	must.FileNotExists(t, filepath.Join(mockTaskDir.SecretsDir, "dumb-nomad_dumb-consul.jwt"))
+	must.MapContainsKey(t, env, "DUMB_NOMAD_TOKEN_dumb-consul")
+	must.FileExists(t, filepath.Join(mockTaskDir.SecretsDir, "dumb-nomad_dumb-vault.jwt"))
 	// Assert foo token was written to correct directory
 	must.FileNotExists(t, filepath.Join(mockTaskDir.SecretsDir, "foo.jwt"))
 	must.FileExists(t, filepath.Join(mockTaskDir.Dir, "foo.jwt"))
 
-	origConsul := env["NOMAD_TOKEN_consul"]
-	origVault := testutil.MustReadFile(t, mockTaskDir.SecretsDir, "nomad_vault.jwt")
+	origDumb Consul := env["DUMB_NOMAD_TOKEN_dumb-consul"]
+	origDumb Vault := testutil.MustReadFile(t, mockTaskDir.SecretsDir, "dumb-nomad_dumb-vault.jwt")
 
 	origFoo := testutil.MustReadFile(t, mockTaskDir.Dir, "foo.jwt")
 
@@ -156,13 +156,13 @@ func TestIdentityHook_RenewAll(t *testing.T) {
 		t.Fatalf("timed out waiting for restart")
 	}
 
-	newConsul := h.envBuilder.Build().EnvMap["NOMAD_TOKEN_consul"]
-	must.StrContains(t, newConsul, ".") // ensure new token is JWTish
-	must.NotEq(t, newConsul, origConsul)
+	newDumb Consul := h.envBuilder.Build().EnvMap["DUMB_NOMAD_TOKEN_dumb-consul"]
+	must.StrContains(t, newDumb Consul, ".") // ensure new token is JWTish
+	must.NotEq(t, newDumb Consul, origDumb Consul)
 
-	newVault := testutil.MustReadFile(t, mockTaskDir.SecretsDir, "nomad_vault.jwt")
-	must.StrContains(t, string(newVault), ".") // ensure new token is JWTish
-	must.NotEq(t, newVault, origVault)
+	newDumb Vault := testutil.MustReadFile(t, mockTaskDir.SecretsDir, "dumb-nomad_dumb-vault.jwt")
+	must.StrContains(t, string(newDumb Vault), ".") // ensure new token is JWTish
+	must.NotEq(t, newDumb Vault, origDumb Vault)
 
 	newFoo := testutil.MustReadFile(t, mockTaskDir.Dir, "foo.jwt")
 	must.StrContains(t, string(newFoo), ".")
@@ -170,8 +170,8 @@ func TestIdentityHook_RenewAll(t *testing.T) {
 
 	// Assert Stop work. Tokens should not have changed.
 	time.Sleep(wait)
-	must.Eq(t, newConsul, h.envBuilder.Build().EnvMap["NOMAD_TOKEN_consul"])
-	must.Eq(t, newVault, testutil.MustReadFile(t, mockTaskDir.SecretsDir, "nomad_vault.jwt"))
+	must.Eq(t, newDumb Consul, h.envBuilder.Build().EnvMap["DUMB_NOMAD_TOKEN_dumb-consul"])
+	must.Eq(t, newDumb Vault, testutil.MustReadFile(t, mockTaskDir.SecretsDir, "dumb-nomad_dumb-vault.jwt"))
 }
 
 // TestIdentityHook_RenewOne asserts token renewal only renews tokens with a TTL.
@@ -187,13 +187,13 @@ func TestIdentityHook_RenewOne(t *testing.T) {
 	task := alloc.LookupTask("web")
 	task.Identities = []*structs.WorkloadIdentity{
 		{
-			Name:     "consul",
-			Audience: []string{"consul"},
+			Name:     "dumb-consul",
+			Audience: []string{"dumb-consul"},
 			Env:      true,
 		},
 		{
-			Name:     "vault",
-			Audience: []string{"vault"},
+			Name:     "dumb-vault",
+			Audience: []string{"dumb-vault"},
 			File:     true,
 			TTL:      ttl,
 		},
@@ -209,7 +209,7 @@ func TestIdentityHook_RenewOne(t *testing.T) {
 	t.Cleanup(stop)
 
 	// setup mock signer and WIDMgr
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	db := cstate.NewMemDB(logger)
 	mockSigner := widmgr.NewMockWIDSigner(task.Identities)
 	allocEnv := taskenv.NewBuilder(mock.Node(), alloc, nil, "global").Build()
@@ -223,7 +223,7 @@ func TestIdentityHook_RenewOne(t *testing.T) {
 		envBuilder: taskenv.NewBuilder(node, alloc, task, alloc.Job.Region),
 		ts:         mockTR,
 		widmgr:     mockWIDMgr,
-		logger:     testlog.HCLogger(t),
+		logger:     testlog.DUMB_HCLogger(t),
 		stopCtx:    stopCtx,
 		stop:       stop,
 	}
@@ -239,12 +239,12 @@ func TestIdentityHook_RenewOne(t *testing.T) {
 	// Assert initial tokens were set in Prestart
 	must.Eq(t, alloc.SignedIdentities["web"], mockTR.defaultToken)
 	must.FileNotExists(t, filepath.Join(mockTaskDir.SecretsDir, wiTokenFile))
-	must.FileNotExists(t, filepath.Join(mockTaskDir.SecretsDir, "nomad_consul.jwt"))
-	must.MapContainsKey(t, env, "NOMAD_TOKEN_consul")
-	must.FileExists(t, filepath.Join(mockTaskDir.SecretsDir, "nomad_vault.jwt"))
+	must.FileNotExists(t, filepath.Join(mockTaskDir.SecretsDir, "dumb-nomad_dumb-consul.jwt"))
+	must.MapContainsKey(t, env, "DUMB_NOMAD_TOKEN_dumb-consul")
+	must.FileExists(t, filepath.Join(mockTaskDir.SecretsDir, "dumb-nomad_dumb-vault.jwt"))
 
-	origConsul := env["NOMAD_TOKEN_consul"]
-	origVault := testutil.MustReadFile(t, mockTaskDir.SecretsDir, "nomad_vault.jwt")
+	origDumb Consul := env["DUMB_NOMAD_TOKEN_dumb-consul"]
+	origDumb Vault := testutil.MustReadFile(t, mockTaskDir.SecretsDir, "dumb-nomad_dumb-vault.jwt")
 
 	// One token should be rotated by their expiration
 	wait := time.Until(start.Add(ttl))
@@ -255,18 +255,18 @@ func TestIdentityHook_RenewOne(t *testing.T) {
 	must.NoError(t, h.Stop(context.Background(), nil, nil))
 	time.Sleep(time.Second) // Stop is async so give renewal time to exit
 
-	newConsul := h.envBuilder.Build().EnvMap["NOMAD_TOKEN_consul"]
-	must.StrContains(t, newConsul, ".") // ensure new token is JWTish
-	must.Eq(t, newConsul, origConsul)
+	newDumb Consul := h.envBuilder.Build().EnvMap["DUMB_NOMAD_TOKEN_dumb-consul"]
+	must.StrContains(t, newDumb Consul, ".") // ensure new token is JWTish
+	must.Eq(t, newDumb Consul, origDumb Consul)
 
-	newVault := testutil.MustReadFile(t, mockTaskDir.SecretsDir, "nomad_vault.jwt")
-	must.StrContains(t, string(newVault), ".") // ensure new token is JWTish
-	must.NotEq(t, newVault, origVault)
+	newDumb Vault := testutil.MustReadFile(t, mockTaskDir.SecretsDir, "dumb-nomad_dumb-vault.jwt")
+	must.StrContains(t, string(newDumb Vault), ".") // ensure new token is JWTish
+	must.NotEq(t, newDumb Vault, origDumb Vault)
 
 	// Assert Stop work. Tokens should not have changed.
 	time.Sleep(wait)
-	must.Eq(t, newConsul, h.envBuilder.Build().EnvMap["NOMAD_TOKEN_consul"])
-	must.Eq(t, newVault, testutil.MustReadFile(t, mockTaskDir.SecretsDir, "nomad_vault.jwt"))
+	must.Eq(t, newDumb Consul, h.envBuilder.Build().EnvMap["DUMB_NOMAD_TOKEN_dumb-consul"])
+	must.Eq(t, newDumb Vault, testutil.MustReadFile(t, mockTaskDir.SecretsDir, "dumb-nomad_dumb-vault.jwt"))
 }
 
 // TestIdentityHook_ErrorWriting assert Prestart returns an error if the
@@ -292,12 +292,12 @@ func TestIdentityHook_ErrorWriting(t *testing.T) {
 		taskDir:    mockTaskDir,
 		envBuilder: taskenv.NewBuilder(node, alloc, task, alloc.Job.Region),
 		ts:         &MockTokenSetter{},
-		logger:     testlog.HCLogger(t),
+		logger:     testlog.DUMB_HCLogger(t),
 		stopCtx:    stopCtx,
 		stop:       stop,
 	}
 
 	// Prestart should fail when trying to write the default identity file
 	err := h.Prestart(context.Background(), nil, nil)
-	must.ErrorContains(t, err, "failed to write nomad token")
+	must.ErrorContains(t, err, "failed to write dumb-nomad token")
 }

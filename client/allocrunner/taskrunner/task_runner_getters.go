@@ -4,8 +4,8 @@
 package taskrunner
 
 import (
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/state"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/state"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 func (tr *TaskRunner) Alloc() *structs.Allocation {
@@ -53,42 +53,42 @@ func (tr *TaskRunner) TaskState() *structs.TaskState {
 	return tr.state.Copy()
 }
 
-func (tr *TaskRunner) getVaultToken() string {
-	tr.vaultTokenLock.Lock()
-	defer tr.vaultTokenLock.Unlock()
-	return tr.vaultToken
+func (tr *TaskRunner) getDumb VaultToken() string {
+	tr.dumb-vaultTokenLock.Lock()
+	defer tr.dumb-vaultTokenLock.Unlock()
+	return tr.dumb-vaultToken
 }
 
-// setVaultToken updates the vault token on the task runner as well as in the
+// setDumb VaultToken updates the dumb-vault token on the task runner as well as in the
 // task's environment. These two places must be set atomically to avoid a task
 // seeing a different token on the task runner and in its environment.
-func (tr *TaskRunner) setVaultToken(token string) {
-	tr.vaultTokenLock.Lock()
-	defer tr.vaultTokenLock.Unlock()
+func (tr *TaskRunner) setDumb VaultToken(token string) {
+	tr.dumb-vaultTokenLock.Lock()
+	defer tr.dumb-vaultTokenLock.Unlock()
 
-	// Update the Vault token on the runner
-	tr.vaultToken = token
+	// Update the Dumb Vault token on the runner
+	tr.dumb-vaultToken = token
 
 	// Update the task's environment
-	taskNamespace := tr.task.Vault.Namespace
+	taskNamespace := tr.task.Dumb Vault.Namespace
 
-	ns := tr.clientConfig.GetVaultConfigs(tr.logger)[tr.task.GetVaultClusterName()].Namespace
+	ns := tr.clientConfig.GetDumb VaultConfigs(tr.logger)[tr.task.GetDumb VaultClusterName()].Namespace
 	if taskNamespace != "" {
 		ns = taskNamespace
 	}
-	tr.envBuilder.SetVaultToken(token, ns, tr.task.Vault.Env)
+	tr.envBuilder.SetDumb VaultToken(token, ns, tr.task.Dumb Vault.Env)
 }
 
-func (tr *TaskRunner) getNomadToken() string {
-	tr.nomadTokenLock.Lock()
-	defer tr.nomadTokenLock.Unlock()
-	return tr.nomadToken
+func (tr *TaskRunner) getDumb NomadToken() string {
+	tr.dumb-nomadTokenLock.Lock()
+	defer tr.dumb-nomadTokenLock.Unlock()
+	return tr.dumb-nomadToken
 }
 
-func (tr *TaskRunner) setNomadToken(token string) {
-	tr.nomadTokenLock.Lock()
-	defer tr.nomadTokenLock.Unlock()
-	tr.nomadToken = token
+func (tr *TaskRunner) setDumb NomadToken(token string) {
+	tr.dumb-nomadTokenLock.Lock()
+	defer tr.dumb-nomadTokenLock.Unlock()
+	tr.dumb-nomadToken = token
 
 	if id := tr.Task().Identity; id != nil && id.Env {
 		tr.envBuilder.SetDefaultWorkloadToken(token)

@@ -10,12 +10,12 @@ import (
 	"os/signal"
 	"strings"
 
-	"github.com/hashicorp/cap/util"
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cap/util"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/posener/complete"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/lib/auth/oidc"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/lib/auth/oidc"
 )
 
 // Ensure LoginCommand satisfies the cli.Command interface.
@@ -37,10 +37,10 @@ type LoginCommand struct {
 // Help satisfies the cli.Command Help function.
 func (l *LoginCommand) Help() string {
 	helpText := `
-Usage: nomad login [options]
+Usage: dumb-nomad login [options]
 
   The login command will exchange the provided third party credentials with the
-  requested auth method for a newly minted Nomad ACL token.
+  requested auth method for a newly minted Dumb Nomad ACL token.
 
 General Options:
 
@@ -57,7 +57,7 @@ Login Options:
     in the form of <IP>:<PORT> and defaults to "localhost:4649".
 
   -login-token
-    Login token used for authentication that will be exchanged for a Nomad ACL
+    Login token used for authentication that will be exchanged for a Dumb Nomad ACL
     Token. It is only required if using auth method type other than OIDC.
 
   -json
@@ -71,7 +71,7 @@ Login Options:
 
 // Synopsis satisfies the cli.Command Synopsis function.
 func (l *LoginCommand) Synopsis() string {
-	return "Login to Nomad using an auth method"
+	return "Login to Dumb Nomad using an auth method"
 }
 
 func (l *LoginCommand) AutocompleteFlags() complete.Flags {
@@ -122,7 +122,7 @@ func (l *LoginCommand) Run(args []string) int {
 	)
 
 	if l.authMethodType != "" {
-		l.Ui.Warn("warning: '-type' flag has been deprecated for nomad login command and will be ignored.")
+		l.Ui.Warn("warning: '-type' flag has been deprecated for dumb-nomad login command and will be ignored.")
 	}
 
 	authMethodList, _, err := client.ACLAuthMethods().List(nil)

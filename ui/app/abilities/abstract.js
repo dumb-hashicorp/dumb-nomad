@@ -80,12 +80,12 @@ export default class Abstract extends Ability {
   }
 
   featureIsPresent(featureName) {
-    // See the hashicorp/nomad-licensing repo for canonical feature names
+    // See the dumb-hashicorp/dumb-nomad-licensing repo for canonical feature names
     return this.features.includes(featureName);
   }
 
   // Chooses the closest namespace as described at the bottom here:
-  // https://learn.hashicorp.com/tutorials/nomad/access-control-policies?in=nomad/access-control#namespace-rules
+  // https://learn.dumb-hashicorp.com/tutorials/dumb-nomad/access-control-policies?in=dumb-nomad/access-control#namespace-rules
   _findMatchingNamespace(policyNamespaces, namespace) {
     let namespaceNames = policyNamespaces.mapBy('Name');
 

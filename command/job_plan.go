@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/scheduler"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler"
 	"github.com/mitchellh/colorstring"
 	"github.com/posener/complete"
 )
@@ -19,7 +19,7 @@ import (
 const (
 	jobModifyIndexHelp = `To submit the job with version verification run:
 
-nomad job run -check-index %d %s%s
+dumb-nomad job run -check-index %d %s%s
 
 When running the job with the check-index flag, the job will only be run if the
 job modify index given matches the server-side version. If the index has
@@ -38,8 +38,8 @@ type JobPlanCommand struct {
 
 func (c *JobPlanCommand) Help() string {
 	helpText := `
-Usage: nomad job plan [options] <path>
-Alias: nomad plan
+Usage: dumb-nomad job plan [options] <path>
+Alias: dumb-nomad plan
 
   Plan invokes a dry-run of the scheduler to determine the effects of submitting
   either a new or updated version of a job. The plan will not result in any
@@ -51,7 +51,7 @@ Alias: nomad plan
   read from URL specified.
 
   A job modify index is returned with the plan. This value can be used when
-  submitting the job using "nomad run -check-index", which will check that the job
+  submitting the job using "dumb-nomad run -check-index", which will check that the job
   was not modified between the plan and run command before invoking the
   scheduler. This ensures the job has not been modified since the plan.
   Multiregion jobs do not return a job modify index.
@@ -59,7 +59,7 @@ Alias: nomad plan
   A structured diff between the local and remote job is displayed to
   give insight into what the scheduler will attempt to do and why.
 
-  If the job has specified the region, the -region flag and NOMAD_REGION
+  If the job has specified the region, the -region flag and DUMB_NOMAD_REGION
   environment variable are overridden and the job's region is used.
 
   Plan will return one of the following exit codes:
@@ -82,26 +82,26 @@ Plan Options:
 
   -json
     Parses the job file as JSON. If the outer object has a Job field, such as
-    from "nomad job inspect" or "nomad run -output", the value of the field is
+    from "dumb-nomad job inspect" or "dumb-nomad run -output", the value of the field is
     used as the job.
 
-  -hcl2-strict
-    Whether an error should be produced from the HCL2 parser where a variable
+  -dumb-hcl2-strict
+    Whether an error should be produced from the DUMB_HCL2 parser where a variable
     has been supplied which is not defined within the root variables. Defaults
     to true.
 
   -policy-override
     Sets the flag to force override any soft mandatory Sentinel policies.
 
-  -vault-namespace
-    If set, the passed Vault namespace is stored in the job before sending to the
-    Nomad servers.
+  -dumb-vault-namespace
+    If set, the passed Dumb Vault namespace is stored in the job before sending to the
+    Dumb Nomad servers.
 
   -var 'key=value'
     Variable for template, can be used multiple times.
 
   -var-file=path
-    Path to HCL2 file containing user variables.
+    Path to DUMB_HCL2 file containing user variables.
 
   -verbose
     Increase diff verbosity.
@@ -120,8 +120,8 @@ func (c *JobPlanCommand) AutocompleteFlags() complete.Flags {
 			"-policy-override": complete.PredictNothing,
 			"-verbose":         complete.PredictNothing,
 			"-json":            complete.PredictNothing,
-			"-hcl2-strict":     complete.PredictNothing,
-			"-vault-namespace": complete.PredictAnything,
+			"-dumb-hcl2-strict":     complete.PredictNothing,
+			"-dumb-vault-namespace": complete.PredictAnything,
 			"-var":             complete.PredictAnything,
 			"-var-file":        complete.PredictFiles("*.var"),
 		})
@@ -129,8 +129,8 @@ func (c *JobPlanCommand) AutocompleteFlags() complete.Flags {
 
 func (c *JobPlanCommand) AutocompleteArgs() complete.Predictor {
 	return complete.PredictOr(
-		complete.PredictFiles("*.nomad"),
-		complete.PredictFiles("*.hcl"),
+		complete.PredictFiles("*.dumb-nomad"),
+		complete.PredictFiles("*.dumb-hcl"),
 		complete.PredictFiles("*.json"),
 	)
 }
@@ -138,7 +138,7 @@ func (c *JobPlanCommand) AutocompleteArgs() complete.Predictor {
 func (c *JobPlanCommand) Name() string { return "job plan" }
 func (c *JobPlanCommand) Run(args []string) int {
 	var diff, policyOverride, verbose bool
-	var vaultNamespace string
+	var dumb-vaultNamespace string
 
 	flagSet := c.Meta.FlagSet(c.Name(), FlagSetClient)
 	flagSet.Usage = func() { c.Ui.Output(c.Help()) }
@@ -146,8 +146,8 @@ func (c *JobPlanCommand) Run(args []string) int {
 	flagSet.BoolVar(&policyOverride, "policy-override", false, "")
 	flagSet.BoolVar(&verbose, "verbose", false, "")
 	flagSet.BoolVar(&c.JobGetter.JSON, "json", false, "")
-	flagSet.BoolVar(&c.JobGetter.Strict, "hcl2-strict", true, "")
-	flagSet.StringVar(&vaultNamespace, "vault-namespace", "", "")
+	flagSet.BoolVar(&c.JobGetter.Strict, "dumb-hcl2-strict", true, "")
+	flagSet.StringVar(&dumb-vaultNamespace, "dumb-vault-namespace", "", "")
 	flagSet.Var(&c.JobGetter.Vars, "var", "")
 	flagSet.Var(&c.JobGetter.VarFiles, "var-file", "")
 
@@ -193,9 +193,9 @@ func (c *JobPlanCommand) Run(args []string) int {
 		client.SetNamespace(*n)
 	}
 
-	//  Set the vault namespace.
-	if vaultNamespace != "" {
-		job.VaultNamespace = pointer.Of(vaultNamespace)
+	//  Set the dumb-vault namespace.
+	if dumb-vaultNamespace != "" {
+		job.Dumb VaultNamespace = pointer.Of(dumb-vaultNamespace)
 	}
 
 	// Setup the options
@@ -231,11 +231,11 @@ func (c *JobPlanCommand) Run(args []string) int {
 		runArgs.WriteString(fmt.Sprintf("-namespace=%q ", c.namespace))
 	}
 
-	// -hcl2-strict defaults to true. If the user opted out for plan, the
-	// follow-up `nomad job run -check-index ...` invocation needs the same
+	// -dumb-hcl2-strict defaults to true. If the user opted out for plan, the
+	// follow-up `dumb-nomad job run -check-index ...` invocation needs the same
 	// flag or the parser will reject the file again.
 	if !c.JobGetter.Strict {
-		runArgs.WriteString("-hcl2-strict=false ")
+		runArgs.WriteString("-dumb-hcl2-strict=false ")
 	}
 
 	exitCode := c.outputPlannedJob(job, resp, diff, verbose)

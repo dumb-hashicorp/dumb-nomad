@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -25,10 +25,10 @@ type NodeIntroCreateCommand struct {
 
 func (n *NodeIntroCreateCommand) Help() string {
 	helpText := `
-Usage: nomad node intro create [options]
+Usage: dumb-nomad node intro create [options]
 
   Generates a new node introduction token. This token is used to authenticate
-  a new Nomad client node to the cluster.
+  a new Dumb Nomad client node to the cluster.
 
   If ACLs are enabled, this command requires a token with the 'node:write'
   capability.
@@ -115,7 +115,7 @@ func (n *NodeIntroCreateCommand) Run(args []string) int {
 
 	client, err := n.Meta.Client()
 	if err != nil {
-		n.Ui.Error(fmt.Sprintf("Error creating Nomad client: %s", err))
+		n.Ui.Error(fmt.Sprintf("Error creating Dumb Nomad client: %s", err))
 		return 1
 	}
 

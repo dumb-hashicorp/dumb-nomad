@@ -8,11 +8,11 @@ import { assign } from '@ember/polyfills';
 import { settled } from '@ember/test-helpers';
 import { setupTest } from 'ember-qunit';
 import { module, test } from 'qunit';
-import { startMirage } from 'nomad-ui/initializers/ember-cli-mirage';
+import { startMirage } from 'dumb-nomad-ui/initializers/ember-cli-mirage';
 import { AbortController } from 'fetch';
 import { TextEncoderLite } from 'text-encoder-lite';
 import base64js from 'base64-js';
-import addToPath from 'nomad-ui/utils/add-to-path';
+import addToPath from 'dumb-nomad-ui/utils/add-to-path';
 import sinon from 'sinon';
 import { resolve } from 'rsvp';
 
@@ -29,8 +29,8 @@ module('Unit | Adapter | Job', function (hooks) {
     this.server = startMirage();
 
     this.initializeUI = async ({ region, namespace } = {}) => {
-      if (namespace) window.localStorage.nomadActiveNamespace = namespace;
-      if (region) window.localStorage.nomadActiveRegion = region;
+      if (namespace) window.localStorage.dumb-nomadActiveNamespace = namespace;
+      if (region) window.localStorage.dumb-nomadActiveRegion = region;
 
       this.server.create('namespace');
       this.server.create('namespace', { id: 'some-namespace' });
@@ -144,7 +144,7 @@ module('Unit | Adapter | Job', function (hooks) {
     );
   });
 
-  test('When there is no token set in the token service, no X-Nomad-Token header is set', async function (assert) {
+  test('When there is no token set in the token service, no X-Dumb Nomad-Token header is set', async function (assert) {
     await this.initializeUI();
 
     const { pretender } = this.server;
@@ -156,12 +156,12 @@ module('Unit | Adapter | Job', function (hooks) {
     assert.notOk(
       pretender.handledRequests
         .mapBy('requestHeaders')
-        .some((headers) => headers['X-Nomad-Token']),
+        .some((headers) => headers['X-Dumb Nomad-Token']),
       'No token header present on either job request'
     );
   });
 
-  test('When a token is set in the token service, then X-Nomad-Token header is set', async function (assert) {
+  test('When a token is set in the token service, then X-Dumb Nomad-Token header is set', async function (assert) {
     await this.initializeUI();
 
     const { pretender } = this.server;
@@ -175,7 +175,7 @@ module('Unit | Adapter | Job', function (hooks) {
     assert.ok(
       pretender.handledRequests
         .mapBy('requestHeaders')
-        .every((headers) => headers['X-Nomad-Token'] === secret),
+        .every((headers) => headers['X-Dumb Nomad-Token'] === secret),
       'The token header is present on both job requests'
     );
   });
@@ -610,7 +610,7 @@ module('Unit | Adapter | Job', function (hooks) {
     assert.equal(request.url, `/v1/jobs/parse?namespace=*&region=${region}`);
     assert.equal(request.method, 'POST');
     assert.deepEqual(JSON.parse(request.requestBody), {
-      JobHCL: 'job "name-goes-here" {',
+      JobDUMB_HCL: 'job "name-goes-here" {',
       Canonicalize: true,
     });
   });

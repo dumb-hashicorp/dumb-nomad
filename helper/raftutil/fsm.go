@@ -9,31 +9,31 @@ import (
 	"io"
 	"strings"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-memdb"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/state"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/raft"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-memdb"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/state"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/raft"
 )
 
 var ErrNoMoreLogs = fmt.Errorf("no more logs")
 
-type nomadFSM interface {
+type dumb-nomadFSM interface {
 	raft.FSM
 	State() *state.StateStore
 	Restore(io.ReadCloser) error
-	RestoreWithFilter(io.ReadCloser, *nomad.FSMFilter) error
+	RestoreWithFilter(io.ReadCloser, *dumb-nomad.FSMFilter) error
 }
 
 type FSMHelper struct {
 	path string
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
-	// nomad state
+	// dumb-nomad state
 	store RaftStore
-	fsm   nomadFSM
+	fsm   dumb-nomadFSM
 	snaps *raft.FileSnapshotStore
 
 	// raft
@@ -54,7 +54,7 @@ func NewFSM(p string) (*FSMHelper, error) {
 		return nil, fmt.Errorf("failed to open raft store %v: %v", storePath, err)
 	}
 
-	logger := hclog.L()
+	logger := dumb-hclog.L()
 
 	snaps, err := raft.NewFileSnapshotStoreWithLogger(p, 1000, logger)
 	if err != nil {
@@ -81,16 +81,16 @@ func NewFSM(p string) (*FSMHelper, error) {
 	}, nil
 }
 
-func dummyFSM(logger hclog.Logger) (nomadFSM, error) {
+func dummyFSM(logger dumb-hclog.Logger) (dumb-nomadFSM, error) {
 	// use dummy non-enabled FSM dependencies
-	periodicDispatch := nomad.NewPeriodicDispatch(logger, nil)
-	blockedEvals := nomad.NewBlockedEvals(nil, logger)
-	evalBroker, err := nomad.NewEvalBroker(context.Background(), 1, 1, 1, 1)
+	periodicDispatch := dumb-nomad.NewPeriodicDispatch(logger, nil)
+	blockedEvals := dumb-nomad.NewBlockedEvals(nil, logger)
+	evalBroker, err := dumb-nomad.NewEvalBroker(context.Background(), 1, 1, 1, 1)
 	if err != nil {
 		return nil, err
 	}
 
-	fsmConfig := &nomad.FSMConfig{
+	fsmConfig := &dumb-nomad.FSMConfig{
 		EvalBroker: evalBroker,
 		Periodic:   periodicDispatch,
 		Blocked:    blockedEvals,
@@ -102,7 +102,7 @@ func dummyFSM(logger hclog.Logger) (nomadFSM, error) {
 		JobTrackedVersions: 6,
 	}
 
-	return nomad.NewFSM(fsmConfig)
+	return dumb-nomad.NewFSM(fsmConfig)
 }
 
 func (f *FSMHelper) Close() {

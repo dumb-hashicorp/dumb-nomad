@@ -6,11 +6,11 @@ package raftutil
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/state"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/scheduler"
-	"github.com/hashicorp/nomad/scheduler/tests"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/state"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler"
+	"github.com/dumb-hashicorp/dumb-nomad/scheduler/tests"
 	"github.com/kr/pretty"
 	"github.com/stretchr/testify/require"
 )
@@ -19,7 +19,7 @@ import (
 func TestSampleInvariant(t *testing.T) {
 	t.Skip("not a real test")
 
-	path := "/tmp/nomad-datadir/server/raft"
+	path := "/tmp/dumb-nomad-datadir/server/raft"
 	ns := "default"
 	parentID := "myjob"
 
@@ -72,7 +72,7 @@ func TestSampleInvariant(t *testing.T) {
 func TestSchedulerLogic(t *testing.T) {
 	t.Skip("not a real test")
 
-	path := "/tmp/nomad-datadir/server/raft"
+	path := "/tmp/dumb-nomad-datadir/server/raft"
 	ns := "default"
 	jobID := "myjob"
 	testIdx := uint64(3234)

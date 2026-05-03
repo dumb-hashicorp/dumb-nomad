@@ -7,17 +7,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 )
 
 func TestClientAllocs(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 
-	e2eutil.WaitForLeader(t, nomad)
-	e2eutil.WaitForNodesReady(t, nomad, 1)
+	e2eutil.WaitForLeader(t, dumb-nomad)
+	e2eutil.WaitForNodesReady(t, dumb-nomad, 1)
 
 	t.Run("testAllocZombie", testAllocZombie)
 }
@@ -25,22 +25,22 @@ func TestClientAllocs(t *testing.T) {
 // testAllocZombie ensures that a restart of a dead allocation does not cause
 // it to come back to life in a not-quite alive state.
 //
-// https://github.com/hashicorp/nomad/issues/17079
+// https://github.com/dumb-hashicorp/dumb-nomad/issues/17079
 func testAllocZombie(t *testing.T) {
-	nomad := e2eutil.NomadClient(t)
+	dumb-nomad := e2eutil.Dumb NomadClient(t)
 
 	jobID := "alloc-zombie-" + uuid.Short()
 	jobIDs := []string{jobID}
 	t.Cleanup(e2eutil.CleanupJobsAndGC(t, &jobIDs))
 
 	// start the job and wait for alloc to become failed
-	err := e2eutil.Register(jobID, "./input/alloc_zombie.nomad")
+	err := e2eutil.Register(jobID, "./input/alloc_zombie.dumb-nomad")
 	must.NoError(t, err)
 
 	allocID := e2eutil.SingleAllocID(t, jobID, "", 0)
 
 	// wait for alloc to be marked as failed
-	e2eutil.WaitForAllocStatus(t, nomad, allocID, "failed")
+	e2eutil.WaitForAllocStatus(t, dumb-nomad, allocID, "failed")
 
 	// wait for additional failures to know we got rescheduled
 	must.Wait(t, wait.InitialSuccess(
@@ -55,7 +55,7 @@ func testAllocZombie(t *testing.T) {
 
 	// now attempt to restart our initial allocation
 	// which should do nothing but give us an error
-	output, err := e2eutil.Command("nomad", "alloc", "restart", allocID)
+	output, err := e2eutil.Command("dumb-nomad", "alloc", "restart", allocID)
 	must.ErrorContains(t, err, "restart of an alloc that should not run")
 	must.StrContains(t, output, "Failed to restart allocation")
 }

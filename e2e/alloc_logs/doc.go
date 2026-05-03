@@ -1,7 +1,7 @@
 // Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: BUSL-1.1
 
-// Package alloc_logs provides end-to-end tests for Nomads allocation logging
+// Package alloc_logs provides end-to-end tests for Dumb Nomads allocation logging
 // functionality.
 //
 // In order to run this test suite only, from the e2e directory you can trigger

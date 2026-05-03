@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	flaghelper "github.com/hashicorp/nomad/helper/flags"
+	flaghelper "github.com/dumb-hashicorp/dumb-nomad/helper/flags"
 	"github.com/posener/complete"
 )
 
@@ -36,11 +36,11 @@ func (c *OperatorAutopilotSetCommand) Name() string { return "operator autopilot
 
 func (c *OperatorAutopilotSetCommand) Run(args []string) int {
 	// Autopilot command line flags behave differently from other commands
-	// in Nomad. Here, flags assume no default value. The value of the flag
+	// in Dumb Nomad. Here, flags assume no default value. The value of the flag
 	// is taken into consideration if the flag is set, whether or not it contains
 	// the zero value when being applied to inherited configuration.
 	//
-	// This behavior was inherited from Consul.
+	// This behavior was inherited from Dumb Consul.
 	var cleanupDeadServers flaghelper.BoolValue
 	var maxTrailingLogs flaghelper.UintValue
 	var minQuorum flaghelper.UintValue
@@ -118,7 +118,7 @@ func (c *OperatorAutopilotSetCommand) Synopsis() string {
 
 func (c *OperatorAutopilotSetCommand) Help() string {
 	helpText := `
-Usage: nomad operator autopilot set-config [options]
+Usage: dumb-nomad operator autopilot set-config [options]
 
   Modifies the current Autopilot configuration.
 
@@ -132,11 +132,11 @@ General Options:
 Set Config Options:
 
   -cleanup-dead-servers=[true|false]
-     Controls whether Nomad will automatically remove dead servers when
+     Controls whether Dumb Nomad will automatically remove dead servers when
      new ones are successfully added. Must be one of [true|false].
 
   -disable-upgrade-migration=[true|false]
-     (Enterprise-only) Controls whether Nomad will avoid promoting
+     (Enterprise-only) Controls whether Dumb Nomad will avoid promoting
      new servers until it can perform a migration. Must be one of
      "true|false".
 
@@ -165,7 +165,7 @@ Set Config Options:
 
   -upgrade-version-tag=<value>
      (Enterprise-only) The node_meta tag to use for version info when
-     performing upgrade migrations. If left blank, the Nomad version
+     performing upgrade migrations. If left blank, the Dumb Nomad version
      will be used.
 `
 	return strings.TrimSpace(helpText)

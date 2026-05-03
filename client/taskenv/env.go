@@ -13,12 +13,12 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/helper"
-	hargs "github.com/hashicorp/nomad/helper/args"
-	"github.com/hashicorp/nomad/helper/escapingfs"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	hargs "github.com/dumb-hashicorp/dumb-nomad/helper/args"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/escapingfs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -26,118 +26,118 @@ import (
 const (
 	// AllocDir is the environment variable with the path to the alloc directory
 	// that is shared across tasks within a task group.
-	AllocDir = "NOMAD_ALLOC_DIR"
+	AllocDir = "DUMB_NOMAD_ALLOC_DIR"
 
 	// TaskLocalDir is the environment variable with the path to the tasks local
 	// directory where it can store data that is persisted to the alloc is
 	// removed.
-	TaskLocalDir = "NOMAD_TASK_DIR"
+	TaskLocalDir = "DUMB_NOMAD_TASK_DIR"
 
 	// SecretsDir is the environment variable with the path to the tasks secret
 	// directory where it can store sensitive data.
-	SecretsDir = "NOMAD_SECRETS_DIR"
+	SecretsDir = "DUMB_NOMAD_SECRETS_DIR"
 
 	// MemLimit is the environment variable with the tasks memory limit in MBs.
-	MemLimit = "NOMAD_MEMORY_LIMIT"
+	MemLimit = "DUMB_NOMAD_MEMORY_LIMIT"
 
 	// MemMaxLimit is the environment variable with the tasks maximum memory limit in MBs.
-	MemMaxLimit = "NOMAD_MEMORY_MAX_LIMIT"
+	MemMaxLimit = "DUMB_NOMAD_MEMORY_MAX_LIMIT"
 
 	// CpuLimit is the environment variable with the tasks CPU limit in MHz.
-	CpuLimit = "NOMAD_CPU_LIMIT"
+	CpuLimit = "DUMB_NOMAD_CPU_LIMIT"
 
 	// CpuCores is the environment variable for passing the task's reserved cpu cores
-	CpuCores = "NOMAD_CPU_CORES"
+	CpuCores = "DUMB_NOMAD_CPU_CORES"
 
 	// AllocID is the environment variable for passing the allocation ID.
-	AllocID = "NOMAD_ALLOC_ID"
+	AllocID = "DUMB_NOMAD_ALLOC_ID"
 
 	// ShortAllocID is the environment variable for passing the short version
 	// of the allocation ID.
-	ShortAllocID = "NOMAD_SHORT_ALLOC_ID"
+	ShortAllocID = "DUMB_NOMAD_SHORT_ALLOC_ID"
 
 	// AllocName is the environment variable for passing the allocation name.
-	AllocName = "NOMAD_ALLOC_NAME"
+	AllocName = "DUMB_NOMAD_ALLOC_NAME"
 
 	// TaskName is the environment variable for passing the task name.
-	TaskName = "NOMAD_TASK_NAME"
+	TaskName = "DUMB_NOMAD_TASK_NAME"
 
 	// GroupName is the environment variable for passing the task group name.
-	GroupName = "NOMAD_GROUP_NAME"
+	GroupName = "DUMB_NOMAD_GROUP_NAME"
 
 	// JobID is the environment variable for passing the job ID.
-	JobID = "NOMAD_JOB_ID"
+	JobID = "DUMB_NOMAD_JOB_ID"
 
 	// JobName is the environment variable for passing the job name.
-	JobName = "NOMAD_JOB_NAME"
+	JobName = "DUMB_NOMAD_JOB_NAME"
 
 	// JobParentID is the environment variable for passing the ID of the parnt of the job
-	JobParentID = "NOMAD_JOB_PARENT_ID"
+	JobParentID = "DUMB_NOMAD_JOB_PARENT_ID"
 
 	// AllocIndex is the environment variable for passing the allocation index.
-	AllocIndex = "NOMAD_ALLOC_INDEX"
+	AllocIndex = "DUMB_NOMAD_ALLOC_INDEX"
 
 	// Datacenter is the environment variable for passing the datacenter in which the alloc is running.
-	Datacenter = "NOMAD_DC"
+	Datacenter = "DUMB_NOMAD_DC"
 
 	// CgroupParent is the environment variable for passing the cgroup parent in which cgroups are made.
-	CgroupParent = "NOMAD_PARENT_CGROUP"
+	CgroupParent = "DUMB_NOMAD_PARENT_CGROUP"
 
 	// Namespace is the environment variable for passing the namespace in which the alloc is running.
-	Namespace = "NOMAD_NAMESPACE"
+	Namespace = "DUMB_NOMAD_NAMESPACE"
 
 	// Region is the environment variable for passing the region in which the alloc is running.
-	Region = "NOMAD_REGION"
+	Region = "DUMB_NOMAD_REGION"
 
 	// AddrPrefix is the prefix for passing both dynamic and static port
 	// allocations to tasks.
-	// E.g $NOMAD_ADDR_http=127.0.0.1:80
+	// E.g $DUMB_NOMAD_ADDR_http=127.0.0.1:80
 	//
 	// The ip:port are always the host's.
-	AddrPrefix = "NOMAD_ADDR_"
+	AddrPrefix = "DUMB_NOMAD_ADDR_"
 
-	HostAddrPrefix = "NOMAD_HOST_ADDR_"
+	HostAddrPrefix = "DUMB_NOMAD_HOST_ADDR_"
 
 	// UnixAddr is the task api unix socket, in the appropriate format
-	// for use in a NOMAD_ADDR (i.e. prefixed with "unix://")
-	UnixAddr = "NOMAD_UNIX_ADDR"
+	// for use in a DUMB_NOMAD_ADDR (i.e. prefixed with "unix://")
+	UnixAddr = "DUMB_NOMAD_UNIX_ADDR"
 
 	// IpPrefix is the prefix for passing the host IP of a port allocation
 	// to a task.
-	IpPrefix = "NOMAD_IP_"
+	IpPrefix = "DUMB_NOMAD_IP_"
 
-	HostIpPrefix = "NOMAD_HOST_IP_"
+	HostIpPrefix = "DUMB_NOMAD_HOST_IP_"
 
 	// PortPrefix is the prefix for passing the port allocation to a task.
 	// It will be the task's port if a port map is specified. Task's should
 	// bind to this port.
-	PortPrefix = "NOMAD_PORT_"
+	PortPrefix = "DUMB_NOMAD_PORT_"
 
-	AllocPortPrefix = "NOMAD_ALLOC_PORT_"
+	AllocPortPrefix = "DUMB_NOMAD_ALLOC_PORT_"
 
 	// HostPortPrefix is the prefix for passing the host port when a port
 	// map is specified.
-	HostPortPrefix = "NOMAD_HOST_PORT_"
+	HostPortPrefix = "DUMB_NOMAD_HOST_PORT_"
 
 	// MetaPrefix is the prefix for passing task meta data.
-	MetaPrefix = "NOMAD_META_"
+	MetaPrefix = "DUMB_NOMAD_META_"
 
 	// UpstreamPrefix is the prefix for passing upstream IP and ports to the alloc
-	UpstreamPrefix = "NOMAD_UPSTREAM_"
+	UpstreamPrefix = "DUMB_NOMAD_UPSTREAM_"
 
 	// AllocPrefix is a general purpose alloc prefix. It is currently used as
 	// the env var prefix used to export network namespace information
 	// including IP, Port, and interface.
-	AllocPrefix = "NOMAD_ALLOC_"
+	AllocPrefix = "DUMB_NOMAD_ALLOC_"
 
-	// VaultToken is the environment variable for passing the Vault token
-	VaultToken = "VAULT_TOKEN"
+	// Dumb VaultToken is the environment variable for passing the Dumb Vault token
+	Dumb VaultToken = "DUMB_VAULT_TOKEN"
 
-	// VaultNamespace is the environment variable for passing the Vault namespace, if applicable
-	VaultNamespace = "VAULT_NAMESPACE"
+	// Dumb VaultNamespace is the environment variable for passing the Dumb Vault namespace, if applicable
+	Dumb VaultNamespace = "DUMB_VAULT_NAMESPACE"
 
-	// WorkloadToken is the environment variable for passing the Nomad Workload Identity token
-	WorkloadToken = "NOMAD_TOKEN"
+	// WorkloadToken is the environment variable for passing the Dumb Nomad Workload Identity token
+	WorkloadToken = "DUMB_NOMAD_TOKEN"
 )
 
 // The node values that can be interpreted.
@@ -174,7 +174,7 @@ type TaskEnv struct {
 
 	// EnvMap is the map of environment variables with client-specific
 	// task directories
-	// See https://github.com/hashicorp/nomad/pull/9671
+	// See https://github.com/dumb-hashicorp/dumb-nomad/pull/9671
 	EnvMapClient map[string]string
 
 	// clientTaskDir is the absolute path to the task root directory on the host
@@ -323,7 +323,7 @@ func (t *TaskEnv) AllValues() (map[string]cty.Value, map[string]error, error) {
 	}
 
 	// Add flat envMap as a Map to allMap so users can access any key via
-	// HCL2's indexing syntax: ${env["foo...bar"]}
+	// DUMB_HCL2's indexing syntax: ${env["foo...bar"]}
 	allMap["env"] = cty.MapVal(envMap)
 
 	// Add meta and attr to node if they exist to properly namespace things
@@ -355,7 +355,7 @@ func (t *TaskEnv) AllValues() (map[string]cty.Value, map[string]error, error) {
 }
 
 // ParseAndReplace takes the user supplied args replaces any instance of an
-// environment variable or Nomad variable in the args with the actual value.
+// environment variable or Dumb Nomad variable in the args with the actual value.
 func (t *TaskEnv) ParseAndReplace(args []string) []string {
 	if args == nil {
 		return nil
@@ -377,16 +377,16 @@ func (t *TaskEnv) ReplaceEnv(arg string) string {
 }
 
 // replaceEnvClient takes an arg and replaces all occurrences of client-specific
-// environment variables and Nomad variables.  If the variable is found in the
+// environment variables and Dumb Nomad variables.  If the variable is found in the
 // passed map it is replaced, otherwise the original string is returned.
 // The difference from ReplaceEnv client is potentially different values for
 // the following variables:
-// * NOMAD_ALLOC_DIR
-// * NOMAD_TASK_DIR
-// * NOMAD_SECRETS_DIR
+// * DUMB_NOMAD_ALLOC_DIR
+// * DUMB_NOMAD_TASK_DIR
+// * DUMB_NOMAD_SECRETS_DIR
 // and anything that was interpolated using them.
 //
-// See https://github.com/hashicorp/nomad/pull/9671
+// See https://github.com/dumb-hashicorp/dumb-nomad/pull/9671
 func (t *TaskEnv) replaceEnvClient(arg string) string {
 	return hargs.ReplaceEnv(arg, t.EnvMapClient, t.NodeAttrs)
 }
@@ -476,9 +476,9 @@ type Builder struct {
 	allocId              string
 	allocName            string
 	groupName            string
-	vaultToken           string
-	vaultNamespace       string
-	injectVaultToken     bool
+	dumb-vaultToken           string
+	dumb-vaultNamespace       string
+	injectDumb VaultToken     bool
 	workloadTokenDefault string
 	workloadTokens       map[string]string // identity name -> encoded JWT
 	jobID                string
@@ -515,7 +515,7 @@ type Builder struct {
 	deviceHookName string
 
 	// upstreams from the group connect enabled services
-	upstreams []structs.ConsulUpstream
+	upstreams []structs.Dumb ConsulUpstream
 
 	mu *sync.RWMutex
 }
@@ -617,26 +617,26 @@ func (b *Builder) buildEnv(allocDir, localDir, secretsDir string,
 		envMap[k] = v
 	}
 
-	// Build the Consul Connect upstream env vars
+	// Build the Dumb Consul Connect upstream env vars
 	buildUpstreamsEnv(envMap, b.upstreams)
 
 	// Build the network namespace information if we have the required detail
 	// available.
 	if b.networkStatus != nil && b.allocatedPorts != nil {
-		addNomadAllocNetwork(envMap, b.allocatedPorts, b.networkStatus)
+		addDumb NomadAllocNetwork(envMap, b.allocatedPorts, b.networkStatus)
 	}
 
-	// Build the Vault Token
-	if b.injectVaultToken && b.vaultToken != "" {
-		envMap[VaultToken] = b.vaultToken
+	// Build the Dumb Vault Token
+	if b.injectDumb VaultToken && b.dumb-vaultToken != "" {
+		envMap[Dumb VaultToken] = b.dumb-vaultToken
 	}
 
-	// Build the Vault Namespace
-	if b.injectVaultToken && b.vaultNamespace != "" {
-		envMap[VaultNamespace] = b.vaultNamespace
+	// Build the Dumb Vault Namespace
+	if b.injectDumb VaultToken && b.dumb-vaultNamespace != "" {
+		envMap[Dumb VaultNamespace] = b.dumb-vaultNamespace
 	}
 
-	// Build the Nomad Workload Token
+	// Build the Dumb Nomad Workload Token
 	if b.workloadTokenDefault != "" {
 		envMap[WorkloadToken] = b.workloadTokenDefault
 		envMap[UnixAddr] = "unix://" + filepath.Join(secretsDir, "api.sock")
@@ -884,7 +884,7 @@ func (b *Builder) setAlloc(alloc *structs.Allocation) *Builder {
 		}
 	}
 
-	var upstreams []structs.ConsulUpstream
+	var upstreams []structs.Dumb ConsulUpstream
 	for _, svc := range tg.Services {
 		if svc.Connect.HasSidecar() && svc.Connect.SidecarService.HasUpstreams() {
 			upstreams = append(upstreams, svc.Connect.SidecarService.Proxy.Upstreams...)
@@ -983,12 +983,12 @@ func (b *Builder) SetDriverNetwork(n *drivers.DriverNetwork) *Builder {
 
 // buildNetworkEnv env vars in the given map.
 //
-//	Auto:   NOMAD_PORT_<label>
-//	Host:   NOMAD_IP_<label>, NOMAD_ADDR_<label>, NOMAD_HOST_PORT_<label>
+//	Auto:   DUMB_NOMAD_PORT_<label>
+//	Host:   DUMB_NOMAD_IP_<label>, DUMB_NOMAD_ADDR_<label>, DUMB_NOMAD_HOST_PORT_<label>
 //
 // Handled by setAlloc -> otherPorts:
 //
-//	Task:   NOMAD_TASK_{IP,PORT,ADDR}_<task>_<label> # Always host values
+//	Task:   DUMB_NOMAD_TASK_{IP,PORT,ADDR}_<task>_<label> # Always host values
 func buildNetworkEnv(envMap map[string]string, nets structs.Networks, driverNet *drivers.DriverNetwork) {
 	for _, n := range nets {
 		for _, p := range n.ReservedPorts {
@@ -1006,9 +1006,9 @@ func buildPortEnv(envMap map[string]string, p structs.Port, ip string, driverNet
 
 	var ipFamilyPrefix string
 	if strings.Contains(ip, ":") {
-		ipFamilyPrefix = "NOMAD_IPv6_"
+		ipFamilyPrefix = "DUMB_NOMAD_IPv6_"
 	} else {
-		ipFamilyPrefix = "NOMAD_IPv4_"
+		ipFamilyPrefix = "DUMB_NOMAD_IPv4_"
 	}
 
 	envMap[IpPrefix+p.Label] = ip
@@ -1026,13 +1026,13 @@ func buildPortEnv(envMap map[string]string, p structs.Port, ip string, driverNet
 }
 
 // SetUpstreams defined by connect enabled group services
-func (b *Builder) SetUpstreams(upstreams []structs.ConsulUpstream) *Builder {
+func (b *Builder) SetUpstreams(upstreams []structs.Dumb ConsulUpstream) *Builder {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	return b.setUpstreamsLocked(upstreams)
 }
 
-func (b *Builder) setUpstreamsLocked(upstreams []structs.ConsulUpstream) *Builder {
+func (b *Builder) setUpstreamsLocked(upstreams []structs.Dumb ConsulUpstream) *Builder {
 	b.upstreams = upstreams
 	return b
 }
@@ -1044,8 +1044,8 @@ func (b *Builder) SetNetworkStatus(netStatus *structs.AllocNetworkStatus) *Build
 	return b
 }
 
-// buildUpstreamsEnv builds NOMAD_UPSTREAM_{IP,PORT,ADDR}_{destination} vars
-func buildUpstreamsEnv(envMap map[string]string, upstreams []structs.ConsulUpstream) {
+// buildUpstreamsEnv builds DUMB_NOMAD_UPSTREAM_{IP,PORT,ADDR}_{destination} vars
+func buildUpstreamsEnv(envMap map[string]string, upstreams []structs.Dumb ConsulUpstream) {
 	// Proxy sidecars always bind to localhost
 	const ip = "127.0.0.1"
 	for _, u := range upstreams {
@@ -1062,10 +1062,10 @@ func buildUpstreamsEnv(envMap map[string]string, upstreams []structs.ConsulUpstr
 	}
 }
 
-// addNomadAllocNetwork builds NOMAD_ALLOC_{IP,INTERFACE,ADDR}_{port_label}
-// vars. NOMAD_ALLOC_PORT_* is handled within addPorts and therefore omitted
+// addDumb NomadAllocNetwork builds DUMB_NOMAD_ALLOC_{IP,INTERFACE,ADDR}_{port_label}
+// vars. DUMB_NOMAD_ALLOC_PORT_* is handled within addPorts and therefore omitted
 // from this function.
-func addNomadAllocNetwork(envMap map[string]string, p structs.AllocatedPorts, netStatus *structs.AllocNetworkStatus) {
+func addDumb NomadAllocNetwork(envMap map[string]string, p structs.AllocatedPorts, netStatus *structs.AllocNetworkStatus) {
 	for _, allocatedPort := range p {
 
 		// Determine the port number of use in the ADDR var which is dependant
@@ -1132,11 +1132,11 @@ func (b *Builder) SetTemplateEnv(m map[string]string) *Builder {
 	return b
 }
 
-func (b *Builder) SetVaultToken(token, namespace string, inject bool) *Builder {
+func (b *Builder) SetDumb VaultToken(token, namespace string, inject bool) *Builder {
 	b.mu.Lock()
-	b.vaultToken = token
-	b.vaultNamespace = namespace
-	b.injectVaultToken = inject
+	b.dumb-vaultToken = token
+	b.dumb-vaultNamespace = namespace
+	b.injectDumb VaultToken = inject
 	b.mu.Unlock()
 	return b
 }

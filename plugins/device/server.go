@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
-	"github.com/hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/go-plugin"
 
-	"github.com/hashicorp/nomad/plugins/device/proto"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device/proto"
 )
 
 // devicePluginServer wraps a device plugin and exposes it via gRPC.

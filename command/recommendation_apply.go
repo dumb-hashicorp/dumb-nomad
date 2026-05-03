@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/posener/complete"
 )
 
@@ -24,9 +24,9 @@ type RecommendationApplyCommand struct {
 // Help satisfies the cli.Command Help function.
 func (r *RecommendationApplyCommand) Help() string {
 	helpText := `
-Usage: nomad recommendation apply [options] <recommendation_ids>
+Usage: dumb-nomad recommendation apply [options] <recommendation_ids>
 
-  Apply one or more Nomad recommendations.
+  Apply one or more Dumb Nomad recommendations.
 
   When ACLs are enabled, this command requires a token with the 'submit-job',
   'read-job', and 'submit-recommendation' capabilities for the
@@ -56,7 +56,7 @@ Recommendation Apply Options:
 
 // Synopsis satisfies the cli.Command Synopsis function.
 func (r *RecommendationApplyCommand) Synopsis() string {
-	return "Apply one or more Nomad recommendations"
+	return "Apply one or more Dumb Nomad recommendations"
 }
 
 func (r *RecommendationApplyCommand) AutocompleteFlags() complete.Flags {

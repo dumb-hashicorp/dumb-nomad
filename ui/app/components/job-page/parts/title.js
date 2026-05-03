@@ -7,10 +7,10 @@
 import Component from '@ember/component';
 import { task } from 'ember-concurrency';
 import { inject as service } from '@ember/service';
-import messageFromAdapterError from 'nomad-ui/utils/message-from-adapter-error';
+import messageFromAdapterError from 'dumb-nomad-ui/utils/message-from-adapter-error';
 import { tagName } from '@ember-decorators/component';
 import classic from 'ember-classic-decorator';
-import jsonToHcl from 'nomad-ui/utils/json-to-hcl';
+import jsonToDumb Hcl from 'dumb-nomad-ui/utils/json-to-dumb-hcl';
 import { marked } from 'marked';
 import { htmlSafe } from '@ember/template';
 import DOMPurify from 'dompurify';
@@ -76,14 +76,14 @@ export default class Title extends Component {
   @task(function* (withNotifications = false) {
     const job = this.job;
 
-    // Try to get the submission/hcl sourced specification first.
+    // Try to get the submission/dumb-hcl sourced specification first.
     // In the event that this fails, fall back to the raw definition.
     try {
       const specification = yield job.fetchRawSpecification();
 
       let _newDefinitionVariables = job.get('_newDefinitionVariables') || '';
       if (specification.VariableFlags) {
-        _newDefinitionVariables += jsonToHcl(specification.VariableFlags);
+        _newDefinitionVariables += jsonToDumb Hcl(specification.VariableFlags);
       }
       if (specification.Variables) {
         _newDefinitionVariables += specification.Variables;

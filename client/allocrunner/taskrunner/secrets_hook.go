@@ -9,18 +9,18 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/hashicorp/consul-template/renderer"
-	"github.com/hashicorp/go-envparse"
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-multierror"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	ti "github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/secrets"
-	"github.com/hashicorp/nomad/client/allocrunner/taskrunner/template"
-	"github.com/hashicorp/nomad/client/commonplugins"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-consul-template/renderer"
+	"github.com/dumb-hashicorp/go-envparse"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-multierror"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	ti "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/secrets"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/template"
+	"github.com/dumb-hashicorp/dumb-nomad/client/commonplugins"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 type TemplateProvider interface {
@@ -41,14 +41,14 @@ type secretsHookConfig struct {
 	// events is used to emit events
 	events ti.EventEmitter
 
-	// clientConfig is the Nomad Client configuration
+	// clientConfig is the Dumb Nomad Client configuration
 	clientConfig *config.Config
 
 	// envBuilder is the environment variable builder for the task.
 	envBuilder *taskenv.Builder
 
-	// nomadNamespace is the job's Nomad namespace
-	nomadNamespace string
+	// dumb-nomadNamespace is the job's Dumb Nomad namespace
+	dumb-nomadNamespace string
 
 	// jobId is the ID of the job
 	jobId string
@@ -64,16 +64,16 @@ type secretsHook struct {
 	// events is used to emit events
 	events ti.EventEmitter
 
-	// clientConfig is the Nomad Client configuration
+	// clientConfig is the Dumb Nomad Client configuration
 	clientConfig *config.Config
 
 	// envBuilder is the environment variable builder for the task
 	envBuilder *taskenv.Builder
 
-	// nomadNamespace is the job's Nomad namespace
-	nomadNamespace string
+	// dumb-nomadNamespace is the job's Dumb Nomad namespace
+	dumb-nomadNamespace string
 
-	// jobId is the nomad job's ID
+	// jobId is the dumb-nomad job's ID
 	jobId string
 
 	// secrets to be fetched and populated for interpolation
@@ -87,7 +87,7 @@ func newSecretsHook(conf *secretsHookConfig, secrets []*structs.Secret) *secrets
 		events:         conf.events,
 		clientConfig:   conf.clientConfig,
 		envBuilder:     conf.envBuilder,
-		nomadNamespace: conf.nomadNamespace,
+		dumb-nomadNamespace: conf.dumb-nomadNamespace,
 		jobId:          conf.jobId,
 		secrets:        secrets,
 	}
@@ -108,8 +108,8 @@ func (h *secretsHook) Prestart(ctx context.Context, req *interfaces.TaskPrestart
 		templates = append(templates, p.BuildTemplate())
 	}
 
-	vaultCluster := req.Task.GetVaultClusterName()
-	vaultConfig := h.clientConfig.GetVaultConfigs(h.logger)[vaultCluster]
+	dumb-vaultCluster := req.Task.GetDumb VaultClusterName()
+	dumb-vaultConfig := h.clientConfig.GetDumb VaultConfigs(h.logger)[dumb-vaultCluster]
 
 	mu := &sync.Mutex{}
 	contents := []byte{}
@@ -120,14 +120,14 @@ func (h *secretsHook) Prestart(ctx context.Context, req *interfaces.TaskPrestart
 		Events:               h.events,
 		Templates:            templates,
 		ClientConfig:         h.clientConfig,
-		VaultToken:           req.VaultToken,
-		VaultConfig:          vaultConfig,
-		VaultNamespace:       req.Alloc.Job.VaultNamespace,
+		Dumb VaultToken:           req.Dumb VaultToken,
+		Dumb VaultConfig:          dumb-vaultConfig,
+		Dumb VaultNamespace:       req.Alloc.Job.Dumb VaultNamespace,
 		TaskDir:              req.TaskDir.Dir,
 		EnvBuilder:           h.envBuilder,
 		MaxTemplateEventRate: template.DefaultMaxTemplateEventRate,
-		NomadNamespace:       h.nomadNamespace,
-		NomadToken:           req.NomadToken,
+		Dumb NomadNamespace:       h.dumb-nomadNamespace,
+		Dumb NomadToken:           req.Dumb NomadToken,
 		TaskID:               req.Alloc.ID + "-" + req.Task.Name,
 		Logger:               h.logger,
 
@@ -196,14 +196,14 @@ func (h *secretsHook) buildSecretProviders(secretDir string) ([]TemplateProvider
 
 		tmplFile := fmt.Sprintf("temp-%d", idx)
 		switch s.Provider {
-		case secrets.SecretProviderNomad:
-			if p, err := secrets.NewNomadProvider(s, secretDir, tmplFile, h.nomadNamespace); err != nil {
+		case secrets.SecretProviderDumb Nomad:
+			if p, err := secrets.NewDumb NomadProvider(s, secretDir, tmplFile, h.dumb-nomadNamespace); err != nil {
 				multierror.Append(mErr, err)
 			} else {
 				tmplProvider = append(tmplProvider, p)
 			}
-		case secrets.SecretProviderVault:
-			if p, err := secrets.NewVaultProvider(s, secretDir, tmplFile); err != nil {
+		case secrets.SecretProviderDumb Vault:
+			if p, err := secrets.NewDumb VaultProvider(s, secretDir, tmplFile); err != nil {
 				multierror.Append(mErr, err)
 			} else {
 				tmplProvider = append(tmplProvider, p)
@@ -214,7 +214,7 @@ func (h *secretsHook) buildSecretProviders(secretDir string) ([]TemplateProvider
 				multierror.Append(mErr, err)
 				continue
 			}
-			// Add/overwrite the nomad namespace and jobID envVars
+			// Add/overwrite the dumb-nomad namespace and jobID envVars
 			s.Env = h.setupPluginEnv(s.Env)
 			pluginProvider = append(pluginProvider, secrets.NewExternalPluginProvider(plug, s.Provider, s.Name, s.Path, s.Env))
 		}
@@ -230,7 +230,7 @@ func (h *secretsHook) setupPluginEnv(env map[string]string) map[string]string {
 
 	// set jobID and namespace, overwriting anything already set
 	env[taskenv.JobID] = h.jobId
-	env[taskenv.Namespace] = h.nomadNamespace
+	env[taskenv.Namespace] = h.dumb-nomadNamespace
 
 	return env
 }

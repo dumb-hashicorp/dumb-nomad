@@ -7,10 +7,10 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/hashicorp/nomad/client/state"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -101,7 +101,7 @@ func TestUpdateVolumeMap(t *testing.T) {
 }
 
 func TestWaitForFirstFingerprint(t *testing.T) {
-	log := testlog.HCLogger(t)
+	log := testlog.DUMB_HCLogger(t)
 	tmp := t.TempDir()
 	memDB := state.NewMemDB(log)
 	node := newFakeNode(t)

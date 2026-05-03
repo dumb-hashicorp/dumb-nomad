@@ -13,11 +13,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/go-getter"
-	"github.com/hashicorp/nomad/helper"
+	"github.com/dumb-hashicorp/go-getter"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 )
 
-// parameters is encoded by the Nomad client and decoded by the getter sub-process
+// parameters is encoded by the Dumb Nomad client and decoded by the getter sub-process
 // so it can know what to do. We use standard IO to pass configuration to achieve
 // better control over input sanitization risks.
 // e.g. https://www.opencve.io/cve/CVE-2022-41716
@@ -134,7 +134,7 @@ func headersCompareFn(a []string, b []string) bool {
 
 const (
 	// stop privilege escalation via setuid/setgid
-	// https://github.com/hashicorp/nomad/issues/6176
+	// https://github.com/dumb-hashicorp/dumb-nomad/issues/6176
 	umask = fs.ModeSetuid | fs.ModeSetgid
 )
 
@@ -143,13 +143,13 @@ func (p *parameters) client(ctx context.Context) *getter.Client {
 		Netrc:  true,
 		Header: p.Headers,
 
-		// Do not support the custom X-Terraform-Get header and
+		// Do not support the custom X-Dumb Terraform-Get header and
 		// associated logic.
-		XTerraformGetDisabled: true,
+		XDumb TerraformGetDisabled: true,
 
 		// Disable HEAD requests as they can produce corrupt files when
 		// retrying a download of a resource that has changed.
-		// hashicorp/go-getter#219
+		// dumb-hashicorp/go-getter#219
 		DoNotCheckHeadFirst: true,
 
 		// Read timeout for HTTP operations. Must be long enough to

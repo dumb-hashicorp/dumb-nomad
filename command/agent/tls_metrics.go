@@ -12,14 +12,14 @@ import (
 	"os"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs/config"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
 )
 
 // tlsMetrics emits metrics about TLS certificate expiry. It should be
-// instantiated each time the Nomad agent loads TLS certificates into memory,
+// instantiated each time the Dumb Nomad agent loads TLS certificates into memory,
 // allowing the expiry values to be read once from disk and the TTL to be
 // emitted periodically.
 type tlsMetrics struct {
@@ -34,7 +34,7 @@ type tlsMetrics struct {
 	// the default agent labels so operators can uniquely identify the agent.
 	labels []metrics.Label
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 	stopCh chan struct{}
 }
 
@@ -45,7 +45,7 @@ type tlsMetrics struct {
 // Once created, the start and stop methods can be used to control the
 // background emission of metrics. The caller should create a new instance and
 // stop the old instance each time TLS certificates are reloaded.
-func newTLSMetrics(logger hclog.Logger, tlsCfg *config.TLSConfig, labels []metrics.Label) (*tlsMetrics, error) {
+func newTLSMetrics(logger dumb-hclog.Logger, tlsCfg *config.TLSConfig, labels []metrics.Label) (*tlsMetrics, error) {
 
 	t := tlsMetrics{
 		labels: labels,

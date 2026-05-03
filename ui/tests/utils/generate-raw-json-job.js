@@ -545,7 +545,7 @@ export const JOB_JSON = {
   Specification: {
     Definition:
       'job "docs" {\n  namespace = "madness"\n  group "example" {\n    task "server" {\n      service {\n        tags = ["leader", "mysql"]\n\n        port = "db"\n\n        meta {\n          meta = "for your service"\n        }\n\n        check {\n          type     = "tcp"\n          port     = "db"\n          interval = "10s"\n          timeout  = "2s"\n        }\n\n        check {\n          type     = "script"\n          name     = "check_table"\n          command  = "/usr/local/bin/check_mysql_table_status"\n          args     = ["--verbose"]\n          interval = "60s"\n          timeout  = "5s"\n\n          check_restart {\n            limit = 3\n            grace = "90s"\n            ignore_warnings = false\n          }\n        }\n      }\n    }\n  }\n}\n',
-    Type: 'hcl',
+    Type: 'dumb-hcl',
     Variables: {
       datacenters: ['west'],
       external_port: 4000,

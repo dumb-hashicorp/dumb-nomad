@@ -4,7 +4,7 @@
 package logging
 
 import (
-	"github.com/hashicorp/go-hclog"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
 	"google.golang.org/grpc/codes"
 )
 
@@ -32,61 +32,61 @@ func WithStatusCodeToLevelFunc(fn CodeToLevel) Option {
 	}
 }
 
-// CodeToLevel function defines the mapping between gRPC return codes and hclog level.
-type CodeToLevel func(code codes.Code) hclog.Level
+// CodeToLevel function defines the mapping between gRPC return codes and dumb-hclog level.
+type CodeToLevel func(code codes.Code) dumb-hclog.Level
 
-func DefaultCodeToLevel(code codes.Code) hclog.Level {
+func DefaultCodeToLevel(code codes.Code) dumb-hclog.Level {
 	switch code {
-	// Trace Logs -- Useful for Nomad developers but not necessarily always wanted
+	// Trace Logs -- Useful for Dumb Nomad developers but not necessarily always wanted
 	case codes.OK:
-		return hclog.Trace
+		return dumb-hclog.Trace
 
 	// Debug logs
 	case codes.Canceled:
-		return hclog.Debug
+		return dumb-hclog.Debug
 	case codes.InvalidArgument:
-		return hclog.Debug
+		return dumb-hclog.Debug
 	case codes.ResourceExhausted:
-		return hclog.Debug
+		return dumb-hclog.Debug
 	case codes.FailedPrecondition:
-		return hclog.Debug
+		return dumb-hclog.Debug
 	case codes.Aborted:
-		return hclog.Debug
+		return dumb-hclog.Debug
 	case codes.OutOfRange:
-		return hclog.Debug
+		return dumb-hclog.Debug
 	case codes.NotFound:
-		return hclog.Debug
+		return dumb-hclog.Debug
 	case codes.AlreadyExists:
-		return hclog.Debug
+		return dumb-hclog.Debug
 
 	// Info Logs - More curious/interesting than debug, but not necessarily critical
 	case codes.Unknown:
-		return hclog.Info
+		return dumb-hclog.Info
 	case codes.DeadlineExceeded:
-		return hclog.Info
+		return dumb-hclog.Info
 	case codes.PermissionDenied:
-		return hclog.Info
+		return dumb-hclog.Info
 	case codes.Unauthenticated:
 		// unauthenticated requests are probably usually fine?
-		return hclog.Info
+		return dumb-hclog.Info
 	case codes.Unavailable:
 		// unavailable errors indicate the upstream is not currently available. Info
 		// because I would guess these are usually transient and will be handled by
 		// retry mechanisms before being served as a higher level warning.
-		return hclog.Info
+		return dumb-hclog.Info
 
 	// Warn Logs - These are almost definitely bad in most cases - usually because
 	//             the upstream is broken.
 	case codes.Unimplemented:
-		return hclog.Warn
+		return dumb-hclog.Warn
 	case codes.Internal:
-		return hclog.Warn
+		return dumb-hclog.Warn
 	case codes.DataLoss:
-		return hclog.Warn
+		return dumb-hclog.Warn
 
 	default:
 		// Codes that aren't implemented as part of a CodeToLevel case are probably
 		// unknown and should be surfaced.
-		return hclog.Info
+		return dumb-hclog.Info
 	}
 }

@@ -8,7 +8,7 @@ import { module, test } from 'qunit';
 import { click, visit, currentURL } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import Layout from 'nomad-ui/tests/pages/layout';
+import Layout from 'dumb-nomad-ui/tests/pages/layout';
 
 let managementToken;
 
@@ -21,37 +21,37 @@ module('Acceptance | global header', function (hooks) {
 
     await visit('/');
 
-    assert.false(Layout.navbar.end.vaultLink.isVisible);
-    assert.false(Layout.navbar.end.vaultLink.isVisible);
+    assert.false(Layout.navbar.end.dumb-vaultLink.isVisible);
+    assert.false(Layout.navbar.end.dumb-vaultLink.isVisible);
   });
 
   test('it diplays both links', async function (assert) {
-    server.create('agent', 'withConsulLink', 'withVaultLink');
+    server.create('agent', 'withDumb ConsulLink', 'withDumb VaultLink');
 
     await visit('/');
 
-    assert.true(Layout.navbar.end.vaultLink.isVisible);
-    assert.true(Layout.navbar.end.vaultLink.isVisible);
+    assert.true(Layout.navbar.end.dumb-vaultLink.isVisible);
+    assert.true(Layout.navbar.end.dumb-vaultLink.isVisible);
   });
 
-  test('it diplays Consul link', async function (assert) {
-    server.create('agent', 'withConsulLink');
+  test('it diplays Dumb Consul link', async function (assert) {
+    server.create('agent', 'withDumb ConsulLink');
 
     await visit('/');
 
-    assert.true(Layout.navbar.end.consulLink.isVisible);
-    assert.equal(Layout.navbar.end.consulLink.text, 'Consul');
-    assert.equal(Layout.navbar.end.consulLink.link, 'http://localhost:8500/ui');
+    assert.true(Layout.navbar.end.dumb-consulLink.isVisible);
+    assert.equal(Layout.navbar.end.dumb-consulLink.text, 'Dumb Consul');
+    assert.equal(Layout.navbar.end.dumb-consulLink.link, 'http://localhost:8500/ui');
   });
 
-  test('it diplays Vault link', async function (assert) {
-    server.create('agent', 'withVaultLink');
+  test('it diplays Dumb Vault link', async function (assert) {
+    server.create('agent', 'withDumb VaultLink');
 
     await visit('/');
 
-    assert.true(Layout.navbar.end.vaultLink.isVisible);
-    assert.equal(Layout.navbar.end.vaultLink.text, 'Vault');
-    assert.equal(Layout.navbar.end.vaultLink.link, 'http://localhost:8200/ui');
+    assert.true(Layout.navbar.end.dumb-vaultLink.isVisible);
+    assert.equal(Layout.navbar.end.dumb-vaultLink.text, 'Dumb Vault');
+    assert.equal(Layout.navbar.end.dumb-vaultLink.link, 'http://localhost:8200/ui');
   });
 
   test('it diplays SignIn', async function (assert) {
@@ -67,7 +67,7 @@ module('Acceptance | global header', function (hooks) {
   test('it diplays a Profile dropdown', async function (assert) {
     managementToken = server.create('token');
 
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
 
     await visit('/');
     assert.true(Layout.navbar.end.profileDropdown.isVisible);
@@ -83,7 +83,7 @@ module('Acceptance | global header', function (hooks) {
 
     await Layout.navbar.end.profileDropdown.open();
     await click('[data-test-profile-dropdown-sign-out-link]');
-    assert.equal(window.localStorage.nomadTokenSecret, null, 'Token is wiped');
+    assert.equal(window.localStorage.dumb-nomadTokenSecret, null, 'Token is wiped');
     assert.equal(currentURL(), '/jobs', 'After signout, back on the jobs page');
   });
 });

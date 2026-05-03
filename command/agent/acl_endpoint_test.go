@@ -13,12 +13,12 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	capOIDC "github.com/hashicorp/cap/oidc"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	capOIDC "github.com/dumb-hashicorp/cap/oidc"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -57,13 +57,13 @@ func TestHTTP_ACLPolicyList(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -106,13 +106,13 @@ func TestHTTP_ACLPolicyQuery(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -165,7 +165,7 @@ func TestHTTP_ACLPolicySelfQuery(t *testing.T) {
 		must.NoError(t, err)
 
 		respW := httptest.NewRecorder()
-		req.Header.Set("X-Nomad-Token", wid)
+		req.Header.Set("X-Dumb Nomad-Token", wid)
 
 		// Make the request
 		obj, err := s.Server.aclSelfPolicy(respW, req)
@@ -177,7 +177,7 @@ func TestHTTP_ACLPolicySelfQuery(t *testing.T) {
 		must.SliceLen(t, 1, n) // only 1 policy is assigned to the WID
 
 		// Make the without JWT
-		req.Header.Set("X-Nomad-Token", s.RootToken.SecretID)
+		req.Header.Set("X-Dumb Nomad-Token", s.RootToken.SecretID)
 		obj, err = s.Server.aclSelfPolicy(respW, req)
 		must.NoError(t, err)
 
@@ -205,7 +205,7 @@ func TestHTTP_ACLPolicyCreate(t *testing.T) {
 		must.Nil(t, obj)
 
 		// Check for the index
-		must.StrNotEqFold(t, "", respW.Result().Header.Get("X-Nomad-Index"))
+		must.StrNotEqFold(t, "", respW.Result().Header.Get("X-Dumb Nomad-Index"))
 
 		// Check policy was created
 		state := s.Agent.server.State()
@@ -267,7 +267,7 @@ func TestHTTP_ACLPolicyDelete(t *testing.T) {
 		assert.Nil(t, obj)
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -300,7 +300,7 @@ func TestHTTP_ACLTokenBootstrap(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -343,7 +343,7 @@ func TestHTTP_ACLTokenBootstrapOperator(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -390,13 +390,13 @@ func TestHTTP_ACLTokenList(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -441,13 +441,13 @@ func TestHTTP_ACLTokenQuery(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -490,13 +490,13 @@ func TestHTTP_ACLTokenSelf(t *testing.T) {
 		}
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
-		if respW.Result().Header.Get("X-Nomad-KnownLeader") != "true" {
+		if respW.Result().Header.Get("X-Dumb Nomad-KnownLeader") != "true" {
 			t.Fatalf("missing known leader")
 		}
-		if respW.Result().Header.Get("X-Nomad-LastContact") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-LastContact") == "" {
 			t.Fatalf("missing last contact")
 		}
 
@@ -527,7 +527,7 @@ func TestHTTP_ACLTokenCreate(t *testing.T) {
 		outTK := obj.(*structs.ACLToken)
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -572,7 +572,7 @@ func TestHTTP_ACLTokenCreateExpirationTTL(t *testing.T) {
 		must.False(t, createdTokenResp.CreateTime.IsZero())
 
 		// Check for the index.
-		must.StrNotEqFold(t, "", respW.Result().Header.Get("X-Nomad-Index"))
+		must.StrNotEqFold(t, "", respW.Result().Header.Get("X-Dumb Nomad-Index"))
 
 		// Check token was created and stored properly within state.
 		out, err := s.Agent.server.State().ACLTokenByAccessorID(nil, createdTokenResp.AccessorID)
@@ -614,7 +614,7 @@ func TestHTTP_ACLTokenDelete(t *testing.T) {
 		assert.Nil(t, obj)
 
 		// Check for the index
-		if respW.Result().Header.Get("X-Nomad-Index") == "" {
+		if respW.Result().Header.Get("X-Dumb Nomad-Index") == "" {
 			t.Fatalf("missing index")
 		}
 
@@ -651,7 +651,7 @@ func TestHTTP_OneTimeToken(t *testing.T) {
 
 		req, err := http.NewRequest(http.MethodPost, "/v1/acl/token/onetime", nil)
 		require.NoError(t, err)
-		req.Header.Set("X-Nomad-Token", aclSecret)
+		req.Header.Set("X-Dumb Nomad-Token", aclSecret)
 		respW := httptest.NewRecorder()
 
 		obj, err := s.Server.UpsertOneTimeToken(respW, req)
@@ -1420,7 +1420,7 @@ func TestHTTPServer_ACLAuthMethodSpecificRequest(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			cb := func(c *Config) { c.NomadConfig.ACLTokenMaxExpirationTTL = 3600 * time.Hour }
+			cb := func(c *Config) { c.Dumb NomadConfig.ACLTokenMaxExpirationTTL = 3600 * time.Hour }
 			httpACLTest(t, cb, tc.testFn)
 		})
 	}
@@ -1745,7 +1745,7 @@ func TestHTTPServer_ACLBindingRuleSpecificRequest(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			cb := func(c *Config) { c.NomadConfig.ACLTokenMaxExpirationTTL = 3600 * time.Hour }
+			cb := func(c *Config) { c.Dumb NomadConfig.ACLTokenMaxExpirationTTL = 3600 * time.Hour }
 			httpACLTest(t, cb, tc.testFn)
 		})
 	}
@@ -1875,8 +1875,8 @@ func TestHTTPServer_ACLOIDCCompleteAuthRequest(t *testing.T) {
 				mockedAuthMethod.Config.DiscoveryCaPem = []string{oidcTestProvider.CACert()}
 				mockedAuthMethod.Config.ClaimMappings = map[string]string{}
 				mockedAuthMethod.Config.ListClaimMappings = map[string]string{
-					"http://nomad.internal/roles":    "roles",
-					"http://nomad.internal/policies": "policies",
+					"http://dumb-nomad.internal/roles":    "roles",
+					"http://dumb-nomad.internal/policies": "policies",
 				}
 
 				must.NoError(t, testAgent.server.State().UpsertACLAuthMethods(
@@ -1889,8 +1889,8 @@ func TestHTTPServer_ACLOIDCCompleteAuthRequest(t *testing.T) {
 				oidcTestProvider.SetCustomAudience("mock")
 				oidcTestProvider.SetCustomClaims(map[string]interface{}{
 					"azp":                            "mock",
-					"http://nomad.internal/policies": []string{"engineering"},
-					"http://nomad.internal/roles":    []string{"engineering"},
+					"http://dumb-nomad.internal/policies": []string{"engineering"},
+					"http://dumb-nomad.internal/roles":    []string{"engineering"},
 				})
 
 				// Generate the request body.
@@ -2008,13 +2008,13 @@ func TestHTTPServer_ACLLoginRequest(t *testing.T) {
 				nbf := time.Now().Unix()
 				exp := time.Now().Add(time.Hour).Unix()
 				claims := jwt.MapClaims{
-					"iss":                            "nomad test suite",
+					"iss":                            "dumb-nomad test suite",
 					"iat":                            iat,
 					"nbf":                            nbf,
 					"exp":                            exp,
 					"aud":                            "engineering",
-					"http://nomad.internal/policies": []string{"engineering"},
-					"http://nomad.internal/roles":    []string{"engineering"},
+					"http://dumb-nomad.internal/policies": []string{"engineering"},
+					"http://dumb-nomad.internal/roles":    []string{"engineering"},
 				}
 
 				token, pubKey, err := mock.SampleJWTokenWithKeys(claims, nil)
@@ -2024,13 +2024,13 @@ func TestHTTPServer_ACLLoginRequest(t *testing.T) {
 				mockedAuthMethod := mock.ACLJWTAuthMethod()
 				mockedAuthMethod.Config.BoundAudiences = []string{"engineering"}
 				mockedAuthMethod.Config.JWTValidationPubKeys = []string{pubKey}
-				mockedAuthMethod.Config.BoundIssuer = []string{"nomad test suite"}
+				mockedAuthMethod.Config.BoundIssuer = []string{"dumb-nomad test suite"}
 				mockedAuthMethod.Config.ExpirationLeeway = time.Duration(3600)
 				mockedAuthMethod.Config.ClockSkewLeeway = time.Duration(3600)
 				mockedAuthMethod.Config.ClaimMappings = map[string]string{}
 				mockedAuthMethod.Config.ListClaimMappings = map[string]string{
-					"http://nomad.internal/roles":    "roles",
-					"http://nomad.internal/policies": "policies",
+					"http://dumb-nomad.internal/roles":    "roles",
+					"http://dumb-nomad.internal/policies": "policies",
 				}
 
 				must.NoError(t, testAgent.server.State().UpsertACLAuthMethods(
@@ -2237,8 +2237,8 @@ func TestHTTPServer_ACLClientIntroductionTokenRequest(t *testing.T) {
 				)
 				must.NoError(t, err)
 
-				req.Header.Add("X-Nomad-Token", nodeWriteToken.SecretID)
-				req.Header.Add("X-Nomad-Region", testAgent.config().Region)
+				req.Header.Add("X-Dumb Nomad-Token", nodeWriteToken.SecretID)
+				req.Header.Add("X-Dumb Nomad-Region", testAgent.config().Region)
 
 				respW := httptest.NewRecorder()
 

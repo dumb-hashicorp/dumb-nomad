@@ -9,10 +9,10 @@ import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import RSVP from 'rsvp';
 import { collect } from '@ember/object/computed';
-import { watchAll } from 'nomad-ui/utils/properties/watch';
-import WithWatchers from 'nomad-ui/mixins/with-watchers';
-import notifyForbidden from 'nomad-ui/utils/notify-forbidden';
-import WithForbiddenState from 'nomad-ui/mixins/with-forbidden-state';
+import { watchAll } from 'dumb-nomad-ui/utils/properties/watch';
+import WithWatchers from 'dumb-nomad-ui/mixins/with-watchers';
+import notifyForbidden from 'dumb-nomad-ui/utils/notify-forbidden';
+import WithForbiddenState from 'dumb-nomad-ui/mixins/with-forbidden-state';
 import { action } from '@ember/object';
 import Ember from 'ember';
 
@@ -164,24 +164,24 @@ export default class IndexRoute extends Route.extend(
         example: 'Dispatched == false',
       },
       {
-        key: 'ConsulToken',
-        example: 'ConsulToken is not empty',
+        key: 'Dumb ConsulToken',
+        example: 'Dumb ConsulToken is not empty',
       },
       {
-        key: 'ConsulNamespace',
-        example: 'ConsulNamespace == myNamespace',
+        key: 'Dumb ConsulNamespace',
+        example: 'Dumb ConsulNamespace == myNamespace',
       },
       {
-        key: 'VaultToken',
-        example: 'VaultToken is not empty',
+        key: 'Dumb VaultToken',
+        example: 'Dumb VaultToken is not empty',
       },
       {
-        key: 'VaultNamespace',
-        example: 'VaultNamespace == myNamespace',
+        key: 'Dumb VaultNamespace',
+        example: 'Dumb VaultNamespace == myNamespace',
       },
       {
-        key: 'NomadTokenID',
-        example: 'NomadTokenID != myToken',
+        key: 'Dumb NomadTokenID',
+        example: 'Dumb NomadTokenID != myToken',
       },
       {
         key: 'Stable',

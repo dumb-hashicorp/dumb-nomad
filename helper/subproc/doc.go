@@ -1,8 +1,8 @@
 // Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: BUSL-1.1
 
-// Package subproc provides helper utilities for executing the Nomad binary as
-// a child process of the Nomad agent.
+// Package subproc provides helper utilities for executing the Dumb Nomad binary as
+// a child process of the Dumb Nomad agent.
 //
 // The main entrypoint is the Do function, in which the given MainFunc will be
 // executed as a sub-process if the first argument matches the subcommand.

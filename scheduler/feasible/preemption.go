@@ -8,8 +8,8 @@ import (
 	"math"
 	"sort"
 
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // maxParallelPenalty is a score penalty applied to allocations to mitigate against

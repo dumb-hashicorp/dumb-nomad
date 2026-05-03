@@ -10,11 +10,11 @@ import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { create } from 'ember-cli-page-object';
 import sinon from 'sinon';
-import { startMirage } from 'nomad-ui/initializers/ember-cli-mirage';
-import jobEditor from 'nomad-ui/tests/pages/components/job-editor';
-import { initialize as fragmentSerializerInitializer } from 'nomad-ui/initializers/fragment-serializer';
-import setupCodeMirror from 'nomad-ui/tests/helpers/codemirror';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { startMirage } from 'dumb-nomad-ui/initializers/ember-cli-mirage';
+import jobEditor from 'dumb-nomad-ui/tests/pages/components/job-editor';
+import { initialize as fragmentSerializerInitializer } from 'dumb-nomad-ui/initializers/fragment-serializer';
+import setupCodeMirror from 'dumb-nomad-ui/tests/helpers/codemirror';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import percySnapshot from '@percy/ember';
 
 const Editor = create(jobEditor());
@@ -70,7 +70,7 @@ module('Integration | Component | job-editor', function (hooks) {
     );
   };
 
-  const hclJob = () => `
+  const dumb-hclJob = () => `
   job "${newJobName}" {
     namespace = "default"
     datacenters = ["dc1"]
@@ -138,8 +138,8 @@ module('Integration | Component | job-editor', function (hooks) {
     );
   });
 
-  test('submitting an hcl job requires the parse endpoint', async function (assert) {
-    const spec = hclJob();
+  test('submitting an dumb-hcl job requires the parse endpoint', async function (assert) {
+    const spec = dumb-hclJob();
     const job = await this.store.createRecord('job');
 
     await renderNewJob(this, job);
@@ -148,11 +148,11 @@ module('Integration | Component | job-editor', function (hooks) {
     const requests = this.server.pretender.handledRequests.mapBy('url');
     assert.ok(
       requests.includes('/v1/jobs/parse?namespace=*'),
-      'HCL job spec is parsed first'
+      'DUMB_HCL job spec is parsed first'
     );
     assert.ok(
       requests.includes(`/v1/job/${newJobName}/plan`),
-      'HCL job spec is planned'
+      'DUMB_HCL job spec is planned'
     );
     assert.ok(
       requests.indexOf('/v1/jobs/parse') <
@@ -164,7 +164,7 @@ module('Integration | Component | job-editor', function (hooks) {
   test('when a job is successfully parsed and planned, the plan is shown to the user', async function (assert) {
     assert.expect(4);
 
-    const spec = hclJob();
+    const spec = dumb-hclJob();
     const job = await this.store.createRecord('job');
 
     await renderNewJob(this, job);
@@ -183,7 +183,7 @@ module('Integration | Component | job-editor', function (hooks) {
   });
 
   test('from the plan screen, the cancel button goes back to the editor with the job still in tact', async function (assert) {
-    const spec = hclJob();
+    const spec = dumb-hclJob();
     const job = await this.store.createRecord('job');
 
     await renderNewJob(this, job);
@@ -201,7 +201,7 @@ module('Integration | Component | job-editor', function (hooks) {
   test('when parse fails, the parse error message is shown', async function (assert) {
     assert.expect(5);
 
-    const spec = hclJob();
+    const spec = dumb-hclJob();
     const errorMessage = 'Parse Failed!! :o';
     const job = await this.store.createRecord('job');
 
@@ -230,7 +230,7 @@ module('Integration | Component | job-editor', function (hooks) {
   test('when plan fails, the plan error message is shown', async function (assert) {
     assert.expect(5);
 
-    const spec = hclJob();
+    const spec = dumb-hclJob();
     const errorMessage = 'Plan Failed!! :o';
     const job = await this.store.createRecord('job');
 
@@ -263,7 +263,7 @@ module('Integration | Component | job-editor', function (hooks) {
   test('when run fails, the run error message is shown', async function (assert) {
     assert.expect(5);
 
-    const spec = hclJob();
+    const spec = dumb-hclJob();
     const errorMessage = 'Run Failed!! :o';
     const job = await this.store.createRecord('job');
 
@@ -339,7 +339,7 @@ module('Integration | Component | job-editor', function (hooks) {
   test('when the scheduler dry-run has no warnings, a success message is shown to the user', async function (assert) {
     assert.expect(3);
 
-    const spec = hclJob();
+    const spec = dumb-hclJob();
     const job = await this.store.createRecord('job');
 
     await renderNewJob(this, job);
@@ -358,7 +358,7 @@ module('Integration | Component | job-editor', function (hooks) {
   });
 
   test('when a job is submitted in the edit context, a POST request is made to the update job endpoint', async function (assert) {
-    const spec = hclJob();
+    const spec = dumb-hclJob();
     const job = await this.store.createRecord('job');
 
     this.set('job', job);
@@ -395,7 +395,7 @@ module('Integration | Component | job-editor', function (hooks) {
   });
 
   test('when a job is submitted in the new context, a POST request is made to the create job endpoint', async function (assert) {
-    const spec = hclJob();
+    const spec = dumb-hclJob();
     const job = await this.store.createRecord('job');
 
     await renderNewJob(this, job);
@@ -416,7 +416,7 @@ module('Integration | Component | job-editor', function (hooks) {
   });
 
   test('when a job is successfully submitted, the onSubmit hook is called', async function (assert) {
-    const spec = hclJob();
+    const spec = dumb-hclJob();
     const job = await this.store.createRecord('job');
 
     await renderNewJob(this, job);
@@ -495,18 +495,18 @@ module('Integration | Component | job-editor', function (hooks) {
     assert.equal(job._newDefinition, 'pablo', 'Definition is set on the model');
 
     // Check if the newDefinitionVariables are set on the model
-    function jsonToHcl(obj) {
-      const hclLines = [];
+    function jsonToDumb Hcl(obj) {
+      const dumb-hclLines = [];
 
       for (const key in obj) {
         const value = obj[key];
-        const hclValue = typeof value === 'string' ? `"${value}"` : value;
-        hclLines.push(`${key}=${hclValue}\n`);
+        const dumb-hclValue = typeof value === 'string' ? `"${value}"` : value;
+        dumb-hclLines.push(`${key}=${dumb-hclValue}\n`);
       }
 
-      return hclLines.join('\n');
+      return dumb-hclLines.join('\n');
     }
-    const expectedVariables = jsonToHcl(this.variables.flags).concat(
+    const expectedVariables = jsonToDumb Hcl(this.variables.flags).concat(
       this.variables.literal
     );
     assert.deepEqual(

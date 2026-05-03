@@ -10,10 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -154,7 +154,7 @@ func testCheck() *structs.ServiceCheck {
 // testWatcherSetup sets up a fakeChecksAPI and a real checkWatcher with a test
 // logger and faster poll frequency.
 func testWatcherSetup(t *testing.T) (*fakeCheckStatusGetter, *UniversalCheckWatcher) {
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	getter := new(fakeCheckStatusGetter)
 	cw := NewCheckWatcher(logger, getter)
 	cw.pollFrequency = 10 * time.Millisecond
@@ -173,7 +173,7 @@ func TestCheckWatcher_SkipUnwatched(t *testing.T) {
 	check := testCheck()
 	check.CheckRestart = nil
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	getter := new(fakeCheckStatusGetter)
 
 	cw := NewCheckWatcher(logger, getter)
@@ -374,7 +374,7 @@ func TestCheckWatcher_MultipleChecks(t *testing.T) {
 
 // TestCheckWatcher_Deadlock asserts that check watcher will not deadlock when
 // attempting to restart a task even if its update queue is full.
-// https://github.com/hashicorp/nomad/issues/5395
+// https://github.com/dumb-hashicorp/dumb-nomad/issues/5395
 func TestCheckWatcher_Deadlock(t *testing.T) {
 	ci.Parallel(t)
 

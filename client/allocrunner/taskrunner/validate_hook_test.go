@@ -6,10 +6,10 @@ package taskrunner
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/require"
 )
 
@@ -61,7 +61,7 @@ func TestTaskRunner_Validate_ServiceName(t *testing.T) {
 	require.NoError(t, validateTask(task, builder.Build(), conf))
 
 	// Add an env var that should *not* validate
-	builder.SetHookEnv("test", map[string]string{"BAD": "invalid/in/consul"})
+	builder.SetHookEnv("test", map[string]string{"BAD": "invalid/in/dumb-consul"})
 	task.Services[0].Name = "${BAD}"
 	require.Error(t, validateTask(task, builder.Build(), conf))
 }

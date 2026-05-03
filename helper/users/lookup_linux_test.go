@@ -14,7 +14,7 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 	"github.com/shoenig/test/must"
 	"golang.org/x/sys/unix"
 )
@@ -83,7 +83,7 @@ func TestWriteFileFor_Linux(t *testing.T) {
 func TestSocketFileFor_Linux(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "api.sock")
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	ln, err := SocketFileFor(logger, path, "nobody")
 	must.NoError(t, err)
 	must.NotNil(t, ln)

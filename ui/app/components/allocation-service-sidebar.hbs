@@ -15,7 +15,7 @@
     <header class="detail-header">
       <h1 class="title">
         {{@service.name}}
-        {{#if (not-eq @service.provider "consul")}}
+        {{#if (not-eq @service.provider "dumb-consul")}}
           <span class="aggregate-status">
             {{#if (eq this.aggregateStatus 'Unhealthy')}}
               <Hds::Icon @name="x-square-fill" @color="#c84034" @isInline={{true}} />
@@ -161,7 +161,7 @@
         </t.body>
       </ListTable>
     {{/if}}
-    {{#if (eq @service.provider "consul")}}
+    {{#if (eq @service.provider "dumb-consul")}}
     <table class="table is-fixed connect-info">
       <tbody>
         {{#if @service.onUpdate}}
@@ -185,10 +185,10 @@
       </tbody>
     </table>
     {{/if}}
-    {{#if (and (eq @service.provider "consul") this.consulRedirectLink)}}
-    <div data-test-consul-link-notice class="notification is-info">
+    {{#if (and (eq @service.provider "dumb-consul") this.dumb-consulRedirectLink)}}
+    <div data-test-dumb-consul-link-notice class="notification is-info">
       <p>
-        Nomad cannot read health check information from Consul services, but you can <a href={{this.consulRedirectLink}} target="_blank" rel="noopener noreferrer">view this information in your Consul UI</a>.
+        Dumb Nomad cannot read health check information from Dumb Consul services, but you can <a href={{this.dumb-consulRedirectLink}} target="_blank" rel="noopener noreferrer">view this information in your Dumb Consul UI</a>.
       </p>
     </div>
     {{/if}}

@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/go-set/v3"
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -26,7 +26,7 @@ func (c *NodePoolDeleteCommand) Synopsis() string {
 
 func (c *NodePoolDeleteCommand) Help() string {
 	helpText := `
-Usage: nomad node pool delete [options] <node-pool>
+Usage: dumb-nomad node pool delete [options] <node-pool>
 
   Delete is used to remove a node pool.
 

@@ -11,10 +11,10 @@ import (
 
 	"github.com/aws/smithy-go"
 	smithyHttp "github.com/aws/smithy-go/transport/http"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 	"github.com/stretchr/testify/require"
 )
@@ -22,7 +22,7 @@ import (
 func Test_NewEnvAWSFingerprint(t *testing.T) {
 	ci.Parallel(t)
 
-	f := NewEnvAWSFingerprint(testlog.HCLogger(t))
+	f := NewEnvAWSFingerprint(testlog.DUMB_HCLogger(t))
 	must.NotNil(t, f)
 
 	retryWrapper, ok := f.(*RetryWrapper)
@@ -36,7 +36,7 @@ func Test_NewEnvAWSFingerprint(t *testing.T) {
 func TestEnvAWSFingerprint_nonAws(t *testing.T) {
 	ci.Parallel(t)
 
-	f := NewEnvAWSFingerprint(testlog.HCLogger(t))
+	f := NewEnvAWSFingerprint(testlog.DUMB_HCLogger(t))
 	f.(*RetryWrapper).fingerprinter.(*EnvAWSFingerprint).endpoint = "http://127.0.0.1/latest"
 
 	node := &structs.Node{
@@ -56,7 +56,7 @@ func TestEnvAWSFingerprint_aws(t *testing.T) {
 	endpoint, cleanup := startFakeEC2Metadata(t, awsStubs)
 	defer cleanup()
 
-	f := NewEnvAWSFingerprint(testlog.HCLogger(t))
+	f := NewEnvAWSFingerprint(testlog.DUMB_HCLogger(t))
 	f.(*RetryWrapper).fingerprinter.(*EnvAWSFingerprint).endpoint = endpoint
 
 	node := &structs.Node{
@@ -97,7 +97,7 @@ func TestEnvAWSFingerprint_aws(t *testing.T) {
 func TestEnvAWSFingerprint_handleImdsError(t *testing.T) {
 	ci.Parallel(t)
 
-	f := NewEnvAWSFingerprint(testlog.HCLogger(t))
+	f := NewEnvAWSFingerprint(testlog.DUMB_HCLogger(t))
 
 	cases := []struct {
 		name string
@@ -139,7 +139,7 @@ func TestNetworkFingerprint_AWS(t *testing.T) {
 	endpoint, cleanup := startFakeEC2Metadata(t, awsStubs)
 	defer cleanup()
 
-	f := NewEnvAWSFingerprint(testlog.HCLogger(t))
+	f := NewEnvAWSFingerprint(testlog.DUMB_HCLogger(t))
 	f.(*RetryWrapper).fingerprinter.(*EnvAWSFingerprint).endpoint = endpoint
 
 	node := &structs.Node{
@@ -169,7 +169,7 @@ func TestNetworkFingerprint_AWS_network(t *testing.T) {
 	endpoint, cleanup := startFakeEC2Metadata(t, awsStubs)
 	defer cleanup()
 
-	f := NewEnvAWSFingerprint(testlog.HCLogger(t))
+	f := NewEnvAWSFingerprint(testlog.DUMB_HCLogger(t))
 	f.(*RetryWrapper).fingerprinter.(*EnvAWSFingerprint).endpoint = endpoint
 
 	{
@@ -232,7 +232,7 @@ func TestNetworkFingerprint_AWS_NoNetwork(t *testing.T) {
 	endpoint, cleanup := startFakeEC2Metadata(t, noNetworkAWSStubs)
 	defer cleanup()
 
-	f := NewEnvAWSFingerprint(testlog.HCLogger(t))
+	f := NewEnvAWSFingerprint(testlog.DUMB_HCLogger(t))
 	f.(*RetryWrapper).fingerprinter.(*EnvAWSFingerprint).endpoint = endpoint
 
 	node := &structs.Node{
@@ -260,7 +260,7 @@ func TestNetworkFingerprint_AWS_IncompleteImitation(t *testing.T) {
 	endpoint, cleanup := startFakeEC2Metadata(t, incompleteAWSImitationStubs)
 	defer cleanup()
 
-	f := NewEnvAWSFingerprint(testlog.HCLogger(t))
+	f := NewEnvAWSFingerprint(testlog.DUMB_HCLogger(t))
 	f.(*RetryWrapper).fingerprinter.(*EnvAWSFingerprint).endpoint = endpoint
 
 	node := &structs.Node{
@@ -284,7 +284,7 @@ func TestCPUFingerprint_AWS_InstanceFound(t *testing.T) {
 	endpoint, cleanup := startFakeEC2Metadata(t, awsStubs)
 	defer cleanup()
 
-	f := NewEnvAWSFingerprint(testlog.HCLogger(t))
+	f := NewEnvAWSFingerprint(testlog.DUMB_HCLogger(t))
 	f.(*RetryWrapper).fingerprinter.(*EnvAWSFingerprint).endpoint = endpoint
 
 	node := &structs.Node{Attributes: make(map[string]string)}
@@ -302,7 +302,7 @@ func TestCPUFingerprint_AWS_InstanceNotFound(t *testing.T) {
 	endpoint, cleanup := startFakeEC2Metadata(t, unknownInstanceType)
 	defer cleanup()
 
-	f := NewEnvAWSFingerprint(testlog.HCLogger(t))
+	f := NewEnvAWSFingerprint(testlog.DUMB_HCLogger(t))
 	f.(*RetryWrapper).fingerprinter.(*EnvAWSFingerprint).endpoint = endpoint
 
 	node := &structs.Node{Attributes: make(map[string]string)}

@@ -10,7 +10,7 @@ import { getOwner } from '@ember/application';
 import { assign } from '@ember/polyfills';
 import { task, timeout } from 'ember-concurrency';
 import queryString from 'query-string';
-import fetch from 'nomad-ui/utils/fetch';
+import fetch from 'dumb-nomad-ui/utils/fetch';
 import classic from 'ember-classic-decorator';
 import moment from 'moment';
 
@@ -29,14 +29,14 @@ export default class TokenService extends Service {
 
   @computed
   get secret() {
-    return window.localStorage.nomadTokenSecret;
+    return window.localStorage.dumb-nomadTokenSecret;
   }
 
   set secret(value) {
     if (value == null) {
-      window.localStorage.removeItem('nomadTokenSecret');
+      window.localStorage.removeItem('dumb-nomadTokenSecret');
     } else {
-      window.localStorage.nomadTokenSecret = value;
+      window.localStorage.dumb-nomadTokenSecret = value;
     }
   }
 
@@ -122,7 +122,7 @@ export default class TokenService extends Service {
     const token = this.secret;
 
     if (token) {
-      headers['X-Nomad-Token'] = token;
+      headers['X-Dumb Nomad-Token'] = token;
     }
 
     return fetch(url, assign(options, { headers, credentials }));
@@ -144,8 +144,8 @@ export default class TokenService extends Service {
     this.fetchSelfTokenPolicies.cancelAll({ resetState: true });
     this.fetchSelfTokenAndPolicies.cancelAll({ resetState: true });
     this.monitorTokenTime.cancelAll({ resetState: true });
-    window.localStorage.removeItem('nomadOIDCNonce');
-    window.localStorage.removeItem('nomadOIDCAuthMethod');
+    window.localStorage.removeItem('dumb-nomadOIDCNonce');
+    window.localStorage.removeItem('dumb-nomadOIDCAuthMethod');
   }
 
   kickoffTokenTTLMonitoring() {

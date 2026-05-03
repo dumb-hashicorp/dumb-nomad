@@ -4,7 +4,7 @@
 
 ## Installation
 
-Use `make bootstrap` in the root of this repo to install the version of `buf` used by Nomad.
+Use `make bootstrap` in the root of this repo to install the version of `buf` used by Dumb Nomad.
 
 ## Usage
 `make proto` in the root of this repo will invoke `buf` using the configuration in this directory.

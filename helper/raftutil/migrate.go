@@ -11,10 +11,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/raft"
-	raftboltdb "github.com/hashicorp/raft-boltdb/v2"
-	raftwal "github.com/hashicorp/raft-wal"
-	"github.com/hashicorp/raft-wal/migrate"
+	"github.com/dumb-hashicorp/raft"
+	raftboltdb "github.com/dumb-hashicorp/raft-boltdb/v2"
+	raftwal "github.com/dumb-hashicorp/raft-wal"
+	"github.com/dumb-hashicorp/raft-wal/migrate"
 	"github.com/shirou/gopsutil/v3/disk"
 	"go.etcd.io/bbolt"
 )
@@ -44,7 +44,7 @@ const (
 // A marker file is created during migration to help detect if the server is
 // accidentally started mid-migration.
 //
-// The Nomad server must be stopped before running this.
+// The Dumb Nomad server must be stopped before running this.
 func MigrateToWAL(ctx context.Context, raftDir string, progress chan<- string) error {
 	var wg sync.WaitGroup
 	defer func() {

@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type JobTagCommand struct {
@@ -25,13 +25,13 @@ func (c *JobTagCommand) Synopsis() string {
 
 func (c *JobTagCommand) Help() string {
 	helpText := `
-Usage: nomad job tag <subcommand> [options] [args]
+Usage: dumb-nomad job tag <subcommand> [options] [args]
 
   This command is used to manage tags for job versions. It has subcommands
   for applying and unsetting tags.
 
 For more information on a specific subcommand, run:
-  nomad job tag <subcommand> -h
+  dumb-nomad job tag <subcommand> -h
 `
 	return strings.TrimSpace(helpText)
 }

@@ -11,7 +11,7 @@ import { alias } from '@ember/object/computed';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 import { task } from 'ember-concurrency';
-import messageForError from 'nomad-ui/utils/message-from-adapter-error';
+import messageForError from 'dumb-nomad-ui/utils/message-from-adapter-error';
 
 const changeTypes = ['Added', 'Deleted', 'Edited'];
 

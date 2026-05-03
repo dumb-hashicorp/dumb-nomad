@@ -10,22 +10,22 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-set/v3"
+	"github.com/dumb-hashicorp/go-set/v3"
 	"github.com/shoenig/test"
 	"github.com/shoenig/test/must"
 	"github.com/shoenig/test/wait"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 func TestNodeDrain(t *testing.T) {
 
-	nomadClient := e2eutil.NomadClient(t)
-	e2eutil.WaitForLeader(t, nomadClient)
-	e2eutil.WaitForNodesReady(t, nomadClient, 2) // needs at least 2 to test migration
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
+	e2eutil.WaitForLeader(t, dumb-nomadClient)
+	e2eutil.WaitForNodesReady(t, dumb-nomadClient, 2) // needs at least 2 to test migration
 
 	t.Run("IgnoreSystem", testIgnoreSystem)
 	t.Run("EphemeralMigrate", testEphemeralMigrate)
@@ -40,7 +40,7 @@ func TestNodeDrain(t *testing.T) {
 func testIgnoreSystem(t *testing.T) {
 
 	t.Cleanup(cleanupDrainState(t))
-	nomadClient := e2eutil.NomadClient(t)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
 
 	// Figure out how many system alloc we'll expect to see
 	nodes, err := e2eutil.NodeStatusListFiltered(
@@ -55,25 +55,25 @@ func testIgnoreSystem(t *testing.T) {
 	systemJobID := "test-node-drain-system-" + uuid.Short()
 	t.Cleanup(cleanupJobState(t, systemJobID))
 
-	must.NoError(t, e2eutil.Register(systemJobID, "./input/drain_ignore_system.nomad"))
-	waitForRunningAllocs(t, nomadClient, systemJobID, count)
+	must.NoError(t, e2eutil.Register(systemJobID, "./input/drain_ignore_system.dumb-nomad"))
+	waitForRunningAllocs(t, dumb-nomadClient, systemJobID, count)
 
 	// Also run a service job so we can verify when the drain is done
 	serviceJobID := "test-node-drain-service-" + uuid.Short()
 	t.Cleanup(cleanupJobState(t, serviceJobID))
-	must.NoError(t, e2eutil.Register(serviceJobID, "./input/drain_simple.nomad"))
-	serviceAllocs := waitForRunningAllocs(t, nomadClient, serviceJobID, 1)
+	must.NoError(t, e2eutil.Register(serviceJobID, "./input/drain_simple.dumb-nomad"))
+	serviceAllocs := waitForRunningAllocs(t, dumb-nomadClient, serviceJobID, 1)
 	oldAllocID := serviceAllocs[0].ID
 	oldNodeID := serviceAllocs[0].NodeID
 
 	// Drain the node with -ignore-system
 	out, err := e2eutil.Command(
-		"nomad", "node", "drain",
+		"dumb-nomad", "node", "drain",
 		"-ignore-system", "-enable", "-yes", "-detach", oldNodeID)
 	must.NoError(t, err, must.Sprintf("expected no error when marking node for drain: %v", out))
 
 	// The service job should be drained
-	newAllocs := waitForAllocDrainComplete(t, nomadClient, serviceJobID,
+	newAllocs := waitForAllocDrainComplete(t, dumb-nomadClient, serviceJobID,
 		oldAllocID, oldNodeID, time.Second*120)
 	must.Len(t, 1, newAllocs, must.Sprint("expected 1 new service job alloc"))
 
@@ -96,11 +96,11 @@ func testEphemeralMigrate(t *testing.T) {
 
 	t.Cleanup(cleanupDrainState(t))
 
-	nomadClient := e2eutil.NomadClient(t)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
 	jobID := "drain-migrate-" + uuid.Short()
 
-	must.NoError(t, e2eutil.Register(jobID, "./input/drain_migrate.nomad"))
-	allocs := waitForRunningAllocs(t, nomadClient, jobID, 1)
+	must.NoError(t, e2eutil.Register(jobID, "./input/drain_migrate.dumb-nomad"))
+	allocs := waitForRunningAllocs(t, dumb-nomadClient, jobID, 1)
 	t.Cleanup(cleanupJobState(t, jobID))
 	oldAllocID := allocs[0].ID
 	oldNodeID := allocs[0].NodeID
@@ -108,7 +108,7 @@ func testEphemeralMigrate(t *testing.T) {
 	// make sure the allocation has written its ID to disk so we have something to migrate
 	must.Wait(t, wait.InitialSuccess(
 		wait.ErrorFunc(func() error {
-			got, err := e2eutil.Command("nomad", "alloc", "fs", oldAllocID,
+			got, err := e2eutil.Command("dumb-nomad", "alloc", "fs", oldAllocID,
 				"alloc/data/migrate.txt")
 			if err != nil {
 				return fmt.Errorf("did not expect error reading alloc fs: %v", err)
@@ -122,10 +122,10 @@ func testEphemeralMigrate(t *testing.T) {
 		wait.Gap(500*time.Millisecond),
 	))
 
-	out, err := e2eutil.Command("nomad", "node", "drain", "-enable", "-yes", "-detach", oldNodeID)
+	out, err := e2eutil.Command("dumb-nomad", "node", "drain", "-enable", "-yes", "-detach", oldNodeID)
 	must.NoError(t, err, must.Sprintf("expected no error when marking node for drain: %v", out))
 
-	newAllocs := waitForAllocDrainComplete(t, nomadClient, jobID,
+	newAllocs := waitForAllocDrainComplete(t, dumb-nomadClient, jobID,
 		oldAllocID, oldNodeID, time.Second*120)
 	must.Len(t, 1, newAllocs, must.Sprint("expected 1 new alloc"))
 	newAllocID := newAllocs[0].ID
@@ -138,7 +138,7 @@ func testEphemeralMigrate(t *testing.T) {
 	// once the new allocation is running, it should quickly have the right data
 	must.Wait(t, wait.InitialSuccess(
 		wait.ErrorFunc(func() error {
-			got, err := e2eutil.Command("nomad", "alloc", "fs", newAllocID,
+			got, err := e2eutil.Command("dumb-nomad", "alloc", "fs", newAllocID,
 				"alloc/data/migrate.txt")
 			if err != nil {
 				return fmt.Errorf("did not expect error reading alloc fs: %v", err)
@@ -166,11 +166,11 @@ func testKeepIneligible(t *testing.T) {
 
 	t.Cleanup(cleanupDrainState(t))
 
-	out, err := e2eutil.Command("nomad", "node", "drain", "-enable", "-yes", "-detach", nodeID)
+	out, err := e2eutil.Command("dumb-nomad", "node", "drain", "-enable", "-yes", "-detach", nodeID)
 	must.NoError(t, err, must.Sprintf("expected no error when marking node for drain: %v", out))
 
 	out, err = e2eutil.Command(
-		"nomad", "node", "drain",
+		"dumb-nomad", "node", "drain",
 		"-disable", "-keep-ineligible", "-yes", nodeID)
 	must.NoError(t, err, must.Sprintf("expected no error when disabling drain for node: %v", out))
 
@@ -189,13 +189,13 @@ func testKeepIneligible(t *testing.T) {
 // updated, not the server status.
 func testKillTimeout(t *testing.T) {
 
-	nomadClient := e2eutil.NomadClient(t)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
 	t.Cleanup(cleanupDrainState(t))
 
 	jobID := "test-node-drain-" + uuid.Short()
 
-	must.NoError(t, e2eutil.Register(jobID, "./input/drain_killtimeout.nomad"))
-	allocs := waitForRunningAllocs(t, nomadClient, jobID, 1)
+	must.NoError(t, e2eutil.Register(jobID, "./input/drain_killtimeout.dumb-nomad"))
+	allocs := waitForRunningAllocs(t, dumb-nomadClient, jobID, 1)
 
 	t.Cleanup(cleanupJobState(t, jobID))
 	oldAllocID := allocs[0].ID
@@ -203,9 +203,9 @@ func testKillTimeout(t *testing.T) {
 
 	t.Logf("draining node %v", oldNodeID)
 	out, err := e2eutil.Command(
-		"nomad", "node", "drain",
+		"dumb-nomad", "node", "drain",
 		"-enable", "-yes", "-detach", oldNodeID)
-	must.NoError(t, err, must.Sprintf("'nomad node drain %v' failed: %v\n%v", oldNodeID, err, out))
+	must.NoError(t, err, must.Sprintf("'dumb-nomad node drain %v' failed: %v\n%v", oldNodeID, err, out))
 
 	// the job will hang with kill_timeout for up to 30s, so we want to assert
 	// that we don't complete draining before that window expires. But we also
@@ -215,7 +215,7 @@ func testKillTimeout(t *testing.T) {
 	t.Log("waiting for kill_timeout to expire")
 	must.Wait(t, wait.ContinualSuccess(
 		wait.BoolFunc(func() bool {
-			node, _, err := nomadClient.Nodes().Info(oldNodeID, nil)
+			node, _, err := dumb-nomadClient.Nodes().Info(oldNodeID, nil)
 			must.NoError(t, err)
 			return node.DrainStrategy != nil
 		}),
@@ -226,13 +226,13 @@ func testKillTimeout(t *testing.T) {
 	// the allocation will then get force-killed, so wait for the alloc
 	// eventually be migrated and for the node's drain to be complete
 	t.Log("waiting for migration to complete")
-	newAllocs := waitForAllocDrainComplete(t, nomadClient, jobID,
+	newAllocs := waitForAllocDrainComplete(t, dumb-nomadClient, jobID,
 		oldAllocID, oldNodeID, time.Second*60)
 	must.Len(t, 1, newAllocs, must.Sprint("expected 1 new alloc"))
 
 	must.Wait(t, wait.InitialSuccess(
 		wait.ErrorFunc(func() error {
-			node, _, err := nomadClient.Nodes().Info(oldNodeID, nil)
+			node, _, err := dumb-nomadClient.Nodes().Info(oldNodeID, nil)
 			if err != nil {
 				return err
 			}
@@ -251,12 +251,12 @@ func testKillTimeout(t *testing.T) {
 // allocations are moved even if max_parallel says we should be waiting
 func testDeadlineFlag(t *testing.T) {
 
-	nomadClient := e2eutil.NomadClient(t)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
 	t.Cleanup(cleanupDrainState(t))
 
 	jobID := "test-node-drain-" + uuid.Short()
-	must.NoError(t, e2eutil.Register(jobID, "./input/drain_deadline.nomad"))
-	allocs := waitForRunningAllocs(t, nomadClient, jobID, 2)
+	must.NoError(t, e2eutil.Register(jobID, "./input/drain_deadline.dumb-nomad"))
+	allocs := waitForRunningAllocs(t, dumb-nomadClient, jobID, 2)
 
 	t.Cleanup(cleanupJobState(t, jobID))
 	oldAllocID1 := allocs[0].ID
@@ -265,22 +265,22 @@ func testDeadlineFlag(t *testing.T) {
 	oldNodeID2 := allocs[1].NodeID
 
 	t.Logf("draining nodes %s, %s", oldNodeID1, oldNodeID2)
-	out, err := e2eutil.Command("nomad", "node", "eligibility", "-disable", oldNodeID1)
-	must.NoError(t, err, must.Sprintf("nomad node eligibility -disable failed: %v\n%v", err, out))
-	out, err = e2eutil.Command("nomad", "node", "eligibility", "-disable", oldNodeID2)
-	must.NoError(t, err, must.Sprintf("nomad node eligibility -disable failed: %v\n%v", err, out))
+	out, err := e2eutil.Command("dumb-nomad", "node", "eligibility", "-disable", oldNodeID1)
+	must.NoError(t, err, must.Sprintf("dumb-nomad node eligibility -disable failed: %v\n%v", err, out))
+	out, err = e2eutil.Command("dumb-nomad", "node", "eligibility", "-disable", oldNodeID2)
+	must.NoError(t, err, must.Sprintf("dumb-nomad node eligibility -disable failed: %v\n%v", err, out))
 
 	out, err = e2eutil.Command(
-		"nomad", "node", "drain",
+		"dumb-nomad", "node", "drain",
 		"-deadline", "1s",
 		"-enable", "-yes", "-detach", oldNodeID1)
-	must.NoError(t, err, must.Sprintf("'nomad node drain %v' failed: %v\n%v", oldNodeID1, err, out))
+	must.NoError(t, err, must.Sprintf("'dumb-nomad node drain %v' failed: %v\n%v", oldNodeID1, err, out))
 
 	out, err = e2eutil.Command(
-		"nomad", "node", "drain",
+		"dumb-nomad", "node", "drain",
 		"-deadline", "1s",
 		"-enable", "-yes", "-detach", oldNodeID2)
-	must.NoError(t, err, must.Sprintf("'nomad node drain %v' failed: %v\n%v", oldNodeID2, err, out))
+	must.NoError(t, err, must.Sprintf("'dumb-nomad node drain %v' failed: %v\n%v", oldNodeID2, err, out))
 
 	// with max_parallel=1 and min_healthy_time=30s we'd expect it to take ~60
 	// for both to be marked complete. Instead, because of the -deadline flag
@@ -288,22 +288,22 @@ func testDeadlineFlag(t *testing.T) {
 	// avoid flakiness), and then the new allocs should come up and get marked
 	// healthy after ~30s
 	t.Log("waiting for old allocs to stop")
-	waitForAllocsStop(t, nomadClient, time.Second*10, oldAllocID1, oldAllocID2)
+	waitForAllocsStop(t, dumb-nomadClient, time.Second*10, oldAllocID1, oldAllocID2)
 
 	t.Log("waiting for running allocs")
-	waitForRunningAllocs(t, nomadClient, jobID, 2)
+	waitForRunningAllocs(t, dumb-nomadClient, jobID, 2)
 }
 
 // testForceFlag tests the enforcement of the node drain -force flag so that
 // allocations are terminated immediately.
 func testForceFlag(t *testing.T) {
 
-	nomadClient := e2eutil.NomadClient(t)
+	dumb-nomadClient := e2eutil.Dumb NomadClient(t)
 	t.Cleanup(cleanupDrainState(t))
 
 	jobID := "test-node-drain-" + uuid.Short()
-	must.NoError(t, e2eutil.Register(jobID, "./input/drain_deadline.nomad"))
-	allocs := waitForRunningAllocs(t, nomadClient, jobID, 2)
+	must.NoError(t, e2eutil.Register(jobID, "./input/drain_deadline.dumb-nomad"))
+	allocs := waitForRunningAllocs(t, dumb-nomadClient, jobID, 2)
 
 	t.Cleanup(cleanupJobState(t, jobID))
 	oldAllocID1 := allocs[0].ID
@@ -312,20 +312,20 @@ func testForceFlag(t *testing.T) {
 	oldNodeID2 := allocs[1].NodeID
 
 	t.Logf("draining nodes %s, %s", oldNodeID1, oldNodeID2)
-	out, err := e2eutil.Command("nomad", "node", "eligibility", "-disable", oldNodeID1)
-	must.NoError(t, err, must.Sprintf("nomad node eligibility -disable failed: %v\n%v", err, out))
-	out, err = e2eutil.Command("nomad", "node", "eligibility", "-disable", oldNodeID2)
-	must.NoError(t, err, must.Sprintf("nomad node eligibility -disable failed: %v\n%v", err, out))
+	out, err := e2eutil.Command("dumb-nomad", "node", "eligibility", "-disable", oldNodeID1)
+	must.NoError(t, err, must.Sprintf("dumb-nomad node eligibility -disable failed: %v\n%v", err, out))
+	out, err = e2eutil.Command("dumb-nomad", "node", "eligibility", "-disable", oldNodeID2)
+	must.NoError(t, err, must.Sprintf("dumb-nomad node eligibility -disable failed: %v\n%v", err, out))
 
 	out, err = e2eutil.Command(
-		"nomad", "node", "drain", "-force",
+		"dumb-nomad", "node", "drain", "-force",
 		"-enable", "-yes", "-detach", oldNodeID1)
-	must.NoError(t, err, must.Sprintf("'nomad node drain %v' failed: %v\n%v", oldNodeID1, err, out))
+	must.NoError(t, err, must.Sprintf("'dumb-nomad node drain %v' failed: %v\n%v", oldNodeID1, err, out))
 
 	out, err = e2eutil.Command(
-		"nomad", "node", "drain", "-force",
+		"dumb-nomad", "node", "drain", "-force",
 		"-enable", "-yes", "-detach", oldNodeID2)
-	must.NoError(t, err, must.Sprintf("'nomad node drain %v' failed: %v\n%v", oldNodeID2, err, out))
+	must.NoError(t, err, must.Sprintf("'dumb-nomad node drain %v' failed: %v\n%v", oldNodeID2, err, out))
 
 	// with max_parallel=1 and min_healthy_time=30s we'd expect it to take ~60
 	// for both to be marked complete. Instead, because of the -force flag
@@ -333,20 +333,20 @@ func testForceFlag(t *testing.T) {
 	// avoid flakiness), and then the new allocs should come up and get marked
 	// healthy after ~30s
 	t.Log("waiting for old allocs to stop")
-	waitForAllocsStop(t, nomadClient, time.Second*10, oldAllocID1, oldAllocID2)
+	waitForAllocsStop(t, dumb-nomadClient, time.Second*10, oldAllocID1, oldAllocID2)
 
 	t.Log("waiting for running allocs")
-	waitForRunningAllocs(t, nomadClient, jobID, 2)
+	waitForRunningAllocs(t, dumb-nomadClient, jobID, 2)
 }
 
-func waitForRunningAllocs(t *testing.T, nomadClient *api.Client, jobID string, expectedRunningCount int) []*api.AllocationListStub {
+func waitForRunningAllocs(t *testing.T, dumb-nomadClient *api.Client, jobID string, expectedRunningCount int) []*api.AllocationListStub {
 	t.Helper()
 
 	runningAllocs := set.From([]*api.AllocationListStub{})
 
 	must.Wait(t, wait.InitialSuccess(
 		wait.ErrorFunc(func() error {
-			allocs, _, err := nomadClient.Jobs().Allocations(jobID, false, nil)
+			allocs, _, err := dumb-nomadClient.Jobs().Allocations(jobID, false, nil)
 			must.NoError(t, err)
 			count := 0
 			for _, alloc := range allocs {
@@ -369,7 +369,7 @@ func waitForRunningAllocs(t *testing.T, nomadClient *api.Client, jobID string, e
 // migrating:
 // - the old alloc should be stopped
 // - the new alloc should be running
-func waitForAllocDrainComplete(t *testing.T, nomadClient *api.Client, jobID, oldAllocID, oldNodeID string, deadline time.Duration) []*api.AllocationListStub {
+func waitForAllocDrainComplete(t *testing.T, dumb-nomadClient *api.Client, jobID, oldAllocID, oldNodeID string, deadline time.Duration) []*api.AllocationListStub {
 
 	t.Helper()
 	newAllocs := set.From([]*api.AllocationListStub{})
@@ -377,7 +377,7 @@ func waitForAllocDrainComplete(t *testing.T, nomadClient *api.Client, jobID, old
 
 	must.Wait(t, wait.InitialSuccess(
 		wait.ErrorFunc(func() error {
-			allocs, _, err := nomadClient.Jobs().Allocations(jobID, false, nil)
+			allocs, _, err := dumb-nomadClient.Jobs().Allocations(jobID, false, nil)
 			if err != nil {
 				return fmt.Errorf("could not read allocations for node: %w", err)
 			}
@@ -410,13 +410,13 @@ func waitForAllocDrainComplete(t *testing.T, nomadClient *api.Client, jobID, old
 
 // waitForAllocsStop polls the allocation statues for specific allocations until
 // they've stopped
-func waitForAllocsStop(t *testing.T, nomadClient *api.Client, deadline time.Duration, oldAllocIDs ...string) {
+func waitForAllocsStop(t *testing.T, dumb-nomadClient *api.Client, deadline time.Duration, oldAllocIDs ...string) {
 	t.Helper()
 
 	must.Wait(t, wait.InitialSuccess(
 		wait.ErrorFunc(func() error {
 			for _, allocID := range oldAllocIDs {
-				alloc, _, err := nomadClient.Allocations().Info(allocID, nil)
+				alloc, _, err := dumb-nomadClient.Allocations().Info(allocID, nil)
 				must.NoError(t, err)
 				if alloc.ClientStatus != structs.AllocClientStatusComplete {
 					return fmt.Errorf("expected alloc %s to be complete, got %q",
@@ -432,31 +432,31 @@ func waitForAllocsStop(t *testing.T, nomadClient *api.Client, deadline time.Dura
 
 func cleanupJobState(t *testing.T, jobID string) func() {
 	return func() {
-		if os.Getenv("NOMAD_TEST_SKIPCLEANUP") == "1" {
+		if os.Getenv("DUMB_NOMAD_TEST_SKIPCLEANUP") == "1" {
 			return
 		}
 
 		// we can't use the CLI here because some tests will stop the job during
 		// a running deployment, which returns a non-zero exit code
-		nomadClient := e2eutil.NomadClient(t)
-		_, _, err := nomadClient.Jobs().Deregister(jobID, true, nil)
+		dumb-nomadClient := e2eutil.Dumb NomadClient(t)
+		_, _, err := dumb-nomadClient.Jobs().Deregister(jobID, true, nil)
 		test.NoError(t, err)
 	}
 }
 
 func cleanupDrainState(t *testing.T) func() {
 	return func() {
-		if os.Getenv("NOMAD_TEST_SKIPCLEANUP") == "1" {
+		if os.Getenv("DUMB_NOMAD_TEST_SKIPCLEANUP") == "1" {
 			return
 		}
 
-		nomadClient := e2eutil.NomadClient(t)
-		nodes, _, err := nomadClient.Nodes().List(nil)
+		dumb-nomadClient := e2eutil.Dumb NomadClient(t)
+		nodes, _, err := dumb-nomadClient.Nodes().List(nil)
 		must.NoError(t, err, must.Sprint("expected no error when listing nodes"))
 		for _, node := range nodes {
-			_, err := e2eutil.Command("nomad", "node", "drain", "-disable", "-yes", node.ID)
+			_, err := e2eutil.Command("dumb-nomad", "node", "drain", "-disable", "-yes", node.ID)
 			test.NoError(t, err)
-			_, err = e2eutil.Command("nomad", "node", "eligibility", "-enable", node.ID)
+			_, err = e2eutil.Command("dumb-nomad", "node", "eligibility", "-enable", node.ID)
 			test.NoError(t, err)
 		}
 	}

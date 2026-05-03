@@ -4,12 +4,12 @@
 
 set -euo pipefail
 
-# Quality: nomad_job_status: A GET call to /v1/jobs returns the correct number
+# Quality: dumb-nomad_job_status: A GET call to /v1/jobs returns the correct number
 # of jobs and they are all running.
 
 error_exit() {
     printf 'Error: %s' "${1}"
-    nomad job status
+    dumb-nomad job status
     exit 1
 }
 
@@ -30,7 +30,7 @@ checkRunningJobs() {
     local ok
     ok=0
     for job in "${JOBS[@]}"; do
-        status=$(nomad job inspect "$job" | jq -r '.Job.Status')
+        status=$(dumb-nomad job inspect "$job" | jq -r '.Job.Status')
         if [[ "$status" != "running" ]]; then
             NON_RUNNING_JOBS["$job"]=1
         fi

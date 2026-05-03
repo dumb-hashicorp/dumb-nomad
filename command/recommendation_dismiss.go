@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/posener/complete"
 
-	"github.com/hashicorp/nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
 )
 
 // Ensure RecommendationDismissCommand satisfies the cli.Command interface.
@@ -45,9 +45,9 @@ type RecommendationDismissCommand struct {
 // Help satisfies the cli.Command Help function.
 func (r *RecommendationDismissCommand) Help() string {
 	helpText := `
-Usage: nomad recommendation dismiss [options] <recommendation_ids>
+Usage: dumb-nomad recommendation dismiss [options] <recommendation_ids>
 
-  Dismiss one or more Nomad recommendations.
+  Dismiss one or more Dumb Nomad recommendations.
 
   When ACLs are enabled, this command requires a token with the 'submit-job',
   'read-job', and 'submit-recommendation' capabilities for the
@@ -61,7 +61,7 @@ General Options:
 
 // Synopsis satisfies the cli.Command Synopsis function.
 func (r *RecommendationDismissCommand) Synopsis() string {
-	return "Dismiss one or more Nomad recommendations"
+	return "Dismiss one or more Dumb Nomad recommendations"
 }
 
 func (r *RecommendationDismissCommand) AutocompleteFlags() complete.Flags {

@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
 	"github.com/posener/complete"
 )
 
@@ -17,7 +17,7 @@ type ACLPolicyListCommand struct {
 
 func (c *ACLPolicyListCommand) Help() string {
 	helpText := `
-Usage: nomad acl policy list
+Usage: dumb-nomad acl policy list
 
   List is used to list available ACL policies.
 

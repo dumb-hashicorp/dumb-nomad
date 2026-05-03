@@ -10,7 +10,7 @@ import InvalidError from '@ember-data/adapter/error';
 import { pluralize } from 'ember-inflector';
 import classic from 'ember-classic-decorator';
 import { ConflictError } from '@ember-data/adapter/error';
-import DEFAULT_JOB_TEMPLATES from 'nomad-ui/utils/default-job-templates';
+import DEFAULT_JOB_TEMPLATES from 'dumb-nomad-ui/utils/default-job-templates';
 import { inject as service } from '@ember/service';
 
 @classic
@@ -29,13 +29,13 @@ export default class VariableAdapter extends ApplicationAdapter {
   }
 
   /**
-   * Query for job templates, both defaults and variables at the nomad/job-templates path.
+   * Query for job templates, both defaults and variables at the dumb-nomad/job-templates path.
    * @returns {Promise<{variables: Variable[], default: Variable[]}>}
    */
   async getJobTemplates() {
     await this.populateDefaultJobTemplates();
     const jobTemplateVariables = await this.store.query('variable', {
-      prefix: 'nomad/job-templates',
+      prefix: 'dumb-nomad/job-templates',
       namespace: '*',
     });
 

@@ -2,7 +2,7 @@
 
 # run by the release-prepare.yml github action workflow
 # * start from a release/A.B.x branch
-# * update notification channel in ci.hcl and version in version.go
+# * update notification channel in ci.dumb-hcl and version in version.go
 # * generate static assets (make prerelease)
 # * commit and push changes to a new release/A.B.C branch
 # * prepare workflow will commit changes
@@ -74,7 +74,7 @@ echo
 echo '::group::Generate static assets'
   make prerelease
   git add --force \
-    ./{nomad,client}/structs/*.generated.go \
+    ./{dumb-nomad,client}/structs/*.generated.go \
     ./command/agent/bindata_assetfs.go
 echo '::endgroup::'
 echo

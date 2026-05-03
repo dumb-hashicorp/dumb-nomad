@@ -25,14 +25,14 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/hashicorp/go-cleanhttp"
-	"github.com/hashicorp/go-multierror"
-	goversion "github.com/hashicorp/go-version"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/escapingfs"
-	"github.com/hashicorp/nomad/version"
+	"github.com/dumb-hashicorp/go-cleanhttp"
+	"github.com/dumb-hashicorp/go-multierror"
+	goversion "github.com/dumb-hashicorp/go-version"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/escapingfs"
+	"github.com/dumb-hashicorp/dumb-nomad/version"
 	"github.com/posener/complete"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -57,8 +57,8 @@ type OperatorDebugCommand struct {
 	serverIDs          []string
 	topics             map[api.Topic][]string
 	index              uint64
-	consul             *external
-	vault              *external
+	dumb-consul             *external
+	dumb-vault              *external
 	manifest           []string
 	ctx                context.Context
 	cancel             context.CancelFunc
@@ -69,7 +69,7 @@ type OperatorDebugCommand struct {
 }
 
 const (
-	userAgent                     = "nomad operator debug"
+	userAgent                     = "dumb-nomad operator debug"
 	clusterDir                    = "cluster"
 	clientDir                     = "client"
 	serverDir                     = "server"
@@ -79,10 +79,10 @@ const (
 
 func (c *OperatorDebugCommand) Help() string {
 	helpText := `
-Usage: nomad operator debug [options]
+Usage: dumb-nomad operator debug [options]
 
-  Build an archive containing Nomad cluster configuration and state, and Consul
-  and Vault status. Include logs and pprof profiles for selected servers and
+  Build an archive containing Dumb Nomad cluster configuration and state, and Dumb Consul
+  and Dumb Vault status. Include logs and pprof profiles for selected servers and
   client nodes.
 
   If ACLs are enabled, this command will require a token with the 'node:read'
@@ -101,61 +101,61 @@ General Options:
 
   ` + generalOptionsUsage(usageOptsDefault|usageOptsNoNamespace) + `
 
-Consul Options:
+Dumb Consul Options:
 
-  -consul-http-addr=<addr>
-    The address and port of the Consul HTTP agent. Overrides the
-    CONSUL_HTTP_ADDR environment variable.
+  -dumb-consul-http-addr=<addr>
+    The address and port of the Dumb Consul HTTP agent. Overrides the
+    DUMB_CONSUL_HTTP_ADDR environment variable.
 
-  -consul-token=<token>
-    Token used to query Consul. Overrides the CONSUL_HTTP_TOKEN environment
-    variable and the Consul token file.
+  -dumb-consul-token=<token>
+    Token used to query Dumb Consul. Overrides the DUMB_CONSUL_HTTP_TOKEN environment
+    variable and the Dumb Consul token file.
 
-  -consul-token-file=<path>
-    Path to the Consul token file. Overrides the CONSUL_HTTP_TOKEN_FILE
+  -dumb-consul-token-file=<path>
+    Path to the Dumb Consul token file. Overrides the DUMB_CONSUL_HTTP_TOKEN_FILE
     environment variable.
 
-  -consul-client-cert=<path>
-    Path to the Consul client cert file. Overrides the CONSUL_CLIENT_CERT
+  -dumb-consul-client-cert=<path>
+    Path to the Dumb Consul client cert file. Overrides the DUMB_CONSUL_CLIENT_CERT
     environment variable.
 
-  -consul-client-key=<path>
-    Path to the Consul client key file. Overrides the CONSUL_CLIENT_KEY
+  -dumb-consul-client-key=<path>
+    Path to the Dumb Consul client key file. Overrides the DUMB_CONSUL_CLIENT_KEY
     environment variable.
 
-  -consul-ca-cert=<path>
-    Path to a CA file to use with Consul. Overrides the CONSUL_CACERT
-    environment variable and the Consul CA path.
+  -dumb-consul-ca-cert=<path>
+    Path to a CA file to use with Dumb Consul. Overrides the DUMB_CONSUL_CACERT
+    environment variable and the Dumb Consul CA path.
 
-  -consul-ca-path=<path>
-    Path to a directory of PEM encoded CA cert files to verify the Consul
-    certificate. Overrides the CONSUL_CAPATH environment variable.
+  -dumb-consul-ca-path=<path>
+    Path to a directory of PEM encoded CA cert files to verify the Dumb Consul
+    certificate. Overrides the DUMB_CONSUL_CAPATH environment variable.
 
-Vault Options:
+Dumb Vault Options:
 
-  -vault-address=<addr>
-    The address and port of the Vault HTTP agent. Overrides the VAULT_ADDR
+  -dumb-vault-address=<addr>
+    The address and port of the Dumb Vault HTTP agent. Overrides the DUMB_VAULT_ADDR
     environment variable.
 
-  -vault-token=<token>
-    Token used to query Vault. Overrides the VAULT_TOKEN environment
+  -dumb-vault-token=<token>
+    Token used to query Dumb Vault. Overrides the DUMB_VAULT_TOKEN environment
     variable.
 
-  -vault-client-cert=<path>
-    Path to the Vault client cert file. Overrides the VAULT_CLIENT_CERT
+  -dumb-vault-client-cert=<path>
+    Path to the Dumb Vault client cert file. Overrides the DUMB_VAULT_CLIENT_CERT
     environment variable.
 
-  -vault-client-key=<path>
-    Path to the Vault client key file. Overrides the VAULT_CLIENT_KEY
+  -dumb-vault-client-key=<path>
+    Path to the Dumb Vault client key file. Overrides the DUMB_VAULT_CLIENT_KEY
     environment variable.
 
-  -vault-ca-cert=<path>
-    Path to a CA file to use with Vault. Overrides the VAULT_CACERT
-    environment variable and the Vault CA path.
+  -dumb-vault-ca-cert=<path>
+    Path to a CA file to use with Dumb Vault. Overrides the DUMB_VAULT_CACERT
+    environment variable and the Dumb Vault CA path.
 
-  -vault-ca-path=<path>
-    Path to a directory of PEM encoded CA cert files to verify the Vault
-    certificate. Overrides the VAULT_CAPATH environment variable.
+  -dumb-vault-ca-path=<path>
+    Path to a directory of PEM encoded CA cert files to verify the Dumb Vault
+    certificate. Overrides the DUMB_VAULT_CAPATH environment variable.
 
 Debug Options:
 
@@ -177,7 +177,7 @@ Debug Options:
     Defaults to "none" (disabled).
 
   -interval=<interval>
-    The interval between snapshots of the Nomad state. Set interval equal to
+    The interval between snapshots of the Dumb Nomad state. Set interval equal to
     duration to capture a single snapshot. Defaults to 30s.
 
   -log-level=<level>
@@ -188,10 +188,10 @@ Debug Options:
     is true.
 
   -log-file-export=<bool>
-    Include the contents of agents' Nomad logfiles in the debug capture. The
+    Include the contents of agents' Dumb Nomad logfiles in the debug capture. The
     log export monitor runs concurrently with the log monitor and ignores the
     -log-level and -log-include-location flags used to configure that monitor.
-    Nomad returns an error if the agent does not have file logging configured.
+    Dumb Nomad returns an error if the agent does not have file logging configured.
     Cannot be used with -log-lookback.
 
   -log-lookback=<duration>
@@ -207,7 +207,7 @@ Debug Options:
     to 10, set to 0 for unlimited.
 
   -node-id=<node1>,<node2>
-    Comma separated list of Nomad client node ids to monitor for logs, API
+    Comma separated list of Dumb Nomad client node ids to monitor for logs, API
     outputs, and pprof profiles. Accepts id prefixes, and "all" to select all
     nodes (up to count = max-nodes). Defaults to "all".
 
@@ -223,7 +223,7 @@ Debug Options:
     -pprof-duration, whichever is more.
 
   -server-id=<server1>,<server2>
-    Comma separated list of Nomad server names to monitor for logs, API
+    Comma separated list of Dumb Nomad server names to monitor for logs, API
     outputs, and pprof profiles. Accepts server names, "leader", or "all".
     Defaults to "all".
 
@@ -266,20 +266,20 @@ func (c *OperatorDebugCommand) AutocompleteFlags() complete.Flags {
 			"-server-id":            ServerPredictor(c.Client),
 			"-stale":                complete.PredictNothing,
 			"-verbose":              complete.PredictNothing,
-			"-consul-auth":          complete.PredictAnything,
-			"-consul-ca-cert":       complete.PredictFiles("*"),
-			"-consul-ca-path":       complete.PredictDirs("*"),
-			"-consul-client-cert":   complete.PredictFiles("*"),
-			"-consul-client-key":    complete.PredictFiles("*"),
-			"-consul-http-addr":     complete.PredictAnything,
-			"-consul-token":         complete.PredictAnything,
-			"-consul-token-file":    complete.PredictFiles("*"),
-			"-vault-address":        complete.PredictAnything,
-			"-vault-ca-cert":        complete.PredictFiles("*"),
-			"-vault-ca-path":        complete.PredictDirs("*"),
-			"-vault-client-cert":    complete.PredictFiles("*"),
-			"-vault-client-key":     complete.PredictFiles("*"),
-			"-vault-token":          complete.PredictAnything,
+			"-dumb-consul-auth":          complete.PredictAnything,
+			"-dumb-consul-ca-cert":       complete.PredictFiles("*"),
+			"-dumb-consul-ca-path":       complete.PredictDirs("*"),
+			"-dumb-consul-client-cert":   complete.PredictFiles("*"),
+			"-dumb-consul-client-key":    complete.PredictFiles("*"),
+			"-dumb-consul-http-addr":     complete.PredictAnything,
+			"-dumb-consul-token":         complete.PredictAnything,
+			"-dumb-consul-token-file":    complete.PredictFiles("*"),
+			"-dumb-vault-address":        complete.PredictAnything,
+			"-dumb-vault-ca-cert":        complete.PredictFiles("*"),
+			"-dumb-vault-ca-path":        complete.PredictDirs("*"),
+			"-dumb-vault-client-cert":    complete.PredictFiles("*"),
+			"-dumb-vault-client-key":     complete.PredictFiles("*"),
+			"-dumb-vault-token":          complete.PredictAnything,
 		})
 }
 
@@ -411,25 +411,25 @@ func (c *OperatorDebugCommand) Run(args []string) int {
 	flags.StringVar(&pprofInterval, "pprof-interval", "30s", "")
 	flags.BoolVar(&c.verbose, "verbose", false, "")
 
-	c.consul = &external{tls: &api.TLSConfig{}}
-	flags.StringVar(&c.consul.addrVal, "consul-http-addr", os.Getenv("CONSUL_HTTP_ADDR"), "")
-	ssl := os.Getenv("CONSUL_HTTP_SSL")
-	c.consul.ssl, _ = strconv.ParseBool(ssl)
-	flags.StringVar(&c.consul.auth, "consul-auth", os.Getenv("CONSUL_HTTP_AUTH"), "")
-	flags.StringVar(&c.consul.tokenVal, "consul-token", os.Getenv("CONSUL_HTTP_TOKEN"), "")
-	flags.StringVar(&c.consul.tokenFile, "consul-token-file", os.Getenv("CONSUL_HTTP_TOKEN_FILE"), "")
-	flags.StringVar(&c.consul.tls.ClientCert, "consul-client-cert", os.Getenv("CONSUL_CLIENT_CERT"), "")
-	flags.StringVar(&c.consul.tls.ClientKey, "consul-client-key", os.Getenv("CONSUL_CLIENT_KEY"), "")
-	flags.StringVar(&c.consul.tls.CACert, "consul-ca-cert", os.Getenv("CONSUL_CACERT"), "")
-	flags.StringVar(&c.consul.tls.CAPath, "consul-ca-path", os.Getenv("CONSUL_CAPATH"), "")
+	c.dumb-consul = &external{tls: &api.TLSConfig{}}
+	flags.StringVar(&c.dumb-consul.addrVal, "dumb-consul-http-addr", os.Getenv("DUMB_CONSUL_HTTP_ADDR"), "")
+	ssl := os.Getenv("DUMB_CONSUL_HTTP_SSL")
+	c.dumb-consul.ssl, _ = strconv.ParseBool(ssl)
+	flags.StringVar(&c.dumb-consul.auth, "dumb-consul-auth", os.Getenv("DUMB_CONSUL_HTTP_AUTH"), "")
+	flags.StringVar(&c.dumb-consul.tokenVal, "dumb-consul-token", os.Getenv("DUMB_CONSUL_HTTP_TOKEN"), "")
+	flags.StringVar(&c.dumb-consul.tokenFile, "dumb-consul-token-file", os.Getenv("DUMB_CONSUL_HTTP_TOKEN_FILE"), "")
+	flags.StringVar(&c.dumb-consul.tls.ClientCert, "dumb-consul-client-cert", os.Getenv("DUMB_CONSUL_CLIENT_CERT"), "")
+	flags.StringVar(&c.dumb-consul.tls.ClientKey, "dumb-consul-client-key", os.Getenv("DUMB_CONSUL_CLIENT_KEY"), "")
+	flags.StringVar(&c.dumb-consul.tls.CACert, "dumb-consul-ca-cert", os.Getenv("DUMB_CONSUL_CACERT"), "")
+	flags.StringVar(&c.dumb-consul.tls.CAPath, "dumb-consul-ca-path", os.Getenv("DUMB_CONSUL_CAPATH"), "")
 
-	c.vault = &external{tls: &api.TLSConfig{}}
-	flags.StringVar(&c.vault.addrVal, "vault-address", os.Getenv("VAULT_ADDR"), "")
-	flags.StringVar(&c.vault.tokenVal, "vault-token", os.Getenv("VAULT_TOKEN"), "")
-	flags.StringVar(&c.vault.tls.CACert, "vault-ca-cert", os.Getenv("VAULT_CACERT"), "")
-	flags.StringVar(&c.vault.tls.CAPath, "vault-ca-path", os.Getenv("VAULT_CAPATH"), "")
-	flags.StringVar(&c.vault.tls.ClientCert, "vault-client-cert", os.Getenv("VAULT_CLIENT_CERT"), "")
-	flags.StringVar(&c.vault.tls.ClientKey, "vault-client-key", os.Getenv("VAULT_CLIENT_KEY"), "")
+	c.dumb-vault = &external{tls: &api.TLSConfig{}}
+	flags.StringVar(&c.dumb-vault.addrVal, "dumb-vault-address", os.Getenv("DUMB_VAULT_ADDR"), "")
+	flags.StringVar(&c.dumb-vault.tokenVal, "dumb-vault-token", os.Getenv("DUMB_VAULT_TOKEN"), "")
+	flags.StringVar(&c.dumb-vault.tls.CACert, "dumb-vault-ca-cert", os.Getenv("DUMB_VAULT_CACERT"), "")
+	flags.StringVar(&c.dumb-vault.tls.CAPath, "dumb-vault-ca-path", os.Getenv("DUMB_VAULT_CAPATH"), "")
+	flags.StringVar(&c.dumb-vault.tls.ClientCert, "dumb-vault-client-cert", os.Getenv("DUMB_VAULT_CLIENT_CERT"), "")
+	flags.StringVar(&c.dumb-vault.tls.ClientKey, "dumb-vault-client-key", os.Getenv("DUMB_VAULT_CLIENT_KEY"), "")
 
 	if err := flags.Parse(args); err != nil {
 		c.Ui.Error(fmt.Sprintf("Error parsing arguments: %q", err))
@@ -526,7 +526,7 @@ func (c *OperatorDebugCommand) Run(args []string) int {
 	// Generate timestamped file name
 	format := "2006-01-02-150405Z"
 	c.timestamp = time.Now().UTC().Format(format)
-	stamped := "nomad-debug-" + c.timestamp
+	stamped := "dumb-nomad-debug-" + c.timestamp
 
 	// Create the output directory
 	var tmp string
@@ -685,7 +685,7 @@ func (c *OperatorDebugCommand) Run(args []string) int {
 	// Display general info about the capture
 	c.Ui.Output("Starting debugger...")
 	c.Ui.Output("")
-	c.Ui.Output(fmt.Sprintf("Nomad CLI Version: %s", version.GetVersion().FullVersionNumber(true)))
+	c.Ui.Output(fmt.Sprintf("Dumb Nomad CLI Version: %s", version.GetVersion().FullVersionNumber(true)))
 	c.Ui.Output(fmt.Sprintf("           Region: %s", c.Meta.Region()))
 	c.Ui.Output(fmt.Sprintf("        Namespace: %s", c.Meta.Namespace()))
 	c.Ui.Output(fmt.Sprintf("          Servers: (%d/%d) %v", serverCaptureCount, serversFound, c.serverIDs))
@@ -759,18 +759,18 @@ func (c *OperatorDebugCommand) collect(client *api.Client) error {
 	c.reportErr(writeResponseOrErrorToFile(
 		regions, err, c.newFile(clusterDir, "regions.json")))
 
-	// Collect data from Consul
-	if c.consul.addrVal == "" {
-		c.getConsulAddrFromSelf(self)
+	// Collect data from Dumb Consul
+	if c.dumb-consul.addrVal == "" {
+		c.getDumb ConsulAddrFromSelf(self)
 	}
-	c.collectConsul(clusterDir)
+	c.collectDumb Consul(clusterDir)
 
-	// Collect data from Vault
-	vaultAddr := c.vault.addrVal
-	if vaultAddr == "" {
-		vaultAddr = c.getVaultAddrFromSelf(self)
+	// Collect data from Dumb Vault
+	dumb-vaultAddr := c.dumb-vault.addrVal
+	if dumb-vaultAddr == "" {
+		dumb-vaultAddr = c.getDumb VaultAddrFromSelf(self)
 	}
-	c.collectVault(clusterDir, vaultAddr)
+	c.collectDumb Vault(clusterDir, dumb-vaultAddr)
 
 	c.collectAgentHosts(client)
 	c.collectPeriodicPprofs(client)
@@ -877,7 +877,7 @@ func (c *OperatorDebugCommand) startMonitorExport(path, idKey, nodeID string, cl
 	// serviceName and onDisk cannot be set together, only set servicename if we're sure
 	// loglookback is set and logFileExport is false
 	if lookback := c.logLookback.String(); lookback != "" && !c.logFileExport {
-		qo.Params["service_name"] = "nomad"
+		qo.Params["service_name"] = "dumb-nomad"
 	}
 
 	// prepare output location
@@ -1036,7 +1036,7 @@ func (c *OperatorDebugCommand) collectAgentHost(path, id string, client *api.Cli
 
 		if strings.Contains(err.Error(), api.PermissionDeniedErrorContent) {
 			// Drop a hint to help the operator resolve the error
-			c.Ui.Warn("Agent host retrieval requires agent:read ACL or enable_debug=true.  See https://developer.hashicorp.com/nomad/api-docs/agent#host for more information.")
+			c.Ui.Warn("Agent host retrieval requires agent:read ACL or enable_debug=true.  See https://developer.dumb-hashicorp.com/dumb-nomad/api-docs/agent#host for more information.")
 		}
 		return // exit on any error
 	}
@@ -1050,9 +1050,9 @@ func (c *OperatorDebugCommand) collectPeriodicPprofs(client *api.Client) {
 	pprofNodeIDs := []string{}
 	pprofServerIDs := []string{}
 
-	// threadcreate pprof causes a panic on Nomad 0.11.0 to 0.11.2 -- skip those versions
+	// threadcreate pprof causes a panic on Dumb Nomad 0.11.0 to 0.11.2 -- skip those versions
 	for _, serverID := range c.serverIDs {
-		version := c.getNomadVersion(serverID, "")
+		version := c.getDumb NomadVersion(serverID, "")
 		err := checkVersion(version, minimumVersionPprofConstraint)
 		if err != nil {
 			c.Ui.Warn(fmt.Sprintf("Skipping pprof: %v", err))
@@ -1061,7 +1061,7 @@ func (c *OperatorDebugCommand) collectPeriodicPprofs(client *api.Client) {
 	}
 
 	for _, nodeID := range c.nodeIDs {
-		version := c.getNomadVersion("", nodeID)
+		version := c.getDumb NomadVersion("", nodeID)
 		err := checkVersion(version, minimumVersionPprofConstraint)
 		if err != nil {
 			c.Ui.Warn(fmt.Sprintf("Skipping pprof: %v", err))
@@ -1130,7 +1130,7 @@ func (c *OperatorDebugCommand) collectPprof(path, id string, client *api.Client,
 			// one permission failure before we bail.
 			// But lets first drop a hint to help the operator resolve the error
 
-			c.Ui.Warn("Pprof retrieval requires agent:write ACL or enable_debug=true.  See https://developer.hashicorp.com/nomad/api-docs/agent#agent-runtime-profiles for more information.")
+			c.Ui.Warn("Pprof retrieval requires agent:write ACL or enable_debug=true.  See https://developer.dumb-hashicorp.com/dumb-nomad/api-docs/agent#agent-runtime-profiles for more information.")
 			return // only exit on 403
 		}
 	} else {
@@ -1219,7 +1219,7 @@ func (c *OperatorDebugCommand) collectPeriodic(client *api.Client) {
 			name = fmt.Sprintf("%04d", intervalCount)
 			dir = filepath.Join(intervalDir, name)
 			c.Ui.Output(fmt.Sprintf("    Capture interval %s", name))
-			c.collectNomad(dir, client)
+			c.collectDumb Nomad(dir, client)
 			c.collectOperator(dir, client)
 			interval = time.After(c.interval)
 			intervalCount++
@@ -1246,8 +1246,8 @@ func (c *OperatorDebugCommand) collectOperator(dir string, client *api.Client) {
 	c.reportErr(writeResponseOrErrorToFile(lic, err, c.newFile(dir, "license.json")))
 }
 
-// collectNomad captures the nomad cluster state
-func (c *OperatorDebugCommand) collectNomad(dir string, client *api.Client) error {
+// collectDumb Nomad captures the dumb-nomad cluster state
+func (c *OperatorDebugCommand) collectDumb Nomad(dir string, client *api.Client) error {
 
 	js, _, err := client.Jobs().List(c.queryOpts())
 	c.reportErr(writeResponseStreamOrErrorToFile(js, err, c.newFile(dir, "jobs.json")))
@@ -1293,38 +1293,38 @@ func (c *OperatorDebugCommand) collectNomad(dir string, client *api.Client) erro
 	return nil
 }
 
-// collectConsul calls the Consul API to collect data
-func (c *OperatorDebugCommand) collectConsul(dir string) {
-	if c.consul.addrVal == "" {
-		c.Ui.Output("Consul - Skipping, no API address found")
+// collectDumb Consul calls the Dumb Consul API to collect data
+func (c *OperatorDebugCommand) collectDumb Consul(dir string) {
+	if c.dumb-consul.addrVal == "" {
+		c.Ui.Output("Dumb Consul - Skipping, no API address found")
 		return
 	}
 
-	c.Ui.Info(fmt.Sprintf("Consul - Collecting Consul API data from: %s", c.consul.addrVal))
+	c.Ui.Info(fmt.Sprintf("Dumb Consul - Collecting Dumb Consul API data from: %s", c.dumb-consul.addrVal))
 
-	client, err := c.consulAPIClient()
+	client, err := c.dumb-consulAPIClient()
 	if err != nil {
-		c.Ui.Error(fmt.Sprintf("failed to create Consul API client: %s", err))
+		c.Ui.Error(fmt.Sprintf("failed to create Dumb Consul API client: %s", err))
 		return
 	}
 
 	// Exit if we are unable to retrieve the leader
-	err = c.collectConsulAPIRequest(client, "/v1/status/leader", dir, "consul-leader.json")
+	err = c.collectDumb ConsulAPIRequest(client, "/v1/status/leader", dir, "dumb-consul-leader.json")
 	if err != nil {
-		c.Ui.Output(fmt.Sprintf("Unable to contact Consul leader, skipping: %s", err))
+		c.Ui.Output(fmt.Sprintf("Unable to contact Dumb Consul leader, skipping: %s", err))
 		return
 	}
 
-	c.collectConsulAPI(client, "/v1/agent/host", dir, "consul-agent-host.json")
-	c.collectConsulAPI(client, "/v1/agent/members", dir, "consul-agent-members.json")
-	c.collectConsulAPI(client, "/v1/agent/metrics", dir, "consul-agent-metrics.json")
-	c.collectConsulAPI(client, "/v1/agent/self", dir, "consul-agent-self.json")
+	c.collectDumb ConsulAPI(client, "/v1/agent/host", dir, "dumb-consul-agent-host.json")
+	c.collectDumb ConsulAPI(client, "/v1/agent/members", dir, "dumb-consul-agent-members.json")
+	c.collectDumb ConsulAPI(client, "/v1/agent/metrics", dir, "dumb-consul-agent-metrics.json")
+	c.collectDumb ConsulAPI(client, "/v1/agent/self", dir, "dumb-consul-agent-self.json")
 }
 
-func (c *OperatorDebugCommand) consulAPIClient() (*http.Client, error) {
+func (c *OperatorDebugCommand) dumb-consulAPIClient() (*http.Client, error) {
 	httpClient := defaultHttpClient()
 
-	err := api.ConfigureTLS(httpClient, c.consul.tls)
+	err := api.ConfigureTLS(httpClient, c.dumb-consul.tls)
 	if err != nil {
 		return nil, fmt.Errorf("failed to configure TLS: %w", err)
 	}
@@ -1332,22 +1332,22 @@ func (c *OperatorDebugCommand) consulAPIClient() (*http.Client, error) {
 	return httpClient, nil
 }
 
-func (c *OperatorDebugCommand) collectConsulAPI(client *http.Client, urlPath string, dir string, file string) {
-	err := c.collectConsulAPIRequest(client, urlPath, dir, file)
+func (c *OperatorDebugCommand) collectDumb ConsulAPI(client *http.Client, urlPath string, dir string, file string) {
+	err := c.collectDumb ConsulAPIRequest(client, urlPath, dir, file)
 	if err != nil {
-		c.Ui.Error(fmt.Sprintf("Error collecting from Consul API: %s", err.Error()))
+		c.Ui.Error(fmt.Sprintf("Error collecting from Dumb Consul API: %s", err.Error()))
 	}
 }
 
-func (c *OperatorDebugCommand) collectConsulAPIRequest(client *http.Client, urlPath string, dir string, file string) error {
-	url := c.consul.addrVal + urlPath
+func (c *OperatorDebugCommand) collectDumb ConsulAPIRequest(client *http.Client, urlPath string, dir string, file string) error {
+	url := c.dumb-consul.addrVal + urlPath
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		return fmt.Errorf("failed to create HTTP request for Consul API URL=%q: %w", url, err)
+		return fmt.Errorf("failed to create HTTP request for Dumb Consul API URL=%q: %w", url, err)
 	}
 
-	req.Header.Add("X-Consul-Token", c.consul.token())
+	req.Header.Add("X-Dumb Consul-Token", c.dumb-consul.token())
 	req.Header.Add("User-Agent", userAgent)
 
 	resp, err := client.Do(req)
@@ -1360,31 +1360,31 @@ func (c *OperatorDebugCommand) collectConsulAPIRequest(client *http.Client, urlP
 	return nil
 }
 
-// collectVault calls the Vault API directly to collect data
-func (c *OperatorDebugCommand) collectVault(dir, vault string) error {
-	vaultAddr := c.vault.addr(vault)
-	if vaultAddr == "" {
+// collectDumb Vault calls the Dumb Vault API directly to collect data
+func (c *OperatorDebugCommand) collectDumb Vault(dir, dumb-vault string) error {
+	dumb-vaultAddr := c.dumb-vault.addr(dumb-vault)
+	if dumb-vaultAddr == "" {
 		return nil
 	}
 
-	c.Ui.Info(fmt.Sprintf("Vault - Collecting Vault API data from: %s", vaultAddr))
+	c.Ui.Info(fmt.Sprintf("Dumb Vault - Collecting Dumb Vault API data from: %s", dumb-vaultAddr))
 	client := defaultHttpClient()
-	if c.vault.ssl {
-		err := api.ConfigureTLS(client, c.vault.tls)
+	if c.dumb-vault.ssl {
+		err := api.ConfigureTLS(client, c.dumb-vault.tls)
 		if err != nil {
 			return fmt.Errorf("failed to configure TLS: %w", err)
 		}
 	}
 
-	req, err := http.NewRequest(http.MethodGet, vaultAddr+"/v1/sys/health", nil)
+	req, err := http.NewRequest(http.MethodGet, dumb-vaultAddr+"/v1/sys/health", nil)
 	if err != nil {
-		return fmt.Errorf("failed to create HTTP request for Vault API URL=%q: %w", vaultAddr, err)
+		return fmt.Errorf("failed to create HTTP request for Dumb Vault API URL=%q: %w", dumb-vaultAddr, err)
 	}
 
-	req.Header.Add("X-Vault-Token", c.vault.token())
+	req.Header.Add("X-Dumb Vault-Token", c.dumb-vault.token())
 	req.Header.Add("User-Agent", userAgent)
 	resp, err := client.Do(req)
-	c.writeBody(dir, "vault-sys-health.json", resp, err)
+	c.writeBody(dir, "dumb-vault-sys-health.json", resp, err)
 
 	return nil
 }
@@ -1540,7 +1540,7 @@ func writeResponseStreamOrErrorToFile[T any](obj []T, apiErr error, getWriterFn 
 	return nil
 }
 
-// writeNDJSON writes a single Nomad API objects (or response error) to the
+// writeNDJSON writes a single Dumb Nomad API objects (or response error) to the
 // archive file as a JSON object.
 func writeJSON(obj any, writer io.Writer) error {
 	buf, err := json.Marshal(obj)
@@ -1557,7 +1557,7 @@ func writeJSON(obj any, writer io.Writer) error {
 	return nil
 }
 
-// writeNDJSON writes a slice of Nomad API objects to the archive file as
+// writeNDJSON writes a slice of Dumb Nomad API objects to the archive file as
 // newline-delimited JSON objects.
 func writeNDJSON[T any](data []T, writer io.Writer) error {
 	for _, obj := range data {
@@ -1794,7 +1794,7 @@ func filterServerMembers(serverMembers *api.ServerMembers, serverIDs string, reg
 
 	prefixes := stringToSlice(serverIDs)
 
-	// "leader" is a special case which Nomad handles in the API.  If "leader"
+	// "leader" is a special case which Dumb Nomad handles in the API.  If "leader"
 	// appears in serverIDs, add it to membersFound and remove it from the list
 	// so that it isn't processed by the range loop
 	if slices.Contains(prefixes, "leader") {
@@ -1895,7 +1895,7 @@ func topicsFromString(topicList string) (map[api.Topic][]string, error) {
 	return topicMap, nil
 }
 
-// external holds address configuration for Consul and Vault APIs
+// external holds address configuration for Dumb Consul and Dumb Vault APIs
 type external struct {
 	tls       *api.TLSConfig
 	addrVal   string
@@ -1955,54 +1955,54 @@ func (e *external) token() string {
 	return ""
 }
 
-func (c *OperatorDebugCommand) getConsulAddrFromSelf(self *api.AgentSelf) string {
+func (c *OperatorDebugCommand) getDumb ConsulAddrFromSelf(self *api.AgentSelf) string {
 	if self == nil {
 		return ""
 	}
 
-	var consulAddr string
-	r, ok := self.Config["Consul"]
+	var dumb-consulAddr string
+	r, ok := self.Config["Dumb Consul"]
 	if ok {
 		m, ok := r.(map[string]interface{})
 		if ok {
 			raw := m["EnableSSL"]
-			c.consul.ssl, _ = raw.(bool)
+			c.dumb-consul.ssl, _ = raw.(bool)
 			raw = m["Addr"]
-			c.consul.setAddr(raw.(string))
+			c.dumb-consul.setAddr(raw.(string))
 			raw = m["Auth"]
-			c.consul.auth, _ = raw.(string)
+			c.dumb-consul.auth, _ = raw.(string)
 			raw = m["Token"]
-			c.consul.tokenVal = raw.(string)
+			c.dumb-consul.tokenVal = raw.(string)
 
-			consulAddr = c.consul.addr("")
+			dumb-consulAddr = c.dumb-consul.addr("")
 		}
 	}
-	return consulAddr
+	return dumb-consulAddr
 }
 
-func (c *OperatorDebugCommand) getVaultAddrFromSelf(self *api.AgentSelf) string {
+func (c *OperatorDebugCommand) getDumb VaultAddrFromSelf(self *api.AgentSelf) string {
 	if self == nil {
 		return ""
 	}
 
-	var vaultAddr string
-	r, ok := self.Config["Vault"]
+	var dumb-vaultAddr string
+	r, ok := self.Config["Dumb Vault"]
 	if ok {
 		m, ok := r.(map[string]interface{})
 		if ok {
 			raw := m["EnableSSL"]
-			c.vault.ssl, _ = raw.(bool)
+			c.dumb-vault.ssl, _ = raw.(bool)
 			raw = m["Addr"]
-			c.vault.setAddr(raw.(string))
+			c.dumb-vault.setAddr(raw.(string))
 			raw = m["Auth"]
-			c.vault.auth, _ = raw.(string)
+			c.dumb-vault.auth, _ = raw.(string)
 			raw = m["Token"]
-			c.vault.tokenVal = raw.(string)
+			c.dumb-vault.tokenVal = raw.(string)
 
-			vaultAddr = c.vault.addr("")
+			dumb-vaultAddr = c.dumb-vault.addr("")
 		}
 	}
-	return vaultAddr
+	return dumb-vaultAddr
 }
 
 // defaultHttpClient configures a basic httpClient
@@ -2027,8 +2027,8 @@ func isRedirectError(err error) bool {
 	return strings.Contains(err.Error(), redirectErr)
 }
 
-// getNomadVersion fetches the version of Nomad running on a given server/client node ID
-func (c *OperatorDebugCommand) getNomadVersion(serverID string, nodeID string) string {
+// getDumb NomadVersion fetches the version of Dumb Nomad running on a given server/client node ID
+func (c *OperatorDebugCommand) getDumb NomadVersion(serverID string, nodeID string) string {
 	if serverID == "" && nodeID == "" {
 		return ""
 	}

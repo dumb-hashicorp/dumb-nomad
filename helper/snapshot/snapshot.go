@@ -1,7 +1,7 @@
 // Copyright IBM Corp. 2015, 2025
 // SPDX-License-Identifier: BUSL-1.1
 
-// snapshot manages the interactions between Nomad and Raft in order to take
+// snapshot manages the interactions between Dumb Nomad and Raft in order to take
 // and restore snapshots for disaster recovery. The internal format of a
 // snapshot is simply a tar file, as described in archive.go.
 package snapshot
@@ -14,8 +14,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/raft"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/raft"
 )
 
 // Snapshot is a structure that holds state about a temporary file that is used
@@ -31,7 +31,7 @@ type Snapshot struct {
 // and returns an object that gives access to the file as an io.Reader. You must
 // arrange to call Close() on the returned object or else you will leak a
 // temporary file.
-func New(logger hclog.Logger, r *raft.Raft) (*Snapshot, error) {
+func New(logger dumb-hclog.Logger, r *raft.Raft) (*Snapshot, error) {
 	// Take the snapshot.
 	future := r.Snapshot()
 	if err := future.Error(); err != nil {
@@ -51,7 +51,7 @@ func New(logger hclog.Logger, r *raft.Raft) (*Snapshot, error) {
 // Raft instance setup) into a temporary file and returns an object that gives
 // access to the file as an io.Reader. You must arrange to call Close() on the
 // returned object or else you will leak a temporary file.
-func NewFromFSM(logger hclog.Logger, fsm raft.FSM, meta *raft.SnapshotMeta) (*Snapshot, error) {
+func NewFromFSM(logger dumb-hclog.Logger, fsm raft.FSM, meta *raft.SnapshotMeta) (*Snapshot, error) {
 	_, trans := raft.NewInmemTransport("")
 	snapshotStore := raft.NewInmemSnapshotStore()
 
@@ -84,7 +84,7 @@ func NewFromFSM(logger hclog.Logger, fsm raft.FSM, meta *raft.SnapshotMeta) (*Sn
 	return writeSnapshot(logger, metadata, snap)
 }
 
-func writeSnapshot(logger hclog.Logger, metadata *raft.SnapshotMeta, snap io.ReadCloser) (*Snapshot, error) {
+func writeSnapshot(logger dumb-hclog.Logger, metadata *raft.SnapshotMeta, snap io.ReadCloser) (*Snapshot, error) {
 
 	defer func() {
 		if err := snap.Close(); err != nil {
@@ -250,7 +250,7 @@ func (r *readWrapper) Read(b []byte) (int, error) {
 
 // Restore takes the snapshot from the reader and attempts to apply it to the
 // given Raft instance.
-func Restore(logger hclog.Logger, in io.Reader, r *raft.Raft) error {
+func Restore(logger dumb-hclog.Logger, in io.Reader, r *raft.Raft) error {
 	// Wrap the reader in a gzip decompressor.
 	decomp, err := gzip.NewReader(&readWrapper{in, 0})
 	if err != nil {

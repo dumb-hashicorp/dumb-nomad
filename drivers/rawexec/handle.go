@@ -9,17 +9,17 @@ import (
 	"sync"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	plugin "github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/drivers/shared/executor"
-	"github.com/hashicorp/nomad/plugins/drivers"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	plugin "github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers"
 )
 
 type taskHandle struct {
 	exec         executor.Executor
 	pid          int
 	pluginClient *plugin.Client
-	logger       hclog.Logger
+	logger       dumb-hclog.Logger
 
 	// stateLock syncs access to all fields below
 	stateLock sync.RWMutex

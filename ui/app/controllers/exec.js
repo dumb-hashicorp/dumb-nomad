@@ -7,10 +7,10 @@ import { inject as service } from '@ember/service';
 import Controller from '@ember/controller';
 import { action, computed } from '@ember/object';
 import { alias, mapBy, sort, uniq } from '@ember/object/computed';
-import escapeTaskName from 'nomad-ui/utils/escape-task-name';
-import ExecCommandEditorXtermAdapter from 'nomad-ui/utils/classes/exec-command-editor-xterm-adapter';
-import ExecSocketXtermAdapter from 'nomad-ui/utils/classes/exec-socket-xterm-adapter';
-import localStorageProperty from 'nomad-ui/utils/properties/local-storage';
+import escapeTaskName from 'dumb-nomad-ui/utils/escape-task-name';
+import ExecCommandEditorXtermAdapter from 'dumb-nomad-ui/utils/classes/exec-command-editor-xterm-adapter';
+import ExecSocketXtermAdapter from 'dumb-nomad-ui/utils/classes/exec-socket-xterm-adapter';
+import localStorageProperty from 'dumb-nomad-ui/utils/properties/local-storage';
 import classic from 'ember-classic-decorator';
 
 const ANSI_UI_GRAY_400 = '\x1b[38;2;142;150;163m';
@@ -24,7 +24,7 @@ export default class ExecController extends Controller {
 
   queryParams = ['allocation', 'namespace'];
 
-  @localStorageProperty('nomadExecCommand', '/bin/bash') command;
+  @localStorageProperty('dumb-nomadExecCommand', '/bin/bash') command;
   socketOpen = false;
 
   @computed('model.allocations.@each.clientStatus')
@@ -49,7 +49,7 @@ export default class ExecController extends Controller {
       fontFamily: 'monospace',
       fontWeight: '400',
     });
-    window.execTerminal = this.terminal; // Issue to improve: https://github.com/hashicorp/nomad/issues/7457
+    window.execTerminal = this.terminal; // Issue to improve: https://github.com/dumb-hashicorp/dumb-nomad/issues/7457
 
     this.terminal.write(ANSI_UI_GRAY_400);
 
@@ -128,7 +128,7 @@ export default class ExecController extends Controller {
       }
 
       this.terminal.write(
-        `$ nomad alloc exec -i -t ${namespaceCommandString}-task ${escapeTaskName(
+        `$ dumb-nomad alloc exec -i -t ${namespaceCommandString}-task ${escapeTaskName(
           taskName
         )} ${this.taskState.allocation.shortId} `
       );

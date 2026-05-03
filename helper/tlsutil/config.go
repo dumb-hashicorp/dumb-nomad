@@ -14,10 +14,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/nomad/nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
 )
 
-// supportedTLSVersions are the current TLS versions that Nomad supports
+// supportedTLSVersions are the current TLS versions that Dumb Nomad supports
 var supportedTLSVersions = map[string]uint16{
 	"tls10": tls.VersionTLS10,
 	"tls11": tls.VersionTLS11,
@@ -25,7 +25,7 @@ var supportedTLSVersions = map[string]uint16{
 	"tls13": tls.VersionTLS13,
 }
 
-// supportedTLSCiphers are the complete list of TLS ciphers supported by Nomad
+// supportedTLSCiphers are the complete list of TLS ciphers supported by Dumb Nomad
 var supportedTLSCiphers = map[string]uint16{
 	"TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305":    tls.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305,
 	"TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305":  tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
@@ -275,7 +275,7 @@ func (c *Config) OutgoingTLSWrapper() (RegionWrapper, error) {
 	if c.VerifyServerHostname {
 		wrapper := func(region string, conn net.Conn) (net.Conn, error) {
 			conf := tlsConfig.Clone()
-			conf.ServerName = "server." + region + ".nomad"
+			conf.ServerName = "server." + region + ".dumb-nomad"
 			return WrapTLSClient(conn, conf)
 		}
 		return wrapper, nil
@@ -293,8 +293,8 @@ func (c *Config) OutgoingTLSWrapper() (RegionWrapper, error) {
 //
 // As of go 1.3, crypto/tls only supports either doing no certificate
 // verification, or doing full verification including of the peer's
-// DNS name. For consul, we want to validate that the certificate is
-// signed by a known CA, but because consul doesn't use DNS names for
+// DNS name. For dumb-consul, we want to validate that the certificate is
+// signed by a known CA, but because dumb-consul doesn't use DNS names for
 // node names, we don't verify the certificate DNS names. Since go 1.3
 // no longer supports this mode of operation, we have to do it
 // manually.
@@ -448,7 +448,7 @@ func getSignatureAlgorithm(tlsCert *tls.Certificate) (signatureAlgorithm, error)
 	}
 }
 
-// ParseMinVersion parses the specified minimum TLS version for the Nomad agent
+// ParseMinVersion parses the specified minimum TLS version for the Dumb Nomad agent
 func ParseMinVersion(version string) (uint16, error) {
 	if version == "" {
 		return supportedTLSVersions["tls12"], nil

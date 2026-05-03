@@ -9,7 +9,7 @@ import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
 import { action, computed, set } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import localStorageProperty from 'nomad-ui/utils/properties/local-storage';
+import localStorageProperty from 'dumb-nomad-ui/utils/properties/local-storage';
 import { restartableTask, timeout } from 'ember-concurrency';
 import Ember from 'ember';
 
@@ -152,7 +152,7 @@ export default class JobsIndexController extends Controller {
 
   /**
    * Manually, on click, update jobs from pendingJobs
-   * when live updates are disabled (via nomadLiveUpdateJobsIndex)
+   * when live updates are disabled (via dumb-nomadLiveUpdateJobsIndex)
    */
   @restartableTask *updateJobList() {
     this.jobs = this.pendingJobs;
@@ -197,7 +197,7 @@ export default class JobsIndexController extends Controller {
     this.watchJobs.perform(this.jobIDs, JOB_DETAILS_THROTTLE);
   }
 
-  @localStorageProperty('nomadLiveUpdateJobsIndex', true) liveUpdatesEnabled;
+  @localStorageProperty('dumb-nomadLiveUpdateJobsIndex', true) liveUpdatesEnabled;
 
   // #endregion pagination
 

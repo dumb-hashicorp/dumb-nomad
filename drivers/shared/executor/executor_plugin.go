@@ -6,17 +6,17 @@ package executor
 import (
 	"context"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/go-plugin"
-	"github.com/hashicorp/nomad/client/lib/cpustats"
-	"github.com/hashicorp/nomad/drivers/shared/executor/proto"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/go-plugin"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cpustats"
+	"github.com/dumb-hashicorp/dumb-nomad/drivers/shared/executor/proto"
 	"google.golang.org/grpc"
 )
 
 type ExecutorPlugin struct {
 	// TODO: support backwards compatibility with pre 0.9 NetRPC plugin
 	plugin.NetRPCUnsupportedPlugin
-	logger      hclog.Logger
+	logger      dumb-hclog.Logger
 	fsIsolation bool
 	compute     cpustats.Compute
 }

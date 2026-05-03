@@ -19,10 +19,10 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/plugins/drivers/fsisolation"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/drivers/fsisolation"
 	"github.com/shoenig/test/must"
 	"golang.org/x/sys/unix"
 )
@@ -73,7 +73,7 @@ func TestAllocDir_BuildAlloc(t *testing.T) {
 
 	tmp := t.TempDir()
 
-	d := NewAllocDir(testlog.HCLogger(t), tmp, tmp, "test")
+	d := NewAllocDir(testlog.DUMB_HCLogger(t), tmp, tmp, "test")
 	defer d.Destroy()
 	d.NewTaskDir(t1)
 	d.NewTaskDir(t2)
@@ -116,7 +116,7 @@ func TestAllocDir_MountSharedAlloc(t *testing.T) {
 
 	tmp := t.TempDir()
 
-	d := NewAllocDir(testlog.HCLogger(t), tmp, tmp, "test")
+	d := NewAllocDir(testlog.DUMB_HCLogger(t), tmp, tmp, "test")
 	defer d.Destroy()
 	must.NoError(t, d.Build())
 
@@ -152,7 +152,7 @@ func TestAllocDir_Snapshot(t *testing.T) {
 
 	tmp := t.TempDir()
 
-	d := NewAllocDir(testlog.HCLogger(t), tmp, tmp, "test")
+	d := NewAllocDir(testlog.DUMB_HCLogger(t), tmp, tmp, "test")
 	defer d.Destroy()
 	must.NoError(t, d.Build())
 
@@ -213,11 +213,11 @@ func TestAllocDir_Move(t *testing.T) {
 	tmp2 := t.TempDir()
 
 	// Create two alloc dirs
-	d1 := NewAllocDir(testlog.HCLogger(t), tmp1, tmp1, "test")
+	d1 := NewAllocDir(testlog.DUMB_HCLogger(t), tmp1, tmp1, "test")
 	must.NoError(t, d1.Build())
 	defer d1.Destroy()
 
-	d2 := NewAllocDir(testlog.HCLogger(t), tmp2, tmp2, "test")
+	d2 := NewAllocDir(testlog.DUMB_HCLogger(t), tmp2, tmp2, "test")
 	must.NoError(t, d2.Build())
 	defer d2.Destroy()
 
@@ -258,7 +258,7 @@ func TestAllocDir_EscapeChecking(t *testing.T) {
 
 	tmp := t.TempDir()
 
-	d := NewAllocDir(testlog.HCLogger(t), tmp, tmp, "test")
+	d := NewAllocDir(testlog.DUMB_HCLogger(t), tmp, tmp, "test")
 	must.NoError(t, d.Build())
 	defer d.Destroy()
 
@@ -289,12 +289,12 @@ func TestAllocDir_EscapeChecking(t *testing.T) {
 	}
 }
 
-// Test that `nomad fs` can't read secrets
+// Test that `dumb-nomad fs` can't read secrets
 func TestAllocDir_ReadAt_SecretDir(t *testing.T) {
 	ci.Parallel(t)
 	tmp := t.TempDir()
 
-	d := NewAllocDir(testlog.HCLogger(t), tmp, tmp, "test")
+	d := NewAllocDir(testlog.DUMB_HCLogger(t), tmp, tmp, "test")
 	must.NoError(t, d.Build())
 	defer func() { _ = d.Destroy() }()
 
@@ -397,12 +397,12 @@ func TestAllocDir_DetectContentType(t *testing.T) {
 	expectedEncodings := map[string]string{
 		"input/happy.gif": "image/gif",
 		"input/image.png": "image/png",
-		"input/nomad.jpg": "image/jpeg",
+		"input/dumb-nomad.jpg": "image/jpeg",
 		"input/test.bin":  "application/octet-stream",
 		"input/test.json": "application/json",
 		"input/test.txt":  "text/plain; charset=utf-8",
 		"input/test.go":   "text/plain; charset=utf-8",
-		"input/test.hcl":  "text/plain; charset=utf-8",
+		"input/test.dumb-hcl":  "text/plain; charset=utf-8",
 	}
 	for _, file := range testFiles {
 		fileInfo, err := os.Stat(file)
@@ -425,7 +425,7 @@ func TestAllocDir_SkipAllocDir(t *testing.T) {
 	// Create root, alloc, and other dirs
 	rootDir := t.TempDir()
 
-	clientAllocDir := filepath.Join(rootDir, "nomad")
+	clientAllocDir := filepath.Join(rootDir, "dumb-nomad")
 	mountAllocDir := filepath.Join(rootDir, "mounts")
 	must.NoError(t, os.Mkdir(clientAllocDir, fs.ModeDir|0o777))
 
@@ -438,7 +438,7 @@ func TestAllocDir_SkipAllocDir(t *testing.T) {
 		rootDir: "/",
 	}
 
-	allocDir := NewAllocDir(testlog.HCLogger(t), clientAllocDir, mountAllocDir, "test")
+	allocDir := NewAllocDir(testlog.DUMB_HCLogger(t), clientAllocDir, mountAllocDir, "test")
 	taskDir := allocDir.NewTaskDir(t1)
 
 	must.NoError(t, allocDir.Build())
@@ -455,7 +455,7 @@ func TestAllocDir_SkipAllocDir(t *testing.T) {
 	}
 
 	// Assert client.alloc_dir was *not* embedded
-	embeddedChroot := filepath.Join(clientAllocDir, "test", t1.Name, "nomad")
+	embeddedChroot := filepath.Join(clientAllocDir, "test", t1.Name, "dumb-nomad")
 	s, err := os.Stat(embeddedChroot)
 	if s != nil {
 		t.Logf("somehow you managed to embed the chroot without causing infinite recursion!")

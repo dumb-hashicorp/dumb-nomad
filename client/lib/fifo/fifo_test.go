@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -37,7 +37,7 @@ func TestFIFO(t *testing.T) {
 		[]byte("abc\n"),
 		[]byte(""),
 		[]byte("def\n"),
-		[]byte("nomad"),
+		[]byte("dumb-nomad"),
 		[]byte("\n"),
 	}
 
@@ -71,7 +71,7 @@ func TestFIFO(t *testing.T) {
 	wait.Wait()
 	require.NoError(reader.Close())
 
-	expected := "abc\ndef\nnomad\n"
+	expected := "abc\ndef\ndumb-nomad\n"
 	require.Equal(expected, readBuf.String())
 
 	require.NoError(Remove(path))

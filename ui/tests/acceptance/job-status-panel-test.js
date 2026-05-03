@@ -18,9 +18,9 @@ import {
 } from '@ember/test-helpers';
 
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import faker from 'nomad-ui/mirage/faker';
+import faker from 'dumb-nomad-ui/mirage/faker';
 import percySnapshot from '@percy/ember';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 // TODO: Mirage is not type-friendly / assigns "server" as a global. Try to work around this shortcoming.
 
 module('Acceptance | job status panel', function (hooks) {
@@ -1166,7 +1166,7 @@ module('Acceptance | job status panel', function (hooks) {
       clientToken.policyIds = [policy.id];
       clientToken.save();
 
-      window.localStorage.nomadTokenSecret = clientToken.secretId;
+      window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
       await visit(`/jobs/${job1.id}@${job1.namespaceId}`);
       assert.dom('[data-test-fail]').exists().doesNotHaveAttribute('disabled');

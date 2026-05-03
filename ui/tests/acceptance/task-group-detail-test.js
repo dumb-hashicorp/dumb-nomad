@@ -9,15 +9,15 @@ import { currentURL, settled } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import {
   formatBytes,
   formatHertz,
   formatScheduledBytes,
   formatScheduledHertz,
-} from 'nomad-ui/utils/units';
-import TaskGroup from 'nomad-ui/tests/pages/jobs/job/task-group';
-import Layout from 'nomad-ui/tests/pages/layout';
+} from 'dumb-nomad-ui/utils/units';
+import TaskGroup from 'dumb-nomad-ui/tests/pages/jobs/job/task-group';
+import Layout from 'dumb-nomad-ui/tests/pages/layout';
 import pageSizeSelect from './behaviors/page-size-select';
 import moment from 'moment';
 
@@ -234,7 +234,7 @@ module('Acceptance | task group detail', function (hooks) {
     clientToken.policyIds = [policy.id];
     clientToken.save();
 
-    window.localStorage.nomadTokenSecret = clientToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = clientToken.secretId;
 
     await TaskGroup.visit({
       id: `${job.id}@${SCALE_AND_WRITE_NAMESPACE}`,
@@ -482,7 +482,7 @@ module('Acceptance | task group detail', function (hooks) {
   });
 
   test('the count stepper sends the appropriate POST request', async function (assert) {
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
 
     job = server.create('job', {
       groupCount: 0,
@@ -512,7 +512,7 @@ module('Acceptance | task group detail', function (hooks) {
   });
 
   test('the count stepper is disabled when a deployment is running', async function (assert) {
-    window.localStorage.nomadTokenSecret = managementToken.secretId;
+    window.localStorage.dumb-nomadTokenSecret = managementToken.secretId;
 
     job = server.create('job', {
       groupCount: 0,

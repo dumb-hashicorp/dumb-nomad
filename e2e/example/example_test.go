@@ -8,10 +8,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/e2e/v3/cluster3"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
-	"github.com/hashicorp/nomad/e2e/v3/namespaces3"
-	"github.com/hashicorp/nomad/e2e/v3/util3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/cluster3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/namespaces3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/util3"
 	"github.com/shoenig/test/must"
 )
 
@@ -28,7 +28,7 @@ func TestExample(t *testing.T) {
 }
 
 func testSleep(t *testing.T) {
-	_, cleanup := jobs3.Submit(t, "./input/sleep.hcl")
+	_, cleanup := jobs3.Submit(t, "./input/sleep.dumb-hcl")
 	t.Cleanup(cleanup)
 }
 
@@ -38,15 +38,15 @@ func testNamespace(t *testing.T) {
 	nsCleanup := namespaces3.Create(t, name)
 	t.Cleanup(nsCleanup)
 
-	_, jobCleanup := jobs3.Submit(t, "./input/sleep.hcl", jobs3.Namespace(name))
+	_, jobCleanup := jobs3.Submit(t, "./input/sleep.dumb-hcl", jobs3.Namespace(name))
 	t.Cleanup(jobCleanup)
 }
 
 func testEnv(t *testing.T) {
-	job, cleanup := jobs3.Submit(t, "./input/env.hcl", jobs3.WaitComplete("group"))
+	job, cleanup := jobs3.Submit(t, "./input/env.dumb-hcl", jobs3.WaitComplete("group"))
 	t.Cleanup(cleanup)
 
-	expect := fmt.Sprintf("NOMAD_JOB_ID=%s", job.JobID())
+	expect := fmt.Sprintf("DUMB_NOMAD_JOB_ID=%s", job.JobID())
 	logs := job.TaskLogs("group", "task")
 	must.StrContains(t, logs.Stdout, expect)
 }

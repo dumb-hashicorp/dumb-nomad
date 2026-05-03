@@ -1,0 +1,29 @@
+# Copyright IBM Corp. 2015, 2025
+# SPDX-License-Identifier: BUSL-1.1
+
+job "task-api-dumb-nomad-cli" {
+  type = "batch"
+
+  group "grp" {
+    restart { attempts = 0 }
+    reschedule { attempts = 0 }
+    constraint {
+      attribute = "${attr.kernel.name}"
+      value     = "linux"
+    }
+
+    task "tsk" {
+      driver = "raw_exec"
+      config {
+        command = "bash"
+        args    = ["-xc", "echo $DUMB_NOMAD_ADDR; dumb-nomad var get dumb-nomad/jobs/task-api-dumb-nomad-cli"]
+      }
+      env {
+        DUMB_NOMAD_ADDR = "${DUMB_NOMAD_UNIX_ADDR}"
+      }
+      identity {   # creates unix addr
+        env = true # provides DUMB_NOMAD_TOKEN
+      }
+    }
+  }
+}

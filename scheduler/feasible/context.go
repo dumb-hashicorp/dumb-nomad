@@ -7,13 +7,13 @@ import (
 	"regexp"
 	"testing"
 
-	log "github.com/hashicorp/go-hclog"
-	memdb "github.com/hashicorp/go-memdb"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/state"
-	"github.com/hashicorp/nomad/nomad/structs"
-	sstructs "github.com/hashicorp/nomad/scheduler/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	memdb "github.com/dumb-hashicorp/go-memdb"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/state"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	sstructs "github.com/dumb-hashicorp/dumb-nomad/scheduler/structs"
 )
 
 // Context is used to track contextual information used for placement
@@ -407,7 +407,7 @@ func MockContext(t testing.TB) (*state.StateStore, *EvalContext) {
 		NodePreemptions: make(map[string][]*structs.Allocation),
 	}
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	ctx := NewEvalContext(nil, state, plan, logger)
 	return state, ctx

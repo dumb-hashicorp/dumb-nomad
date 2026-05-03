@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 )
 
 type NodeIntroCommand struct {
@@ -23,10 +23,10 @@ func (n *NodeIntroCommand) Synopsis() string {
 
 func (n *NodeIntroCommand) Help() string {
 	helpText := `
-Usage: nomad node intro <subcommand> [options]
+Usage: dumb-nomad node intro <subcommand> [options]
 
   This command groups subcommands for managing node introduction tokens. These
-  tokens are used to authenticate new Nomad client nodes to the cluster.
+  tokens are used to authenticate new Dumb Nomad client nodes to the cluster.
 
   Please see the individual subcommand help for detailed usage information.
   `

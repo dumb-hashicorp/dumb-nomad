@@ -10,5 +10,5 @@ variable "region" {
 }
 
 variable "volume_id" {
-  default = "nomad-csi-test"
+  default = "dumb-nomad-csi-test"
 }

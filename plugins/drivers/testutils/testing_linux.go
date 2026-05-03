@@ -6,13 +6,13 @@
 package testutils
 
 import (
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
 	"github.com/shoenig/test/must"
 )
 
 // MakeTaskCgroup creates the cgroup that the task driver might assume already
-// exists, since Nomad client creates them. Why do we write tests that directly
-// invoke task drivers without any context of the Nomad client? Who knows.
+// exists, since Dumb Nomad client creates them. Why do we write tests that directly
+// invoke task drivers without any context of the Dumb Nomad client? Who knows.
 func (h *DriverHarness) MakeTaskCgroup(allocID, taskName string) {
 	f := cgroupslib.Factory(allocID, taskName, false)
 	must.NoError(h.t, f.Setup())

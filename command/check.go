@@ -25,9 +25,9 @@ type AgentCheckCommand struct {
 
 func (c *AgentCheckCommand) Help() string {
 	helpText := `
-Usage: nomad check [options]
+Usage: dumb-nomad check [options]
 
-  Display state of the Nomad agent. The exit code of the command is Nagios
+  Display state of the Dumb Nomad agent. The exit code of the command is Nagios
   compatible and could be used with alerting systems.
 
 General Options:
@@ -47,7 +47,7 @@ Agent Check Options:
 }
 
 func (c *AgentCheckCommand) Synopsis() string {
-	return "Displays health of the local Nomad agent"
+	return "Displays health of the local Dumb Nomad agent"
 }
 
 func (c *AgentCheckCommand) Name() string { return "check" }
@@ -82,7 +82,7 @@ func (c *AgentCheckCommand) Run(args []string) int {
 		c.Ui.Output(fmt.Sprintf("unable to query agent info: %v", err))
 		return HealthCritical
 	}
-	if _, ok := info.Stats["nomad"]; ok {
+	if _, ok := info.Stats["dumb-nomad"]; ok {
 		return c.checkServerHealth(info.Stats, minPeers)
 	}
 

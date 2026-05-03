@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 
 // Package servers provides an interface for choosing Servers to communicate
-// with from a Nomad Client perspective.  The package does not provide any API
-// guarantees and should be called only by `hashicorp/nomad`.
+// with from a Dumb Nomad Client perspective.  The package does not provide any API
+// guarantees and should be called only by `dumb-hashicorp/dumb-nomad`.
 package servers
 
 import (
@@ -14,8 +14,8 @@ import (
 	"sync"
 	"time"
 
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/helper"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
 )
 
 const (
@@ -31,7 +31,7 @@ const (
 	// more than ~48K clients querying 5x servers or at lower server
 	// values when there is a partition.
 	//
-	// For example, in a 100K Nomad cluster with 5x servers, it will
+	// For example, in a 100K Dumb Nomad cluster with 5x servers, it will
 	// take ~5min for all servers to rebalance their connections.  If
 	// 99,995 agents are in the minority talking to only one server, it
 	// will take ~26min for all servers to rebalance.  A 10K cluster in
@@ -138,13 +138,13 @@ func (s Servers) Equal(o Servers) bool {
 }
 
 type Manager struct {
-	// servers is the list of all known Nomad servers.
+	// servers is the list of all known Dumb Nomad servers.
 	servers Servers
 
 	// rebalanceTimer controls the duration of the rebalance interval
 	rebalanceTimer *time.Timer
 
-	// shutdownCh is a copy of the channel in Nomad.Client
+	// shutdownCh is a copy of the channel in Dumb Nomad.Client
 	shutdownCh chan struct{}
 
 	// numNodes is used to estimate the approximate number of nodes in
@@ -156,13 +156,13 @@ type Manager struct {
 	// pool. Pinger is an interface that wraps client.ConnPool.
 	connPoolPinger Pinger
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	sync.Mutex
 }
 
 // New is the only way to safely create a new Manager struct.
-func New(logger hclog.Logger, shutdownCh chan struct{}, connPoolPinger Pinger) (m *Manager) {
+func New(logger dumb-hclog.Logger, shutdownCh chan struct{}, connPoolPinger Pinger) (m *Manager) {
 	logger = logger.Named("server_mgr")
 	return &Manager{
 		logger:         logger,
@@ -173,8 +173,8 @@ func New(logger hclog.Logger, shutdownCh chan struct{}, connPoolPinger Pinger) (
 }
 
 // Start is used to start and manage the task of automatically shuffling and
-// rebalancing the list of Nomad servers in order to distribute load across
-// all known and available Nomad servers.
+// rebalancing the list of Dumb Nomad servers in order to distribute load across
+// all known and available Dumb Nomad servers.
 func (m *Manager) Start() {
 	for {
 		select {

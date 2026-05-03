@@ -16,9 +16,9 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/hashicorp/consul-template/renderer"
-	trenderer "github.com/hashicorp/nomad/client/allocrunner/taskrunner/template/renderer"
-	"github.com/hashicorp/nomad/helper/subproc"
+	"github.com/dumb-hashicorp/dumb-consul-template/renderer"
+	trenderer "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/template/renderer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/subproc"
 )
 
 // renderTemplateInSandbox runs the template-render command in a subprocess that
@@ -50,7 +50,7 @@ func renderTemplateInSandbox(cfg *sandboxConfig) (string, int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
-	// note: we can't simply set cmd.SysProcAttr.Chroot here because the Nomad
+	// note: we can't simply set cmd.SysProcAttr.Chroot here because the Dumb Nomad
 	// binary isn't in the chroot
 	cmd := exec.CommandContext(ctx, cfg.thisBin, args...)
 	stdin, err := cmd.StdinPipe()
@@ -92,7 +92,7 @@ func readTemplateFromSandbox(cfg *sandboxConfig) ([]byte, []byte, int, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
 	defer cancel()
 
-	// note: we can't simply set cmd.SysProcAttr.Chroot here because the Nomad
+	// note: we can't simply set cmd.SysProcAttr.Chroot here because the Dumb Nomad
 	// binary isn't in the chroot
 	cmd := exec.CommandContext(ctx, cfg.thisBin, args...)
 	var outb, errb bytes.Buffer
@@ -147,8 +147,8 @@ func RenderFn(taskID, taskDir string, sandboxEnabled bool) func(*renderer.Render
 			wouldRender = true
 		}
 
-		// the subprocess emits logs matching the consul-template runner, but we
-		// CT doesn't support hclog, so we just print the whole output here to
+		// the subprocess emits logs matching the dumb-consul-template runner, but we
+		// CT doesn't support dumb-hclog, so we just print the whole output here to
 		// stderr the same way CT does so the results look seamless
 		if len(logs) > 0 {
 			log.Printf("[DEBUG] %s", logs)

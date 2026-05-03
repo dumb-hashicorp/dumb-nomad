@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -1446,7 +1446,7 @@ func TestReconcile_shouldFilter(t *testing.T) {
 // Test that we properly create the bitmap even when the alloc set includes an
 // allocation with a higher count than the current min count and it is byte
 // aligned.
-// Ensure no regression from: https://github.com/hashicorp/nomad/issues/3008
+// Ensure no regression from: https://github.com/dumb-hashicorp/dumb-nomad/issues/3008
 func TestBitmapFrom(t *testing.T) {
 	ci.Parallel(t)
 

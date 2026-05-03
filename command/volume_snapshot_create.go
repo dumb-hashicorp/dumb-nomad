@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/api/contexts"
-	flaghelper "github.com/hashicorp/nomad/helper/flags"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/api/contexts"
+	flaghelper "github.com/dumb-hashicorp/dumb-nomad/helper/flags"
 	"github.com/posener/complete"
 )
 
@@ -19,13 +19,13 @@ type VolumeSnapshotCreateCommand struct {
 
 func (c *VolumeSnapshotCreateCommand) Help() string {
 	helpText := `
-Usage: nomad volume snapshot create <volume id> <snapshot_name>
+Usage: dumb-nomad volume snapshot create <volume id> <snapshot_name>
 
   Create a snapshot of an external storage volume. This command requires a
   volume ID or prefix and snapthost name. If there is an exact match based on
 	the provided volume ID or prefix, then the specific volume is snapshotted.
 	Otherwise, a list of matching volumes and information will be displayed. The
-	volume must still be registered with Nomad in order to be snapshotted.
+	volume must still be registered with Dumb Nomad in order to be snapshotted.
 
   Snapshot name will be passed to the CSI plugin to be used as the ID of the
   resulting snapshot.

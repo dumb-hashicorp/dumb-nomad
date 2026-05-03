@@ -7,9 +7,9 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
@@ -70,13 +70,13 @@ func TestNodeIdentityGetCommand_Run(t *testing.T) {
 
 		var resp map[string]any
 		must.NoError(t, json.Unmarshal(ui.OutputWriter.Bytes(), &resp))
-		must.MapContainsKey(t, resp, "nomad_node_id")
+		must.MapContainsKey(t, resp, "dumb-nomad_node_id")
 	})
 
 	t.Run("template output", func(t *testing.T) {
 		t.Cleanup(func() { resetUI(ui) })
 
-		must.Zero(t, cmd.Run([]string{"--address=" + url, "-t", "{{ .nomad_node_id }}", srv.Agent.Client().NodeID()}))
+		must.Zero(t, cmd.Run([]string{"--address=" + url, "-t", "{{ .dumb-nomad_node_id }}", srv.Agent.Client().NodeID()}))
 		must.StrContains(t, ui.OutputWriter.String(), srv.Agent.Client().NodeID())
 	})
 }

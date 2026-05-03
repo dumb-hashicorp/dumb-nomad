@@ -9,9 +9,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/v3/cluster3"
-	"github.com/hashicorp/nomad/e2e/v3/jobs3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/cluster3"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/v3/jobs3"
 	"github.com/shoenig/test/must"
 )
 
@@ -34,7 +34,7 @@ func TestDocker(t *testing.T) {
 }
 
 func findService(t *testing.T, name string) (string, int) {
-	services, _, err := e2eutil.NomadClient(t).Services().Get(name, nil)
+	services, _, err := e2eutil.Dumb NomadClient(t).Services().Get(name, nil)
 	must.NoError(t, err, must.Sprintf("failed to find %q service", name))
 	must.Len(t, 1, services, must.Sprintf("expected 1 %q service", name))
 	return services[0].Address, services[0].Port
@@ -42,7 +42,7 @@ func findService(t *testing.T, name string) (string, int) {
 
 func runRegistry(t *testing.T) {
 	_, regCleanup := jobs3.Submit(t,
-		"../docker_registry/registry.hcl",
+		"../docker_registry/registry.dumb-hcl",
 		jobs3.Timeout(40*time.Second), // pulls an image
 	)
 	t.Cleanup(regCleanup)
@@ -57,7 +57,7 @@ func runRegistry(t *testing.T) {
 	// make sure the registry is marked as insecure for docker, otherwise pulls
 	// will fail.
 	_, sedCleanup := jobs3.Submit(t,
-		"../docker_registry/registry-auths.hcl",
+		"../docker_registry/registry-auths.dumb-hcl",
 		jobs3.Var("registry_address", address),
 		jobs3.Var("user", "root"),
 		jobs3.Var("helper_dir", "/usr/local/bin"),
@@ -69,7 +69,7 @@ func runRegistry(t *testing.T) {
 	t.Cleanup(sedCleanup)
 
 	_, dockerConfCleanup := jobs3.Submit(t,
-		"../docker_registry/registry-auths.hcl",
+		"../docker_registry/registry-auths.dumb-hcl",
 		jobs3.Var("registry_address", address),
 		jobs3.Var("user", "root"),
 		jobs3.Var("docker_conf_dir", "/etc/docker"),
@@ -80,7 +80,7 @@ func runRegistry(t *testing.T) {
 }
 
 func testRedis(t *testing.T) {
-	job, cleanup := jobs3.Submit(t, "./input/redis.hcl", jobs3.Timeout(30*time.Second))
+	job, cleanup := jobs3.Submit(t, "./input/redis.dumb-hcl", jobs3.Timeout(30*time.Second))
 	t.Cleanup(cleanup)
 
 	logs := job.TaskLogs("cache", "redis")
@@ -93,7 +93,7 @@ func testAuthBasic(t *testing.T) {
 	regAddr, regPort := findService(t, "registry")
 
 	// run the private bash image
-	bashJob, bashCleanup := jobs3.Submit(t, "./input/auth_basic.hcl",
+	bashJob, bashCleanup := jobs3.Submit(t, "./input/auth_basic.dumb-hcl",
 		jobs3.Var("registry_address", regAddr),
 		jobs3.Var("registry_port", strconv.Itoa(regPort)),
 		jobs3.WaitComplete("basic"),
@@ -109,7 +109,7 @@ func testAuthFileStatic(t *testing.T) {
 	regAddr, regPort := findService(t, "registry")
 
 	// run the private _static bash image
-	bashJob, bashCleanup := jobs3.Submit(t, "./input/auth_static.hcl",
+	bashJob, bashCleanup := jobs3.Submit(t, "./input/auth_static.dumb-hcl",
 		jobs3.Var("registry_address", regAddr),
 		jobs3.Var("registry_port", strconv.Itoa(regPort)),
 		jobs3.WaitComplete("static"),
@@ -127,7 +127,7 @@ func testAuthHelper(t *testing.T) {
 	t.Log("registry", regAddr, regPort)
 
 	// run the private _helper bash image
-	bashJob, bashCleanup := jobs3.Submit(t, "./input/auth_helper.hcl",
+	bashJob, bashCleanup := jobs3.Submit(t, "./input/auth_helper.dumb-hcl",
 		jobs3.Var("registry_address", regAddr),
 		jobs3.Var("registry_port", strconv.Itoa(regPort)),
 		jobs3.WaitComplete("helper"),

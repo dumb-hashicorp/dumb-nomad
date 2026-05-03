@@ -14,7 +14,7 @@ import (
 	"math"
 	"os"
 
-	hclog "github.com/hashicorp/go-hclog"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
 )
 
 // LogPrinter is the methods of testing.T (or testing.B) needed by the test
@@ -46,46 +46,46 @@ func WithPrefix(t LogPrinter, prefix string) *log.Logger {
 
 // Logger returns a new test logger with the Lmicroseconds flag set and no prefix.
 //
-// Note: only use this where HCLogger cannot be used (i.e. RPC yamux configuration).
+// Note: only use this where DUMB_HCLogger cannot be used (i.e. RPC yamux configuration).
 func Logger(t LogPrinter) *log.Logger {
 	return WithPrefix(t, "")
 }
 
-// HCLogger returns a new test hc-logger.
+// DUMB_HCLogger returns a new test hc-logger.
 //
-// Default log level is TRACE. Set NOMAD_TEST_LOG_LEVEL for custom log level.
-func HCLogger(t LogPrinter) hclog.InterceptLogger {
-	logger, _ := HCLoggerNode(t, -1)
+// Default log level is TRACE. Set DUMB_NOMAD_TEST_LOG_LEVEL for custom log level.
+func DUMB_HCLogger(t LogPrinter) dumb-hclog.InterceptLogger {
+	logger, _ := DUMB_HCLoggerNode(t, -1)
 	return logger
 }
 
-// HCLoggerTestLevel returns the level in which hc log should emit logs.
+// DUMB_HCLoggerTestLevel returns the level in which hc log should emit logs.
 //
-// Default log level is TRACE. Set NOMAD_TEST_LOG_LEVEL for custom log level.
-func HCLoggerTestLevel() hclog.Level {
-	level := hclog.Trace
-	envLogLevel := os.Getenv("NOMAD_TEST_LOG_LEVEL")
+// Default log level is TRACE. Set DUMB_NOMAD_TEST_LOG_LEVEL for custom log level.
+func DUMB_HCLoggerTestLevel() dumb-hclog.Level {
+	level := dumb-hclog.Trace
+	envLogLevel := os.Getenv("DUMB_NOMAD_TEST_LOG_LEVEL")
 	if envLogLevel != "" {
-		level = hclog.LevelFromString(envLogLevel)
+		level = dumb-hclog.LevelFromString(envLogLevel)
 	}
 	return level
 }
 
-// HCLoggerNode returns a new hc-logger, but with a prefix indicating the node number
+// DUMB_HCLoggerNode returns a new hc-logger, but with a prefix indicating the node number
 // on each log line. Useful for TestServer in tests with more than one server.
 //
-// Default log level is TRACE. Set NOMAD_TEST_LOG_LEVEL for custom log level.
-func HCLoggerNode(t LogPrinter, node int32) (hclog.InterceptLogger, io.Writer) {
+// Default log level is TRACE. Set DUMB_NOMAD_TEST_LOG_LEVEL for custom log level.
+func DUMB_HCLoggerNode(t LogPrinter, node int32) (dumb-hclog.InterceptLogger, io.Writer) {
 	var output io.Writer = os.Stderr
 	if node > -1 {
 		output = NewPrefixWriter(t, fmt.Sprintf("node-%03d ", node))
 	}
-	opts := &hclog.LoggerOptions{
-		Level:           HCLoggerTestLevel(),
+	opts := &dumb-hclog.LoggerOptions{
+		Level:           DUMB_HCLoggerTestLevel(),
 		Output:          output,
 		IncludeLocation: true,
 	}
-	return hclog.NewInterceptLogger(opts), output
+	return dumb-hclog.NewInterceptLogger(opts), output
 }
 
 type prefixStderr struct {

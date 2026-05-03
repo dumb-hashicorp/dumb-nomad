@@ -14,19 +14,19 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	metrics "github.com/hashicorp/go-metrics/compat"
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/ci"
-	client "github.com/hashicorp/nomad/client/config"
-	"github.com/hashicorp/nomad/client/fingerprint"
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	sconfig "github.com/hashicorp/nomad/nomad/structs/config"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	metrics "github.com/dumb-hashicorp/go-metrics/compat"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	client "github.com/dumb-hashicorp/dumb-nomad/client/config"
+	"github.com/dumb-hashicorp/dumb-nomad/client/fingerprint"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	sconfig "github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs/config"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 )
 
 // TempDir defines the base dir for temporary directories.
@@ -54,7 +54,7 @@ type TestAgent struct {
 	Config *Config
 
 	// logger is used for logging
-	logger hclog.InterceptLogger
+	logger dumb-hclog.InterceptLogger
 
 	// DataDir is the data directory which is used when Config.DataDir
 	// is not set. It is created automatically and removed when
@@ -72,7 +72,7 @@ type TestAgent struct {
 	// It is valid after Start().
 	Server *HTTPServer
 
-	// Agent is the embedded Nomad agent.
+	// Agent is the embedded Dumb Nomad agent.
 	// It is valid after Start().
 	*Agent
 
@@ -94,8 +94,8 @@ type TestAgent struct {
 // configuration. The caller should call Shutdown() to stop the agent and
 // remove temporary directories.
 func NewTestAgent(t testing.TB, name string, configCallback func(*Config)) *TestAgent {
-	logger := testlog.HCLogger(t)
-	logger.SetLevel(testlog.HCLoggerTestLevel())
+	logger := testlog.DUMB_HCLogger(t)
+	logger.SetLevel(testlog.DUMB_HCLoggerTestLevel())
 	a := &TestAgent{
 		T:              t,
 		Name:           name,
@@ -129,7 +129,7 @@ func (a *TestAgent) Start() *TestAgent {
 		}
 		a.DataDir = d
 		a.Config.DataDir = d
-		a.Config.NomadConfig.DataDir = d
+		a.Config.Dumb NomadConfig.DataDir = d
 	}
 
 	i := 10
@@ -150,7 +150,7 @@ RETRY:
 
 	// Create a null logger before initializing the keyring. This is typically
 	// done using the agent's logger. However, it hasn't been created yet.
-	logger := hclog.NewNullLogger()
+	logger := dumb-hclog.NewNullLogger()
 
 	// write the keyring
 	if a.Key != "" {
@@ -191,7 +191,7 @@ RETRY:
 	}
 
 	failed := false
-	if a.Config.NomadConfig.BootstrapExpect == 1 && a.Config.Server.Enabled {
+	if a.Config.Dumb NomadConfig.BootstrapExpect == 1 && a.Config.Server.Enabled {
 		testutil.WaitForKeyring(a.T, a.RPC, a.Config.Region)
 	} else {
 		testutil.WaitForResult(func() (bool, error) {
@@ -229,7 +229,7 @@ RETRY:
 	// enabled, but we have not bootstrapped the system, we must also skip as we
 	// will not have a valid token to perform the check with.
 	if a.Config.Client.Enabled &&
-		(a.Config.NomadConfig.BootstrapExpect > 0 && a.Config.Server.Enabled) &&
+		(a.Config.Dumb NomadConfig.BootstrapExpect > 0 && a.Config.Server.Enabled) &&
 		!(a.Config.ACL.Enabled && a.Config.ACL.PolicyTTL == 0) {
 		var token string
 		if a.RootToken != nil {
@@ -268,7 +268,7 @@ func (a *TestAgent) start() (*Agent, error) {
 	}
 
 	// TODO: investigate if there is a way to remove the requirement by updating test.
-	// Initial pass at implementing this is https://github.com/kevinschoonover/nomad/tree/tests.
+	// Initial pass at implementing this is https://github.com/kevinschoonover/dumb-nomad/tree/tests.
 	a.Servers = httpServers
 	a.Server = httpServers[0]
 	return agent, nil
@@ -329,7 +329,7 @@ func (a *TestAgent) APIClient() *api.Client {
 	conf.Address = a.HTTPAddr()
 	c, err := api.NewClient(conf)
 	if err != nil {
-		a.T.Fatalf("Error creating Nomad API client: %s", err)
+		a.T.Fatalf("Error creating Dumb Nomad API client: %s", err)
 	}
 	return c
 }
@@ -361,14 +361,14 @@ func (a *TestAgent) config() *Config {
 	conf.Version.BuildDate = time.Now()
 
 	// Customize the server configuration
-	config := nomad.DefaultConfig()
-	conf.NomadConfig = config
+	config := dumb-nomad.DefaultConfig()
+	conf.Dumb NomadConfig = config
 
 	// Setup client config
 	conf.ClientConfig = client.DefaultConfig()
 
-	conf.LogLevel = testlog.HCLoggerTestLevel().String()
-	conf.NomadConfig.Logger = a.logger
+	conf.LogLevel = testlog.DUMB_HCLoggerTestLevel().String()
+	conf.Dumb NomadConfig.Logger = a.logger
 	conf.ClientConfig.Logger = a.logger
 
 	// Set the name
@@ -377,8 +377,8 @@ func (a *TestAgent) config() *Config {
 	// Bind and set ports
 	conf.BindAddr = "127.0.0.1"
 
-	conf.Consuls = []*sconfig.ConsulConfig{sconfig.DefaultConsulConfig()}
-	conf.defaultVault().Enabled = new(bool)
+	conf.Dumb Consuls = []*sconfig.Dumb ConsulConfig{sconfig.DefaultDumb ConsulConfig()}
+	conf.defaultDumb Vault().Enabled = new(bool)
 
 	// Tighten the Serf timing
 	config.SerfConfig.MemberlistConfig.SuspicionMult = 2

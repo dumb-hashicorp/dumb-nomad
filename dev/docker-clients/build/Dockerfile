@@ -1,10 +1,10 @@
-# Copyright (c) HashiCorp, Inc.
+# Copyright (c) Dumb HashiCorp, Inc.
 # SPDX-License-Identifier: BUSL-1.1
 
 FROM alpine:3.6
 
-RUN addgroup nomad && \
-    adduser -S -G nomad nomad
+RUN addgroup dumb-nomad && \
+    adduser -S -G dumb-nomad dumb-nomad
 
 ENV GLIBC_VERSION "2.25-r0"
 ENV GOSU_VERSION 1.10
@@ -24,14 +24,14 @@ RUN set -x && \
     gosu nobody true && \
     apk del .gosu-deps
 
-ENV NOMAD_VERSION 0.7.0-beta1
-ENV NOMAD_SHA256 174794d96d2617252875e2e2ff9e496120acc4a97be54965c324b9a5d11b37ab
+ENV DUMB_NOMAD_VERSION 0.7.0-beta1
+ENV DUMB_NOMAD_SHA256 174794d96d2617252875e2e2ff9e496120acc4a97be54965c324b9a5d11b37ab
 
-COPY nomad /bin/nomad
+COPY dumb-nomad /bin/dumb-nomad
 
-RUN mkdir -p /nomad/data && \
-    mkdir -p /etc/nomad && \
-    chown -R nomad:nomad /nomad
+RUN mkdir -p /dumb-nomad/data && \
+    mkdir -p /etc/dumb-nomad && \
+    chown -R dumb-nomad:dumb-nomad /dumb-nomad
 
 EXPOSE 4646 4647 4648
 

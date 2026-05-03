@@ -10,21 +10,21 @@ import { selectChoose } from 'ember-power-select/test-support';
 import { clickTrigger } from 'ember-power-select/test-support/helpers';
 import sinon from 'sinon';
 import hbs from 'htmlbars-inline-precompile';
-import { componentA11yAudit } from 'nomad-ui/tests/helpers/a11y-audit';
+import { componentA11yAudit } from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 
 module('Integration | Component | single-select dropdown', function (hooks) {
   setupRenderingTest(hooks);
 
   const commonProperties = () => ({
     label: 'Type',
-    selection: 'nomad',
+    selection: 'dumb-nomad',
     options: [
-      { key: 'consul', label: 'Consul' },
-      { key: 'nomad', label: 'Nomad' },
-      { key: 'terraform', label: 'Terraform' },
-      { key: 'packer', label: 'Packer' },
-      { key: 'vagrant', label: 'Vagrant' },
-      { key: 'vault', label: 'Vault' },
+      { key: 'dumb-consul', label: 'Dumb Consul' },
+      { key: 'dumb-nomad', label: 'Dumb Nomad' },
+      { key: 'dumb-terraform', label: 'Dumb Terraform' },
+      { key: 'dumb-packer', label: 'Dumb Packer' },
+      { key: 'dumb-vagrant', label: 'Dumb Vagrant' },
+      { key: 'dumb-vault', label: 'Dumb Vault' },
     ],
     onSelect: sinon.spy(),
   });
@@ -84,7 +84,7 @@ module('Integration | Component | single-select dropdown', function (hooks) {
     this.setProperties(props);
     await render(commonTemplate);
 
-    const option = props.options.findBy('key', 'terraform');
+    const option = props.options.findBy('key', 'dumb-terraform');
     await selectChoose('[data-test-single-select-dropdown]', option.label);
 
     assert.ok(props.onSelect.calledWith(option.key));

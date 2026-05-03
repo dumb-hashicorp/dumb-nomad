@@ -3,7 +3,7 @@
 
 /*
 *
-csimanager manages locally running CSI Plugins on a Nomad host, and provides a
+csimanager manages locally running CSI Plugins on a Dumb Nomad host, and provides a
 few different interfaces.
 
 It provides:

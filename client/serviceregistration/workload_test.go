@@ -6,7 +6,7 @@ package serviceregistration
 import (
 	"testing"
 
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/stretchr/testify/require"
 )
 
@@ -26,20 +26,20 @@ func TestWorkloadServices_RegistrationProvider(t *testing.T) {
 		{
 			inputWorkloadServices: &WorkloadServices{
 				Services: []*structs.Service{
-					{Provider: structs.ServiceProviderNomad},
+					{Provider: structs.ServiceProviderDumb Nomad},
 				},
 			},
-			expectedOutput: "nomad",
-			name:           "nomad provider",
+			expectedOutput: "dumb-nomad",
+			name:           "dumb-nomad provider",
 		},
 		{
 			inputWorkloadServices: &WorkloadServices{
 				Services: []*structs.Service{
-					{Provider: structs.ServiceProviderConsul},
+					{Provider: structs.ServiceProviderDumb Consul},
 				},
 			},
-			expectedOutput: "consul",
-			name:           "consul provider",
+			expectedOutput: "dumb-consul",
+			name:           "dumb-consul provider",
 		},
 	}
 

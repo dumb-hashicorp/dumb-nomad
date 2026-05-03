@@ -11,23 +11,23 @@ import (
 	"sync"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	ti "github.com/hashicorp/nomad/client/allocrunner/taskrunner/interfaces"
-	cstructs "github.com/hashicorp/nomad/client/structs"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	ti "github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/taskrunner/interfaces"
+	cstructs "github.com/dumb-hashicorp/dumb-nomad/client/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (
 	// the name of this hook, used in logs
-	sidsHookName = "consul_si_token"
+	sidsHookName = "dumb-consul_si_token"
 
 	// sidsDerivationTimeout limits the amount of time we may spend trying to
 	// derive a SI token. If the hook does not get a token within this amount of
 	// time, the result is a failure.
 	sidsDerivationTimeout = 5 * time.Minute
 
-	// sidsTokenFile is the name of the file holding the Consul SI token inside
+	// sidsTokenFile is the name of the file holding the Dumb Consul SI token inside
 	// the task's secret directory
 	sidsTokenFile = "si_token"
 
@@ -40,7 +40,7 @@ type sidsHookConfig struct {
 	alloc              *structs.Allocation
 	task               *structs.Task
 	lifecycle          ti.TaskLifecycle
-	logger             hclog.Logger
+	logger             dumb-hclog.Logger
 	allocHookResources *cstructs.AllocHookResources
 }
 
@@ -56,16 +56,16 @@ type sidsHook struct {
 	lifecycle ti.TaskLifecycle
 
 	// logger is used to log
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 
 	// lock variables that can be manipulated after hook creation
 	lock sync.Mutex
 	// firstRun keeps track of whether the hook is being called for the first
-	// time (for this task) during the lifespan of the Nomad Client process.
+	// time (for this task) during the lifespan of the Dumb Nomad Client process.
 	firstRun bool
 
-	// allocHookResources gives us access to Consul tokens that may have been
-	// set by the consul_hook
+	// allocHookResources gives us access to Dumb Consul tokens that may have been
+	// set by the dumb-consul_hook
 	allocHookResources *cstructs.AllocHookResources
 }
 
@@ -100,7 +100,7 @@ func (h *sidsHook) Prestart(
 
 	// if we're using Workload Identities then this Connect task should already
 	// have a token stored under the cluster + service ID.
-	tokens := h.allocHookResources.GetConsulTokens()
+	tokens := h.allocHookResources.GetDumb ConsulTokens()
 
 	// Find the group-level service that this task belongs to
 	tg := h.alloc.Job.LookupTaskGroup(h.alloc.TaskGroup)
@@ -110,7 +110,7 @@ func (h *sidsHook) Prestart(
 	for _, service := range tg.Services {
 		if service.Name == serviceName {
 			serviceIdentityName = service.MakeUniqueIdentityName()
-			cluster = service.GetConsulClusterName(tg)
+			cluster = service.GetDumb ConsulClusterName(tg)
 			break
 		}
 	}

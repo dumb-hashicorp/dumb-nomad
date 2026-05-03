@@ -12,12 +12,12 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/helper/pointer"
-	"github.com/hashicorp/nomad/plugins/base"
-	"github.com/hashicorp/nomad/plugins/device"
-	"github.com/hashicorp/nomad/plugins/shared/hclspec"
-	"github.com/hashicorp/nomad/plugins/shared/structs"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/base"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/device"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/dumb-hclspec"
+	"github.com/dumb-hashicorp/dumb-nomad/plugins/shared/structs"
 	"github.com/kr/pretty"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -28,7 +28,7 @@ const (
 	pluginName = "example-fs-device"
 
 	// vendor is the vendor providing the devices
-	vendor = "nomad"
+	vendor = "dumb-nomad"
 
 	// deviceType is the type of device being returned
 	deviceType = "file"
@@ -47,18 +47,18 @@ var (
 	}
 
 	// configSpec is the specification of the plugin's configuration
-	configSpec = hclspec.NewObject(map[string]*hclspec.Spec{
-		"dir": hclspec.NewDefault(
-			hclspec.NewAttr("dir", "string", false),
-			hclspec.NewLiteral("\".\""),
+	configSpec = dumb-hclspec.NewObject(map[string]*dumb-hclspec.Spec{
+		"dir": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("dir", "string", false),
+			dumb-hclspec.NewLiteral("\".\""),
 		),
-		"list_period": hclspec.NewDefault(
-			hclspec.NewAttr("list_period", "string", false),
-			hclspec.NewLiteral("\"5s\""),
+		"list_period": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("list_period", "string", false),
+			dumb-hclspec.NewLiteral("\"5s\""),
 		),
-		"unhealthy_perm": hclspec.NewDefault(
-			hclspec.NewAttr("unhealthy_perm", "string", false),
-			hclspec.NewLiteral("\"-rwxrwxrwx\""),
+		"unhealthy_perm": dumb-hclspec.NewDefault(
+			dumb-hclspec.NewAttr("unhealthy_perm", "string", false),
+			dumb-hclspec.NewLiteral("\"-rwxrwxrwx\""),
 		),
 	})
 )
@@ -106,7 +106,7 @@ func (d *FsDevice) PluginInfo() (*base.PluginInfoResponse, error) {
 }
 
 // ConfigSchema returns the plugins configuration schema.
-func (d *FsDevice) ConfigSchema() (*hclspec.Spec, error) {
+func (d *FsDevice) ConfigSchema() (*dumb-hclspec.Spec, error) {
 	return configSpec, nil
 }
 

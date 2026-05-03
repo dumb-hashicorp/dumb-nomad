@@ -8,8 +8,8 @@ package proclib
 import (
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/cgroupslib"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/cgroupslib"
 	"oss.indeed.com/go/libtime/decay"
 )
 
@@ -19,7 +19,7 @@ import (
 // e.g. Ubuntu 20.04 / RHEL 8 and previous versions.
 type LinuxWranglerCG1 struct {
 	task Task
-	log  hclog.Logger
+	log  dumb-hclog.Logger
 	cg   cgroupslib.Lifecycle
 }
 

@@ -8,9 +8,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/testutil"
-	"github.com/hashicorp/nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
 	"github.com/shoenig/go-landlock"
 	"github.com/shoenig/test/must"
 )
@@ -22,7 +22,7 @@ func TestLandlockFingerprint(t *testing.T) {
 	version, err := landlock.Detect()
 	must.NoError(t, err)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	f := NewLandlockFingerprint(logger)
 
 	var response FingerprintResponse
@@ -41,7 +41,7 @@ func TestLandlockFingerprint(t *testing.T) {
 func TestLandlockFingerprint_absent(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	f := NewLandlockFingerprint(logger)
 	f.(*LandlockFingerprint).detector = func() (int, error) {
 		return 0, nil
@@ -58,7 +58,7 @@ func TestLandlockFingerprint_absent(t *testing.T) {
 func TestLandlockFingerprint_error(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	f := NewLandlockFingerprint(logger)
 	f.(*LandlockFingerprint).detector = func() (int, error) {
 		return 0, errors.New("oops")

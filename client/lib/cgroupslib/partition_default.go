@@ -6,12 +6,12 @@
 package cgroupslib
 
 import (
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/lib/idset"
-	"github.com/hashicorp/nomad/client/lib/numalib/hw"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/idset"
+	"github.com/dumb-hashicorp/dumb-nomad/client/lib/numalib/hw"
 )
 
 // GetPartition creates a no-op Partition that does not do anything.
-func GetPartition(log hclog.Logger, cores *idset.Set[hw.CoreID]) Partition {
+func GetPartition(log dumb-hclog.Logger, cores *idset.Set[hw.CoreID]) Partition {
 	return NoopPartition()
 }

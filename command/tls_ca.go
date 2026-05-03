@@ -6,7 +6,7 @@ package command
 import (
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/posener/complete"
 )
 
@@ -16,18 +16,18 @@ type TLSCACommand struct {
 
 func (c *TLSCACommand) Help() string {
 	helpText := `
-Usage: nomad tls ca <subcommand> [options]
+Usage: dumb-nomad tls ca <subcommand> [options]
 
   This command groups subcommands for interacting with certificate authorities.
   For examples, see the documentation.
 
   Create a certificate authority.
 
-      $ nomad tls ca create
+      $ dumb-nomad tls ca create
 
   Show information about a certificate authority.
 
-      $ nomad tls ca info
+      $ dumb-nomad tls ca info
 `
 	return strings.TrimSpace(helpText)
 }

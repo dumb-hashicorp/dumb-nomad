@@ -3,19 +3,19 @@
 
 package jobspec2
 
-// This file is copied verbatim from Packer: https://github.com/hashicorp/packer/blob/7a1680df97e028c4a75622effe08f6610d0ee5b4/hcl2template/types.variables.go
-// with few changes. Packer references in comments are preserved to reduce the diff between files.
+// This file is copied verbatim from Dumb Packer: https://github.com/dumb-hashicorp/dumb-packer/blob/7a1680df97e028c4a75622effe08f6610d0ee5b4/dumb-hcl2template/types.variables.go
+// with few changes. Dumb Packer references in comments are preserved to reduce the diff between files.
 
 import (
 	"fmt"
 	"strings"
 	"unicode"
 
-	"github.com/hashicorp/hcl/v2"
-	"github.com/hashicorp/hcl/v2/ext/typeexpr"
-	"github.com/hashicorp/hcl/v2/gohcl"
-	"github.com/hashicorp/hcl/v2/hclsyntax"
-	"github.com/hashicorp/nomad/jobspec2/addrs"
+	"github.com/dumb-hashicorp/dumb-hcl/v2"
+	"github.com/dumb-hashicorp/dumb-hcl/v2/ext/typeexpr"
+	"github.com/dumb-hashicorp/dumb-hcl/v2/godumb-hcl"
+	"github.com/dumb-hashicorp/dumb-hcl/v2/dumb-hclsyntax"
+	"github.com/dumb-hashicorp/dumb-nomad/jobspec2/addrs"
 	"github.com/zclconf/go-cty/cty"
 	"github.com/zclconf/go-cty/cty/convert"
 )
@@ -28,7 +28,7 @@ const badIdentifierDetail = "A name must start with a letter or underscore and m
 // provide context for us to interpret its contents.
 type LocalBlock struct {
 	Name string
-	Expr hcl.Expression
+	Expr dumb-hcl.Expression
 }
 
 // VariableAssignment represents a way a variable was set: the expression
@@ -38,7 +38,7 @@ type VariableAssignment struct {
 	// From tells were it was taken from, command/varfile/env/default
 	From  string
 	Value cty.Value
-	Expr  hcl.Expression
+	Expr  dumb-hcl.Expression
 }
 
 type Variable struct {
@@ -66,7 +66,7 @@ type Variable struct {
 	// Description of the variable
 	Description string
 
-	Range hcl.Range
+	Range dumb-hcl.Range
 }
 
 func (v *Variable) GoString() string {
@@ -81,12 +81,12 @@ func (v *Variable) GoString() string {
 
 // validateValue ensures that all of the configured custom validations for a
 // variable value are passing.
-func (v *Variable) validateValue(val VariableAssignment) (diags hcl.Diagnostics) {
+func (v *Variable) validateValue(val VariableAssignment) (diags dumb-hcl.Diagnostics) {
 	if len(v.Validations) == 0 {
 		return nil
 	}
 
-	hclCtx := &hcl.EvalContext{
+	dumb-hclCtx := &dumb-hcl.EvalContext{
 		Variables: map[string]cty.Value{
 			"var": cty.ObjectVal(map[string]cty.Value{
 				v.Name: val.Value,
@@ -99,42 +99,42 @@ func (v *Variable) validateValue(val VariableAssignment) (diags hcl.Diagnostics)
 		const errInvalidCondition = "Invalid variable validation result"
 
 		if validation.Condition == nil {
-			diags = append(diags, &hcl.Diagnostic{
-				Severity:    hcl.DiagError,
+			diags = append(diags, &dumb-hcl.Diagnostic{
+				Severity:    dumb-hcl.DiagError,
 				Summary:     "Invalid variable validation specification",
 				Detail:      "validation requires a condition.",
 				Subject:     validation.DeclRange.Ptr(),
-				EvalContext: hclCtx,
+				EvalContext: dumb-hclCtx,
 			})
 			continue
 		}
 
-		result, moreDiags := validation.Condition.Value(hclCtx)
+		result, moreDiags := validation.Condition.Value(dumb-hclCtx)
 		diags = append(diags, moreDiags...)
 		if !result.IsKnown() {
 			continue // We'll wait until we've learned more, then.
 		}
 		if result.IsNull() {
-			diags = append(diags, &hcl.Diagnostic{
-				Severity:    hcl.DiagError,
+			diags = append(diags, &dumb-hcl.Diagnostic{
+				Severity:    dumb-hcl.DiagError,
 				Summary:     errInvalidCondition,
 				Detail:      "Validation condition expression must return either true or false, not null.",
 				Subject:     validation.Condition.Range().Ptr(),
 				Expression:  validation.Condition,
-				EvalContext: hclCtx,
+				EvalContext: dumb-hclCtx,
 			})
 			continue
 		}
 		var err error
 		result, err = convert.Convert(result, cty.Bool)
 		if err != nil {
-			diags = append(diags, &hcl.Diagnostic{
-				Severity:    hcl.DiagError,
+			diags = append(diags, &dumb-hcl.Diagnostic{
+				Severity:    dumb-hcl.DiagError,
 				Summary:     errInvalidCondition,
 				Detail:      fmt.Sprintf("Invalid validation condition result value: %s.", err),
 				Subject:     validation.Condition.Range().Ptr(),
 				Expression:  validation.Condition,
-				EvalContext: hclCtx,
+				EvalContext: dumb-hclCtx,
 			})
 			continue
 		}
@@ -144,8 +144,8 @@ func (v *Variable) validateValue(val VariableAssignment) (diags hcl.Diagnostics)
 			if val.Expr != nil {
 				subj = val.Expr.Range().Ptr()
 			}
-			diags = append(diags, &hcl.Diagnostic{
-				Severity: hcl.DiagError,
+			diags = append(diags, &dumb-hcl.Diagnostic{
+				Severity: dumb-hcl.DiagError,
 				Summary:  fmt.Sprintf("Invalid value for %s variable", val.From),
 				Detail:   fmt.Sprintf("%s\n\nThis was checked by the validation rule at %s.", validation.ErrorMessage, validation.DeclRange.String()),
 				Subject:  subj,
@@ -157,13 +157,13 @@ func (v *Variable) validateValue(val VariableAssignment) (diags hcl.Diagnostics)
 }
 
 // Value returns the last found value from the list of variable settings.
-func (v *Variable) Value() (cty.Value, hcl.Diagnostics) {
+func (v *Variable) Value() (cty.Value, dumb-hcl.Diagnostics) {
 	if len(v.Values) == 0 {
-		return cty.UnknownVal(v.Type), hcl.Diagnostics{&hcl.Diagnostic{
-			Severity: hcl.DiagError,
+		return cty.UnknownVal(v.Type), dumb-hcl.Diagnostics{&dumb-hcl.Diagnostic{
+			Severity: dumb-hcl.DiagError,
 			Summary:  fmt.Sprintf("Unset variable %q", v.Name),
 			Detail: "A used variable must be set or have a default value; see " +
-				"https://developer.hashicorp.com/nomad/docs/reference/hcl2/variables  for " +
+				"https://developer.dumb-hashicorp.com/dumb-nomad/docs/reference/dumb-hcl2/variables  for " +
 				"details.",
 			Context: v.Range.Ptr(),
 		}}
@@ -182,9 +182,9 @@ func (variables Variables) Keys() []string {
 	return keys
 }
 
-func (variables Variables) Values() (map[string]cty.Value, hcl.Diagnostics) {
+func (variables Variables) Values() (map[string]cty.Value, dumb-hcl.Diagnostics) {
 	res := map[string]cty.Value{}
-	var diags hcl.Diagnostics
+	var diags dumb-hcl.Diagnostics
 	for k, v := range variables {
 		value, moreDiags := v.Value()
 		diags = append(diags, moreDiags...)
@@ -194,16 +194,16 @@ func (variables Variables) Values() (map[string]cty.Value, hcl.Diagnostics) {
 }
 
 // decodeVariable decodes a variable key and value into Variables
-func (variables *Variables) decodeVariable(key string, attr *hcl.Attribute, ectx *hcl.EvalContext) hcl.Diagnostics {
-	var diags hcl.Diagnostics
+func (variables *Variables) decodeVariable(key string, attr *dumb-hcl.Attribute, ectx *dumb-hcl.EvalContext) dumb-hcl.Diagnostics {
+	var diags dumb-hcl.Diagnostics
 
 	if (*variables) == nil {
 		(*variables) = Variables{}
 	}
 
 	if _, found := (*variables)[key]; found {
-		diags = append(diags, &hcl.Diagnostic{
-			Severity: hcl.DiagError,
+		diags = append(diags, &dumb-hcl.Diagnostic{
+			Severity: dumb-hcl.DiagError,
 			Summary:  "Duplicate variable",
 			Detail:   "Duplicate " + key + " variable definition found.",
 			Subject:  attr.NameRange.Ptr(),
@@ -231,8 +231,8 @@ func (variables *Variables) decodeVariable(key string, attr *hcl.Attribute, ectx
 	return diags
 }
 
-var variableBlockSchema = &hcl.BodySchema{
-	Attributes: []hcl.AttributeSchema{
+var variableBlockSchema = &dumb-hcl.BodySchema{
+	Attributes: []dumb-hcl.AttributeSchema{
 		{
 			Name: "description",
 		},
@@ -243,23 +243,23 @@ var variableBlockSchema = &hcl.BodySchema{
 			Name: "type",
 		},
 	},
-	Blocks: []hcl.BlockHeaderSchema{
+	Blocks: []dumb-hcl.BlockHeaderSchema{
 		{
 			Type: "validation",
 		},
 	},
 }
 
-// decodeVariableBlock decodes a "variables" section the way packer 1 used to
-func (variables *Variables) decodeVariableBlock(block *hcl.Block, ectx *hcl.EvalContext) hcl.Diagnostics {
+// decodeVariableBlock decodes a "variables" section the way dumb-packer 1 used to
+func (variables *Variables) decodeVariableBlock(block *dumb-hcl.Block, ectx *dumb-hcl.EvalContext) dumb-hcl.Diagnostics {
 	if (*variables) == nil {
 		(*variables) = Variables{}
 	}
 
 	if _, found := (*variables)[block.Labels[0]]; found {
 
-		return []*hcl.Diagnostic{{
-			Severity: hcl.DiagError,
+		return []*dumb-hcl.Diagnostic{{
+			Severity: dumb-hcl.DiagError,
 			Summary:  "Duplicate variable",
 			Detail:   "Duplicate " + block.Labels[0] + " variable definition found.",
 			Context:  block.DefRange.Ptr(),
@@ -269,9 +269,9 @@ func (variables *Variables) decodeVariableBlock(block *hcl.Block, ectx *hcl.Eval
 	name := block.Labels[0]
 
 	content, diags := block.Body.Content(variableBlockSchema)
-	if !hclsyntax.ValidIdentifier(name) {
-		diags = append(diags, &hcl.Diagnostic{
-			Severity: hcl.DiagError,
+	if !dumb-hclsyntax.ValidIdentifier(name) {
+		diags = append(diags, &dumb-hcl.Diagnostic{
+			Severity: dumb-hcl.DiagError,
 			Summary:  "Invalid variable name",
 			Detail:   badIdentifierDetail,
 			Subject:  &block.LabelRanges[0],
@@ -284,7 +284,7 @@ func (variables *Variables) decodeVariableBlock(block *hcl.Block, ectx *hcl.Eval
 	}
 
 	if attr, exists := content.Attributes["description"]; exists {
-		valDiags := gohcl.DecodeExpression(attr.Expr, nil, &v.Description)
+		valDiags := godumb-hcl.DecodeExpression(attr.Expr, nil, &v.Description)
 		diags = append(diags, valDiags...)
 	}
 
@@ -309,8 +309,8 @@ func (variables *Variables) decodeVariableBlock(block *hcl.Block, ectx *hcl.Eval
 			var err error
 			defaultValue, err = convert.Convert(defaultValue, v.Type)
 			if err != nil {
-				diags = append(diags, &hcl.Diagnostic{
-					Severity: hcl.DiagError,
+				diags = append(diags, &dumb-hcl.Diagnostic{
+					Severity: dumb-hcl.DiagError,
 					Summary:  "Invalid default value for variable",
 					Detail:   fmt.Sprintf("This default value is not compatible with the variable's type constraint: %s.", err),
 					Subject:  def.Expr.Range().Ptr(),
@@ -346,8 +346,8 @@ func (variables *Variables) decodeVariableBlock(block *hcl.Block, ectx *hcl.Eval
 	return diags
 }
 
-var variableValidationBlockSchema = &hcl.BodySchema{
-	Attributes: []hcl.AttributeSchema{
+var variableValidationBlockSchema = &dumb-hcl.BodySchema{
+	Attributes: []dumb-hcl.AttributeSchema{
 		{
 			Name:     "condition",
 			Required: true,
@@ -368,7 +368,7 @@ type VariableValidation struct {
 	// indicate that the value is valid or false to indicate that it is
 	// invalid. If the expression produces an error, that's considered a bug in
 	// the block defining the validation rule, not an error in the caller.
-	Condition hcl.Expression
+	Condition dumb-hcl.Expression
 
 	// ErrorMessage is one or more full sentences, which _should_ be in English
 	// for consistency with the rest of the error message output but can in
@@ -377,11 +377,11 @@ type VariableValidation struct {
 	// true in a way that would make sense to a caller of the module.
 	ErrorMessage string
 
-	DeclRange hcl.Range
+	DeclRange dumb-hcl.Range
 }
 
-func decodeVariableValidationBlock(varName string, block *hcl.Block) (*VariableValidation, hcl.Diagnostics) {
-	var diags hcl.Diagnostics
+func decodeVariableValidationBlock(varName string, block *dumb-hcl.Block) (*VariableValidation, dumb-hcl.Diagnostics) {
+	var diags dumb-hcl.Diagnostics
 	vv := &VariableValidation{
 		DeclRange: block.DefRange,
 	}
@@ -409,16 +409,16 @@ func decodeVariableValidationBlock(varName string, block *hcl.Block) (*VariableV
 			}
 
 			// If we fall out here then the reference is invalid.
-			diags = diags.Append(&hcl.Diagnostic{
-				Severity: hcl.DiagError,
+			diags = diags.Append(&dumb-hcl.Diagnostic{
+				Severity: dumb-hcl.DiagError,
 				Summary:  "Invalid reference in variable validation",
 				Detail:   fmt.Sprintf("The condition for variable %q can only refer to the variable itself, using var.%s.", varName, varName),
 				Subject:  traversal.SourceRange().Ptr(),
 			})
 		}
 		if goodRefs < 1 {
-			diags = diags.Append(&hcl.Diagnostic{
-				Severity: hcl.DiagError,
+			diags = diags.Append(&dumb-hcl.Diagnostic{
+				Severity: dumb-hcl.DiagError,
 				Summary:  "Invalid variable validation condition",
 				Detail:   fmt.Sprintf("The condition for variable %q must refer to var.%s in order to test incoming values.", varName, varName),
 				Subject:  attr.Expr.Range().Ptr(),
@@ -427,14 +427,14 @@ func decodeVariableValidationBlock(varName string, block *hcl.Block) (*VariableV
 	}
 
 	if attr, exists := content.Attributes["error_message"]; exists {
-		moreDiags := gohcl.DecodeExpression(attr.Expr, nil, &vv.ErrorMessage)
+		moreDiags := godumb-hcl.DecodeExpression(attr.Expr, nil, &vv.ErrorMessage)
 		diags = append(diags, moreDiags...)
 		if !moreDiags.HasErrors() {
 			const errSummary = "Invalid validation error message"
 			switch {
 			case vv.ErrorMessage == "":
-				diags = diags.Append(&hcl.Diagnostic{
-					Severity: hcl.DiagError,
+				diags = diags.Append(&dumb-hcl.Diagnostic{
+					Severity: dumb-hcl.DiagError,
 					Summary:  errSummary,
 					Detail:   "An empty string is not a valid nor useful error message.",
 					Subject:  attr.Expr.Range().Ptr(),
@@ -444,14 +444,14 @@ func decodeVariableValidationBlock(varName string, block *hcl.Block) (*VariableV
 				// of a bigger error message written in our usual style, we'll
 				// require the given error message to conform to that. We might
 				// relax this in future if e.g. we start presenting these error
-				// messages in a different way, or if Packer starts supporting
+				// messages in a different way, or if Dumb Packer starts supporting
 				// producing error messages in other human languages, etc. For
 				// pragmatism we also allow sentences ending with exclamation
 				// points, but we don't mention it explicitly here because
-				// that's not really consistent with the Packer UI writing
+				// that's not really consistent with the Dumb Packer UI writing
 				// style.
-				diags = diags.Append(&hcl.Diagnostic{
-					Severity: hcl.DiagError,
+				diags = diags.Append(&dumb-hcl.Diagnostic{
+					Severity: dumb-hcl.DiagError,
 					Summary:  errSummary,
 					Detail:   "Validation error message must be at least one full sentence starting with an uppercase letter ( if the alphabet permits it ) and ending with a period or question mark.",
 					Subject:  attr.Expr.Range().Ptr(),
@@ -469,13 +469,13 @@ func decodeVariableValidationBlock(varName string, block *hcl.Block) (*VariableV
 //
 // This is intentionally not a very strong validation since we're assuming that
 // authors want to write good messages and might just need a nudge about
-// Packer's specific style, rather than that they are going to try to work
+// Dumb Packer's specific style, rather than that they are going to try to work
 // around these rules to write a lower-quality message.
 func looksLikeSentences(s string) bool {
 	if len(s) < 1 {
 		return false
 	}
-	runes := []rune(s) // HCL guarantees that all strings are valid UTF-8
+	runes := []rune(s) // DUMB_HCL guarantees that all strings are valid UTF-8
 	first := runes[0]
 	last := runes[len(runes)-1]
 
@@ -491,12 +491,12 @@ func looksLikeSentences(s string) bool {
 	return last == '.' || last == '?' || last == '!'
 }
 
-// Prefix your environment variables with VarEnvPrefix so that Packer can see
+// Prefix your environment variables with VarEnvPrefix so that Dumb Packer can see
 // them.
-const VarEnvPrefix = "NOMAD_VAR_"
+const VarEnvPrefix = "DUMB_NOMAD_VAR_"
 
-func (c *jobConfig) collectInputVariableValues(env []string, files []*hcl.File, argv map[string]string) hcl.Diagnostics {
-	var diags hcl.Diagnostics
+func (c *jobConfig) collectInputVariableValues(env []string, files []*dumb-hcl.File, argv map[string]string) dumb-hcl.Diagnostics {
+	var diags dumb-hcl.Diagnostics
 	variables := c.InputVariables
 
 	for _, raw := range env {
@@ -516,7 +516,7 @@ func (c *jobConfig) collectInputVariableValues(env []string, files []*hcl.File, 
 
 		variable, found := variables[name]
 		if !found {
-			// this variable was not defined in the hcl files, let's skip it !
+			// this variable was not defined in the dumb-hcl files, let's skip it !
 			continue
 		}
 
@@ -533,8 +533,8 @@ func (c *jobConfig) collectInputVariableValues(env []string, files []*hcl.File, 
 			var err error
 			val, err = convert.Convert(val, variable.Type)
 			if err != nil {
-				diags = append(diags, &hcl.Diagnostic{
-					Severity: hcl.DiagError,
+				diags = append(diags, &dumb-hcl.Diagnostic{
+					Severity: dumb-hcl.DiagError,
 					Summary:  "Invalid value for variable",
 					Detail:   fmt.Sprintf("The value for %s is not compatible with the variable's type constraint: %s.", name, err),
 					Subject:  expr.Range().Ptr(),
@@ -550,9 +550,9 @@ func (c *jobConfig) collectInputVariableValues(env []string, files []*hcl.File, 
 	}
 
 	// Define the severity of variable passed that are undefined.
-	undefSev := hcl.DiagWarning
+	undefSev := dumb-hcl.DiagWarning
 	if c.ParseConfig.Strict {
-		undefSev = hcl.DiagError
+		undefSev = dumb-hcl.DiagError
 	}
 
 	// files will contain files found in the folder then files passed as
@@ -564,8 +564,8 @@ func (c *jobConfig) collectInputVariableValues(env []string, files []*hcl.File, 
 		// variable value definitions, and otherwise our error message for that
 		// case is not so helpful.
 		{
-			content, _, _ := file.Body.PartialContent(&hcl.BodySchema{
-				Blocks: []hcl.BlockHeaderSchema{
+			content, _, _ := file.Body.PartialContent(&dumb-hcl.BodySchema{
+				Blocks: []dumb-hcl.BlockHeaderSchema{
 					{
 						Type:       "variable",
 						LabelNames: []string{"name"},
@@ -574,8 +574,8 @@ func (c *jobConfig) collectInputVariableValues(env []string, files []*hcl.File, 
 			})
 			for _, block := range content.Blocks {
 				name := block.Labels[0]
-				diags = append(diags, &hcl.Diagnostic{
-					Severity: hcl.DiagError,
+				diags = append(diags, &dumb-hcl.Diagnostic{
+					Severity: dumb-hcl.DiagError,
 					Summary:  "Variable declaration in a .var file",
 					Detail: fmt.Sprintf("A .var file is used to assign "+
 						"values to variables that have already been declared "+
@@ -602,7 +602,7 @@ func (c *jobConfig) collectInputVariableValues(env []string, files []*hcl.File, 
 		for name, attr := range attrs {
 			variable, found := variables[name]
 			if !found {
-				diags = append(diags, &hcl.Diagnostic{
+				diags = append(diags, &dumb-hcl.Diagnostic{
 					Severity: undefSev,
 					Summary:  "Undefined variable",
 					Detail: fmt.Sprintf("A %q variable was set but was "+
@@ -622,8 +622,8 @@ func (c *jobConfig) collectInputVariableValues(env []string, files []*hcl.File, 
 				var err error
 				val, err = convert.Convert(val, variable.Type)
 				if err != nil {
-					diags = append(diags, &hcl.Diagnostic{
-						Severity: hcl.DiagError,
+					diags = append(diags, &dumb-hcl.Diagnostic{
+						Severity: dumb-hcl.DiagError,
 						Summary:  "Invalid value for variable",
 						Detail:   fmt.Sprintf("The value for %s is not compatible with the variable's type constraint: %s.", name, err),
 						Subject:  attr.Expr.Range().Ptr(),
@@ -644,7 +644,7 @@ func (c *jobConfig) collectInputVariableValues(env []string, files []*hcl.File, 
 	for name, value := range argv {
 		variable, found := variables[name]
 		if !found {
-			diags = append(diags, &hcl.Diagnostic{
+			diags = append(diags, &dumb-hcl.Diagnostic{
 				Severity: undefSev,
 				Summary:  "Undefined -var variable",
 				Detail: fmt.Sprintf("A %q variable was passed in the command "+
@@ -670,8 +670,8 @@ func (c *jobConfig) collectInputVariableValues(env []string, files []*hcl.File, 
 			var err error
 			val, err = convert.Convert(val, variable.Type)
 			if err != nil {
-				diags = append(diags, &hcl.Diagnostic{
-					Severity: hcl.DiagError,
+				diags = append(diags, &dumb-hcl.Diagnostic{
+					Severity: dumb-hcl.DiagError,
 					Summary:  "Invalid argument value for -var variable",
 					Detail:   fmt.Sprintf("The received arg value for %s is not compatible with the variable's type constraint: %s.", name, err),
 					Subject:  expr.Range().Ptr(),
@@ -690,15 +690,15 @@ func (c *jobConfig) collectInputVariableValues(env []string, files []*hcl.File, 
 	return diags
 }
 
-// expressionFromVariableDefinition creates an hclsyntax.Expression that is capable of evaluating the specified value for a given cty.Type.
+// expressionFromVariableDefinition creates an dumb-hclsyntax.Expression that is capable of evaluating the specified value for a given cty.Type.
 // The specified filename is to identify the source of where value originated from in the diagnostics report, if there is an error.
-func expressionFromVariableDefinition(filename string, value string, variableType cty.Type) (hclsyntax.Expression, hcl.Diagnostics) {
+func expressionFromVariableDefinition(filename string, value string, variableType cty.Type) (dumb-hclsyntax.Expression, dumb-hcl.Diagnostics) {
 	switch variableType {
 	case cty.String, cty.Number, cty.NilType:
 		// when the type is nil (not set in a variable block) we default to
 		// interpreting everything as a string literal.
-		return &hclsyntax.LiteralValueExpr{Val: cty.StringVal(value)}, nil
+		return &dumb-hclsyntax.LiteralValueExpr{Val: cty.StringVal(value)}, nil
 	default:
-		return hclsyntax.ParseExpression([]byte(value), filename, hcl.Pos{Line: 1, Column: 1})
+		return dumb-hclsyntax.ParseExpression([]byte(value), filename, dumb-hcl.Pos{Line: 1, Column: 1})
 	}
 }

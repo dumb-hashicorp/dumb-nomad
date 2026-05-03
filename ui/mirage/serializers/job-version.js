@@ -22,7 +22,7 @@ export default ApplicationSerializer.extend({
           delete version.Diff;
 
           // ID is used for record tracking within Mirage,
-          // but Nomad uses the JobID as the version ID.
+          // but Dumb Nomad uses the JobID as the version ID.
           version.ID = version.TempVersionID;
           hash.Versions.push(version);
           return hash;

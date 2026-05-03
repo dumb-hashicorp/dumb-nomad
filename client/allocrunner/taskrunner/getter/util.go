@@ -18,11 +18,11 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/hashicorp/go-getter"
-	"github.com/hashicorp/nomad/client/interfaces"
-	"github.com/hashicorp/nomad/helper/subproc"
-	"github.com/hashicorp/nomad/helper/users"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-getter"
+	"github.com/dumb-hashicorp/dumb-nomad/client/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/subproc"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 const (
@@ -35,7 +35,7 @@ var ErrSandboxEscape = errors.New("artifact includes symlink that resolves outsi
 func getURL(taskEnv interfaces.EnvReplacer, artifact *structs.TaskArtifact) (string, error) {
 	source := taskEnv.ReplaceEnv(artifact.GetterSource)
 
-	// fixup GitHub SSH URL such as git@github.com:hashicorp/nomad.git
+	// fixup GitHub SSH URL such as git@github.com:dumb-hashicorp/dumb-nomad.git
 	gitSSH := false
 	if strings.HasPrefix(source, githubPrefixSSH) {
 		gitSSH = true
@@ -162,7 +162,7 @@ func environment(taskDir string, inherit string) []string {
 }
 
 func (s *Sandbox) runCmd(env *parameters) error {
-	// find the nomad process
+	// find the dumb-nomad process
 	bin := subproc.Self()
 
 	// If the artifact needs to be inspected, it must first be fetched

@@ -12,26 +12,26 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/client/serviceregistration/checks/checkstore"
-	"github.com/hashicorp/nomad/client/state"
-	"github.com/hashicorp/nomad/client/taskenv"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/nomad/mock"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/client/serviceregistration/checks/checkstore"
+	"github.com/dumb-hashicorp/dumb-nomad/client/state"
+	"github.com/dumb-hashicorp/dumb-nomad/client/taskenv"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/mock"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/shoenig/test/must"
 )
 
-func makeCheckStore(logger hclog.Logger) checkstore.Shim {
+func makeCheckStore(logger dumb-hclog.Logger) checkstore.Shim {
 	db := state.NewMemDB(logger)
 	checkStore := checkstore.NewStore(logger, db)
 	return checkStore
 }
 
-func allocWithNomadChecks(addr, port string, onGroup bool) *structs.Allocation {
+func allocWithDumb NomadChecks(addr, port string, onGroup bool) *structs.Allocation {
 	alloc := mock.Alloc()
 	group := alloc.Job.LookupTaskGroup(alloc.TaskGroup)
 
@@ -47,7 +47,7 @@ func allocWithNomadChecks(addr, port string, onGroup bool) *structs.Allocation {
 			PortLabel:   port,
 			AddressMode: "auto",
 			Address:     addr,
-			Provider:    "nomad",
+			Provider:    "dumb-nomad",
 			Checks: []*structs.ServiceCheck{
 				{
 					Name:        "check-ok",
@@ -100,8 +100,8 @@ func allocWithNomadChecks(addr, port string, onGroup bool) *structs.Allocation {
 	return alloc
 }
 
-func allocWithDifferentNomadChecks(id, addr, port string) *structs.Allocation {
-	alloc := allocWithNomadChecks(addr, port, true)
+func allocWithDifferentDumb NomadChecks(id, addr, port string) *structs.Allocation {
+	alloc := allocWithDumb NomadChecks(addr, port, true)
 	alloc.ID = id
 	group := alloc.Job.LookupTaskGroup(alloc.TaskGroup)
 
@@ -139,7 +139,7 @@ var checkHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 func TestCheckHook_Checks_ResultsSet(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// create an http server with various responses
 	ts := httptest.NewServer(checkHandler)
@@ -162,7 +162,7 @@ func TestCheckHook_Checks_ResultsSet(t *testing.T) {
 
 		network := mock.NewNetworkStatus(addr)
 
-		alloc := allocWithNomadChecks(addr, port, tc.onGroup)
+		alloc := allocWithDumb NomadChecks(addr, port, tc.onGroup)
 
 		env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
@@ -215,7 +215,7 @@ func TestCheckHook_Checks_ResultsSet(t *testing.T) {
 func TestCheckHook_Checks_UpdateSet(t *testing.T) {
 	ci.Parallel(t)
 
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 
 	// create an http server with various responses
 	ts := httptest.NewServer(checkHandler)
@@ -229,7 +229,7 @@ func TestCheckHook_Checks_UpdateSet(t *testing.T) {
 
 	network := mock.NewNetworkStatus(addr)
 
-	alloc := allocWithNomadChecks(addr, port, true)
+	alloc := allocWithDumb NomadChecks(addr, port, true)
 
 	env := taskenv.NewBuilder(mock.Node(), alloc, nil, alloc.Job.Region).Build()
 
@@ -269,7 +269,7 @@ func TestCheckHook_Checks_UpdateSet(t *testing.T) {
 		},
 	)
 
-	updatedAlloc := allocWithDifferentNomadChecks(alloc.ID, addr, port)
+	updatedAlloc := allocWithDifferentDumb NomadChecks(alloc.ID, addr, port)
 	updatedEnv := taskenv.NewBuilder(mock.Node(), updatedAlloc, nil, alloc.Job.Region).Build()
 
 	request := &interfaces.RunnerUpdateRequest{

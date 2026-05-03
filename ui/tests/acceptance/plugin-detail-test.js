@@ -8,11 +8,11 @@ import { module, test } from 'qunit';
 import { currentURL } from '@ember/test-helpers';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import a11yAudit from 'nomad-ui/tests/helpers/a11y-audit';
+import a11yAudit from 'dumb-nomad-ui/tests/helpers/a11y-audit';
 import moment from 'moment';
-import { formatBytes, formatHertz } from 'nomad-ui/utils/units';
-import PluginDetail from 'nomad-ui/tests/pages/storage/plugins/detail';
-import Layout from 'nomad-ui/tests/pages/layout';
+import { formatBytes, formatHertz } from 'dumb-nomad-ui/utils/units';
+import PluginDetail from 'dumb-nomad-ui/tests/pages/storage/plugins/detail';
+import Layout from 'dumb-nomad-ui/tests/pages/layout';
 
 module('Acceptance | plugin detail', function (hooks) {
   setupApplicationTest(hooks);
@@ -45,7 +45,7 @@ module('Acceptance | plugin detail', function (hooks) {
   test('/storage/plugins/:id should show the plugin name in the title', async function (assert) {
     await PluginDetail.visit({ id: plugin.id });
 
-    assert.equal(document.title, `CSI Plugin ${plugin.id} - Nomad`);
+    assert.equal(document.title, `CSI Plugin ${plugin.id} - Dumb Nomad`);
     assert.equal(PluginDetail.title, plugin.id);
   });
 

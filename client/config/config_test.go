@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/hashicorp/consul-template/config"
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/helper/pointer"
+	"github.com/dumb-hashicorp/dumb-consul-template/config"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/pointer"
 	"github.com/shoenig/test/must"
 )
 
@@ -281,7 +281,7 @@ func TestWaitConfig_Merge(t *testing.T) {
 	}
 }
 
-func TestWaitConfig_ToConsulTemplate(t *testing.T) {
+func TestWaitConfig_ToDumb ConsulTemplate(t *testing.T) {
 	ci.Parallel(t)
 
 	expected := config.WaitConfig{
@@ -295,7 +295,7 @@ func TestWaitConfig_ToConsulTemplate(t *testing.T) {
 		Max: pointer.Of(10 * time.Second),
 	}
 
-	actual, err := clientWaitConfig.ToConsulTemplate()
+	actual, err := clientWaitConfig.ToDumb ConsulTemplate()
 	must.NoError(t, err)
 	must.Eq(t, *expected.Enabled, *actual.Enabled)
 	must.Eq(t, *expected.Min, *actual.Min)
@@ -312,7 +312,7 @@ func TestWaitConfig_ToConsulTemplate(t *testing.T) {
 		Max: pointer.Of(0 * time.Second),
 	}
 
-	actual, err = clientWaitConfig.ToConsulTemplate()
+	actual, err = clientWaitConfig.ToDumb ConsulTemplate()
 	must.NoError(t, err)
 	must.Eq(t, *expected.Min, *actual.Min)
 	must.Eq(t, *expected.Max, *actual.Max)
@@ -322,9 +322,9 @@ func mockRetryConfig() *RetryConfig {
 	return &RetryConfig{
 		Attempts:      pointer.Of(5),
 		Backoff:       pointer.Of(5 * time.Second),
-		BackoffHCL:    "5s",
+		BackoffDUMB_HCL:    "5s",
 		MaxBackoff:    pointer.Of(10 * time.Second),
-		MaxBackoffHCL: "10s",
+		MaxBackoffDUMB_HCL: "10s",
 	}
 }
 func TestRetryConfig_Copy(t *testing.T) {
@@ -341,9 +341,9 @@ func TestRetryConfig_Copy(t *testing.T) {
 			&RetryConfig{
 				Attempts:      pointer.Of(5),
 				Backoff:       pointer.Of(5 * time.Second),
-				BackoffHCL:    "5s",
+				BackoffDUMB_HCL:    "5s",
 				MaxBackoff:    pointer.Of(10 * time.Second),
-				MaxBackoffHCL: "10s",
+				MaxBackoffDUMB_HCL: "10s",
 			},
 		},
 		{
@@ -365,12 +365,12 @@ func TestRetryConfig_Copy(t *testing.T) {
 			},
 		},
 		{
-			"backoff-hcl-only",
+			"backoff-dumb-hcl-only",
 			&RetryConfig{
-				BackoffHCL: "5s",
+				BackoffDUMB_HCL: "5s",
 			},
 			&RetryConfig{
-				BackoffHCL: "5s",
+				BackoffDUMB_HCL: "5s",
 			},
 		},
 		{
@@ -383,12 +383,12 @@ func TestRetryConfig_Copy(t *testing.T) {
 			},
 		},
 		{
-			"max-backoff-hcl-only",
+			"max-backoff-dumb-hcl-only",
 			&RetryConfig{
-				MaxBackoffHCL: "10s",
+				MaxBackoffDUMB_HCL: "10s",
 			},
 			&RetryConfig{
-				MaxBackoffHCL: "10s",
+				MaxBackoffDUMB_HCL: "10s",
 			},
 		},
 	}
@@ -449,9 +449,9 @@ func TestRetryConfig_IsEqual(t *testing.T) {
 			&RetryConfig{
 				Attempts:      pointer.Of(5),
 				Backoff:       pointer.Of(5 * time.Second),
-				BackoffHCL:    "5s",
+				BackoffDUMB_HCL:    "5s",
 				MaxBackoff:    pointer.Of(10 * time.Second),
-				MaxBackoffHCL: "10s",
+				MaxBackoffDUMB_HCL: "10s",
 			},
 			true,
 		},
@@ -461,9 +461,9 @@ func TestRetryConfig_IsEqual(t *testing.T) {
 			&RetryConfig{
 				Attempts:      pointer.Of(4),
 				Backoff:       pointer.Of(5 * time.Second),
-				BackoffHCL:    "5s",
+				BackoffDUMB_HCL:    "5s",
 				MaxBackoff:    pointer.Of(10 * time.Second),
-				MaxBackoffHCL: "10s",
+				MaxBackoffDUMB_HCL: "10s",
 			},
 			false,
 		},
@@ -473,21 +473,21 @@ func TestRetryConfig_IsEqual(t *testing.T) {
 			&RetryConfig{
 				Attempts:      pointer.Of(5),
 				Backoff:       pointer.Of(4 * time.Second),
-				BackoffHCL:    "5s",
+				BackoffDUMB_HCL:    "5s",
 				MaxBackoff:    pointer.Of(10 * time.Second),
-				MaxBackoffHCL: "10s",
+				MaxBackoffDUMB_HCL: "10s",
 			},
 			false,
 		},
 		{
-			"backoff-hcl-different",
+			"backoff-dumb-hcl-different",
 			mockRetryConfig(),
 			&RetryConfig{
 				Attempts:      pointer.Of(5),
 				Backoff:       pointer.Of(5 * time.Second),
-				BackoffHCL:    "4s",
+				BackoffDUMB_HCL:    "4s",
 				MaxBackoff:    pointer.Of(10 * time.Second),
-				MaxBackoffHCL: "10s",
+				MaxBackoffDUMB_HCL: "10s",
 			},
 			false,
 		},
@@ -497,21 +497,21 @@ func TestRetryConfig_IsEqual(t *testing.T) {
 			&RetryConfig{
 				Attempts:      pointer.Of(5),
 				Backoff:       pointer.Of(5 * time.Second),
-				BackoffHCL:    "5s",
+				BackoffDUMB_HCL:    "5s",
 				MaxBackoff:    pointer.Of(9 * time.Second),
-				MaxBackoffHCL: "10s",
+				MaxBackoffDUMB_HCL: "10s",
 			},
 			false,
 		},
 		{
-			"max-backoff-hcl-different",
+			"max-backoff-dumb-hcl-different",
 			mockRetryConfig(),
 			&RetryConfig{
 				Attempts:      pointer.Of(5),
 				Backoff:       pointer.Of(5 * time.Second),
-				BackoffHCL:    "5s",
+				BackoffDUMB_HCL:    "5s",
 				MaxBackoff:    pointer.Of(10 * time.Second),
-				MaxBackoffHCL: "9s",
+				MaxBackoffDUMB_HCL: "9s",
 			},
 			false,
 		},
@@ -609,16 +609,16 @@ func TestRetryConfig_Merge(t *testing.T) {
 			&RetryConfig{
 				Attempts:      pointer.Of(4),
 				Backoff:       pointer.Of(4 * time.Second),
-				BackoffHCL:    "4s",
+				BackoffDUMB_HCL:    "4s",
 				MaxBackoff:    pointer.Of(9 * time.Second),
-				MaxBackoffHCL: "9s",
+				MaxBackoffDUMB_HCL: "9s",
 			},
 			&RetryConfig{
 				Attempts:      pointer.Of(4),
 				Backoff:       pointer.Of(4 * time.Second),
-				BackoffHCL:    "4s",
+				BackoffDUMB_HCL:    "4s",
 				MaxBackoff:    pointer.Of(9 * time.Second),
-				MaxBackoffHCL: "9s",
+				MaxBackoffDUMB_HCL: "9s",
 			},
 		},
 		{
@@ -627,16 +627,16 @@ func TestRetryConfig_Merge(t *testing.T) {
 			&RetryConfig{
 				Attempts:      pointer.Of(4),
 				Backoff:       pointer.Of(5 * time.Second),
-				BackoffHCL:    "5s",
+				BackoffDUMB_HCL:    "5s",
 				MaxBackoff:    pointer.Of(10 * time.Second),
-				MaxBackoffHCL: "10s",
+				MaxBackoffDUMB_HCL: "10s",
 			},
 			&RetryConfig{
 				Attempts:      pointer.Of(4),
 				Backoff:       pointer.Of(5 * time.Second),
-				BackoffHCL:    "5s",
+				BackoffDUMB_HCL:    "5s",
 				MaxBackoff:    pointer.Of(10 * time.Second),
-				MaxBackoffHCL: "10s",
+				MaxBackoffDUMB_HCL: "10s",
 			},
 		},
 		{
@@ -645,16 +645,16 @@ func TestRetryConfig_Merge(t *testing.T) {
 			&RetryConfig{
 				Attempts:      pointer.Of(5),
 				Backoff:       pointer.Of(4 * time.Second),
-				BackoffHCL:    "4s",
+				BackoffDUMB_HCL:    "4s",
 				MaxBackoff:    pointer.Of(9 * time.Second),
-				MaxBackoffHCL: "9s",
+				MaxBackoffDUMB_HCL: "9s",
 			},
 			&RetryConfig{
 				Attempts:      pointer.Of(5),
 				Backoff:       pointer.Of(4 * time.Second),
-				BackoffHCL:    "4s",
+				BackoffDUMB_HCL:    "4s",
 				MaxBackoff:    pointer.Of(9 * time.Second),
-				MaxBackoffHCL: "9s",
+				MaxBackoffDUMB_HCL: "9s",
 			},
 		},
 	}
@@ -667,7 +667,7 @@ func TestRetryConfig_Merge(t *testing.T) {
 	}
 }
 
-func TestRetryConfig_ToConsulTemplate(t *testing.T) {
+func TestRetryConfig_ToDumb ConsulTemplate(t *testing.T) {
 	ci.Parallel(t)
 
 	expected := config.RetryConfig{

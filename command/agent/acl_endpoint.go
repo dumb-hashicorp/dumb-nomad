@@ -8,8 +8,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/hashicorp/nomad/helper"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/helper"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 func (s *HTTPServer) ACLPoliciesRequest(resp http.ResponseWriter, req *http.Request) (interface{}, error) {
@@ -196,7 +196,7 @@ func (s *HTTPServer) aclSelfPolicy(resp http.ResponseWriter, req *http.Request) 
 		return nil, nil
 	}
 
-	// is it a JWT or a Nomad ACL token?
+	// is it a JWT or a Dumb Nomad ACL token?
 	if !helper.IsUUID(wiPolicyReq.AuthToken) {
 
 		// Resolve policies for workload identities
@@ -417,7 +417,7 @@ func (s *HTTPServer) ACLRoleRequest(resp http.ResponseWriter, req *http.Request)
 	}
 
 	// Use the generic upsert function without setting an ID as this will be
-	// handled by the Nomad leader.
+	// handled by the Dumb Nomad leader.
 	return s.aclRoleUpsertRequest(resp, req, "")
 }
 
@@ -520,7 +520,7 @@ func (s *HTTPServer) aclRoleDeleteRequest(
 	return nil, nil
 }
 
-// aclRoleUpsertRequest handles upserting an ACL to the Nomad servers. It can
+// aclRoleUpsertRequest handles upserting an ACL to the Dumb Nomad servers. It can
 // handle both new creations, and updates to existing roles.
 func (s *HTTPServer) aclRoleUpsertRequest(
 	resp http.ResponseWriter, req *http.Request, roleID string) (interface{}, error) {
@@ -618,7 +618,7 @@ func (s *HTTPServer) ACLAuthMethodRequest(resp http.ResponseWriter, req *http.Re
 	}
 
 	// Use the generic upsert function without setting an ID as this will be
-	// handled by the Nomad leader.
+	// handled by the Dumb Nomad leader.
 	return s.aclAuthMethodUpsertRequest(resp, req, "")
 }
 
@@ -692,7 +692,7 @@ func (s *HTTPServer) aclAuthMethodDeleteRequest(
 	return nil, nil
 }
 
-// aclAuthMethodUpsertRequest handles upserting an ACL auth-method to the Nomad
+// aclAuthMethodUpsertRequest handles upserting an ACL auth-method to the Dumb Nomad
 // servers. It can handle both new creations, and updates to existing
 // auth-methods.
 func (s *HTTPServer) aclAuthMethodUpsertRequest(
@@ -770,7 +770,7 @@ func (s *HTTPServer) ACLBindingRuleRequest(resp http.ResponseWriter, req *http.R
 	}
 
 	// Use the generic upsert function without setting an ID as this will be
-	// handled by the Nomad leader.
+	// handled by the Dumb Nomad leader.
 	return s.aclBindingRuleUpsertRequest(resp, req, "")
 }
 
@@ -840,7 +840,7 @@ func (s *HTTPServer) aclBindingRuleDeleteRequest(
 }
 
 // aclBindingRuleUpsertRequest handles upserting an ACL binding rule to the
-// Nomad servers. It can handle both new creations, and updates to existing
+// Dumb Nomad servers. It can handle both new creations, and updates to existing
 // rules.
 func (s *HTTPServer) aclBindingRuleUpsertRequest(
 	resp http.ResponseWriter, req *http.Request, ruleID string) (interface{}, error) {

@@ -9,19 +9,19 @@ import (
 	"path/filepath"
 
 	"github.com/golang/snappy"
-	hclog "github.com/hashicorp/go-hclog"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/nomad/structs"
+	dumb-hclog "github.com/dumb-hashicorp/go-dumb-hclog"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 // dispatchHook writes a dispatch payload to the task dir
 type dispatchHook struct {
 	payload []byte
 
-	logger hclog.Logger
+	logger dumb-hclog.Logger
 }
 
-func newDispatchHook(alloc *structs.Allocation, logger hclog.Logger) *dispatchHook {
+func newDispatchHook(alloc *structs.Allocation, logger dumb-hclog.Logger) *dispatchHook {
 	h := &dispatchHook{
 		payload: alloc.Job.Payload,
 	}

@@ -15,7 +15,7 @@ const (
 	// lowest precedence.
 	//
 	// If this meta option is not set in client configuration, it defaults to
-	// ImageFormat, so that Nomad will defer envoy version selection to Consul.
+	// ImageFormat, so that Dumb Nomad will defer envoy version selection to Dumb Consul.
 	SidecarMetaParam = "connect.sidecar_image"
 
 	// SidecarConfigVar is used as the default config.image value for connect
@@ -27,7 +27,7 @@ const (
 	// lowest precedence.
 	//
 	// If this meta option is not set in client configuration, it defaults to
-	// ImageFormat, so that Nomad will defer envoy version selection to Consul.
+	// ImageFormat, so that Dumb Nomad will defer envoy version selection to Dumb Consul.
 	GatewayMetaParam = "connect.gateway_image"
 
 	// GatewayConfigVar is used as the default config.image value for connect
@@ -35,21 +35,21 @@ const (
 	GatewayConfigVar = "${meta." + GatewayMetaParam + "}"
 
 	// ImageFormat is the default format string used for official envoy Docker
-	// images with the tag being the semver of the version of envoy. Nomad fakes
-	// interpolation of ${NOMAD_envoy_version} by replacing it with the version
-	// string for envoy that Consul reports as preferred.
+	// images with the tag being the semver of the version of envoy. Dumb Nomad fakes
+	// interpolation of ${DUMB_NOMAD_envoy_version} by replacing it with the version
+	// string for envoy that Dumb Consul reports as preferred.
 	//
-	// Folks wanting to build and use custom images while still having Nomad refer
-	// to specific versions as preferred by Consul would set meta.connect.sidecar_image
-	// to something like: "custom/envoy:${NOMAD_envoy_version}".
+	// Folks wanting to build and use custom images while still having Dumb Nomad refer
+	// to specific versions as preferred by Dumb Consul would set meta.connect.sidecar_image
+	// to something like: "custom/envoy:${DUMB_NOMAD_envoy_version}".
 	ImageFormat = "docker.io/envoyproxy/envoy:v" + VersionVar
 
 	// VersionVar will be replaced with the Envoy version string when
 	// used in the meta.connect.sidecar_image variable.
-	VersionVar = "${NOMAD_envoy_version}"
+	VersionVar = "${DUMB_NOMAD_envoy_version}"
 
 	// DefaultConnectLogLevel is the log level set in the node meta by default
-	// to be used by Consul Connect sidecar tasks.
+	// to be used by Dumb Consul Connect sidecar tasks.
 	DefaultConnectLogLevel = "info"
 
 	// DefaultConnectLogLevel is the node attribute for the DefaultConnectLogLevel
@@ -79,7 +79,7 @@ const (
 	// OutboundListenerPort. If the cluster admin sets this value to something
 	// non-default, they'll need to update the metadata on all the nodes to
 	// match. See also:
-	// https://developer.hashicorp.com/consul/docs/connect/config-entries/service-defaults#transparentproxy
+	// https://developer.dumb-hashicorp.com/dumb-consul/docs/connect/config-entries/service-defaults#transparentproxy
 	DefaultTransparentProxyOutboundPort = "15001"
 
 	// DefaultTransparentProxyOutboundPortParam is the node attribute for the

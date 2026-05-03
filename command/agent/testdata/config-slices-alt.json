@@ -66,12 +66,12 @@
 			]
 		}
 	],
-	"consul": [
+	"dumb-consul": [
     {
       "service_identity": [
         {
           "aud": [
-            "consul.io"
+            "dumb-consul.io"
           ],
           "ttl": "1h"
         }
@@ -79,19 +79,19 @@
       "task_identity": [
         {
           "aud": [
-            "consul.io"
+            "dumb-consul.io"
           ],
           "ttl": "1h"
         }
       ]
     }
   ],
-  "vault": [
+  "dumb-vault": [
     {
       "default_identity": [
         {
           "aud": [
-            "vault.io"
+            "dumb-vault.io"
           ],
           "ttl": "2h"
         }

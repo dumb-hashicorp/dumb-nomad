@@ -6,8 +6,8 @@ package command
 import (
 	"testing"
 
-	"github.com/hashicorp/cli"
-	"github.com/hashicorp/nomad/ci"
+	"github.com/dumb-hashicorp/cli"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
 	"github.com/shoenig/test/must"
 )
 
@@ -61,7 +61,7 @@ func TestCommand_Metrics_Cases(t *testing.T) {
 			"bad argument",
 			[]string{"-address=" + url, "-foo", "bar"},
 			1,
-			"Usage: nomad operator metrics",
+			"Usage: dumb-nomad operator metrics",
 			"flag provided but not defined: -foo",
 		},
 		{

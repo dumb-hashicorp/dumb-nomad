@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/hashicorp/cli"
+	"github.com/dumb-hashicorp/cli"
 	"github.com/posener/complete"
 )
 
@@ -23,7 +23,7 @@ type RecommendationInfoCommand struct {
 // Help satisfies the cli.Command Help function.
 func (r *RecommendationInfoCommand) Help() string {
 	helpText := `
-Usage: nomad recommendation info [options] <recommendation_id>
+Usage: dumb-nomad recommendation info [options] <recommendation_id>
 
   Info is used to read the specified recommendation.
 
@@ -47,7 +47,7 @@ Recommendation Info Options:
 
 // Synopsis satisfies the cli.Command Synopsis function.
 func (r *RecommendationInfoCommand) Synopsis() string {
-	return "Display an individual Nomad recommendation"
+	return "Display an individual Dumb Nomad recommendation"
 }
 
 func (r *RecommendationInfoCommand) AutocompleteFlags() complete.Flags {

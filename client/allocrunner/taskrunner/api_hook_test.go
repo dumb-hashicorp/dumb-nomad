@@ -15,12 +15,12 @@ import (
 	"syscall"
 	"testing"
 
-	"github.com/hashicorp/nomad/ci"
-	"github.com/hashicorp/nomad/client/allocdir"
-	"github.com/hashicorp/nomad/client/allocrunner/interfaces"
-	"github.com/hashicorp/nomad/helper/testlog"
-	"github.com/hashicorp/nomad/helper/users"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/ci"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocdir"
+	"github.com/dumb-hashicorp/dumb-nomad/client/allocrunner/interfaces"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/testlog"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/users"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 	"github.com/shoenig/test/must"
 )
 
@@ -42,11 +42,11 @@ func TestAPIHook_SoftFail(t *testing.T) {
 
 	// Use a SecretsDir that will always exceed Unix socket path length
 	// limits (sun_path)
-	dst := filepath.Join(t.TempDir(), strings.Repeat("_NOMAD_TEST_", 100))
+	dst := filepath.Join(t.TempDir(), strings.Repeat("_DUMB_NOMAD_TEST_", 100))
 
 	ctx := context.Background()
 	srv := testAPIListenerRegistrar{}
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	h := newAPIHook(ctx, srv, logger)
 
 	req := &interfaces.TaskPrestartRequest{
@@ -106,7 +106,7 @@ func TestAPIHook_Ok(t *testing.T) {
 	}
 
 	ctx := context.Background()
-	logger := testlog.HCLogger(t)
+	logger := testlog.DUMB_HCLogger(t)
 	h := newAPIHook(ctx, srv, logger)
 
 	req := &interfaces.TaskPrestartRequest{

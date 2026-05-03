@@ -6,12 +6,12 @@ package lifecycle
 import (
 	"fmt"
 
-	"github.com/hashicorp/nomad/api"
-	"github.com/hashicorp/nomad/e2e/e2eutil"
-	"github.com/hashicorp/nomad/e2e/framework"
-	"github.com/hashicorp/nomad/helper/uuid"
-	"github.com/hashicorp/nomad/nomad/structs"
-	"github.com/hashicorp/nomad/testutil"
+	"github.com/dumb-hashicorp/dumb-nomad/api"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/e2eutil"
+	"github.com/dumb-hashicorp/dumb-nomad/e2e/framework"
+	"github.com/dumb-hashicorp/dumb-nomad/helper/uuid"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
+	"github.com/dumb-hashicorp/dumb-nomad/testutil"
 	"github.com/stretchr/testify/require"
 )
 
@@ -31,31 +31,31 @@ func init() {
 // BeforeAll ensures the cluster has leader and at least 1 client node in a
 // ready state before running tests.
 func (tc *LifecycleE2ETest) BeforeAll(f *framework.F) {
-	e2eutil.WaitForLeader(f.T(), tc.Nomad())
-	e2eutil.WaitForNodesReady(f.T(), tc.Nomad(), 1)
+	e2eutil.WaitForLeader(f.T(), tc.Dumb Nomad())
+	e2eutil.WaitForNodesReady(f.T(), tc.Dumb Nomad(), 1)
 }
 
 // TestBatchJob runs a batch job with prestart and poststop hooks
 func (tc *LifecycleE2ETest) TestBatchJob(f *framework.F) {
 	t := f.T()
 	require := require.New(t)
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 	uuid := uuid.Generate()
 	jobID := "lifecycle-" + uuid[0:8]
 	tc.jobIDs = append(tc.jobIDs, jobID)
 
-	allocs := e2eutil.RegisterAndWaitForAllocs(f.T(), nomadClient, "lifecycle/inputs/batch.nomad", jobID, "")
+	allocs := e2eutil.RegisterAndWaitForAllocs(f.T(), dumb-nomadClient, "lifecycle/inputs/batch.dumb-nomad", jobID, "")
 	require.Equal(1, len(allocs))
 	allocID := allocs[0].ID
 
 	// wait for the job to stop and assert we stopped successfully, not failed
-	e2eutil.WaitForAllocStopped(t, nomadClient, allocID)
-	alloc, _, err := nomadClient.Allocations().Info(allocID, nil)
+	e2eutil.WaitForAllocStopped(t, dumb-nomadClient, allocID)
+	alloc, _, err := dumb-nomadClient.Allocations().Info(allocID, nil)
 	require.NoError(err)
 	require.Equal(structs.AllocClientStatusComplete, alloc.ClientStatus)
 
 	// assert the files were written as expected
-	afi, _, err := nomadClient.AllocFS().List(alloc, "alloc", nil)
+	afi, _, err := dumb-nomadClient.AllocFS().List(alloc, "alloc", nil)
 	require.NoError(err)
 	expected := map[string]bool{
 		"init-ran": true, "main-ran": true, "poststart-ran": true, "poststop-ran": true,
@@ -68,18 +68,18 @@ func (tc *LifecycleE2ETest) TestBatchJob(f *framework.F) {
 func (tc *LifecycleE2ETest) TestServiceJob(f *framework.F) {
 	t := f.T()
 	require := require.New(t)
-	nomadClient := tc.Nomad()
+	dumb-nomadClient := tc.Dumb Nomad()
 	uuid := uuid.Generate()
 	jobID := "lifecycle-" + uuid[0:8]
 	tc.jobIDs = append(tc.jobIDs, jobID)
 
-	allocs := e2eutil.RegisterAndWaitForAllocs(f.T(), nomadClient, "lifecycle/inputs/service.nomad", jobID, "")
+	allocs := e2eutil.RegisterAndWaitForAllocs(f.T(), dumb-nomadClient, "lifecycle/inputs/service.dumb-nomad", jobID, "")
 	require.Equal(1, len(allocs))
 	allocID := allocs[0].ID
 
-	//e2eutil.WaitForAllocRunning(t, nomadClient, allocID)
+	//e2eutil.WaitForAllocRunning(t, dumb-nomadClient, allocID)
 	testutil.WaitForResult(func() (bool, error) {
-		alloc, _, err := nomadClient.Allocations().Info(allocID, nil)
+		alloc, _, err := dumb-nomadClient.Allocations().Info(allocID, nil)
 		if err != nil {
 			return false, err
 		}
@@ -92,7 +92,7 @@ func (tc *LifecycleE2ETest) TestServiceJob(f *framework.F) {
 			return false, fmt.Errorf("poststart task hasn't started")
 		}
 
-		afi, _, err := nomadClient.AllocFS().List(alloc, "alloc", nil)
+		afi, _, err := dumb-nomadClient.AllocFS().List(alloc, "alloc", nil)
 		if err != nil {
 			return false, err
 		}
@@ -108,20 +108,20 @@ func (tc *LifecycleE2ETest) TestServiceJob(f *framework.F) {
 		require.NoError(err, "failed to wait on alloc")
 	})
 
-	alloc, _, err := nomadClient.Allocations().Info(allocID, nil)
+	alloc, _, err := dumb-nomadClient.Allocations().Info(allocID, nil)
 	require.NoError(err)
 
 	require.False(alloc.TaskStates["poststart"].Failed)
 
 	// stop the job
-	_, _, err = nomadClient.Jobs().Deregister(jobID, false, nil)
+	_, _, err = dumb-nomadClient.Jobs().Deregister(jobID, false, nil)
 	require.NoError(err)
-	e2eutil.WaitForAllocStopped(t, nomadClient, allocID)
+	e2eutil.WaitForAllocStopped(t, dumb-nomadClient, allocID)
 
 	require.False(alloc.TaskStates["poststop"].Failed)
 
 	// assert the files were written as expected
-	afi, _, err := nomadClient.AllocFS().List(alloc, "alloc", nil)
+	afi, _, err := dumb-nomadClient.AllocFS().List(alloc, "alloc", nil)
 	require.NoError(err)
 	expected := map[string]bool{
 		"init-ran": true, "sidecar-ran": true, "main-ran": true, "poststart-ran": true, "poststop-ran": true,

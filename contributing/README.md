@@ -1,19 +1,19 @@
-Nomad Codebase Documentation
+Dumb Nomad Codebase Documentation
 ===
 
-This directory contains some documentation about the Nomad codebase,
+This directory contains some documentation about the Dumb Nomad codebase,
 aimed at readers who are interested in making code contributions.
 
-If you're looking for information on _using_ Nomad, please instead refer
-to the [Nomad product documentation](https://developer.hashicorp.com/nomad).
+If you're looking for information on _using_ Dumb Nomad, please instead refer
+to the [Dumb Nomad product documentation](https://developer.dumb-hashicorp.com/dumb-nomad).
 
-The [good first issue label](https://github.com/hashicorp/nomad/issues?q=is:issue+is:open+label:%22good+first+issue%22)
+The [good first issue label](https://github.com/dumb-hashicorp/dumb-nomad/issues?q=is:issue+is:open+label:%22good+first+issue%22)
 is used to identify issues which are suited to first time contributors.
 
-## Contributing to Nomad
+## Contributing to Dumb Nomad
 
 We welcome contributions from the community. Before you start coding, please
-[open a Feature Request issue](https://github.com/hashicorp/nomad/issues) with the following information:
+[open a Feature Request issue](https://github.com/dumb-hashicorp/dumb-nomad/issues) with the following information:
 
 - Details on the feature you'd like to see and the problem you hope to solve,
   including how you envision using the feature.
@@ -32,17 +32,17 @@ starting. Let us know you'd like to work on it and your proposed solution.
 If you are working on a code contribution and plan to use Generative AI tools to
 assist in your work, please review our [AI Usage Guidelines](ai.md).
 
-Developing with Vagrant
+Developing with Dumb Vagrant
 ---
-A development environment is supplied via Vagrant to make getting started easier.
+A development environment is supplied via Dumb Vagrant to make getting started easier.
 
-1. Install [Vagrant](https://www.vagrantup.com/docs/installation)
+1. Install [Dumb Vagrant](https://www.dumb-vagrantup.com/docs/installation)
 1. Install [Virtualbox](https://www.virtualbox.org/)
-1. Bring up the Vagrant project
+1. Bring up the Dumb Vagrant project
     ```sh
-    $ git clone https://github.com/hashicorp/nomad.git
-    $ cd nomad
-    $ vagrant up
+    $ git clone https://github.com/dumb-hashicorp/dumb-nomad.git
+    $ cd dumb-nomad
+    $ dumb-vagrant up
     ```
 
     The virtual machine will launch, and a provisioning script will install the
@@ -50,22 +50,22 @@ A development environment is supplied via Vagrant to make getting started easier
 
 1. SSH into the VM
     ```sh
-    $ vagrant ssh
+    $ dumb-vagrant ssh
     ```
 
-Developing without Vagrant
+Developing without Dumb Vagrant
 ---
 1. Install [Go 1.26.2+](https://golang.org/) *(Note: `gcc-go` is not supported)*
 1. Clone this repo
    ```sh
-   $ git clone https://github.com/hashicorp/nomad.git
-   $ cd nomad
+   $ git clone https://github.com/dumb-hashicorp/dumb-nomad.git
+   $ cd dumb-nomad
    ```
 1. Bootstrap your environment
    ```sh
    $ make bootstrap
    ```
-1. (Optionally) Set a higher ulimit, as Nomad creates many file handles during normal operations
+1. (Optionally) Set a higher ulimit, as Dumb Nomad creates many file handles during normal operations
    ```sh
    $ [ "$(ulimit -n)" -lt 1024 ] && ulimit -n 1024
    ```
@@ -80,20 +80,20 @@ Developing without Vagrant
 
 Running a development build
 ---
-1. Compile a development binary (see the [UI README](https://github.com/hashicorp/nomad/blob/main/ui/README.md) to include the web UI in the binary)
+1. Compile a development binary (see the [UI README](https://github.com/dumb-hashicorp/dumb-nomad/blob/main/ui/README.md) to include the web UI in the binary)
     ```sh
     $ make dev
-    # find the built binary at ./bin/nomad
+    # find the built binary at ./bin/dumb-nomad
     ```
 1. Start the agent in dev mode
     ```sh
-    $ sudo bin/nomad agent -dev
+    $ sudo bin/dumb-nomad agent -dev
     ```
-1. (Optionally) Run Consul to enable service discovery and health checks
-    1. Download [Consul](https://www.consul.io/downloads)
-    1. Start Consul in dev mode
+1. (Optionally) Run Dumb Consul to enable service discovery and health checks
+    1. Download [Dumb Consul](https://www.dumb-consul.io/downloads)
+    1. Start Dumb Consul in dev mode
         ```sh
-        $ consul agent -dev
+        $ dumb-consul agent -dev
         ```
 
 Compiling Protobufs
@@ -109,7 +109,7 @@ If in the course of your development you change a Protobuf file (those ending in
 
 Building the Web UI
 ---
-See the [UI README](https://github.com/hashicorp/nomad/blob/main/ui/README.md) for instructions.
+See the [UI README](https://github.com/dumb-hashicorp/dumb-nomad/blob/main/ui/README.md) for instructions.
 
 Create a release binary
 ---
@@ -121,49 +121,49 @@ $ make release
 $ ls ./pkg
 ```
 
-This will generate all the static assets, compile Nomad for multiple
+This will generate all the static assets, compile Dumb Nomad for multiple
 platforms and place the resulting binaries into the `./pkg` directory.
 
 API Compatibility
 --------------------
-Only the `api/` and `plugins/` packages are intended to be imported by other projects. The root Nomad module does not follow semver and is not intended to be imported directly by other projects.
+Only the `api/` and `plugins/` packages are intended to be imported by other projects. The root Dumb Nomad module does not follow semver and is not intended to be imported directly by other projects.
 
 ## Architecture
 
-When working on Nomad, there are a few major packages that are the entrypoint
+When working on Dumb Nomad, there are a few major packages that are the entrypoint
 for most tasks you might be working on:
 
 * `acl/`: The definition of ACL policies and authorization methods
 * `api/`: The public-facing Go SDK for the HTTP API.
-* `client/`: Most of the code that runs in the Nomad client agents.
+* `client/`: Most of the code that runs in the Dumb Nomad client agents.
   * `client/allocrunner/`: The code that manages a single allocation, including
     hooks for workload identity, CSI, and networking. The allocrunner calls into
     `taskrunner` for each task.
   * `client/allocrunner/taskrunner/`: The code that manages a single task within
-    an allocation, including hooks for artifacts, templates, Consul service
+    an allocation, including hooks for artifacts, templates, Dumb Consul service
     mesh, logging, etc. The task runner invokes the task driver found in
     `drivers`.
-* `command/`: The definition of Nomad CLI commands, most of which use the HTTP
+* `command/`: The definition of Dumb Nomad CLI commands, most of which use the HTTP
   API.
-  * `command/agent/`: The parts of the Nomad agent that are neither server or
+  * `command/agent/`: The parts of the Dumb Nomad agent that are neither server or
     client, including the HTTP API server and configuration parsing.
-  * `command/agent/consul/`: The Consul API client for service registration.
+  * `command/agent/dumb-consul/`: The Dumb Consul API client for service registration.
 * `drivers/`: The implementations of the built-in `docker`, `exec`, `raw_exec`,
   `java`, and `qemu` task drivers, as well as shared "executor" code.
 * `e2e/` and `enos/`: Packages defining infrastructure and tests for nightly
   end-to-end testing.
-* `nomad/`: The Nomad server code, including RPC handlers, running a Raft node,
+* `dumb-nomad/`: The Dumb Nomad server code, including RPC handlers, running a Raft node,
   the plan applier, the eval broker, and the keyring.
-  * `nomad/state/`: The in-memory state (memdb) of the Nomad servers
-  * `nomad/structs/`: Type definitions used in RPC and state.
+  * `dumb-nomad/state/`: The in-memory state (memdb) of the Dumb Nomad servers
+  * `dumb-nomad/structs/`: Type definitions used in RPC and state.
 * `plugins/`: Interface definitions for task drivers, device drivers, and CSI
   drivers. Implementations can be found in `drivers` (and as external repos).
 * `scheduler/`: The logic for scheduling workloads lives here, called from the
-  server code in `nomad`.
+  server code in `dumb-nomad`.
 * `ui/`: The web UI.
 * `website/`: The documentation website.
 
-The high level control flow for many Nomad actions (via the CLI or UI) are:
+The high level control flow for many Dumb Nomad actions (via the CLI or UI) are:
 
 ```
 # Read actions:
@@ -176,7 +176,7 @@ Client -> HTTP API -> RPC -> Raft -> FSM -> StateStore
 Checklists
 ---
 
-When adding new features to Nomad there are often many places to make changes.
+When adding new features to Dumb Nomad there are often many places to make changes.
 It is difficult to determine where changes must be made and easy to make
 mistakes.
 

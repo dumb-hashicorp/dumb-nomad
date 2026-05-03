@@ -4,12 +4,12 @@
 package structs
 
 import (
-	log "github.com/hashicorp/go-hclog"
+	log "github.com/dumb-hashicorp/go-dumb-hclog"
 
-	"github.com/hashicorp/go-memdb"
-	"github.com/hashicorp/go-version"
-	"github.com/hashicorp/nomad/nomad/state"
-	"github.com/hashicorp/nomad/nomad/structs"
+	"github.com/dumb-hashicorp/go-memdb"
+	"github.com/dumb-hashicorp/go-version"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/state"
+	"github.com/dumb-hashicorp/dumb-nomad/dumb-nomad/structs"
 )
 
 /*
@@ -21,7 +21,7 @@ type Factory func(log.Logger, chan<- interface{}, State, Planner) Scheduler
 
 // Scheduler is the top level instance for a scheduler. A scheduler is
 // meant to only encapsulate business logic, pushing the various plumbing
-// into Nomad itself. They are invoked to process a single evaluation at
+// into Dumb Nomad itself. They are invoked to process a single evaluation at
 // a time. The evaluation may result in task allocations which are computed
 // optimistically, as there are many concurrent evaluations being processed.
 // The task allocations are submitted as a plan, and the current leader will
@@ -125,8 +125,8 @@ type Planner interface {
 	// that on leader changes, the evaluation will be reblocked properly.
 	ReblockEval(*structs.Evaluation) error
 
-	// ServersMeetMinimumVersion returns whether the Nomad servers in the
-	// worker's region are at least on the given Nomad version. The
+	// ServersMeetMinimumVersion returns whether the Dumb Nomad servers in the
+	// worker's region are at least on the given Dumb Nomad version. The
 	// checkFailedServers parameter specifies whether version for the failed
 	// servers should be verified.
 	ServersMeetMinimumVersion(minVersion *version.Version, checkFailedServers bool) bool
